@@ -1,5 +1,24 @@
 # Baam Local Portal — Documentation
 
+
+
+lsof -ti:3003 | xargs kill -9
+rm -rf .next
+npm run dev
+
+npm install
+npm run build
+
+git add .
+git commit -m "Update: describe your changes"
+git push
+
+
+curl -X POST https://api.vercel.com/v1/integrations/deploy/prj_djRlq5PsWfKq75nViJDtyg3gzsBH/nWJg1rsYkt
+
+
+
+
 > AI-Native Hyperlocal Community Platform  
 > 双语超本地社区平台 · 六核驱动 · AI全栈集成
 
