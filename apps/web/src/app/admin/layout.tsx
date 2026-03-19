@@ -13,13 +13,11 @@ export default function AdminLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body className="bg-bg-page text-text-primary antialiased">
-        <div className="flex min-h-screen">
-          <AdminSidebar />
-          <main className="flex-1 ml-0 lg:ml-[var(--sidebar-width)]">
-            {children}
-          </main>
-        </div>
+      <body className="bg-gray-50 text-gray-900 antialiased">
+        <AdminSidebar />
+        <main className="lg:ml-60 min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

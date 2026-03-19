@@ -29,7 +29,7 @@ export function AdminSidebar() {
   };
 
   const sidebar = (
-    <div className="w-[var(--sidebar-width)] bg-bg-sidebar text-gray-300 h-screen overflow-y-auto flex flex-col">
+    <div className="w-60 bg-gray-800 text-gray-300 h-screen overflow-y-auto flex flex-col">
       {/* Logo */}
       <div className="p-5 border-b border-gray-700">
         <Link href="/admin" className="flex items-center gap-2">
