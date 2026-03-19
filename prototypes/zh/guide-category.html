@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>医疗与健康 · 生活资讯 · Baam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={theme:{extend:{colors:{baam:{50:'#FFF7ED',100:'#FFEDD5',200:'#FED7AA',300:'#FDBA74',400:'#FB923C',500:'#F97316',600:'#EA580C',700:'#C2410C'}}}}}</script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- NAVBAR -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold">Baam</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600">登录 / 注册</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-4 py-6">
+
+  <!-- Breadcrumb -->
+  <nav class="text-sm text-gray-500 mb-6">
+    <a href="index.html" class="hover:text-baam-500">首页</a>
+    <span class="mx-2">></span>
+    <a href="guides-list.html" class="hover:text-baam-500">生活资讯</a>
+    <span class="mx-2">></span>
+    <span class="text-gray-900 font-medium">医疗与健康</span>
+  </nav>
+
+  <div class="lg:flex gap-8">
+    <!-- Main Content -->
+    <div class="flex-1">
+      <!-- Category Header -->
+      <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6 mb-8">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-4xl">🏥</span>
+          <div>
+            <h1 class="text-2xl font-bold">医疗与健康</h1>
+            <p class="text-sm text-gray-500 mt-1">找医生、选保险、了解就医流程 — 12 篇实用指南</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter -->
+      <div class="flex items-center gap-3 mb-6 flex-wrap">
+        <span class="text-sm text-gray-500">类型：</span>
+        <button class="px-3 py-1.5 text-sm rounded-full bg-baam-500 text-white">全部</button>
+        <button class="px-3 py-1.5 text-sm rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">How-To</button>
+        <button class="px-3 py-1.5 text-sm rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Checklist</button>
+        <button class="px-3 py-1.5 text-sm rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">Best-of</button>
+        <button class="px-3 py-1.5 text-sm rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">对比</button>
+      </div>
+
+      <!-- Guide Cards Grid -->
+      <div class="grid sm:grid-cols-2 gap-5">
+        <!-- Card 1 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-4xl">🏥</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-blue">How-To</span>
+              <span class="badge badge-gray">新移民</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">如何在纽约找到靠谱的中文家庭医生</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">从选择保险网络内医生到第一次预约，6步教你找到满意的中文家庭医生</p>
+            <p class="text-xs text-gray-400">适合：新移民 · 5分钟阅读 · 2.3K浏览</p>
+          </div>
+        </a>
+        <!-- Card 2 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center text-4xl">🦷</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-green">Best-of</span>
+              <span class="badge badge-gray">所有人</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">法拉盛中文牙医推荐（2025年更新）</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">根据用户评价和社区推荐，精选8家法拉盛提供中文服务的牙医诊所</p>
+            <p class="text-xs text-gray-400">适合：所有人 · 4分钟阅读 · 5.1K浏览</p>
+          </div>
+        </a>
+        <!-- Card 3 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-4xl">⚖️</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-purple">对比</span>
+              <span class="badge badge-gray">新移民</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">纽约健康保险怎么选：Medicaid vs 白卡 vs 商业保险</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">详细对比三种保险类型的覆盖范围、费用和申请条件</p>
+            <p class="text-xs text-gray-400">适合：新移民 · 8分钟阅读 · 3.8K浏览</p>
+          </div>
+        </a>
+        <!-- Card 4 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-4xl">💊</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-primary">How-To</span>
+              <span class="badge badge-gray">所有人</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">在美国看急诊：流程、费用和注意事项</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">什么情况该去急诊，Urgent Care和ER的区别，费用预期</p>
+            <p class="text-xs text-gray-400">适合：所有人 · 6分钟阅读 · 4.2K浏览</p>
+          </div>
+        </a>
+        <!-- Card 5 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center text-4xl">🏥</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-blue">Checklist</span>
+              <span class="badge badge-gray">家庭</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">儿童入学体检清单：需要哪些疫苗和检查</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">纽约州儿童入学必需的体检项目、疫苗接种和表格填写指南</p>
+            <p class="text-xs text-gray-400">适合：家庭 · 4分钟阅读 · 1.9K浏览</p>
+          </div>
+        </a>
+        <!-- Card 6 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-cyan-100 to-cyan-200 flex items-center justify-center text-4xl">🧘</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-green">Best-of</span>
+              <span class="badge badge-gray">所有人</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">法拉盛中医诊所推荐：针灸、推拿、中药</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">6家社区推荐的中医诊所，含保险接受情况和擅长领域</p>
+            <p class="text-xs text-gray-400">适合：所有人 · 3分钟阅读 · 2.7K浏览</p>
+          </div>
+        </a>
+        <!-- Card 7 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center text-4xl">🤒</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-primary">How-To</span>
+              <span class="badge badge-gray">所有人</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">流感季节预防指南：疫苗、卫生习惯和家庭防护</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">哪里可以免费打流感疫苗，家庭防护措施，什么时候该就医</p>
+            <p class="text-xs text-gray-400">适合：所有人 · 3分钟阅读 · 1.5K浏览</p>
+          </div>
+        </a>
+        <!-- Card 8 -->
+        <a href="guide-detail.html" class="card cursor-pointer">
+          <div class="h-40 bg-gradient-to-br from-pink-100 to-pink-200 flex items-center justify-center text-4xl">👶</div>
+          <div class="p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-blue">How-To</span>
+              <span class="badge badge-gray">家庭</span>
+            </div>
+            <h3 class="font-semibold text-sm line-clamp-2 mb-1">在纽约选择儿科医生：华人家庭实用指南</h3>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-2">如何根据保险、语言和位置找到合适的儿科医生</p>
+            <p class="text-xs text-gray-400">适合：家庭 · 5分钟阅读 · 2.1K浏览</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
+      <!-- Related categories -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-sm mb-4">其他栏目</h3>
+        <div class="space-y-2">
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">🌏 新移民与安家</a>
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">🏫 教育与学区</a>
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">🏠 租房买房搬家</a>
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">💼 报税创业小商业</a>
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">🚗 驾照交通停车</a>
+          <a href="#" class="flex items-center gap-2 text-sm text-gray-600 hover:text-baam-500 py-1">⚖️ 法律证件办事</a>
+        </div>
+      </div>
+      <!-- Featured Business -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <p class="text-xs text-gray-400 mb-3">推荐商家</p>
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-lg">🏥</div>
+          <div>
+            <h4 class="font-semibold text-sm">王氏家庭医疗中心</h4>
+            <div class="flex items-center gap-1 mt-0.5">
+              <span class="text-yellow-500 text-xs">★★★★★</span>
+              <span class="text-xs text-gray-400">4.8</span>
+            </div>
+            <div class="flex gap-1 mt-1.5">
+              <span class="text-xs bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">中文</span>
+              <span class="text-xs bg-green-50 text-green-600 px-1.5 py-0.5 rounded">周末营业</span>
+            </div>
+            <a href="business-detail.html" class="inline-block mt-2 text-xs text-baam-500 font-medium hover:underline">了解详情 →</a>
+          </div>
+        </div>
+      </div>
+      <!-- Related Voices -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-sm mb-4">医疗健康达人</h3>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex-shrink-0 flex items-center justify-center text-sm">👩‍⚕️</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate">Dr. 李文华</p>
+              <p class="text-xs text-gray-400">认证医生 · 328粉丝</p>
+            </div>
+            <button data-follow class="px-3 py-1 bg-baam-500 text-white text-xs rounded-full hover:bg-baam-600">关注</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-sm">🦷</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate">张牙医Dr.Zhang</p>
+              <p class="text-xs text-gray-400">认证牙医 · 195粉丝</p>
+            </div>
+            <button data-follow class="px-3 py-1 bg-baam-500 text-white text-xs rounded-full hover:bg-baam-600">关注</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-gray-400 mt-12">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm">AI驱动的纽约华人本地生活门户</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm"><li><a href="news-list.html" class="hover:text-white">新闻</a></li><li><a href="guides-list.html" class="hover:text-white">生活资讯</a></li><li><a href="forum-home.html" class="hover:text-white">论坛</a></li><li><a href="business-list.html" class="hover:text-white">商家</a></li></ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white">商家入驻</a></li><li><a href="#" class="hover:text-white">广告合作</a></li></ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于</h3>
+        <ul class="space-y-2 text-sm"><li><a href="#" class="hover:text-white">关于 Baam</a></li><li><a href="#" class="hover:text-white">联系我们</a></li></ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 text-center text-xs">&copy; 2025 Baam. All rights reserved.</div>
+  </div>
+</footer>
+
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

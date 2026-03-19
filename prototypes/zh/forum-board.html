@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>美食推荐 · Baam 论坛</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="max-w-7xl mx-auto px-4 py-6">
+
+  <!-- ==================== BREADCRUMB ==================== -->
+  <nav class="flex items-center gap-2 text-sm text-gray-500 mb-4 overflow-x-auto whitespace-nowrap">
+    <a href="forum-home.html" class="hover:text-baam-500 transition">论坛</a>
+    <svg class="w-3.5 h-3.5 flex-shrink-0 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <span class="text-gray-900 font-medium">美食推荐</span>
+  </nav>
+
+  <div class="flex gap-8">
+    <!-- ==================== LEFT: MAIN COLUMN ==================== -->
+    <div class="flex-1 min-w-0">
+
+      <!-- ==================== BOARD HEADER ==================== -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5 sm:p-6 mb-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+              <span class="text-2xl">🍜</span> 美食推荐
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">餐厅推荐、探店分享、食谱交流</p>
+            <div class="flex items-center gap-3 mt-2 text-xs text-gray-400">
+              <span>3,245 帖子</span>
+              <span class="text-gray-300">·</span>
+              <span>1,892 成员</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="#" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-baam-500 transition px-3 py-1.5 border border-gray-200 rounded-lg hover:border-baam-300">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              版规
+            </a>
+            <button class="inline-flex items-center gap-1 text-sm text-white bg-baam-500 hover:bg-baam-600 transition px-4 py-1.5 rounded-lg font-medium">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              加入版块
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SORT CONTROLS ==================== -->
+      <div class="flex items-center gap-1 mb-4 overflow-x-auto pb-1">
+        <button class="px-3 py-1.5 text-sm font-medium text-baam-500 bg-orange-50 rounded-lg whitespace-nowrap">最新回复</button>
+        <button class="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-lg whitespace-nowrap transition">最新发布</button>
+        <button class="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-lg whitespace-nowrap transition">最热(本周)</button>
+        <button class="px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-lg whitespace-nowrap transition">置顶优先</button>
+      </div>
+
+      <!-- ==================== THREAD LIST ==================== -->
+      <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+
+        <!-- Thread 1: Pinned -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition bg-blue-50/40">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-red-200 to-red-300 flex items-center justify-center text-base flex-shrink-0">👨‍🍳</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="px-1.5 py-0.5 bg-blue-500 text-white text-xs font-bold rounded">置顶</span>
+              <h3 class="text-sm font-semibold text-gray-900 truncate">【版规】美食推荐版发帖须知 & 常见问题汇总</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>版主小美</span>
+              <span>3天前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                56
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                2,340
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 2: Pinned -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition bg-blue-50/40">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center text-base flex-shrink-0">🏆</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="px-1.5 py-0.5 bg-blue-500 text-white text-xs font-bold rounded">置顶</span>
+              <h3 class="text-sm font-semibold text-gray-900 truncate">【月度评选】3月法拉盛最佳餐厅投票中！</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>版主小美</span>
+              <span>1天前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                128
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                4,567
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 3: Featured -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-base flex-shrink-0">👩</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <span class="px-1.5 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-bold rounded flex items-center gap-0.5">⭐精华</span>
+              <h3 class="text-sm font-semibold text-gray-900 truncate">法拉盛10家必吃小吃店深度测评！附图附地址</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>吃货小姐姐</span>
+              <span>5小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                87
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                3,210
+              </span>
+            </div>
+          </div>
+          <div class="hidden sm:block w-16 h-16 rounded-lg bg-gradient-to-br from-orange-100 to-orange-200 flex-shrink-0 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center text-2xl">🍜</div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 4 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center text-base flex-shrink-0">🧑</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">Main St 新开了一家成都串串香，有人去过吗？</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>法拉盛老居民</span>
+              <span>2小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                34
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                890
+              </span>
+            </div>
+          </div>
+          <div class="hidden sm:block w-16 h-16 rounded-lg bg-gradient-to-br from-red-100 to-red-200 flex-shrink-0 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center text-2xl">🍢</div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 5 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-base flex-shrink-0">👨</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">求推荐法拉盛靠谱的粤菜馆，想请爸妈吃饭</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>纽约小陈</span>
+              <span>3小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                42
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                1,120
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 6 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-200 to-purple-300 flex items-center justify-center text-base flex-shrink-0">👧</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">分享一个超简单的红烧肉做法，新手也能做！</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>厨房小白</span>
+              <span>4小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                19
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                670
+              </span>
+            </div>
+          </div>
+          <div class="hidden sm:block w-16 h-16 rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 flex-shrink-0 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center text-2xl">🍖</div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 7 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-teal-200 to-teal-300 flex items-center justify-center text-base flex-shrink-0">🧔</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">鼎泰丰 vs 南翔小笼包，到底哪家更正宗？</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>美食评论家老王</span>
+              <span>6小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                76
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                2,450
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 8 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-base flex-shrink-0">👩‍🦰</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">Elmhurst 那家新开的湖南菜太辣了，但是真的好吃</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>湖南妹子在纽约</span>
+              <span>8小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                23
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                560
+              </span>
+            </div>
+          </div>
+          <div class="hidden sm:block w-16 h-16 rounded-lg bg-gradient-to-br from-red-100 to-orange-200 flex-shrink-0 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center text-2xl">🌶️</div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 9 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-200 to-indigo-300 flex items-center justify-center text-base flex-shrink-0">👨‍💻</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">周末早茶去哪好？想找个可以推车的那种</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>码农爱吃茶</span>
+              <span>10小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                31
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                920
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 10 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-rose-200 to-rose-300 flex items-center justify-center text-base flex-shrink-0">👩‍🍳</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">H Mart 买到的食材做出来的韩式拌饭，比餐厅还好吃</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>韩料爱好者</span>
+              <span>12小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                15
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                340
+              </span>
+            </div>
+          </div>
+          <div class="hidden sm:block w-16 h-16 rounded-lg bg-gradient-to-br from-green-100 to-green-200 flex-shrink-0 overflow-hidden">
+            <div class="w-full h-full flex items-center justify-center text-2xl">🍚</div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 11 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-200 to-cyan-300 flex items-center justify-center text-base flex-shrink-0">👴</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">Roosevelt Ave 上的那家兰州拉面换老板了，味道变了</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>面条控大叔</span>
+              <span>14小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                28
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                780
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 12 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-lime-200 to-lime-300 flex items-center justify-center text-base flex-shrink-0">👱‍♀️</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">有没有人一起拼团买Costco的大包装牛排？</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>省钱小能手</span>
+              <span>16小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                9
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                210
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+        <!-- Thread 13 -->
+        <a href="forum-thread.html" class="flex items-start gap-3 p-4 hover:bg-gray-50 transition">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-orange-200 to-orange-300 flex items-center justify-center text-base flex-shrink-0">🧑‍🦱</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap mb-1">
+              <h3 class="text-sm font-medium text-gray-900 truncate">曼哈顿Chinatown vs 法拉盛，哪边的烧腊更好？</h3>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-gray-400">
+              <span>烧腊迷弟</span>
+              <span>18小时前</span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                45
+              </span>
+              <span class="flex items-center gap-0.5">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                1,560
+              </span>
+            </div>
+          </div>
+          <button class="flex-shrink-0 p-1.5 text-gray-300 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition" title="AI 速读">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+        </a>
+
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex items-center justify-center gap-2 mt-6">
+        <span class="w-9 h-9 flex items-center justify-center rounded-lg bg-baam-500 text-white text-sm font-medium">1</span>
+        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">2</a>
+        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">3</a>
+        <span class="text-gray-400 text-sm">...</span>
+        <a href="#" class="w-9 h-9 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">27</a>
+        <a href="#" class="flex items-center gap-1 px-3 h-9 rounded-lg bg-white border border-gray-200 text-sm text-gray-600 hover:bg-gray-50">
+          下一页
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+
+    <!-- ==================== RIGHT: SIDEBAR (Desktop) ==================== -->
+    <aside class="hidden lg:block w-72 flex-shrink-0 space-y-5">
+
+      <!-- Board Rules -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-sm text-gray-900 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          版块规则
+        </h3>
+        <ul class="space-y-2 text-xs text-gray-500 leading-relaxed">
+          <li class="flex items-start gap-2">
+            <span class="text-baam-400 mt-0.5 flex-shrink-0">1.</span>
+            <span>推荐餐厅请附上具体地址或大致位置</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-baam-400 mt-0.5 flex-shrink-0">2.</span>
+            <span>禁止商家自我推广，违者删帖</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-baam-400 mt-0.5 flex-shrink-0">3.</span>
+            <span>差评请客观描述，避免人身攻击</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-baam-400 mt-0.5 flex-shrink-0">4.</span>
+            <span>鼓励附带图片分享，图文并茂更佳</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-baam-400 mt-0.5 flex-shrink-0">5.</span>
+            <span>食谱帖请标注难度和预计耗时</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Top Active Users -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-sm text-gray-900 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          活跃成员 TOP 5
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-sm flex-shrink-0">👩</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">吃货小姐姐</p>
+              <p class="text-xs text-gray-400">156 帖子</p>
+            </div>
+            <span class="text-xs font-bold text-baam-500">1</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-200 to-teal-300 flex items-center justify-center text-sm flex-shrink-0">🧔</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">美食评论家老王</p>
+              <p class="text-xs text-gray-400">134 帖子</p>
+            </div>
+            <span class="text-xs font-bold text-gray-400">2</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-red-200 to-red-300 flex items-center justify-center text-sm flex-shrink-0">👨‍🍳</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">版主小美</p>
+              <p class="text-xs text-gray-400">112 帖子</p>
+            </div>
+            <span class="text-xs font-bold text-gray-400">3</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-sm flex-shrink-0">👩‍🦰</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">湖南妹子在纽约</p>
+              <p class="text-xs text-gray-400">98 帖子</p>
+            </div>
+            <span class="text-xs font-bold text-gray-400">4</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-200 to-indigo-300 flex items-center justify-center text-sm flex-shrink-0">👨‍💻</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-900 truncate">码农爱吃茶</p>
+              <p class="text-xs text-gray-400">87 帖子</p>
+            </div>
+            <span class="text-xs font-bold text-gray-400">5</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Businesses -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-sm text-gray-900 mb-3 flex items-center gap-2">
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          相关商家
+        </h3>
+        <div class="space-y-3">
+          <!-- Restaurant Card 1 -->
+          <div class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 transition cursor-pointer">
+            <div class="flex items-start gap-3">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-100 to-red-200 flex-shrink-0 flex items-center justify-center text-xl">🍜</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1">
+                  <h4 class="font-semibold text-sm truncate">川味坊</h4>
+                  <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="flex items-center gap-1 mt-0.5">
+                  <span class="text-yellow-500 text-xs">★★★★★</span>
+                  <span class="text-xs text-gray-400">4.8</span>
+                </div>
+                <span class="text-xs text-gray-400">Main St · 川菜</span>
+              </div>
+            </div>
+          </div>
+          <!-- Restaurant Card 2 -->
+          <div class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 transition cursor-pointer">
+            <div class="flex items-start gap-3">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 flex-shrink-0 flex items-center justify-center text-xl">🥟</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1">
+                  <h4 class="font-semibold text-sm truncate">金丰大酒楼</h4>
+                  <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="flex items-center gap-1 mt-0.5">
+                  <span class="text-yellow-500 text-xs">★★★★☆</span>
+                  <span class="text-xs text-gray-400">4.5</span>
+                </div>
+                <span class="text-xs text-gray-400">Prince St · 粤菜 · 早茶</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<!-- ==================== FLOATING "发帖" BUTTON ==================== -->
+<a href="forum-new-post.html" class="fixed bottom-24 right-6 lg:bottom-8 lg:right-8 z-40 flex items-center gap-2 bg-baam-500 text-white px-5 py-3 rounded-full shadow-lg hover:bg-baam-600 transition hover:scale-105 font-medium text-sm">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+  发帖
+</a>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2025 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6">
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+        <div class="relative my-4">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+          <div class="relative flex justify-center"><span class="bg-white px-3 text-xs text-gray-400">或者</span></div>
+        </div>
+        <button class="w-full h-11 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          使用 Google 登录
+        </button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
+          <input type="text" placeholder="你的显示名称" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

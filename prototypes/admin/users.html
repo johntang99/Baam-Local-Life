@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户管理 — Baam Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .sidebar-link { transition: all 0.15s ease; }
+    .sidebar-link:hover { background-color: rgba(249, 115, 22, 0.1); }
+    .sidebar-link.active { background-color: rgba(249, 115, 22, 0.15); border-right: 3px solid #F97316; }
+    @media (max-width: 1023px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .content-area { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Mobile Overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside id="sidebar" class="sidebar fixed top-0 left-0 bottom-0 w-60 bg-gray-800 z-50 flex flex-col lg:translate-x-0">
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-gray-700">
+      <div class="w-9 h-9 rounded-lg bg-baam-500 flex items-center justify-center">
+        <span class="text-white font-bold text-lg">B</span>
+      </div>
+      <div>
+        <span class="text-white font-bold text-lg tracking-tight">Baam</span>
+        <span class="ml-1.5 text-[10px] font-semibold uppercase tracking-wider bg-baam-500/20 text-baam-400 px-1.5 py-0.5 rounded">Admin</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <ul class="space-y-0.5 px-3">
+        <li><a href="dashboard.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">📊</span><span>Dashboard</span></a></li>
+        <li><a href="articles.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">📝</span><span>内容管理</span></a></li>
+        <li><a href="businesses.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">🏪</span><span>商家管理</span></a></li>
+        <li><a href="forum-management.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">💬</span><span>论坛管理</span></a></li>
+        <li><a href="voices-management.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">🎙️</span><span>达人管理</span></a></li>
+        <li><a href="events.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">📅</span><span>活动管理</span></a></li>
+        <li><a href="leads.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">📥</span><span>线索管理</span></a></li>
+        <li><a href="users.html" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white"><span class="w-5 text-center opacity-80">👥</span><span>用户管理</span></a></li>
+        <li><a href="ai-jobs.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">🤖</span><span>AI任务</span></a></li>
+        <li><a href="sponsors.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">💰</span><span>广告管理</span></a></li>
+        <li><a href="settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300"><span class="w-5 text-center opacity-80">⚙️</span><span>系统设置</span></a></li>
+      </ul>
+    </nav>
+    <div class="border-t border-gray-700 px-4 py-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-gray-600 flex items-center justify-center text-white text-sm font-medium">JT</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">John Tang</p>
+          <p class="text-xs text-gray-400">Super Admin</p>
+        </div>
+        <button class="text-gray-400 hover:text-white text-xs transition-colors" title="退出登录">退出</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="content-area lg:ml-60 min-h-screen">
+
+    <!-- Top Header Bar -->
+    <header class="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
+        <div class="flex items-center gap-4">
+          <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div>
+            <h1 class="text-lg font-semibold text-gray-900">用户管理</h1>
+            <nav class="text-xs text-gray-400"><span>Admin</span><span class="mx-1">/</span><span class="text-gray-600">用户管理</span></nav>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="p-4 sm:p-6 lg:p-8">
+
+      <!-- ===== Filters & Search ===== -->
+      <div class="bg-white rounded-xl border border-gray-200 p-4 mb-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <div class="relative flex-1 w-full">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" placeholder="搜索用户名、邮箱..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-baam-500/20 focus:border-baam-500">
+          </div>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <select class="border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-baam-500/20 focus:border-baam-500">
+              <option value="">全部类型</option>
+              <option value="consumer">普通用户</option>
+              <option value="business_owner">商家</option>
+              <option value="creator">达人</option>
+              <option value="editor">编辑</option>
+              <option value="admin">管理员</option>
+            </select>
+            <div class="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
+              <label class="text-xs text-gray-500">状态:</label>
+              <button class="px-2.5 py-1 text-xs font-medium rounded-md bg-baam-500 text-white">全部</button>
+              <button class="px-2.5 py-1 text-xs font-medium rounded-md text-gray-500 hover:bg-gray-100">正常</button>
+              <button class="px-2.5 py-1 text-xs font-medium rounded-md text-gray-500 hover:bg-gray-100">封禁</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== User Count Summary ===== -->
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-sm text-gray-500">共 <span class="font-semibold text-gray-800">1,247</span> 位用户</p>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-400">排序:</span>
+          <select class="text-xs border border-gray-200 rounded px-2 py-1 focus:outline-none">
+            <option>最近注册</option>
+            <option>最近活跃</option>
+            <option>用户名 A-Z</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ===== Users Data Table ===== -->
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">用户</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">邮箱</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">类型</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">地区</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">注册时间</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">状态</th>
+                <th class="text-left px-4 py-3 font-medium text-gray-500 text-xs uppercase">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">张</div><span class="font-medium text-gray-900">张丽华</span></div></td>
+                <td class="px-4 py-3 text-gray-600">zhanglihua@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">普通用户</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-15</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold">李</div><span class="font-medium text-gray-900">李明</span></div></td>
+                <td class="px-4 py-3 text-gray-600">liming88@outlook.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-baam-100 text-baam-700 text-xs rounded-full">商家</span></td>
+                <td class="px-4 py-3 text-gray-600">曼哈顿中城</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-12</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-xs font-bold">王</div><span class="font-medium text-gray-900">王小红</span></div></td>
+                <td class="px-4 py-3 text-gray-600">wangxh@yahoo.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">达人</span></td>
+                <td class="px-4 py-3 text-gray-600">布鲁克林</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-10</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 text-xs font-bold">陈</div><span class="font-medium text-gray-900">陈大伟</span></div></td>
+                <td class="px-4 py-3 text-gray-600">chendawei@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">普通用户</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-08</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full font-medium">已封禁</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-green-500 rounded" title="解封"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 text-xs font-bold">刘</div><span class="font-medium text-gray-900">刘芳芳</span></div></td>
+                <td class="px-4 py-3 text-gray-600">liufangfang@qq.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-baam-100 text-baam-700 text-xs rounded-full">商家</span></td>
+                <td class="px-4 py-3 text-gray-600">埃尔姆赫斯特</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-05</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-bold">赵</div><span class="font-medium text-gray-900">赵伟强</span></div></td>
+                <td class="px-4 py-3 text-gray-600">zhaowq@163.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">编辑</span></td>
+                <td class="px-4 py-3 text-gray-600">曼哈顿唐人街</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-03-02</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 text-xs font-bold">孙</div><span class="font-medium text-gray-900">孙丽丽</span></div></td>
+                <td class="px-4 py-3 text-gray-600">sunlili@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">普通用户</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-28</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-xs font-bold">周</div><span class="font-medium text-gray-900">周建国</span></div></td>
+                <td class="px-4 py-3 text-gray-600">zhoujg@hotmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-baam-100 text-baam-700 text-xs rounded-full">商家</span></td>
+                <td class="px-4 py-3 text-gray-600">日落公园</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-25</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 text-xs font-bold">吴</div><span class="font-medium text-gray-900">吴小梅</span></div></td>
+                <td class="px-4 py-3 text-gray-600">wuxiaomei@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">达人</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-22</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 text-xs font-bold">郑</div><span class="font-medium text-gray-900">郑海涛</span></div></td>
+                <td class="px-4 py-3 text-gray-600">zhenght@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">普通用户</span></td>
+                <td class="px-4 py-3 text-gray-600">新泽西</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-20</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 text-xs font-bold">黄</div><span class="font-medium text-gray-900">黄志远</span></div></td>
+                <td class="px-4 py-3 text-gray-600">huangzy@outlook.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">管理员</span></td>
+                <td class="px-4 py-3 text-gray-600">曼哈顿中城</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-15</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-xs font-bold">林</div><span class="font-medium text-gray-900">林美玲</span></div></td>
+                <td class="px-4 py-3 text-gray-600">linmeiling@qq.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-baam-100 text-baam-700 text-xs rounded-full">商家</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-10</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 text-xs font-bold">杨</div><span class="font-medium text-gray-900">杨俊杰</span></div></td>
+                <td class="px-4 py-3 text-gray-600">yangjj@gmail.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-full">普通用户</span></td>
+                <td class="px-4 py-3 text-gray-600">皇后区</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-08</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-50 text-red-700 text-xs rounded-full font-medium">已封禁</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-green-500 rounded" title="解封"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-lime-100 flex items-center justify-center text-lime-600 text-xs font-bold">何</div><span class="font-medium text-gray-900">何秀英</span></div></td>
+                <td class="px-4 py-3 text-gray-600">hexiuying@163.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">达人</span></td>
+                <td class="px-4 py-3 text-gray-600">法拉盛</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-05</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 text-xs font-bold">马</div><span class="font-medium text-gray-900">马国强</span></div></td>
+                <td class="px-4 py-3 text-gray-600">maguoqiang@yahoo.com</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-baam-100 text-baam-700 text-xs rounded-full">商家</span></td>
+                <td class="px-4 py-3 text-gray-600">布鲁克林</td>
+                <td class="px-4 py-3 text-gray-400 text-xs">2026-02-01</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">正常</span></td>
+                <td class="px-4 py-3"><div class="flex items-center gap-1"><button class="p-1.5 text-gray-400 hover:text-blue-500 rounded" title="查看"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button><button class="p-1.5 text-gray-400 hover:text-red-500 rounded" title="封禁"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg></button><button class="p-1.5 text-gray-400 hover:text-baam-500 rounded" title="设为管理员"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+          <p class="text-xs text-gray-500">显示 1 - 15 / 共 1,247 条</p>
+          <div class="flex items-center gap-1">
+            <button class="px-3 py-1.5 text-xs text-gray-400 border border-gray-200 rounded-md" disabled>上一页</button>
+            <button class="px-3 py-1.5 text-xs bg-baam-500 text-white rounded-md">1</button>
+            <button class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50">2</button>
+            <button class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50">3</button>
+            <span class="px-2 text-gray-400">...</span>
+            <button class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50">84</button>
+            <button class="px-3 py-1.5 text-xs text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50">下一页</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../assets/js/prototype.js"></script>
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>

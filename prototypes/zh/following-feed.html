@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的关注 · Baam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-200 to-cyan-300 flex items-center justify-center text-sm">👤</div>
+          <span class="text-sm font-medium hidden sm:inline">小明在纽约</span>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">我的关注</h1>
+    <a href="voices-discover.html" class="text-sm text-baam-500 font-medium hover:underline">发现更多达人 →</a>
+  </div>
+
+  <div class="space-y-4">
+
+    <!-- Feed Card 1: Blog Post -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-lg flex-shrink-0">👩‍⚕️</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="voices-profile.html" class="text-sm font-semibold hover:text-baam-500">Dr. 李文华</a>
+            <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          </div>
+          <span class="text-xs text-gray-400">2小时前</span>
+        </div>
+        <span class="badge badge-red text-xs">博客</span>
+      </div>
+      <a href="voices-post-detail.html" class="block">
+        <h3 class="font-bold text-base mb-2 hover:text-baam-500 transition">在美国看急诊你需要知道的5件事</h3>
+        <p class="text-sm text-gray-500 line-clamp-2">从什么时候该去ER、什么时候去Urgent Care，到急诊账单如何处理、没有保险怎么办，这篇文章帮你全面了解美国急诊系统的运作方式。</p>
+      </a>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">124</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          41
+        </span>
+      </div>
+    </div>
+
+    <!-- Feed Card 2: Short Post -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-lg flex-shrink-0">🍜</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="#" class="text-sm font-semibold hover:text-baam-500">美食猎人小王</a>
+          </div>
+          <span class="text-xs text-gray-400">4小时前</span>
+        </div>
+        <span class="badge badge-primary text-xs">短帖</span>
+      </div>
+      <p class="text-sm text-gray-700 leading-relaxed">发现法拉盛新开了一家云南米线！在Roosevelt Ave上，老板是云南人，味道非常正宗。推荐小锅米线和过桥米线，汤底很浓郁。环境一般但胜在味道好价格实惠，一碗才$12。周末人多建议错峰去！</p>
+      <div class="mt-3 h-40 rounded-lg bg-gradient-to-br from-yellow-50 to-orange-50 flex items-center justify-center">
+        <span class="text-gray-300 text-sm">云南米线实拍图</span>
+      </div>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">89</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          23
+        </span>
+      </div>
+    </div>
+
+    <!-- Feed Card 3: Recommendation List -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-lg flex-shrink-0">🏠</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="#" class="text-sm font-semibold hover:text-baam-500">Kevin 陈地产</a>
+            <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          </div>
+          <span class="text-xs text-gray-400">6小时前</span>
+        </div>
+        <span class="badge badge-purple text-xs">推荐清单</span>
+      </div>
+      <a href="#" class="block">
+        <h3 class="font-bold text-base mb-2 hover:text-baam-500 transition">2026法拉盛租房必看：5家靠谱中文房产中介推荐</h3>
+        <p class="text-sm text-gray-500 line-clamp-2">作为从业10年的地产经纪，帮大家整理了法拉盛地区最靠谱的5家中文房产中介。每家都是我了解过的，附上联系方式和评价。</p>
+      </a>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">67</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          15
+        </span>
+      </div>
+    </div>
+
+    <!-- Feed Card 4: Event Share -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center text-lg flex-shrink-0">👩‍👧</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="#" class="text-sm font-semibold hover:text-baam-500">纽约妈妈Jessica</a>
+          </div>
+          <span class="text-xs text-gray-400">8小时前</span>
+        </div>
+        <span class="badge badge-green text-xs">活动分享</span>
+      </div>
+      <p class="text-sm text-gray-700 leading-relaxed mb-3">带孩子去了法拉盛图书馆的免费亲子手工课，太好了！每周六上午10点都有，不需要预约直接去就行。老师很有耐心，适合3-8岁的孩子。推荐各位妈妈带小朋友去体验一下！</p>
+      <div class="bg-green-50 border border-green-100 rounded-lg p-3 flex items-center gap-3">
+        <div class="text-2xl">🎨</div>
+        <div>
+          <p class="text-sm font-medium text-green-800">法拉盛图书馆亲子手工课</p>
+          <p class="text-xs text-green-600">每周六 10:00 AM · 免费 · 41-17 Main St</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">56</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          12
+        </span>
+      </div>
+    </div>
+
+    <!-- ==================== RECOMMENDED VOICE (after 4 items) ==================== -->
+    <div class="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-100 rounded-xl p-5">
+      <p class="text-xs text-baam-600 font-semibold mb-3">你可能感兴趣</p>
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-200 to-purple-300 flex items-center justify-center text-xl flex-shrink-0">🧠</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="text-sm font-semibold">心理师Amy刘</span>
+            <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          </div>
+          <p class="text-xs text-gray-500 mt-0.5">心理健康 · 皇后区 · 402 粉丝 · "帮助华人了解心理健康，减少stigma"</p>
+        </div>
+        <button data-follow class="bg-baam-500 text-white text-xs font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition flex-shrink-0">+ 关注</button>
+      </div>
+    </div>
+
+    <!-- Feed Card 5: Blog Post -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-lg flex-shrink-0">👩‍⚕️</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="voices-profile.html" class="text-sm font-semibold hover:text-baam-500">Dr. 李文华</a>
+            <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          </div>
+          <span class="text-xs text-gray-400">昨天</span>
+        </div>
+        <span class="badge badge-primary text-xs">短帖</span>
+      </div>
+      <p class="text-sm text-gray-700 leading-relaxed">提醒大家：流感季节已经到来！今年的流感疫苗已经更新，建议65岁以上老人和6个月以上儿童尽早接种。法拉盛大部分药房都可以walk-in打疫苗，大多数保险全额覆盖。</p>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">86</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          23
+        </span>
+      </div>
+    </div>
+
+    <!-- Feed Card 6: Short Post -->
+    <div class="card p-5">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-lg flex-shrink-0">🍜</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-1.5">
+            <a href="#" class="text-sm font-semibold hover:text-baam-500">美食猎人小王</a>
+          </div>
+          <span class="text-xs text-gray-400">2天前</span>
+        </div>
+        <span class="badge badge-blue text-xs">博客</span>
+      </div>
+      <a href="#" class="block">
+        <h3 class="font-bold text-base mb-2 hover:text-baam-500 transition">法拉盛2026春季必吃清单：10家新开餐厅测评</h3>
+        <p class="text-sm text-gray-500 line-clamp-2">过去三个月法拉盛新开了不少餐厅，我一家一家去吃了一遍，帮大家排个雷。从川菜到粤菜，从奶茶到甜品，看完这篇你就知道哪些值得去。</p>
+      </a>
+      <div class="flex items-center gap-5 mt-3 text-sm text-gray-400">
+        <button data-like class="flex items-center gap-1.5 hover:text-red-500 transition text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="like-count">203</span>
+        </button>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          52
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Load More -->
+  <div class="text-center mt-8">
+    <button class="px-8 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition">加载更多</button>
+  </div>
+
+  <!-- ==================== EMPTY STATE (hidden) ==================== -->
+  <div class="hidden mt-8">
+    <div class="text-center py-16">
+      <div class="text-5xl mb-4">📭</div>
+      <h2 class="text-xl font-bold text-gray-700 mb-2">你还没有关注任何达人</h2>
+      <p class="text-sm text-gray-400 mb-8">关注感兴趣的达人，这里将展示他们的最新动态</p>
+      <div class="max-w-md mx-auto space-y-4">
+        <h3 class="text-sm font-semibold text-gray-500">推荐达人</h3>
+        <div class="card p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-lg">👩‍⚕️</div>
+            <div class="flex-1"><span class="text-sm font-semibold">Dr. 李文华</span><p class="text-xs text-gray-400">认证医生 · 内科 · 328粉丝</p></div>
+            <button data-follow class="bg-baam-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-lg">🍜</div>
+            <div class="flex-1"><span class="text-sm font-semibold">美食猎人小王</span><p class="text-xs text-gray-400">美食达人 · 1.2K粉丝</p></div>
+            <button data-follow class="bg-baam-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+        </div>
+        <div class="card p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-lg">🏠</div>
+            <div class="flex-1"><span class="text-sm font-semibold">Kevin 陈地产</span><p class="text-xs text-gray-400">认证地产经纪 · 562粉丝</p></div>
+            <button data-follow class="bg-baam-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400 mt-12">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2025 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

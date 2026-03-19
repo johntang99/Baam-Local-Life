@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+  --color-baam-50: #FFF7ED;
+  --color-baam-100: #FFEDD5;
+  --color-baam-200: #FED7AA;
+  --color-baam-300: #FDBA74;
+  --color-baam-400: #FB923C;
+  --color-baam-500: #F97316;
+  --color-baam-600: #EA580C;
+  --color-baam-700: #C2410C;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Segoe UI', Roboto, sans-serif;
+}

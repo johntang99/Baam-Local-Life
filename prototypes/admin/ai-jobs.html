@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baam Admin · AI任务</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="flex min-h-screen">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="w-60 bg-[#1F2937] text-gray-300 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 z-40 lg:static transition-transform -translate-x-full lg:translate-x-0" id="sidebar">
+    <div class="flex items-center gap-2 px-5 py-5 border-b border-gray-700">
+      <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+      <span class="text-lg font-bold text-white">Baam Admin</span>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📊 <span>Dashboard</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📝 <span>内容管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🏪 <span>商家管理</span></a>
+      <a href="forum-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">💬 <span>论坛管理</span></a>
+      <a href="voices-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🎙️ <span>达人管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📅 <span>活动管理</span></a>
+      <a href="leads.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📥 <span>线索管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">👥 <span>用户管理</span></a>
+      <a href="ai-jobs.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-baam-500/20 text-baam-400 font-medium">🤖 <span>AI任务</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">💰 <span>广告管理</span></a>
+      <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">⚙️ <span>系统设置</span></a>
+    </nav>
+    <div class="px-5 py-4 border-t border-gray-700 text-xs text-gray-500">Baam Admin v0.1</div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <button class="lg:hidden p-2 text-gray-500 hover:text-gray-700" onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <h1 class="text-xl font-bold text-gray-900">🤖 AI任务</h1>
+      <div class="flex items-center gap-3">
+        <button class="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition">重试全部失败任务</button>
+        <div class="w-8 h-8 bg-baam-500 rounded-full flex items-center justify-center text-white text-sm font-bold">A</div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6">
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">待处理</div>
+          <div class="text-3xl font-bold text-yellow-500">12</div>
+          <div class="text-xs text-gray-400 mt-1">队列中等待执行</div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">处理中</div>
+          <div class="text-3xl font-bold text-blue-500">3</div>
+          <div class="text-xs text-gray-400 mt-1">正在执行</div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">今日完成</div>
+          <div class="text-3xl font-bold text-green-500">156</div>
+          <div class="text-xs text-green-600 mt-1">+23% vs 昨日</div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">失败</div>
+          <div class="text-3xl font-bold text-red-500">8</div>
+          <div class="text-xs text-red-600 mt-1">需要重试或人工处理</div>
+        </div>
+      </div>
+
+      <!-- Cost Dashboard -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">本周Token用量</div>
+          <div class="text-2xl font-bold text-gray-900">1,563,200</div>
+          <div class="flex items-center gap-2 mt-2">
+            <div class="flex-1 bg-gray-200 rounded-full h-2"><div class="bg-baam-500 rounded-full h-2" style="width: 62%"></div></div>
+            <span class="text-xs text-gray-500">62% 周配额</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">本周费用</div>
+          <div class="text-2xl font-bold text-gray-900">$23.45</div>
+          <div class="text-xs text-gray-400 mt-2">预算: $50.00 / 周</div>
+        </div>
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+          <div class="text-sm text-gray-500 mb-1">平均每任务</div>
+          <div class="text-2xl font-bold text-gray-900">$0.015</div>
+          <div class="text-xs text-green-600 mt-2">-8% vs 上周 (优化效果)</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white rounded-xl border border-gray-200 mb-6">
+        <div class="px-5 py-4 flex flex-wrap items-center gap-4">
+          <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 outline-none" id="filter-status">
+            <option value="">全部状态</option>
+            <option>pending</option>
+            <option>processing</option>
+            <option>completed</option>
+            <option>failed</option>
+          </select>
+          <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 outline-none" id="filter-type">
+            <option value="">全部类型</option>
+            <option>summarize</option>
+            <option>translate</option>
+            <option>tag</option>
+            <option>generate_faq</option>
+            <option>spam_check</option>
+            <option>merchant_match</option>
+          </select>
+          <input type="text" placeholder="搜索 entity_id..." class="text-sm border border-gray-300 rounded-lg px-3 py-2 w-48 outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+      </div>
+
+      <!-- DataTable -->
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+              <tr>
+                <th class="px-4 py-3">Job Type</th>
+                <th class="px-4 py-3">Entity</th>
+                <th class="px-4 py-3">Entity ID</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Model</th>
+                <th class="px-4 py-3">Tokens</th>
+                <th class="px-4 py-3">Cost</th>
+                <th class="px-4 py-3">Created</th>
+                <th class="px-4 py-3">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 font-mono text-xs">
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">summarize</span></td>
+                <td class="px-4 py-2.5 text-gray-500">article</td>
+                <td class="px-4 py-2.5 text-gray-400" title="art_2026031901">art_20260319...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">2,340</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.012</td>
+                <td class="px-4 py-2.5 text-gray-400">09:31</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">translate</span></td>
+                <td class="px-4 py-2.5 text-gray-500">article</td>
+                <td class="px-4 py-2.5 text-gray-400" title="art_2026031902">art_20260319...</td>
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">processing</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">09:30</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">tag</span></td>
+                <td class="px-4 py-2.5 text-gray-500">merchant</td>
+                <td class="px-4 py-2.5 text-gray-400" title="mer_flushing_042">mer_flushing...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">456</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.002</td>
+                <td class="px-4 py-2.5 text-gray-400">09:28</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50 bg-red-50/50">
+                <td class="px-4 py-2.5"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded">generate_faq</span></td>
+                <td class="px-4 py-2.5 text-gray-500">merchant</td>
+                <td class="px-4 py-2.5 text-gray-400" title="mer_elmhurst_015">mer_elmhurst...</td>
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">failed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">1,200</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.006</td>
+                <td class="px-4 py-2.5 text-gray-400">09:25</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-red-50 text-red-600 rounded hover:bg-red-100">重试</button><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">跳过</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded">spam_check</span></td>
+                <td class="px-4 py-2.5 text-gray-500">forum_post</td>
+                <td class="px-4 py-2.5 text-gray-400" title="post_20260319_a1">post_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">312</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.001</td>
+                <td class="px-4 py-2.5 text-gray-400">09:22</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded">merchant_match</span></td>
+                <td class="px-4 py-2.5 text-gray-500">lead</td>
+                <td class="px-4 py-2.5 text-gray-400" title="lead_20260319_01">lead_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">890</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.004</td>
+                <td class="px-4 py-2.5 text-gray-400">09:20</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">summarize</span></td>
+                <td class="px-4 py-2.5 text-gray-500">article</td>
+                <td class="px-4 py-2.5 text-gray-400" title="art_2026031803">art_20260318...</td>
+                <td class="px-4 py-2.5"><span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">pending</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">09:18</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50 bg-red-50/50">
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">translate</span></td>
+                <td class="px-4 py-2.5 text-gray-500">guide</td>
+                <td class="px-4 py-2.5 text-gray-400" title="guide_tax_2026">guide_tax_20...</td>
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">failed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">4,500</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.023</td>
+                <td class="px-4 py-2.5 text-gray-400">09:15</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-red-50 text-red-600 rounded hover:bg-red-100">重试</button><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">跳过</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded">spam_check</span></td>
+                <td class="px-4 py-2.5 text-gray-500">forum_post</td>
+                <td class="px-4 py-2.5 text-gray-400" title="post_20260319_b3">post_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">287</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.001</td>
+                <td class="px-4 py-2.5 text-gray-400">09:12</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">tag</span></td>
+                <td class="px-4 py-2.5 text-gray-500">merchant</td>
+                <td class="px-4 py-2.5 text-gray-400" title="mer_brooklyn_008">mer_brooklyn...</td>
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">processing</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">09:10</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded">generate_faq</span></td>
+                <td class="px-4 py-2.5 text-gray-500">merchant</td>
+                <td class="px-4 py-2.5 text-gray-400" title="mer_flushing_098">mer_flushing...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">3,120</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.016</td>
+                <td class="px-4 py-2.5 text-gray-400">09:05</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50 bg-red-50/50">
+                <td class="px-4 py-2.5"><span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded">merchant_match</span></td>
+                <td class="px-4 py-2.5 text-gray-500">lead</td>
+                <td class="px-4 py-2.5 text-gray-400" title="lead_20260318_15">lead_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">failed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">150</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.001</td>
+                <td class="px-4 py-2.5 text-gray-400">09:02</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-red-50 text-red-600 rounded hover:bg-red-100">重试</button><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">跳过</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded">summarize</span></td>
+                <td class="px-4 py-2.5 text-gray-500">guide</td>
+                <td class="px-4 py-2.5 text-gray-400" title="guide_rent_2026">guide_rent_2...</td>
+                <td class="px-4 py-2.5"><span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">pending</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">08:58</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded">spam_check</span></td>
+                <td class="px-4 py-2.5 text-gray-500">forum_post</td>
+                <td class="px-4 py-2.5 text-gray-400" title="post_20260318_z9">post_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">198</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.001</td>
+                <td class="px-4 py-2.5 text-gray-400">08:55</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50 bg-red-50/50">
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">translate</span></td>
+                <td class="px-4 py-2.5 text-gray-500">article</td>
+                <td class="px-4 py-2.5 text-gray-400" title="art_2026031804">art_20260318...</td>
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">failed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">3,890</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.020</td>
+                <td class="px-4 py-2.5 text-gray-400">08:50</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-red-50 text-red-600 rounded hover:bg-red-100">重试</button><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">跳过</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded">tag</span></td>
+                <td class="px-4 py-2.5 text-gray-500">article</td>
+                <td class="px-4 py-2.5 text-gray-400" title="art_2026031805">art_20260318...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">523</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.002</td>
+                <td class="px-4 py-2.5 text-gray-400">08:45</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-orange-100 text-orange-700 px-2 py-0.5 rounded">generate_faq</span></td>
+                <td class="px-4 py-2.5 text-gray-500">merchant</td>
+                <td class="px-4 py-2.5 text-gray-400" title="mer_manhattan_003">mer_manhatta...</td>
+                <td class="px-4 py-2.5"><span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">pending</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">08:40</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-teal-100 text-teal-700 px-2 py-0.5 rounded">merchant_match</span></td>
+                <td class="px-4 py-2.5 text-gray-500">lead</td>
+                <td class="px-4 py-2.5 text-gray-400" title="lead_20260318_09">lead_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">completed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">756</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.003</td>
+                <td class="px-4 py-2.5 text-gray-400">08:35</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">translate</span></td>
+                <td class="px-4 py-2.5 text-gray-500">guide</td>
+                <td class="px-4 py-2.5 text-gray-400" title="guide_visa_2026">guide_visa_2...</td>
+                <td class="px-4 py-2.5"><span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">processing</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Sonnet</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-500">--</td>
+                <td class="px-4 py-2.5 text-gray-400">08:30</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">查看</button></div></td>
+              </tr>
+              <tr class="hover:bg-gray-50 bg-red-50/50">
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded">spam_check</span></td>
+                <td class="px-4 py-2.5 text-gray-500">forum_post</td>
+                <td class="px-4 py-2.5 text-gray-400" title="post_20260318_x5">post_2026031...</td>
+                <td class="px-4 py-2.5"><span class="bg-red-100 text-red-700 px-2 py-0.5 rounded-full">failed</span></td>
+                <td class="px-4 py-2.5 text-gray-500">Haiku</td>
+                <td class="px-4 py-2.5 text-gray-500">89</td>
+                <td class="px-4 py-2.5 text-gray-500">$0.000</td>
+                <td class="px-4 py-2.5 text-gray-400">08:25</td>
+                <td class="px-4 py-2.5"><div class="flex gap-1"><button class="px-2 py-0.5 bg-red-50 text-red-600 rounded hover:bg-red-100">重试</button><button class="px-2 py-0.5 bg-gray-50 text-gray-500 rounded hover:bg-gray-100">跳过</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="px-5 py-3 border-t border-gray-200 flex items-center justify-between text-sm text-gray-500">
+          <span>显示 1-20 / 共 179 条</span>
+          <div class="flex gap-1">
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">上一页</button>
+            <button class="px-3 py-1 bg-baam-500 text-white rounded">1</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">...</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">9</button>
+            <button class="px-3 py-1 border rounded hover:bg-gray-50">下一页</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

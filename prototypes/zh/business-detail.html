@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>王氏家庭医疗中心 · Baam 商家详情</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="max-w-7xl mx-auto px-4 py-3">
+  <nav class="flex items-center gap-2 text-sm text-gray-400">
+    <a href="index.html" class="hover:text-baam-500">首页</a>
+    <span>/</span>
+    <a href="business-list.html" class="hover:text-baam-500">商家</a>
+    <span>/</span>
+    <a href="#" class="hover:text-baam-500">医疗健康</a>
+    <span>/</span>
+    <span class="text-gray-600">王氏家庭医疗中心</span>
+  </nav>
+</div>
+
+<!-- ==================== HERO / COVER IMAGE ==================== -->
+<section class="max-w-7xl mx-auto px-4">
+  <div class="relative rounded-xl overflow-hidden">
+    <!-- Cover image carousel concept -->
+    <div class="h-48 sm:h-64 lg:h-80 bg-gradient-to-br from-blue-200 via-blue-100 to-teal-100 relative">
+      <!-- Simulated carousel dots -->
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-white"></span>
+        <span class="w-2 h-2 rounded-full bg-white/50"></span>
+        <span class="w-2 h-2 rounded-full bg-white/50"></span>
+        <span class="w-2 h-2 rounded-full bg-white/50"></span>
+      </div>
+      <!-- Carousel arrows -->
+      <button class="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white shadow">
+        <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center hover:bg-white shadow">
+        <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+      <!-- Placeholder content in cover -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center text-blue-300">
+          <svg class="w-16 h-16 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <p class="text-sm opacity-40">商家图片 · 4张照片</p>
+        </div>
+      </div>
+      <!-- Bookmark & Share icons -->
+      <div class="absolute top-4 right-4 flex items-center gap-2">
+        <button class="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center hover:bg-white shadow-sm" title="收藏">
+          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+        </button>
+        <button class="w-9 h-9 bg-white/90 rounded-full flex items-center justify-center hover:bg-white shadow-sm" title="分享">
+          <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Logo overlay -->
+    <div class="absolute -bottom-10 left-6 w-20 h-20 sm:w-24 sm:h-24 rounded-xl border-4 border-white bg-gradient-to-br from-blue-400 to-blue-600 shadow-lg flex items-center justify-center">
+      <span class="text-3xl sm:text-4xl text-white font-bold">王</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BUSINESS HEADER ==================== -->
+<section class="max-w-7xl mx-auto px-4 pt-14 sm:pt-16 pb-4">
+  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+    <div>
+      <!-- Name + Verified -->
+      <div class="flex items-center gap-2 mb-2">
+        <h1 class="text-2xl sm:text-3xl font-bold">王氏家庭医疗中心</h1>
+        <svg class="w-6 h-6 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+      </div>
+      <!-- Core info row -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
+        <span class="badge badge-blue">医疗健康</span>
+        <div class="flex items-center gap-1">
+          <span class="text-yellow-500">★★★★★</span>
+          <span class="font-semibold">4.8</span>
+          <a href="#reviews" class="text-gray-400 hover:text-baam-500">(126评价)</a>
+        </div>
+        <span class="text-gray-400">·</span>
+        <span class="text-gray-500">法拉盛</span>
+        <span class="inline-flex items-center gap-1 text-green-600 bg-green-50 px-2 py-0.5 rounded-full text-xs font-medium">
+          <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+          现在营业
+        </span>
+      </div>
+      <!-- AI Recommendation Tags -->
+      <div class="flex flex-wrap gap-2 mt-3">
+        <span class="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+          中文服务
+        </span>
+        <span class="inline-flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2.5 py-1 rounded-full">周末营业</span>
+        <span class="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 px-2.5 py-1 rounded-full">接受Medicaid</span>
+        <span class="inline-flex items-center gap-1 text-xs bg-orange-50 text-orange-700 px-2.5 py-1 rounded-full">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          评价提到：耐心细致
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PRIMARY CTA BUTTON GROUP ==================== -->
+<section class="max-w-7xl mx-auto px-4 pb-4">
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <button class="flex items-center justify-center gap-2 h-11 bg-baam-500 text-white text-sm font-medium rounded-lg hover:bg-baam-600 transition">
+      <span>📞</span> 电话联系
+    </button>
+    <button class="flex items-center justify-center gap-2 h-11 bg-white border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition">
+      <span>📍</span> 获取地址
+    </button>
+    <button class="flex items-center justify-center gap-2 h-11 bg-white border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition">
+      <span>📅</span> 预约咨询
+    </button>
+    <button class="flex items-center justify-center gap-2 h-11 bg-white border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 transition">
+      <span>💬</span> 发消息
+    </button>
+  </div>
+</section>
+
+<!-- ==================== TAB NAVIGATION + CONTENT ==================== -->
+<div class="max-w-7xl mx-auto px-4 pb-12">
+  <div class="lg:flex lg:gap-8">
+
+    <!-- Main Content Column -->
+    <div class="flex-1 min-w-0">
+
+      <!-- Tab Bar -->
+      <div class="tabs sticky top-16 bg-gray-50 z-30 mb-6" data-tabs>
+        <button class="tab active" data-tab="overview">概述</button>
+        <button class="tab" data-tab="reviews">评价</button>
+        <button class="tab" data-tab="faq">FAQ</button>
+        <button class="tab" data-tab="contact">联系</button>
+      </div>
+
+      <!-- ===== OVERVIEW TAB ===== -->
+      <div data-panel="overview">
+
+        <!-- AI Description -->
+        <div class="ai-summary-card mb-6">
+          <h3 class="font-semibold text-sm text-blue-800 mb-2">关于王氏家庭医疗中心</h3>
+          <p class="text-sm text-gray-700 leading-relaxed">王氏家庭医疗中心是一家位于纽约法拉盛的综合性家庭诊所，由王医生于2010年创办。诊所提供全面的家庭医疗服务，包括内科、儿科、年度体检、疫苗接种及慢性病管理等。诊所团队均能流利使用中英文为患者服务，致力于为华人社区提供高质量、便捷的医疗保健。诊所接受大部分主流保险计划，包括Medicaid和Medicare，未投保患者也可享受优惠价格。</p>
+          <button class="mt-3 text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+            查看英文版 View in English
+          </button>
+        </div>
+
+        <!-- 服务项目 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 class="font-semibold text-base mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            服务项目
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">🩺</span>
+              <span class="text-sm font-medium">内科诊疗</span>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">👶</span>
+              <span class="text-sm font-medium">儿科</span>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">📋</span>
+              <span class="text-sm font-medium">年度体检</span>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">💉</span>
+              <span class="text-sm font-medium">疫苗接种</span>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">❤️</span>
+              <span class="text-sm font-medium">慢性病管理</span>
+            </div>
+            <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
+              <span class="text-lg">🔬</span>
+              <span class="text-sm font-medium">实验室检测</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 营业时间 -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 class="font-semibold text-base mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            营业时间
+          </h3>
+          <table class="w-full text-sm">
+            <tbody>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700 w-24">周一</td>
+                <td class="py-2.5 text-gray-600">9:00 AM - 6:00 PM</td>
+                <td class="py-2.5 text-right"><span class="text-green-600 text-xs font-medium">营业中</span></td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700">周二</td>
+                <td class="py-2.5 text-gray-600">9:00 AM - 6:00 PM</td>
+                <td></td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700">周三</td>
+                <td class="py-2.5 text-gray-600">9:00 AM - 6:00 PM</td>
+                <td></td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700">周四</td>
+                <td class="py-2.5 text-gray-600">9:00 AM - 6:00 PM</td>
+                <td></td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700">周五</td>
+                <td class="py-2.5 text-gray-600">9:00 AM - 5:00 PM</td>
+                <td></td>
+              </tr>
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 font-medium text-gray-700">周六</td>
+                <td class="py-2.5 text-gray-600">10:00 AM - 3:00 PM</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="py-2.5 font-medium text-gray-700">周日</td>
+                <td class="py-2.5 text-red-500">休息</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 语言 & 停车 -->
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <h3 class="font-semibold text-base mb-3 flex items-center gap-2">
+              <svg class="w-5 h-5 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+              语言服务
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              <span class="px-3 py-1.5 bg-blue-50 text-blue-700 text-sm rounded-lg font-medium">普通话</span>
+              <span class="px-3 py-1.5 bg-blue-50 text-blue-700 text-sm rounded-lg font-medium">粤语</span>
+              <span class="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm rounded-lg font-medium">英语</span>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <h3 class="font-semibold text-base mb-3 flex items-center gap-2">
+              <svg class="w-5 h-5 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h8m-8 4h4m4 4H4a1 1 0 01-1-1V5a1 1 0 011-1h16a1 1 0 011 1v9a1 1 0 01-1 1h-4l-4 4v-4z"/></svg>
+              停车信息
+            </h3>
+            <p class="text-sm text-gray-600 leading-relaxed">诊所门前有付费路边停车位（咪表），步行2分钟可达Municipal Parking公共停车场。就诊患者可于前台领取停车优惠券。</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== REVIEWS TAB ===== -->
+      <div data-panel="reviews" style="display:none">
+
+        <!-- Rating Distribution -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+            <!-- Overall score -->
+            <div class="text-center sm:text-left flex-shrink-0">
+              <div class="text-5xl font-bold text-gray-900">4.8</div>
+              <div class="text-yellow-500 text-lg mt-1">★★★★★</div>
+              <div class="text-sm text-gray-400 mt-1">126 条评价</div>
+            </div>
+            <!-- Distribution bars -->
+            <div class="flex-1 space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 w-8 text-right">5★</span>
+                <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:78%"></div></div>
+                <span class="text-xs text-gray-400 w-8">78%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 w-8 text-right">4★</span>
+                <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:14%"></div></div>
+                <span class="text-xs text-gray-400 w-8">14%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 w-8 text-right">3★</span>
+                <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:5%"></div></div>
+                <span class="text-xs text-gray-400 w-8">5%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 w-8 text-right">2★</span>
+                <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:2%"></div></div>
+                <span class="text-xs text-gray-400 w-8">2%</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-gray-500 w-8 text-right">1★</span>
+                <div class="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-yellow-400 rounded-full" style="width:1%"></div></div>
+                <span class="text-xs text-gray-400 w-8">1%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Review Summary -->
+        <div class="ai-summary-card mb-6">
+          <h3 class="font-semibold text-sm text-blue-800 mb-2">AI评价摘要</h3>
+          <p class="text-sm text-gray-700">用户最常提到的优点：<strong>服务态度好</strong> · <strong>等待时间短</strong> · <strong>中文沟通流畅</strong></p>
+          <p class="text-xs text-gray-500 mt-2">基于 126 条评价的智能分析 · 最近更新于 2 天前</p>
+        </div>
+
+        <!-- Individual Reviews -->
+        <div class="space-y-4 mb-6">
+
+          <!-- Review 1 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-sm font-bold text-pink-700 flex-shrink-0">陈</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">陈美玲</span>
+                  <span class="text-xs text-gray-400">2026年3月10日</span>
+                </div>
+                <div class="text-yellow-500 text-xs mt-0.5">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 leading-relaxed">王医生非常耐心，每次看诊都会详细解释病情和治疗方案。前台的工作人员也很友善，全程中文沟通没有任何障碍。预约也很方便，基本当周就能约到。强烈推荐给需要中文家庭医生的朋友！</p>
+            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                有用 (12)
+              </button>
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                回复
+              </button>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-sm font-bold text-blue-700 flex-shrink-0">张</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">张伟</span>
+                  <span class="text-xs text-gray-400">2026年2月28日</span>
+                </div>
+                <div class="text-yellow-500 text-xs mt-0.5">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 leading-relaxed">带孩子来打疫苗，整个过程很顺利。护士很有经验，小朋友几乎没有哭。诊所环境干净整洁，等候区还有儿童玩具和绘本。用的是Medicaid保险，挂号时直接刷卡就行，非常方便。</p>
+            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                有用 (8)
+              </button>
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                回复
+              </button>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center text-sm font-bold text-green-700 flex-shrink-0">李</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">李国强</span>
+                  <span class="text-xs text-gray-400">2026年2月15日</span>
+                </div>
+                <div class="text-yellow-500 text-xs mt-0.5">★★★★☆</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 leading-relaxed">整体不错，王医生看诊很仔细，会把检查结果耐心解释清楚。唯一不足的是高峰时段等候时间稍长一些，建议提前预约。诊所位置在Main St附近，交通很方便，坐7号线过来步行5分钟。</p>
+            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                有用 (5)
+              </button>
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                回复
+              </button>
+            </div>
+          </div>
+
+          <!-- Review 4 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-200 to-yellow-300 flex items-center justify-center text-sm font-bold text-yellow-700 flex-shrink-0">王</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">王小红</span>
+                  <span class="text-xs text-gray-400">2026年1月20日</span>
+                </div>
+                <div class="text-yellow-500 text-xs mt-0.5">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-sm text-gray-700 leading-relaxed">家里老人不会说英语，之前看病一直很不方便。自从找到王氏诊所，老人家终于可以自己和医生沟通了。王医生粤语也说得很好，我婆婆特别满意。年度体检做得很全面，价格也合理。</p>
+            <div class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
+                有用 (15)
+              </button>
+              <button class="flex items-center gap-1 text-xs text-gray-400 hover:text-baam-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                回复
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Write Review CTA -->
+        <div class="text-center mb-6">
+          <button class="inline-flex items-center gap-2 px-6 py-3 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            写评价
+          </button>
+          <p class="text-xs text-gray-400 mt-2">分享你的就医体验，帮助其他用户</p>
+        </div>
+
+      </div>
+
+      <!-- ===== FAQ TAB ===== -->
+      <div data-panel="faq" style="display:none">
+
+        <div class="ai-summary-card mb-6">
+          <h3 class="font-semibold text-sm text-blue-800 mb-1">AI 智能问答</h3>
+          <p class="text-xs text-gray-500">以下常见问题由 AI 根据商家信息和用户评价自动生成</p>
+        </div>
+
+        <div class="space-y-3 mb-6">
+          <!-- FAQ 1 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">这家诊所接受哪些保险？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">王氏家庭医疗中心接受大部分主流保险计划，包括：Medicaid、Medicare、United Healthcare、Aetna、Cigna、Blue Cross Blue Shield、Fidelis Care、Healthfirst 等。如果您不确定自己的保险是否被接受，建议致电诊所前台确认。未投保的患者也可以享受自费优惠价格。</p>
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">如何预约看诊？可以当天预约吗？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">您可以通过电话 (718) 555-0188 预约，也可以直接到诊所前台预约。通常提前1-2天预约即可，紧急情况下诊所也会尽量安排当天加号。建议在上午时段预约，等候时间较短。首次就诊请携带保险卡、Photo ID 及过往病历（如有）。</p>
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">诊所提供哪些语言服务？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">诊所的医疗团队可以使用普通话、粤语和英语为患者提供服务。从预约、就诊到取药的全过程均可使用中文，特别适合英语不太流利的长辈和新移民。所有医疗文件和诊断报告也可以提供中文说明。</p>
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">年度体检包括哪些项目？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">年度体检通常包括：身体检查（血压、心率、身高体重等）、血液检查（血糖、血脂、肝肾功能等）、尿液检查、心电图、视力筛查等。根据年龄和性别，医生还可能建议进行癌症筛查、骨密度测试等额外项目。大部分保险计划全额覆盖年度体检费用。</p>
+            </div>
+          </div>
+
+          <!-- FAQ 5 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">诊所附近的交通和停车方便吗？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">诊所位于法拉盛Main Street附近，从地铁7号线Flushing-Main St站步行约5分钟即可到达。多条公交线路（Q20、Q44、Q17等）也经过附近。自驾患者可使用诊所门前的咪表停车位，或步行2分钟到Municipal Parking公共停车场。就诊患者可在前台领取停车优惠券。</p>
+            </div>
+          </div>
+
+          <!-- FAQ 6 -->
+          <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <button data-accordion class="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition">
+              <span class="font-medium text-sm pr-4">新患者第一次看诊需要准备什么？</span>
+              <svg class="accordion-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="hidden px-5 pb-5">
+              <p class="text-sm text-gray-600 leading-relaxed">首次就诊请携带以下材料：有效的保险卡、带照片的身份证明（驾照或护照）、目前正在服用的药物清单、以往的病历或体检报告（如有）。建议提前15分钟到达诊所填写新患者登记表。如果您不确定需要带什么，可以提前致电诊所前台咨询。</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== CONTACT TAB ===== -->
+      <div data-panel="contact" style="display:none">
+
+        <!-- Map placeholder -->
+        <div class="bg-gray-200 rounded-xl h-64 mb-6 flex items-center justify-center relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300"></div>
+          <div class="relative text-center">
+            <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <p class="text-sm text-gray-500">地图加载中...</p>
+            <p class="text-xs text-gray-400 mt-1">136-20 Roosevelt Ave, Flushing, NY 11354</p>
+          </div>
+        </div>
+
+        <!-- Contact details -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 class="font-semibold text-base mb-4">联系方式</h3>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <div>
+                <p class="text-sm font-medium text-gray-700">地址</p>
+                <p class="text-sm text-gray-500">136-20 Roosevelt Ave, Suite 2F</p>
+                <p class="text-sm text-gray-500">Flushing, NY 11354</p>
+                <a href="#" class="text-xs text-baam-500 hover:underline mt-1 inline-block">在 Google Maps 中打开</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              <div>
+                <p class="text-sm font-medium text-gray-700">电话</p>
+                <p class="text-sm text-gray-500">(718) 555-0188</p>
+                <p class="text-xs text-gray-400">工作时间接听 · 支持中英文</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+              <div>
+                <p class="text-sm font-medium text-gray-700">网站</p>
+                <a href="#" class="text-sm text-baam-500 hover:underline">www.wangfamilymedical.com</a>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              <div>
+                <p class="text-sm font-medium text-gray-700">微信公众号</p>
+                <p class="text-sm text-gray-500">WangFamilyMed</p>
+                <p class="text-xs text-gray-400">搜索微信号添加 · 可在线咨询</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social media -->
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 class="font-semibold text-base mb-4">社交媒体</h3>
+          <div class="flex flex-wrap gap-3">
+            <a href="#" class="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition">
+              <span class="text-lg">💬</span> 微信
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg text-sm hover:bg-red-100 transition">
+              <span class="text-lg">📱</span> 小红书
+            </a>
+            <a href="#" class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition">
+              <span class="text-lg">📘</span> Facebook
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /Main Content Column -->
+
+    <!-- ==================== SIDEBAR (Desktop) / BOTTOM (Mobile) ==================== -->
+    <div class="lg:w-80 flex-shrink-0 space-y-6 mt-6 lg:mt-0">
+
+      <!-- Lead Capture Form -->
+      <div class="lead-capture" id="lead-form">
+        <h3 class="font-bold text-base mb-1">咨询这家商家</h3>
+        <p class="text-xs text-gray-500 mb-4">填写信息，商家将尽快与您联系</p>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">您的姓名 *</label>
+            <input type="text" placeholder="请输入姓名" class="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">联系电话 *</label>
+            <input type="tel" placeholder="(xxx) xxx-xxxx" class="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none bg-white">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">咨询内容</label>
+            <textarea rows="3" placeholder="请简要描述您的需求，如：想预约年度体检..." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none bg-white resize-none"></textarea>
+          </div>
+          <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition text-sm">提交咨询</button>
+          <p class="text-xs text-gray-400 text-center">提交即表示同意 <a href="#" class="text-baam-500">隐私政策</a> · 通常1个工作日内回复</p>
+        </div>
+      </div>
+
+      <!-- 相关服务 -->
+      <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 class="font-semibold text-base mb-4">相关服务</h3>
+        <div class="space-y-4">
+          <!-- Related business 1 -->
+          <div class="flex items-start gap-3">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-200 to-teal-300 flex-shrink-0 flex items-center justify-center text-lg">🦷</div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-semibold text-sm truncate">林氏牙科诊所</h4>
+              <div class="flex items-center gap-1 mt-0.5">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-400">4.7 (89评价)</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-0.5">牙科 · 法拉盛</p>
+            </div>
+            <button class="text-xs text-baam-500 border border-baam-500 px-2 py-1 rounded hover:bg-orange-50 flex-shrink-0">比较</button>
+          </div>
+          <!-- Related business 2 -->
+          <div class="flex items-start gap-3">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-200 to-indigo-300 flex-shrink-0 flex items-center justify-center text-lg">👁️</div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-semibold text-sm truncate">明视眼科中心</h4>
+              <div class="flex items-center gap-1 mt-0.5">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-400">4.5 (62评价)</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-0.5">眼科 · 法拉盛</p>
+            </div>
+            <button class="text-xs text-baam-500 border border-baam-500 px-2 py-1 rounded hover:bg-orange-50 flex-shrink-0">比较</button>
+          </div>
+          <!-- Related business 3 -->
+          <div class="flex items-start gap-3">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-rose-200 to-rose-300 flex-shrink-0 flex items-center justify-center text-lg">🏥</div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-semibold text-sm truncate">仁和家庭诊所</h4>
+              <div class="flex items-center gap-1 mt-0.5">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-400">4.6 (104评价)</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-0.5">家庭医疗 · 法拉盛</p>
+            </div>
+            <button class="text-xs text-baam-500 border border-baam-500 px-2 py-1 rounded hover:bg-orange-50 flex-shrink-0">比较</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /Sidebar -->
+
+  </div>
+</div>
+
+<!-- ==================== CROSS-MODULE LINKS ==================== -->
+<div class="max-w-7xl mx-auto px-4 pb-12 space-y-10">
+
+  <!-- 相关生活指南 -->
+  <section>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-bold flex items-center gap-2">
+        <span class="text-xl">📚</span> 相关生活指南
+      </h2>
+      <a href="guides-list.html" class="text-sm text-baam-500 font-medium hover:underline">查看全部 →</a>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <a href="guide-detail.html" class="card cursor-pointer">
+        <div class="h-36 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-3xl">🏥</div>
+        <div class="p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge badge-blue">How-To</span>
+            <span class="badge badge-gray">医疗健康</span>
+          </div>
+          <h3 class="font-semibold text-sm line-clamp-2 mb-1">如何在纽约找到靠谱的中文家庭医生</h3>
+          <p class="text-xs text-gray-400">适合：新移民 · 5分钟阅读</p>
+        </div>
+      </a>
+      <a href="guide-detail.html" class="card cursor-pointer">
+        <div class="h-36 bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center text-3xl">💊</div>
+        <div class="p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge badge-green">Checklist</span>
+            <span class="badge badge-gray">医疗健康</span>
+          </div>
+          <h3 class="font-semibold text-sm line-clamp-2 mb-1">纽约医保（Medicaid/Medicare）申请完全指南</h3>
+          <p class="text-xs text-gray-400">适合：新移民、低收入家庭 · 8分钟阅读</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 论坛提及 -->
+  <section>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-bold flex items-center gap-2">
+        <span class="text-xl">💬</span> 论坛提及
+      </h2>
+      <a href="forum-home.html" class="text-sm text-baam-500 font-medium hover:underline">进入论坛 →</a>
+    </div>
+    <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+      <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge badge-green text-xs">就医经验</span>
+          </div>
+          <h3 class="text-sm font-medium truncate">有人去过王医生诊所吗？想问一下看内科怎么样</h3>
+          <p class="text-xs text-gray-400 mt-1">AI摘要：多数评价正面，提到医生耐心、等待时间短，接受大部分保险...</p>
+        </div>
+        <div class="text-center flex-shrink-0">
+          <p class="text-sm font-bold text-baam-500">32</p>
+          <p class="text-xs text-gray-400">回复</p>
+        </div>
+      </a>
+      <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge badge-blue text-xs">问答求助</span>
+          </div>
+          <h3 class="text-sm font-medium truncate">法拉盛有接受Medicaid的中文家庭医生吗？求推荐</h3>
+          <p class="text-xs text-gray-400 mt-1">AI摘要：多位用户推荐了王氏家庭医疗中心和仁和诊所，均接受Medicaid...</p>
+        </div>
+        <div class="text-center flex-shrink-0">
+          <p class="text-sm font-bold text-baam-500">21</p>
+          <p class="text-xs text-gray-400">回复</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 达人推荐 -->
+  <section>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-bold flex items-center gap-2">
+        <span class="text-xl">🎙️</span> 达人推荐
+      </h2>
+      <a href="voices-discover.html" class="text-sm text-baam-500 font-medium hover:underline">发现更多 →</a>
+    </div>
+    <div class="max-w-md">
+      <div class="card p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex-shrink-0 flex items-center justify-center text-2xl">👩‍⚕️</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold text-sm">Dr. 李文华</h3>
+              <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <span class="text-xs text-blue-600">认证医生</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">内科 · 法拉盛 · 328 粉丝</p>
+            <p class="text-sm text-gray-600 mt-2 leading-relaxed">"王氏家庭医疗中心是我经常推荐给患者的诊所之一。王医生团队的专业水平和服务态度都很好，特别适合需要中文沟通的家庭。"</p>
+            <div class="mt-3">
+              <button data-follow class="py-1.5 px-4 bg-baam-500 text-white text-sm rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2026 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6" data-tabs>
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

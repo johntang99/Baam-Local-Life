@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商家管理 — BAAM Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { primary: '#F97316', 'primary-dark': '#EA580C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="px-5 py-5 border-b border-gray-700">
+      <span class="text-xl font-bold text-orange-400">BAAM</span>
+      <span class="text-xs text-gray-400 ml-1">Admin</span>
+    </div>
+    <nav class="py-3">
+      <a href="#" class="nav-item" data-page="dashboard">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1h-2z"/></svg>
+        Dashboard
+      </a>
+      <a href="articles.html" class="nav-item" data-page="articles">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        内容管理
+      </a>
+      <a href="businesses.html" class="nav-item active" data-page="businesses">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        商家管理
+      </a>
+      <a href="#" class="nav-item" data-page="forum">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-1"/></svg>
+        论坛管理
+      </a>
+      <a href="#" class="nav-item" data-page="creators">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        达人管理
+      </a>
+      <a href="#" class="nav-item" data-page="events">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        活动管理
+      </a>
+      <a href="#" class="nav-item" data-page="leads">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        线索管理
+      </a>
+      <a href="#" class="nav-item" data-page="users">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197"/></svg>
+        用户管理
+      </a>
+      <a href="#" class="nav-item" data-page="ai-tasks">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        AI任务
+      </a>
+      <a href="#" class="nav-item" data-page="ads">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+        广告管理
+      </a>
+      <a href="#" class="nav-item" data-page="settings">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        系统设置
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="admin-content">
+    <!-- Header Bar -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">商家管理</h1>
+        <p class="text-sm text-gray-500">管理平台商家信息、认领审核与套餐</p>
+      </div>
+      <button class="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        添加商家
+      </button>
+    </header>
+
+    <!-- Content Area -->
+    <div class="p-6">
+      <!-- Tab Navigation -->
+      <section>
+        <div class="tabs mb-5" data-tabs>
+          <div class="tab active" data-tab="all">全部商家</div>
+          <div class="tab" data-tab="claims">待审核认领 <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs bg-red-500 text-white rounded-full">3</span></div>
+          <div class="tab" data-tab="featured">Featured商家</div>
+        </div>
+
+        <!-- All Businesses Panel -->
+        <div data-panel="all">
+          <!-- Filters -->
+          <div class="bg-white border border-gray-200 rounded-lg px-4 py-3 mb-4 flex flex-wrap items-center gap-3">
+            <select class="text-sm border border-gray-300 rounded-md px-3 py-1.5 text-gray-700 bg-white">
+              <option>全部状态</option>
+              <option>营业中</option>
+              <option>暂停营业</option>
+              <option>永久关闭</option>
+            </select>
+            <select class="text-sm border border-gray-300 rounded-md px-3 py-1.5 text-gray-700 bg-white">
+              <option>全部认证</option>
+              <option>已认证</option>
+              <option>未认证</option>
+              <option>待审核</option>
+            </select>
+            <select class="text-sm border border-gray-300 rounded-md px-3 py-1.5 text-gray-700 bg-white">
+              <option>全部套餐</option>
+              <option>免费</option>
+              <option>基础版</option>
+              <option>专业版</option>
+              <option>旗舰版</option>
+            </select>
+            <select class="text-sm border border-gray-300 rounded-md px-3 py-1.5 text-gray-700 bg-white">
+              <option>全部地区</option>
+              <option>法拉盛</option>
+              <option>曼哈顿</option>
+              <option>布鲁克林</option>
+              <option>洛杉矶</option>
+              <option>旧金山</option>
+            </select>
+          </div>
+
+          <!-- Data Table -->
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>商家名称</th>
+                    <th>状态</th>
+                    <th>认证状态</th>
+                    <th>当前套餐</th>
+                    <th>地区</th>
+                    <th>评分</th>
+                    <th>评价数</th>
+                    <th>线索数</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="font-medium text-gray-900">鼎丰大酒楼</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">专业版</span></td>
+                    <td>法拉盛</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.7</td>
+                    <td>238</td>
+                    <td>45</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">金桥移民律师事务所</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">旗舰版</span></td>
+                    <td>曼哈顿</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.9</td>
+                    <td>186</td>
+                    <td>132</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">美佳地产</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">专业版</span></td>
+                    <td>法拉盛</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.5</td>
+                    <td>92</td>
+                    <td>67</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">小肥羊火锅</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="text-sm text-gray-400">未认证</span></td>
+                    <td><span class="badge badge-gray">免费</span></td>
+                    <td>法拉盛</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.3</td>
+                    <td>156</td>
+                    <td>12</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">华兴会计师事务所</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">基础版</span></td>
+                    <td>曼哈顿</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.8</td>
+                    <td>74</td>
+                    <td>89</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">东方美容养生馆</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="text-sm text-gray-400">未认证</span></td>
+                    <td><span class="badge badge-gray">免费</span></td>
+                    <td>布鲁克林</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.1</td>
+                    <td>48</td>
+                    <td>8</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">洛杉矶华人超市</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">基础版</span></td>
+                    <td>洛杉矶</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.4</td>
+                    <td>312</td>
+                    <td>23</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">福临门烘焙坊</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="text-sm text-yellow-600">待审核</span></td>
+                    <td><span class="badge badge-gray">免费</span></td>
+                    <td>法拉盛</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.6</td>
+                    <td>203</td>
+                    <td>5</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">旧金山中文学校</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">专业版</span></td>
+                    <td>旧金山</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.8</td>
+                    <td>67</td>
+                    <td>34</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">天天快递</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="text-sm text-gray-400">未认证</span></td>
+                    <td><span class="badge badge-gray">免费</span></td>
+                    <td>法拉盛</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 3.9</td>
+                    <td>124</td>
+                    <td>3</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">龙门驾校</td>
+                    <td><span class="badge" style="background:#FEF3C7;color:#92400E;">暂停营业</span></td>
+                    <td><span class="inline-flex items-center gap-1 text-blue-600 text-sm"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>已认证</span></td>
+                    <td><span class="badge badge-primary">基础版</span></td>
+                    <td>布鲁克林</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.2</td>
+                    <td>89</td>
+                    <td>15</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">康乐中医诊所</td>
+                    <td><span class="badge badge-green">营业中</span></td>
+                    <td><span class="text-sm text-yellow-600">待审核</span></td>
+                    <td><span class="badge badge-gray">免费</span></td>
+                    <td>曼哈顿</td>
+                    <td><span class="text-yellow-500">&#9733;</span> 4.6</td>
+                    <td>55</td>
+                    <td>28</td>
+                    <td><a href="#" class="text-blue-600 hover:text-blue-800 text-sm">管理</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Pagination -->
+            <div class="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
+              <p class="text-sm text-gray-500">显示 1-12 / 共 87 条</p>
+              <div class="flex gap-2">
+                <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-400 bg-white cursor-not-allowed" disabled>上一页</button>
+                <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">下一页</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Claims Panel -->
+        <div data-panel="claims" style="display:none">
+          <div class="space-y-4">
+            <!-- Claim 1 -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <div class="flex items-start justify-between">
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-lg">陈</div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">陈伟明 申请认领「福临门烘焙坊」</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                      用户邮箱：weiming.chen@gmail.com &middot; 手机：(718) 555-0123
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      提交时间：2026-03-17 14:32 &middot; 声明身份：店主
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">
+                      备注：「我是福临门烘焙坊的创始人，店铺在法拉盛缅街经营已有5年，可提供营业执照和税单作为证明。」
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-2 shrink-0 ml-4">
+                  <button class="px-4 py-2 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg transition">通过</button>
+                  <button class="px-4 py-2 text-sm font-medium border border-red-300 text-red-600 hover:bg-red-50 rounded-lg transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Claim 2 -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <div class="flex items-start justify-between">
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-lg">李</div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">李明华 申请认领「康乐中医诊所」</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                      用户邮箱：minghua.li@yahoo.com &middot; 手机：(212) 555-0456
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      提交时间：2026-03-16 09:15 &middot; 声明身份：合伙人
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">
+                      备注：「我是康乐中医诊所的联合创始人之一，在曼哈顿唐人街行医15年，已上传营业执照和医师证书。」
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-2 shrink-0 ml-4">
+                  <button class="px-4 py-2 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg transition">通过</button>
+                  <button class="px-4 py-2 text-sm font-medium border border-red-300 text-red-600 hover:bg-red-50 rounded-lg transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Claim 3 -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <div class="flex items-start justify-between">
+                <div class="flex gap-4">
+                  <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold text-lg">张</div>
+                  <div>
+                    <h3 class="font-semibold text-gray-900">张小燕 申请认领「东方美容养生馆」</h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                      用户邮箱：xiaoyan.z@outlook.com &middot; 手机：(347) 555-0789
+                    </p>
+                    <p class="text-sm text-gray-500">
+                      提交时间：2026-03-15 16:48 &middot; 声明身份：店长
+                    </p>
+                    <p class="text-sm text-gray-600 mt-2">
+                      备注：「我是东方美容养生馆的店长兼经理，负责日常运营管理。附上了我的工作证明和店面租约。」
+                    </p>
+                  </div>
+                </div>
+                <div class="flex gap-2 shrink-0 ml-4">
+                  <button class="px-4 py-2 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg transition">通过</button>
+                  <button class="px-4 py-2 text-sm font-medium border border-red-300 text-red-600 hover:bg-red-50 rounded-lg transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Panel -->
+        <div data-panel="featured" style="display:none">
+          <div class="bg-white border border-gray-200 rounded-lg p-6">
+            <p class="text-sm text-gray-500 mb-4">当前 Featured 商家会在首页和分类页优先展示。</p>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>商家名称</th>
+                    <th>套餐</th>
+                    <th>地区</th>
+                    <th>Featured开始日期</th>
+                    <th>Featured结束日期</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="font-medium text-gray-900">金桥移民律师事务所</td>
+                    <td><span class="badge badge-primary">旗舰版</span></td>
+                    <td>曼哈顿</td>
+                    <td>2026-03-01</td>
+                    <td>2026-06-01</td>
+                    <td><button class="text-red-500 hover:text-red-700 text-sm">移除</button></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">鼎丰大酒楼</td>
+                    <td><span class="badge badge-primary">专业版</span></td>
+                    <td>法拉盛</td>
+                    <td>2026-02-15</td>
+                    <td>2026-05-15</td>
+                    <td><button class="text-red-500 hover:text-red-700 text-sm">移除</button></td>
+                  </tr>
+                  <tr>
+                    <td class="font-medium text-gray-900">旧金山中文学校</td>
+                    <td><span class="badge badge-primary">专业版</span></td>
+                    <td>旧金山</td>
+                    <td>2026-03-10</td>
+                    <td>2026-06-10</td>
+                    <td><button class="text-red-500 hover:text-red-700 text-sm">移除</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="../assets/js/prototype.js"></script>
+</body>
+</html>

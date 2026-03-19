@@ -1,0 +1,46 @@
+{
+  "site": {
+    "name": "Baam",
+    "tagline": "Your Local Community Portal",
+    "description": "AI-powered local life and business growth platform"
+  },
+  "nav": {
+    "news": "News",
+    "guides": "Guides",
+    "businesses": "Businesses",
+    "events": "Events",
+    "forum": "Forum",
+    "voices": "Voices",
+    "classifieds": "Classifieds",
+    "search": "Search",
+    "login": "Log in",
+    "register": "Sign up",
+    "loginOrRegister": "Log in / Sign up",
+    "logout": "Log out",
+    "settings": "Settings",
+    "myProfile": "My Profile",
+    "myBusiness": "My Business"
+  },
+  "common": {
+    "follow": "+ Follow",
+    "following": "Following",
+    "share": "Share",
+    "bookmark": "Bookmark",
+    "like": "Like",
+    "reply": "Reply",
+    "comment": "Comment",
+    "loadMore": "Load More",
+    "submit": "Submit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "publish": "Publish",
+    "viewAll": "View All",
+    "readMore": "Read More",
+    "contact": "Contact",
+    "free": "Free",
+    "featured": "Featured",
+    "verified": "Verified",
+    "openNow": "Open Now",
+    "aiSummary": "AI Summary"
+  }
+}

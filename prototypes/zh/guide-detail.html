@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>如何在纽约找到靠谱的中文家庭医生 — Baam 生活资讯</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="max-w-7xl mx-auto px-4 py-3">
+  <nav class="flex items-center gap-1.5 text-sm text-gray-400 overflow-x-auto whitespace-nowrap">
+    <a href="index.html" class="hover:text-baam-500 transition">首页</a>
+    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <a href="guides-list.html" class="hover:text-baam-500 transition">生活资讯</a>
+    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <a href="#" class="hover:text-baam-500 transition">医疗健康</a>
+    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <span class="text-gray-600 font-medium truncate">如何在纽约找到靠谱的中文家庭医生</span>
+  </nav>
+</div>
+
+<!-- ==================== MAIN LAYOUT ==================== -->
+<div class="max-w-7xl mx-auto px-4 pb-16">
+  <div class="lg:flex lg:gap-8">
+
+    <!-- ==================== MAIN CONTENT COLUMN ==================== -->
+    <main class="flex-1 min-w-0">
+
+      <!-- ===== TITLE + METADATA ===== -->
+      <header class="mb-6">
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span class="badge badge-blue">How-To</span>
+          <span class="badge badge-gray">医疗健康</span>
+          <span class="text-xs text-gray-400">|</span>
+          <span class="text-xs text-gray-500">新移民 · 家庭</span>
+          <span class="text-xs text-gray-400">|</span>
+          <span class="text-xs text-gray-500 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            法拉盛
+          </span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-bold leading-tight mb-3">如何在纽约找到靠谱的中文家庭医生</h1>
+        <div class="flex flex-wrap items-center gap-3 text-xs text-gray-400">
+          <span>约 8 分钟阅读</span>
+          <span>·</span>
+          <span>12,486 次阅读</span>
+          <span>·</span>
+          <span>最后更新 2025-03-15</span>
+        </div>
+      </header>
+
+      <!-- ===== AI SUMMARY CARD ===== -->
+      <div class="mb-8">
+        <div id="ai-summary" class="relative bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center gap-1 bg-blue-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                AI摘要
+              </span>
+              <span class="text-xs text-blue-400">由 Baam AI 自动生成</span>
+            </div>
+            <button onclick="document.getElementById('ai-summary-body').classList.toggle('hidden');this.querySelector('svg').classList.toggle('rotate-180')" class="text-blue-400 hover:text-blue-600 p-1">
+              <svg class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+            </button>
+          </div>
+          <div id="ai-summary-body" class="text-sm text-blue-900 leading-relaxed space-y-1">
+            <p>在纽约找中文家庭医生，首先要确认医生是否接受你的保险（如Medicaid/Medicare或商业保险），可以通过保险公司官网的Provider Directory或Zocdoc等平台按语言筛选。</p>
+            <p>法拉盛、艾姆赫斯特和布鲁克林八大道是中文医疗资源最集中的区域，拥有大量持牌华人内科/家庭医生。</p>
+            <p>建议首次就诊前打电话确认是否接受新病人、是否提供普通话/粤语服务，并了解诊所的营业时间和急诊安排。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== MOBILE TABLE OF CONTENTS ===== -->
+      <div class="lg:hidden mb-8">
+        <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <button onclick="document.getElementById('mobile-toc').classList.toggle('hidden');this.querySelector('.toc-chevron').classList.toggle('rotate-180')" class="w-full flex items-center justify-between p-4 text-sm font-semibold text-gray-700">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+              目录
+            </span>
+            <svg class="w-4 h-4 text-gray-400 toc-chevron transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <nav id="mobile-toc" class="hidden border-t border-gray-100 px-4 pb-4 pt-2">
+            <ol class="space-y-2 text-sm text-gray-600">
+              <li><a href="#step-1" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">1</span>了解美国家庭医生制度</a></li>
+              <li><a href="#step-2" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">2</span>确认你的保险覆盖范围</a></li>
+              <li><a href="#step-3" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">3</span>利用在线工具搜索中文医生</a></li>
+              <li><a href="#step-4" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">4</span>实地考察与首次预约</a></li>
+              <li><a href="#step-5" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">5</span>首次就诊需要准备什么</a></li>
+              <li><a href="#step-6" class="flex items-center gap-2 hover:text-baam-500 py-1"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">6</span>建立长期医患关系的技巧</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+
+      <!-- ===== MAIN HOW-TO CONTENT ===== -->
+      <article class="bg-white border border-gray-200 rounded-xl p-5 sm:p-8 mb-8">
+
+        <p class="text-gray-600 leading-relaxed mb-6">对于刚到纽约的华人来说，找到一位说中文、靠谱、还接受你保险的家庭医生可能是最让人头疼的事之一。美国的医疗系统和国内完全不同——你不能直接去医院挂号看专科，大部分情况下需要先看家庭医生（Primary Care Physician，简称PCP），再由PCP转介到专科医生。本指南将手把手教你如何在纽约高效找到适合自己的中文家庭医生。</p>
+
+        <!-- Step 1 -->
+        <section id="step-1" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+            <h2 class="text-xl font-bold">了解美国家庭医生制度</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">在美国，家庭医生（Family Medicine Doctor 或 Internal Medicine Doctor）是你的"健康守门人"。无论是感冒发烧、慢性病管理、还是年度体检，都应该先找PCP。</p>
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-3">
+              <p class="text-sm text-amber-800 font-medium mb-1">为什么需要家庭医生？</p>
+              <ul class="text-sm text-amber-700 space-y-1">
+                <li>- 大部分保险（HMO类型）要求必须有PCP才能转介看专科</li>
+                <li>- PCP负责管理你的完整病历，避免重复检查</li>
+                <li>- 年度体检（Annual Physical）通常保险全额覆盖</li>
+                <li>- 有固定PCP的患者，急诊使用率降低40%以上</li>
+              </ul>
+            </div>
+            <p class="text-gray-600 leading-relaxed">家庭医生分为两种：Family Medicine（家庭医学科）看所有年龄段，Internal Medicine（内科）主要看成人。如果你家有小孩，建议选Family Medicine的医生，全家可以看同一位。</p>
+          </div>
+        </section>
+
+        <!-- Step 2 -->
+        <section id="step-2" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <h2 class="text-xl font-bold">确认你的保险覆盖范围</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">找医生之前，首先要弄清楚你的保险类型。这决定了你能看哪些医生、copay是多少。</p>
+            <div class="overflow-x-auto mb-4">
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr class="bg-gray-50">
+                    <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">保险类型</th>
+                    <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">选医生限制</th>
+                    <th class="border border-gray-200 px-3 py-2 text-left font-semibold text-gray-700">是否需要转介</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">Medicaid</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">需选择 in-network 医生</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">通常需要</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">Medicare</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">较灵活，大部分医生接受</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">不一定</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">雇主商业保险 (HMO)</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">必须选 in-network</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">必须</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">雇主商业保险 (PPO)</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">out-of-network 也可以但更贵</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">不需要</td>
+                  </tr>
+                  <tr>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">NY State of Health (白卡)</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">需选计划内医生</td>
+                    <td class="border border-gray-200 px-3 py-2 text-gray-600">通常需要</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p class="text-sm text-blue-800"><strong>小贴士：</strong>如果你刚到美国还没有保险，可以通过 NY State of Health（nystateofhealth.ny.gov）申请免费或低价的健康保险。收入在一定范围内的居民可以获得 Medicaid（俗称"白卡"），看病几乎免费。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 3 -->
+        <section id="step-3" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <h2 class="text-xl font-bold">利用在线工具搜索中文医生</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">以下是纽约华人最常用的几个找医生渠道：</p>
+            <div class="space-y-3 mb-4">
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="font-semibold text-sm text-gray-800 mb-1">Zocdoc.com</p>
+                <p class="text-sm text-gray-600">美国最大的在线预约平台。可以按语言（Chinese/Mandarin）、保险类型、地区筛选。支持在线预约，可以看到其他病人的评价。强烈推荐作为首选工具。</p>
+              </div>
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="font-semibold text-sm text-gray-800 mb-1">保险公司 Provider Directory</p>
+                <p class="text-sm text-gray-600">登录你的保险公司官网，在"Find a Doctor"页面按语言筛选"Chinese"或"Mandarin"。这是最准确的方式，因为能保证医生在你的保险网络内。</p>
+              </div>
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="font-semibold text-sm text-gray-800 mb-1">Baam 商家目录</p>
+                <p class="text-sm text-gray-600">我们的商家目录收录了纽约地区经过验证的中文医疗服务商家，包含用户真实评价和 AI 智能标签，帮你快速筛选。</p>
+              </div>
+              <div class="bg-white border border-gray-200 rounded-lg p-4">
+                <p class="font-semibold text-sm text-gray-800 mb-1">社区推荐</p>
+                <p class="text-sm text-gray-600">在 Baam 论坛、微信群（如"法拉盛妈妈群"）中询问。真实用户的口碑往往是最可靠的。华人社区里好医生通常口口相传。</p>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed"><strong>推荐搜索区域：</strong>法拉盛（Flushing）Main Street 及 Roosevelt Ave 沿线是中文医疗资源最密集的区域；艾姆赫斯特（Elmhurst）Broadway 一带也有不少华人诊所；布鲁克林八大道（8th Ave, Sunset Park）是另一个华人医疗集中区。</p>
+          </div>
+        </section>
+
+        <!-- Step 4 -->
+        <section id="step-4" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+            <h2 class="text-xl font-bold">实地考察与首次预约</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">找到几个候选医生后，建议打电话或亲自去诊所了解一下。以下是你应该问的关键问题：</p>
+            <ul class="space-y-2 mb-4">
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"请问你们接受 [你的保险名称] 吗？"</span>
+              </li>
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"医生会说普通话/粤语吗？前台呢？"</span>
+              </li>
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"现在还接受新病人吗？"</span>
+              </li>
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"周末或晚间有门诊吗？"</span>
+              </li>
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"最早什么时候可以预约？"（好的诊所可能需要等1-2周）</span>
+              </li>
+              <li class="flex items-start gap-2 text-gray-600">
+                <svg class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>"有没有在线Patient Portal可以查看化验结果？"</span>
+              </li>
+            </ul>
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <p class="text-sm text-red-800"><strong>注意：</strong>一些诊所虽然名字是中文，但医生可能只说粤语不说普通话，或者反过来。打电话时一定要确认你需要的具体语言。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Step 5 -->
+        <section id="step-5" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">5</div>
+            <h2 class="text-xl font-bold">首次就诊需要准备什么</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">第一次看新医生，请带好以下材料：</p>
+            <div class="grid sm:grid-cols-2 gap-3 mb-4">
+              <div class="bg-gray-50 rounded-lg p-3">
+                <p class="text-sm font-semibold text-gray-800 mb-1">必须携带</p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>- 保险卡（正反面）</li>
+                  <li>- 带照片的身份证件</li>
+                  <li>- 正在服用的药物清单</li>
+                  <li>- 过敏史</li>
+                </ul>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-3">
+                <p class="text-sm font-semibold text-gray-800 mb-1">建议携带</p>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>- 国内的体检报告（如有）</li>
+                  <li>- 疫苗接种记录</li>
+                  <li>- 家族病史记录</li>
+                  <li>- 想问医生的问题清单</li>
+                </ul>
+              </div>
+            </div>
+            <p class="text-gray-600 leading-relaxed">建议提前15-20分钟到达，因为新病人需要填写较多表格（patient intake forms）。很多华人诊所提供中文表格，但也有些只有英文版。如果英文不熟练，可以带一位能帮忙翻译的家人朋友。</p>
+          </div>
+        </section>
+
+        <!-- Step 6 -->
+        <section id="step-6" class="mb-10 scroll-mt-24">
+          <div class="flex items-start gap-3 mb-4">
+            <div class="w-8 h-8 rounded-full bg-baam-500 text-white text-sm font-bold flex items-center justify-center flex-shrink-0 mt-0.5">6</div>
+            <h2 class="text-xl font-bold">建立长期医患关系的技巧</h2>
+          </div>
+          <div class="pl-11">
+            <p class="text-gray-600 leading-relaxed mb-3">找到医生只是第一步，建立长期稳定的医患关系同样重要。以下是一些实用建议：</p>
+            <ul class="space-y-2 mb-4 text-gray-600">
+              <li class="flex items-start gap-2">
+                <span class="text-baam-500 font-bold flex-shrink-0">01</span>
+                <span><strong>按时做年度体检。</strong>大部分保险每年覆盖一次免费体检（Annual Physical），包括血常规、血脂、血糖等基本检查。不要浪费这个权利。</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-baam-500 font-bold flex-shrink-0">02</span>
+                <span><strong>主动沟通。</strong>美国医生很重视患者的主诉。不要觉得不好意思开口，有什么症状或担忧都直接告诉医生。</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-baam-500 font-bold flex-shrink-0">03</span>
+                <span><strong>使用Patient Portal。</strong>大部分诊所都有在线系统，可以查化验结果、发消息给医生、管理预约。注册后使用起来非常方便。</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-baam-500 font-bold flex-shrink-0">04</span>
+                <span><strong>保留好所有医疗文件。</strong>每次看诊的记录（After Visit Summary）都留好，转介信、化验单等也要保存。万一换医生时需要提供历史记录。</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-baam-500 font-bold flex-shrink-0">05</span>
+                <span><strong>不满意就换。</strong>如果你对医生的服务不满意、沟通不畅、或者等待时间太长，完全可以换一位。你有权选择适合自己的医生。</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+      </article>
+
+      <!-- ===== FAQ SECTION ===== -->
+      <section class="bg-white border border-gray-200 rounded-xl mb-8 overflow-hidden">
+        <div class="p-5 sm:p-8">
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            常见问题
+          </h2>
+          <div class="divide-y divide-gray-100">
+            <!-- FAQ 1 -->
+            <div>
+              <button data-accordion class="w-full flex items-center justify-between py-4 text-left text-sm font-medium text-gray-800 hover:text-baam-500 transition">
+                <span>没有保险可以看中文家庭医生吗？</span>
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0 accordion-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="hidden pb-4">
+                <p class="text-sm text-gray-600 leading-relaxed">可以，但费用会比较高。自费看一次家庭医生通常在 $150-$300 之间。建议先申请 NY State of Health 的保险计划，低收入者可以获得 Medicaid（白卡），看病几乎免费。另外，法拉盛的一些社区健康中心（如 Charles B. Wang Community Health Center）提供按收入计费的服务，即使没有保险也可以以较低的价格看病。</p>
+              </div>
+            </div>
+            <!-- FAQ 2 -->
+            <div>
+              <button data-accordion class="w-full flex items-center justify-between py-4 text-left text-sm font-medium text-gray-800 hover:text-baam-500 transition">
+                <span>Family Medicine 和 Internal Medicine 有什么区别？该选哪个？</span>
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0 accordion-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="hidden pb-4">
+                <p class="text-sm text-gray-600 leading-relaxed">Family Medicine（家庭医学）可以看所有年龄段的患者，包括儿童和老人；Internal Medicine（内科）主要看18岁以上的成人。如果你有小孩也需要看同一位医生，选 Family Medicine；如果只是成人看病，两者都可以。很多华人医生同时拥有两个专科的 Board Certification。</p>
+              </div>
+            </div>
+            <!-- FAQ 3 -->
+            <div>
+              <button data-accordion class="w-full flex items-center justify-between py-4 text-left text-sm font-medium text-gray-800 hover:text-baam-500 transition">
+                <span>看医生的 copay 一般是多少？</span>
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0 accordion-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="hidden pb-4">
+                <p class="text-sm text-gray-600 leading-relaxed">Copay 取决于你的保险计划。Medicaid 通常没有 copay 或非常低（$0-$5）；商业保险的 PCP copay 通常在 $15-$40 之间；专科医生的 copay 更高一些，通常 $30-$75。年度体检（Annual Physical / Preventive Visit）大部分保险是完全免费的，不收 copay。</p>
+              </div>
+            </div>
+            <!-- FAQ 4 -->
+            <div>
+              <button data-accordion class="w-full flex items-center justify-between py-4 text-left text-sm font-medium text-gray-800 hover:text-baam-500 transition">
+                <span>法拉盛以外的区域也有中文医生吗？</span>
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0 accordion-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="hidden pb-4">
+                <p class="text-sm text-gray-600 leading-relaxed">当然有。除了法拉盛，布鲁克林八大道（Sunset Park）有大量中文医疗服务；曼哈顿华埠（Chinatown）的 Charles B. Wang Community Health Center 是纽约最大的华人社区健康中心；艾姆赫斯特（Elmhurst）和新鲜草原（Fresh Meadows）也有不少华人诊所。如果你住在新泽西，Fort Lee 和 Edison 地区也有中文医生。</p>
+              </div>
+            </div>
+            <!-- FAQ 5 -->
+            <div>
+              <button data-accordion class="w-full flex items-center justify-between py-4 text-left text-sm font-medium text-gray-800 hover:text-baam-500 transition">
+                <span>如果不满意当前医生，换医生的流程复杂吗？</span>
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0 accordion-icon transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="hidden pb-4">
+                <p class="text-sm text-gray-600 leading-relaxed">不复杂。你只需要选定新的医生并预约首次就诊即可。如果是 HMO 保险，可能需要登录保险公司网站或打电话更改你的 PCP 选择。建议在换医生前，要求原诊所将你的病历（Medical Records）转到新诊所，通常填一张 Release of Information 授权表格就行。整个过程一般 1-2 周可以完成。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BUSINESS RECOMMENDATION (MONETIZATION) ===== -->
+      <section class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold flex items-center gap-2">
+            <span class="text-xl">🏥</span> 相关医疗服务商家
+          </h2>
+          <a href="business-list.html" class="text-sm text-baam-500 font-medium hover:underline">查看更多 ></a>
+        </div>
+        <div class="space-y-3">
+
+          <!-- Featured Business Card -->
+          <div class="card card-featured p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-xl">🏥</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-semibold text-base truncate">王氏家庭医疗中心</h3>
+                  <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">136-20 Roosevelt Ave, Flushing, NY 11354</p>
+                <div class="flex items-center gap-1 mb-2">
+                  <span class="text-yellow-500 text-xs">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                  <span class="text-xs text-gray-400">4.8 (126评价)</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                  <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+                  <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+                  <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">接受Medicaid</span>
+                  <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">接受新病人</span>
+                </div>
+                <button class="bg-baam-500 text-white text-sm font-medium px-5 py-2 rounded-lg hover:bg-baam-600 transition">联系咨询</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Card 2 -->
+          <div class="card p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-xl">🩺</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-semibold text-base truncate">陈医生内科诊所</h3>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">41-60 Main St, Suite 311, Flushing, NY 11355</p>
+                <div class="flex items-center gap-1 mb-2">
+                  <span class="text-yellow-500 text-xs">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                  <span class="text-xs text-gray-400">4.5 (83评价)</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                  <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+                  <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">接受Medicare</span>
+                  <span class="text-xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full">粤语/普通话</span>
+                </div>
+                <button class="bg-white border border-baam-500 text-baam-500 text-sm font-medium px-5 py-2 rounded-lg hover:bg-baam-50 transition">联系咨询</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Business Card 3 -->
+          <div class="card p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-teal-200 to-teal-300 flex-shrink-0 flex items-center justify-center text-xl">🏨</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-semibold text-base truncate">华康社区健康中心</h3>
+                </div>
+                <p class="text-xs text-gray-500 mb-2">86-10 Broadway, Elmhurst, NY 11373</p>
+                <div class="flex items-center gap-1 mb-2">
+                  <span class="text-yellow-500 text-xs">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                  <span class="text-xs text-gray-400">4.7 (204评价)</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5 mb-3">
+                  <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+                  <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+                  <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">接受Medicaid</span>
+                  <span class="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">按收入计费</span>
+                </div>
+                <button class="bg-white border border-baam-500 text-baam-500 text-sm font-medium px-5 py-2 rounded-lg hover:bg-baam-50 transition">联系咨询</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===== LEAD CAPTURE FORM ===== -->
+      <section class="mb-8">
+        <div class="bg-gradient-to-br from-baam-500 to-orange-600 rounded-xl p-6 sm:p-8 text-white">
+          <div class="max-w-lg">
+            <h2 class="text-xl sm:text-2xl font-bold mb-2">告诉我们你的需求，为你匹配医生</h2>
+            <p class="text-orange-100 text-sm mb-6">填写以下信息，我们的团队将在24小时内为你推荐最合适的中文家庭医生。</p>
+          </div>
+          <form class="grid sm:grid-cols-2 gap-4" onsubmit="event.preventDefault(); showToast('需求已提交！我们将在24小时内联系你。', 'success');">
+            <div>
+              <label class="block text-sm font-medium text-orange-100 mb-1">姓名 *</label>
+              <input type="text" placeholder="你的姓名" required class="w-full h-11 px-4 rounded-lg text-gray-900 text-sm border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-gray-400">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-orange-100 mb-1">联系电话 *</label>
+              <input type="tel" placeholder="(xxx) xxx-xxxx" required class="w-full h-11 px-4 rounded-lg text-gray-900 text-sm border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-gray-400">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-orange-100 mb-1">需求描述</label>
+              <textarea rows="3" placeholder="例如：我住在法拉盛，需要一位接受 Medicaid、会说普通话的家庭医生，最好周末有门诊..." class="w-full px-4 py-3 rounded-lg text-gray-900 text-sm border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-gray-400 resize-none"></textarea>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-sm font-medium text-orange-100 mb-2">偏好联系方式</label>
+              <div class="flex flex-wrap gap-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="contact_method" value="phone" checked class="text-orange-300 focus:ring-orange-300">
+                  <span class="text-sm">电话</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="contact_method" value="wechat" class="text-orange-300 focus:ring-orange-300">
+                  <span class="text-sm">微信</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="contact_method" value="email" class="text-orange-300 focus:ring-orange-300">
+                  <span class="text-sm">邮箱</span>
+                </label>
+              </div>
+            </div>
+            <div class="sm:col-span-2">
+              <button type="submit" class="w-full sm:w-auto bg-white text-baam-600 font-bold text-sm px-8 py-3 rounded-lg hover:bg-orange-50 transition shadow-lg">提交需求</button>
+              <p class="text-xs text-orange-200 mt-2">你的信息安全受到保护，仅用于匹配服务</p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===== CROSS-MODULE LINKS ===== -->
+      <!-- Forum Threads -->
+      <section class="mb-8">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <span class="text-xl">💬</span> 其他人的真实经验
+        </h2>
+        <div class="bg-white border border-gray-200 rounded-xl divide-y divide-gray-100 overflow-hidden">
+          <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-medium truncate mb-1">有人去过王医生诊所吗？想问一下看内科怎么样</h3>
+              <p class="text-xs text-gray-400">AI摘要：多数评价正面，提到医生耐心、等待时间短，接受大部分保险。有人提到周六排队稍长...</p>
+            </div>
+            <div class="text-center flex-shrink-0">
+              <p class="text-sm font-bold text-baam-500">32</p>
+              <p class="text-xs text-gray-400">回复</p>
+            </div>
+          </a>
+          <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-medium truncate mb-1">法拉盛哪家诊所体检比较靠谱？想做 annual physical</h3>
+              <p class="text-xs text-gray-400">AI摘要：推荐了3家诊所，讨论了体检项目和保险覆盖范围，多人建议提前预约...</p>
+            </div>
+            <div class="text-center flex-shrink-0">
+              <p class="text-sm font-bold text-baam-500">45</p>
+              <p class="text-xs text-gray-400">回复</p>
+            </div>
+          </a>
+          <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+            <div class="flex-1 min-w-0">
+              <h3 class="text-sm font-medium truncate mb-1">白卡换了计划后原来的医生不接受了怎么办？</h3>
+              <p class="text-xs text-gray-400">AI摘要：建议先确认保险网络，可以打保险热线要求中文客服帮忙查找新的in-network医生...</p>
+            </div>
+            <div class="text-center flex-shrink-0">
+              <p class="text-sm font-bold text-baam-500">28</p>
+              <p class="text-xs text-gray-400">回复</p>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Related News -->
+      <section class="mb-8">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <span class="text-xl">📰</span> 相关新闻
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <a href="#" class="card p-4 cursor-pointer">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-blue">政策</span>
+              <span class="text-xs text-gray-400">2025-03-10</span>
+            </div>
+            <h3 class="text-sm font-semibold mb-1 line-clamp-2">纽约州扩大 Medicaid 覆盖范围，更多低收入移民将获免费医疗</h3>
+            <p class="text-xs text-gray-500 line-clamp-2">新政策预计4月生效，将惠及约15万尚未获得医保覆盖的移民群体。社区健康中心已开始提供申请协助。</p>
+          </a>
+          <a href="#" class="card p-4 cursor-pointer">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="badge badge-primary">社区</span>
+              <span class="text-xs text-gray-400">2025-03-08</span>
+            </div>
+            <h3 class="text-sm font-semibold mb-1 line-clamp-2">华社健康中心法拉盛分部扩建完成，新增5位中文医生和儿科服务</h3>
+            <p class="text-xs text-gray-500 line-clamp-2">扩建后诊所面积翻倍，新增心理健康咨询和营养师服务，每日可接诊量从120人增至200人。</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Related Voices -->
+      <section class="mb-8">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <span class="text-xl">🎙️</span> 相关达人
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="card p-5 flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex-shrink-0 flex items-center justify-center text-xl">👩‍⚕️</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h3 class="font-semibold text-sm">Dr. 李文华</h3>
+                <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              </div>
+              <p class="text-xs text-gray-400">认证医生 · 内科 · 328 粉丝</p>
+              <p class="text-xs text-gray-500 mt-1 line-clamp-1">分享健康知识和就医经验</p>
+            </div>
+            <button data-follow class="flex-shrink-0 bg-baam-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+          <div class="card p-5 flex items-center gap-4">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-xl">👩‍👧</div>
+            <div class="flex-1 min-w-0">
+              <h3 class="font-semibold text-sm">纽约妈妈Jessica</h3>
+              <p class="text-xs text-gray-400">家庭博主 · 法拉盛 · 876 粉丝</p>
+              <p class="text-xs text-gray-500 mt-1 line-clamp-1">分享带娃看病经验和学区选择</p>
+            </div>
+            <button data-follow class="flex-shrink-0 bg-baam-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AI ASSISTANT SUGGESTED QUESTIONS ===== -->
+      <section class="mb-8">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5 sm:p-6">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+            </div>
+            <p class="text-sm font-semibold text-blue-900">你也可以问小邻：</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button class="text-sm bg-white border border-blue-200 text-blue-700 px-4 py-2 rounded-full hover:bg-blue-100 hover:border-blue-300 transition">法拉盛哪些诊所周六有门诊？</button>
+            <button class="text-sm bg-white border border-blue-200 text-blue-700 px-4 py-2 rounded-full hover:bg-blue-100 hover:border-blue-300 transition">白卡怎么申请？需要什么材料？</button>
+            <button class="text-sm bg-white border border-blue-200 text-blue-700 px-4 py-2 rounded-full hover:bg-blue-100 hover:border-blue-300 transition">纽约哪里可以看中文牙医？</button>
+            <button class="text-sm bg-white border border-blue-200 text-blue-700 px-4 py-2 rounded-full hover:bg-blue-100 hover:border-blue-300 transition">体检一般包括哪些项目？</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== UPDATE TIMESTAMP + SHARE ===== -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 py-4 border-t border-gray-200">
+        <div class="flex items-center gap-2 text-xs text-gray-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>内容最后由编辑审核于 2025-03-15</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-400 mr-1">分享：</span>
+          <button onclick="showToast('已生成微信分享二维码', 'info')" class="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm3.2 4.985c-4.039 0-7.317 2.775-7.317 6.2 0 3.424 3.278 6.199 7.317 6.199.825 0 1.62-.12 2.367-.337a.723.723 0 01.599.082l1.588.929a.272.272 0 00.139.045c.133 0 .241-.11.241-.246 0-.06-.023-.118-.038-.177l-.326-1.233a.496.496 0 01.178-.556C21.048 20.578 22.112 18.756 22.112 17.175c0-3.425-3.278-6.2-7.314-6.2zm-2.503 3.39c.536 0 .97.44.97.985a.978.978 0 01-.97.984.978.978 0 01-.97-.984c0-.545.434-.984.97-.984zm5.006 0c.536 0 .97.44.97.985a.978.978 0 01-.97.984.978.978 0 01-.97-.984c0-.545.434-.984.97-.984z"/></svg>
+            微信
+          </button>
+          <button onclick="showToast('正在跳转到 Facebook 分享', 'info')" class="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </button>
+          <button onclick="navigator.clipboard.writeText(window.location.href); showToast('链接已复制到剪贴板', 'success')" class="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full hover:bg-gray-200 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            复制链接
+          </button>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- ==================== DESKTOP SIDEBAR (TOC) ==================== -->
+    <aside class="hidden lg:block w-72 flex-shrink-0">
+      <div class="sticky top-24">
+        <!-- Table of Contents -->
+        <div class="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+          <h3 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            本文目录
+          </h3>
+          <nav>
+            <ol class="space-y-1.5 text-sm">
+              <li><a href="#step-1" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">1</span>了解美国家庭医生制度</a></li>
+              <li><a href="#step-2" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">2</span>确认你的保险覆盖范围</a></li>
+              <li><a href="#step-3" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">3</span>利用在线工具搜索中文医生</a></li>
+              <li><a href="#step-4" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">4</span>实地考察与首次预约</a></li>
+              <li><a href="#step-5" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">5</span>首次就诊需要准备什么</a></li>
+              <li><a href="#step-6" class="flex items-center gap-2 text-gray-600 hover:text-baam-500 py-1 transition"><span class="w-5 h-5 rounded-full bg-baam-100 text-baam-600 text-xs flex items-center justify-center font-bold flex-shrink-0">6</span>建立长期医患关系的技巧</a></li>
+            </ol>
+          </nav>
+        </div>
+
+        <!-- Sidebar CTA -->
+        <div class="bg-gradient-to-br from-baam-50 to-orange-50 border border-baam-200 rounded-xl p-5">
+          <p class="text-sm font-bold text-gray-800 mb-2">需要帮忙找医生？</p>
+          <p class="text-xs text-gray-500 mb-3">提交你的需求，我们免费为你匹配合适的中文家庭医生。</p>
+          <a href="#lead-form" class="block text-center bg-baam-500 text-white text-sm font-medium py-2.5 rounded-lg hover:bg-baam-600 transition">提交匹配需求</a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2025 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6">
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

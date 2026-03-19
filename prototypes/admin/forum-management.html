@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baam Admin · 论坛管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    .drag-handle { cursor: grab; }
+    .drag-handle:active { cursor: grabbing; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="flex min-h-screen">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="w-60 bg-[#1F2937] text-gray-300 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 z-40 lg:static transition-transform -translate-x-full lg:translate-x-0" id="sidebar">
+    <div class="flex items-center gap-2 px-5 py-5 border-b border-gray-700">
+      <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+      <span class="text-lg font-bold text-white">Baam Admin</span>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📊 <span>Dashboard</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📝 <span>内容管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🏪 <span>商家管理</span></a>
+      <a href="forum-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-baam-500/20 text-baam-400 font-medium">💬 <span>论坛管理</span></a>
+      <a href="voices-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🎙️ <span>达人管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📅 <span>活动管理</span></a>
+      <a href="leads.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📥 <span>线索管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">👥 <span>用户管理</span></a>
+      <a href="ai-jobs.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🤖 <span>AI任务</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">💰 <span>广告管理</span></a>
+      <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">⚙️ <span>系统设置</span></a>
+    </nav>
+    <div class="px-5 py-4 border-t border-gray-700 text-xs text-gray-500">Baam Admin v0.1</div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Top bar -->
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <button class="lg:hidden p-2 text-gray-500 hover:text-gray-700" onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <h1 class="text-xl font-bold text-gray-900">💬 论坛管理</h1>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-500">管理员</span>
+        <div class="w-8 h-8 bg-baam-500 rounded-full flex items-center justify-center text-white text-sm font-bold">A</div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6">
+      <!-- Tabs -->
+      <div class="border-b border-gray-200 mb-6">
+        <nav class="flex gap-6 -mb-px" id="forum-tabs">
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-baam-500 text-baam-600" data-tab="review">审核队列<span class="ml-1.5 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">5</span></button>
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="posts">帖子管理</button>
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="boards">版块管理</button>
+        </nav>
+      </div>
+
+      <!-- Tab: 审核队列 -->
+      <div id="tab-review" class="tab-content">
+        <div class="space-y-4">
+          <!-- Flagged Item 1 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">Spam 92%</span>
+                  <span class="text-xs text-gray-400">2026-03-19 09:12</span>
+                  <span class="text-xs text-gray-500">版块: 租房信息</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">🔥最新优惠！！法拉盛豪华公寓仅需$800/月 加微信领取独家折扣！！！</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">各位朋友大家好！我们公司最新推出超级优惠活动，法拉盛中心地段豪华公寓仅需$800/月起！先到先得！加我微信wxid_abc123领取独家折扣码...</p>
+                <p class="text-xs text-gray-400 mt-1">作者: new_user_38291 · IP: 45.33.xx.xx · 举报次数: 3</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition">通过</button>
+                <button class="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button class="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition">标记</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flagged Item 2 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">Spam 87%</span>
+                  <span class="text-xs text-gray-400">2026-03-19 08:45</span>
+                  <span class="text-xs text-gray-500">版块: 二手交易</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">代购代办各类证件 快速出签 100%通过率</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">专业代办各种证件，绿卡、驾照、SSN快速办理，价格优惠，保证100%通过率！联系电话 917-xxx-xxxx...</p>
+                <p class="text-xs text-gray-400 mt-1">作者: cert_agent_2026 · IP: 104.28.xx.xx · 举报次数: 5</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition">通过</button>
+                <button class="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button class="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition">标记</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flagged Item 3 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">Spam 65%</span>
+                  <span class="text-xs text-gray-400">2026-03-18 22:30</span>
+                  <span class="text-xs text-gray-500">版块: 生活杂谈</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">有人知道这家搬家公司靠谱吗？顺便推荐一下我朋友的公司</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">最近要搬家，想问问大家有没有推荐的搬家公司？另外我朋友也开了一家搬家公司，价格很优惠，有需要的可以联系我...</p>
+                <p class="text-xs text-gray-400 mt-1">作者: lucy_nyc · IP: 72.89.xx.xx · 举报次数: 1</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition">通过</button>
+                <button class="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button class="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition">标记</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flagged Item 4 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-2 py-0.5 rounded-full">Spam 58%</span>
+                  <span class="text-xs text-gray-400">2026-03-18 20:15</span>
+                  <span class="text-xs text-gray-500">版块: 美食推荐</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">新开的火锅店好吃到爆！全场8折优惠中</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">法拉盛新开了一家川味火锅店，味道超正宗！现在开业期间全场8折，推荐他们家的毛肚和鸭血，地址在Main St 41-20...</p>
+                <p class="text-xs text-gray-400 mt-1">作者: foodie_wang · IP: 68.45.xx.xx · 举报次数: 2</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition">通过</button>
+                <button class="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button class="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition">标记</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flagged Item 5 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">Spam 78%</span>
+                  <span class="text-xs text-gray-400">2026-03-18 18:05</span>
+                  <span class="text-xs text-gray-500">版块: 工作招聘</span>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">日赚$500+ 在家轻松赚钱 无需经验 立刻开始</h3>
+                <p class="text-sm text-gray-600 line-clamp-2">想在家赚钱吗？我们提供最新的线上赚钱机会，每天只需2小时即可日赚$500以上！无需任何经验，免费培训，名额有限...</p>
+                <p class="text-xs text-gray-400 mt-1">作者: money_maker_99 · IP: 185.220.xx.xx · 举报次数: 8</p>
+              </div>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="px-3 py-1.5 text-sm bg-green-50 text-green-700 border border-green-200 rounded-lg hover:bg-green-100 transition">通过</button>
+                <button class="px-3 py-1.5 text-sm bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 transition">删除</button>
+                <button class="px-3 py-1.5 text-sm bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition">标记</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: 帖子管理 -->
+      <div id="tab-posts" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <input type="text" placeholder="搜索帖子标题..." class="text-sm border border-gray-300 rounded-lg px-3 py-2 w-64 focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+              <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 outline-none">
+                <option>全部版块</option><option>租房信息</option><option>二手交易</option><option>美食推荐</option><option>生活杂谈</option>
+              </select>
+              <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 outline-none">
+                <option>全部状态</option><option>正常</option><option>置顶</option><option>锁定</option><option>隐藏</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">标题</th>
+                  <th class="px-5 py-3">版块</th>
+                  <th class="px-5 py-3">作者</th>
+                  <th class="px-5 py-3">状态</th>
+                  <th class="px-5 py-3">回复</th>
+                  <th class="px-5 py-3">Spam</th>
+                  <th class="px-5 py-3">操作</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">法拉盛新开了一家超好吃的川菜馆</td>
+                  <td class="px-5 py-3 text-gray-500">美食推荐</td>
+                  <td class="px-5 py-3 text-gray-500">foodie_chen</td>
+                  <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span></td>
+                  <td class="px-5 py-3 text-gray-500">23</td>
+                  <td class="px-5 py-3"><span class="text-green-600">5%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">求推荐好的家庭医生，最好在法拉盛附近</td>
+                  <td class="px-5 py-3 text-gray-500">生活杂谈</td>
+                  <td class="px-5 py-3 text-gray-500">health_first</td>
+                  <td class="px-5 py-3"><span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">置顶</span></td>
+                  <td class="px-5 py-3 text-gray-500">45</td>
+                  <td class="px-5 py-3"><span class="text-green-600">2%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">取消置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">Elmhurst两室一厅出租$2200/月包水暖</td>
+                  <td class="px-5 py-3 text-gray-500">租房信息</td>
+                  <td class="px-5 py-3 text-gray-500">apt_hunter</td>
+                  <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span></td>
+                  <td class="px-5 py-3 text-gray-500">8</td>
+                  <td class="px-5 py-3"><span class="text-green-600">12%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">周末谁想一起打羽毛球？</td>
+                  <td class="px-5 py-3 text-gray-500">活动召集</td>
+                  <td class="px-5 py-3 text-gray-500">sporty_li</td>
+                  <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span></td>
+                  <td class="px-5 py-3 text-gray-500">15</td>
+                  <td class="px-5 py-3"><span class="text-green-600">3%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">转让iPhone 15 Pro Max 256G 几乎全新</td>
+                  <td class="px-5 py-3 text-gray-500">二手交易</td>
+                  <td class="px-5 py-3 text-gray-500">techy_zhao</td>
+                  <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span></td>
+                  <td class="px-5 py-3 text-gray-500">6</td>
+                  <td class="px-5 py-3"><span class="text-yellow-600">28%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">请问H1B抽签结果出来了吗？</td>
+                  <td class="px-5 py-3 text-gray-500">移民签证</td>
+                  <td class="px-5 py-3 text-gray-500">visa_hope</td>
+                  <td class="px-5 py-3"><span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">锁定</span></td>
+                  <td class="px-5 py-3 text-gray-500">89</td>
+                  <td class="px-5 py-3"><span class="text-green-600">1%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-green-50 text-green-600 rounded hover:bg-green-100">解锁</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">Costco本周打折清单汇总（3月第3周）</td>
+                  <td class="px-5 py-3 text-gray-500">省钱攻略</td>
+                  <td class="px-5 py-3 text-gray-500">deal_queen</td>
+                  <td class="px-5 py-3"><span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">置顶</span></td>
+                  <td class="px-5 py-3 text-gray-500">56</td>
+                  <td class="px-5 py-3"><span class="text-green-600">4%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">取消置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3 font-medium max-w-xs truncate">有人用过这个搬家公司吗？感觉被坑了</td>
+                  <td class="px-5 py-3 text-gray-500">生活杂谈</td>
+                  <td class="px-5 py-3 text-gray-500">moving_sad</td>
+                  <td class="px-5 py-3"><span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span></td>
+                  <td class="px-5 py-3 text-gray-500">34</td>
+                  <td class="px-5 py-3"><span class="text-green-600">8%</span></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">置顶</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">锁定</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">删除</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-3 border-t border-gray-200 flex items-center justify-between text-sm text-gray-500">
+            <span>显示 1-8 / 共 234 条</span>
+            <div class="flex gap-1">
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">上一页</button>
+              <button class="px-3 py-1 bg-baam-500 text-white rounded">1</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: 版块管理 -->
+      <div id="tab-boards" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+            <h3 class="font-semibold text-gray-900">版块列表</h3>
+            <button class="px-4 py-2 bg-baam-500 text-white text-sm rounded-lg hover:bg-baam-600 transition">+ 新建版块</button>
+          </div>
+          <div class="divide-y divide-gray-100">
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">1</span>
+              <span class="text-sm font-semibold flex-1">🏠 租房信息</span>
+              <span class="text-xs text-gray-500">1,234 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">2</span>
+              <span class="text-sm font-semibold flex-1">🍜 美食推荐</span>
+              <span class="text-xs text-gray-500">987 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">3</span>
+              <span class="text-sm font-semibold flex-1">💼 工作招聘</span>
+              <span class="text-xs text-gray-500">2,156 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">4</span>
+              <span class="text-sm font-semibold flex-1">🛒 二手交易</span>
+              <span class="text-xs text-gray-500">1,567 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">5</span>
+              <span class="text-sm font-semibold flex-1">💬 生活杂谈</span>
+              <span class="text-xs text-gray-500">3,421 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">6</span>
+              <span class="text-sm font-semibold flex-1">📋 移民签证</span>
+              <span class="text-xs text-gray-500">876 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">7</span>
+              <span class="text-sm font-semibold flex-1">💰 省钱攻略</span>
+              <span class="text-xs text-gray-500">654 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">8</span>
+              <span class="text-sm font-semibold flex-1">🎯 活动召集</span>
+              <span class="text-xs text-gray-500">432 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">9</span>
+              <span class="text-sm font-semibold flex-1">🚗 车辆买卖</span>
+              <span class="text-xs text-gray-500">321 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">10</span>
+              <span class="text-sm font-semibold flex-1">📚 教育培训</span>
+              <span class="text-xs text-gray-500">543 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">11</span>
+              <span class="text-sm font-semibold flex-1">🏥 医疗健康</span>
+              <span class="text-xs text-gray-500">298 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+            <div class="px-5 py-3 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400">⠿</span>
+              <span class="text-sm font-medium w-8 text-gray-400">12</span>
+              <span class="text-sm font-semibold flex-1">⚖️ 法律咨询</span>
+              <span class="text-xs text-gray-500">187 帖子</span>
+              <label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer"><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Overlay for mobile sidebar -->
+<div class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden" id="sidebar-overlay" onclick="document.getElementById('sidebar').classList.add('-translate-x-full'); this.classList.add('hidden')"></div>
+
+<script src="../assets/js/prototype.js"></script>
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('border-baam-500', 'text-baam-600'); b.classList.add('border-transparent', 'text-gray-500'); });
+      btn.classList.add('border-baam-500', 'text-baam-600');
+      btn.classList.remove('border-transparent', 'text-gray-500');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+    });
+  });
+</script>
+</body>
+</html>

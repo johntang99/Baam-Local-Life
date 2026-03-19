@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baam Admin - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: {
+              50: '#FFF7ED',
+              100: '#FFEDD5',
+              200: '#FED7AA',
+              300: '#FDBA74',
+              400: '#FB923C',
+              500: '#F97316',
+              600: '#EA580C',
+              700: '#C2410C'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    .sidebar-link { transition: all 0.15s ease; }
+    .sidebar-link:hover { background-color: rgba(249, 115, 22, 0.1); }
+    .sidebar-link.active { background-color: rgba(249, 115, 22, 0.15); border-right: 3px solid #F97316; }
+    .stat-card { transition: box-shadow 0.2s ease; }
+    .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .activity-item { transition: background-color 0.15s ease; }
+    .activity-item:hover { background-color: #F9FAFB; }
+    .chart-placeholder {
+      background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+      position: relative;
+    }
+    .chart-placeholder::after {
+      content: '';
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      right: 20px;
+      top: 20px;
+      border-left: 2px solid #D1D5DB;
+      border-bottom: 2px solid #D1D5DB;
+    }
+    @media (max-width: 1023px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .content-area { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Mobile Overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+  <!-- ============================================ -->
+  <!-- SIDEBAR -->
+  <!-- ============================================ -->
+  <aside id="sidebar" class="sidebar fixed top-0 left-0 bottom-0 w-60 bg-gray-800 z-50 flex flex-col lg:translate-x-0">
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-5 py-5 border-b border-gray-700">
+      <div class="w-9 h-9 rounded-lg bg-baam-500 flex items-center justify-center">
+        <span class="text-white font-bold text-lg">B</span>
+      </div>
+      <div>
+        <span class="text-white font-bold text-lg tracking-tight">Baam</span>
+        <span class="ml-1.5 text-[10px] font-semibold uppercase tracking-wider bg-baam-500/20 text-baam-400 px-1.5 py-0.5 rounded">Admin</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <ul class="space-y-0.5 px-3">
+        <li>
+          <a href="dashboard.html" data-page="dashboard" class="sidebar-link active flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-white">
+            <span class="w-5 text-center opacity-80">📊</span>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="articles.html" data-page="articles" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">📝</span>
+            <span>内容管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="businesses.html" data-page="businesses" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">🏪</span>
+            <span>商家管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="forum.html" data-page="forum" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">💬</span>
+            <span>论坛管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="voices.html" data-page="voices" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">🎙️</span>
+            <span>达人管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="events.html" data-page="events" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">📅</span>
+            <span>活动管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="leads.html" data-page="leads" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">📥</span>
+            <span>线索管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="users.html" data-page="users" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">👥</span>
+            <span>用户管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="ai-jobs.html" data-page="ai-jobs" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">🤖</span>
+            <span>AI任务</span>
+          </a>
+        </li>
+        <li>
+          <a href="sponsors.html" data-page="sponsors" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">💰</span>
+            <span>广告管理</span>
+          </a>
+        </li>
+        <li>
+          <a href="settings.html" data-page="settings" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300">
+            <span class="w-5 text-center opacity-80">⚙️</span>
+            <span>系统设置</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Admin User -->
+    <div class="border-t border-gray-700 px-4 py-4">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-gray-600 flex items-center justify-center text-white text-sm font-medium">JT</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white truncate">John Tang</p>
+          <p class="text-xs text-gray-400">Super Admin</p>
+        </div>
+        <button class="text-gray-400 hover:text-white text-xs transition-colors" title="退出登录">退出</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================ -->
+  <!-- MAIN CONTENT -->
+  <!-- ============================================ -->
+  <div class="content-area lg:ml-60 min-h-screen">
+
+    <!-- Top Header Bar -->
+    <header class="sticky top-0 z-30 bg-white border-b border-gray-200">
+      <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
+        <!-- Left: Hamburger + Title -->
+        <div class="flex items-center gap-4">
+          <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+          <div>
+            <h1 class="text-lg font-semibold text-gray-900">Dashboard</h1>
+            <nav class="text-xs text-gray-400">
+              <span>Admin</span>
+              <span class="mx-1">/</span>
+              <span class="text-gray-600">Dashboard</span>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Right: Notifications + Avatar -->
+        <div class="flex items-center gap-4">
+          <!-- Notification Bell -->
+          <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+            </svg>
+            <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+          </button>
+
+          <!-- Admin Dropdown -->
+          <div class="flex items-center gap-2 cursor-pointer group">
+            <div class="w-8 h-8 rounded-full bg-baam-100 flex items-center justify-center text-baam-600 text-sm font-semibold">JT</div>
+            <span class="hidden sm:inline text-sm text-gray-600 group-hover:text-gray-900">John Tang</span>
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <main class="p-4 sm:p-6 lg:p-8">
+
+      <!-- ========== ROW 1: Primary Stat Cards ========== -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <!-- Total Users -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">总用户</span>
+            <span class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 text-sm">👥</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-gray-900">3,456</span>
+            <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded mb-1">↑ 12%</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">较上月</p>
+        </div>
+
+        <!-- Published Articles -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">已发布文章</span>
+            <span class="w-8 h-8 rounded-lg bg-baam-50 flex items-center justify-center text-baam-500 text-sm">📝</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-gray-900">128</span>
+            <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded mb-1">↑ 8%</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">较上月</p>
+        </div>
+
+        <!-- Businesses -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">入驻商家</span>
+            <span class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500 text-sm">🏪</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-gray-900">156</span>
+            <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded mb-1">↑ 15%</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">较上月</p>
+        </div>
+
+        <!-- Active Leads -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">活跃线索</span>
+            <span class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500 text-sm">📥</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-gray-900">45</span>
+            <span class="text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded mb-1">↑ 23%</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">较上月</p>
+        </div>
+      </div>
+
+      <!-- ========== ROW 2: Secondary Stats ========== -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <!-- Forum Posts This Week -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">论坛帖数（本周）</span>
+            <span class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-500 text-sm">💬</span>
+          </div>
+          <span class="text-2xl font-bold text-gray-900">234</span>
+          <p class="text-xs text-gray-400 mt-1">本周新增</p>
+        </div>
+
+        <!-- Active Voices -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">活跃达人</span>
+            <span class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-500 text-sm">🎙️</span>
+          </div>
+          <span class="text-2xl font-bold text-gray-900">28</span>
+          <p class="text-xs text-gray-400 mt-1">本月活跃</p>
+        </div>
+
+        <!-- AI Job Queue -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">AI任务队列</span>
+            <span class="w-8 h-8 rounded-lg bg-yellow-50 flex items-center justify-center text-yellow-500 text-sm">🤖</span>
+          </div>
+          <div class="flex items-end gap-2">
+            <span class="text-2xl font-bold text-gray-900">12</span>
+            <span class="text-xs font-medium text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded mb-1">pending</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">等待处理</p>
+        </div>
+
+        <!-- Revenue This Month -->
+        <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm font-medium text-gray-500">本月收入</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500 text-sm">💰</span>
+          </div>
+          <span class="text-2xl font-bold text-gray-900">$5,230</span>
+          <p class="text-xs text-gray-400 mt-1">广告 + 推广</p>
+        </div>
+      </div>
+
+      <!-- ========== ROW 3: Activity Feed + Action Required ========== -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-6">
+
+        <!-- Recent Activity (3/5 width) -->
+        <div class="lg:col-span-3 bg-white rounded-xl border border-gray-100">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-gray-900">最近活动</h2>
+            <a href="#" class="text-xs text-baam-500 hover:text-baam-600 font-medium">查看全部</a>
+          </div>
+          <div class="divide-y divide-gray-50">
+            <!-- Activity 1 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-xs mt-0.5 shrink-0">📝</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">用户 <span class="font-medium text-gray-900">小明</span> 发布了新帖「法拉盛川菜推荐」</p>
+                <span class="text-xs text-gray-400">3 分钟前</span>
+              </div>
+            </div>
+            <!-- Activity 2 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-green-50 flex items-center justify-center text-xs mt-0.5 shrink-0">✅</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">商家 <span class="font-medium text-gray-900">王氏医疗</span> 认领通过</p>
+                <span class="text-xs text-gray-400">15 分钟前</span>
+              </div>
+            </div>
+            <!-- Activity 3 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-baam-50 flex items-center justify-center text-xs mt-0.5 shrink-0">📥</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">新线索来自 <span class="font-medium text-gray-900">报税指南页</span></p>
+                <span class="text-xs text-gray-400">28 分钟前</span>
+              </div>
+            </div>
+            <!-- Activity 4 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-purple-50 flex items-center justify-center text-xs mt-0.5 shrink-0">🎙️</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">达人 <span class="font-medium text-gray-900">李姐聊美食</span> 提交了新专栏文章</p>
+                <span class="text-xs text-gray-400">42 分钟前</span>
+              </div>
+            </div>
+            <!-- Activity 5 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center text-xs mt-0.5 shrink-0">⚠️</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">帖子被举报：<span class="font-medium text-gray-900">「纽约租房黑中介」</span> — spam score 0.85</p>
+                <span class="text-xs text-gray-400">1 小时前</span>
+              </div>
+            </div>
+            <!-- Activity 6 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-yellow-50 flex items-center justify-center text-xs mt-0.5 shrink-0">🤖</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">AI任务完成：<span class="font-medium text-gray-900">批量翻译 12 篇商家简介</span></p>
+                <span class="text-xs text-gray-400">1.5 小时前</span>
+              </div>
+            </div>
+            <!-- Activity 7 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-indigo-50 flex items-center justify-center text-xs mt-0.5 shrink-0">👥</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">新用户注册：<span class="font-medium text-gray-900">zhang.wei@gmail.com</span></p>
+                <span class="text-xs text-gray-400">2 小时前</span>
+              </div>
+            </div>
+            <!-- Activity 8 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-emerald-50 flex items-center justify-center text-xs mt-0.5 shrink-0">💰</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">广告商 <span class="font-medium text-gray-900">金桥保险</span> 续费成功 — $500/月</p>
+                <span class="text-xs text-gray-400">3 小时前</span>
+              </div>
+            </div>
+            <!-- Activity 9 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center text-xs mt-0.5 shrink-0">📅</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">新活动发布：<span class="font-medium text-gray-900">「法拉盛春节美食节」</span></p>
+                <span class="text-xs text-gray-400">4 小时前</span>
+              </div>
+            </div>
+            <!-- Activity 10 -->
+            <div class="activity-item flex items-start gap-3 px-5 py-3">
+              <span class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs mt-0.5 shrink-0">⚙️</span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-700">系统设置更新：<span class="font-medium text-gray-900">SEO meta 模板已更新</span></p>
+                <span class="text-xs text-gray-400">5 小时前</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Required (2/5 width) -->
+        <div class="lg:col-span-2 bg-white rounded-xl border border-gray-100">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-gray-900">待办事项</h2>
+            <span class="text-xs text-gray-400">Action Required</span>
+          </div>
+          <div class="divide-y divide-gray-50">
+            <!-- Item 1 -->
+            <div class="flex items-center justify-between px-5 py-3.5">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-baam-100 text-baam-600 text-xs font-bold flex items-center justify-center">3</span>
+                <span class="text-sm text-gray-700">待审核商家认领</span>
+              </div>
+              <button class="text-xs font-medium text-baam-500 hover:text-baam-600 bg-baam-50 hover:bg-baam-100 px-3 py-1.5 rounded-lg transition-colors">处理</button>
+            </div>
+            <!-- Item 2 -->
+            <div class="flex items-center justify-between px-5 py-3.5">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-red-100 text-red-600 text-xs font-bold flex items-center justify-center">5</span>
+                <div>
+                  <span class="text-sm text-gray-700">待审核帖子</span>
+                  <span class="text-xs text-gray-400 ml-1">(spam score &gt; 0.7)</span>
+                </div>
+              </div>
+              <button class="text-xs font-medium text-baam-500 hover:text-baam-600 bg-baam-50 hover:bg-baam-100 px-3 py-1.5 rounded-lg transition-colors">处理</button>
+            </div>
+            <!-- Item 3 -->
+            <div class="flex items-center justify-between px-5 py-3.5">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center">2</span>
+                <span class="text-sm text-gray-700">负面评价需关注</span>
+              </div>
+              <button class="text-xs font-medium text-baam-500 hover:text-baam-600 bg-baam-50 hover:bg-baam-100 px-3 py-1.5 rounded-lg transition-colors">处理</button>
+            </div>
+            <!-- Item 4 -->
+            <div class="flex items-center justify-between px-5 py-3.5">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-bold flex items-center justify-center">8</span>
+                <span class="text-sm text-gray-700">AI任务失败需重试</span>
+              </div>
+              <button class="text-xs font-medium text-baam-500 hover:text-baam-600 bg-baam-50 hover:bg-baam-100 px-3 py-1.5 rounded-lg transition-colors">处理</button>
+            </div>
+          </div>
+
+          <!-- Summary Footer -->
+          <div class="px-5 py-4 border-t border-gray-100 bg-gray-50/50 rounded-b-xl">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-gray-500">共 <strong class="text-gray-700">18</strong> 项待处理</span>
+              <a href="#" class="text-xs text-baam-500 hover:text-baam-600 font-medium">查看全部 &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== ROW 4: Charts ========== -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Traffic Trend Chart -->
+        <div class="bg-white rounded-xl border border-gray-100">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-gray-900">本周流量趋势</h2>
+            <div class="flex items-center gap-2">
+              <span class="flex items-center gap-1 text-xs text-gray-400">
+                <span class="w-2 h-2 rounded-full bg-baam-500"></span> PV
+              </span>
+              <span class="flex items-center gap-1 text-xs text-gray-400">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span> UV
+              </span>
+            </div>
+          </div>
+          <div class="p-5">
+            <div class="chart-placeholder rounded-lg h-56 flex items-end justify-between px-10 pb-10 pt-6">
+              <!-- Y-axis labels -->
+              <div class="absolute left-2 top-6 bottom-10 flex flex-col justify-between text-[10px] text-gray-400" style="position:absolute;">
+                <span>5K</span>
+                <span>4K</span>
+                <span>3K</span>
+                <span>2K</span>
+                <span>1K</span>
+                <span>0</span>
+              </div>
+              <!-- Bars for each day -->
+              <div class="relative z-10 flex items-end gap-3 w-full justify-between px-2" style="height:140px;">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-400 rounded-t" style="height:65%"></div>
+                  <span class="text-[10px] text-gray-400">周一</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-400 rounded-t" style="height:80%"></div>
+                  <span class="text-[10px] text-gray-400">周二</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-400 rounded-t" style="height:55%"></div>
+                  <span class="text-[10px] text-gray-400">周三</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-500 rounded-t" style="height:90%"></div>
+                  <span class="text-[10px] text-gray-400">周四</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-400 rounded-t" style="height:75%"></div>
+                  <span class="text-[10px] text-gray-400">周五</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-300 rounded-t" style="height:45%"></div>
+                  <span class="text-[10px] text-gray-400">周六</span>
+                </div>
+                <div class="flex flex-col items-center gap-1">
+                  <div class="w-6 bg-baam-300 rounded-t" style="height:40%"></div>
+                  <span class="text-[10px] text-gray-400">周日</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Publish Stats Chart -->
+        <div class="bg-white rounded-xl border border-gray-100">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <h2 class="text-sm font-semibold text-gray-900">内容发布统计</h2>
+            <select class="text-xs text-gray-500 border border-gray-200 rounded-lg px-2 py-1 bg-white">
+              <option>本月</option>
+              <option>上月</option>
+              <option>近三月</option>
+            </select>
+          </div>
+          <div class="p-5">
+            <div class="chart-placeholder rounded-lg h-56 flex items-end px-10 pb-10 pt-6">
+              <!-- Category bars -->
+              <div class="relative z-10 flex items-end gap-2 w-full justify-between px-2" style="height:140px;">
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-blue-400 rounded-t mx-auto" style="height:70%"></div>
+                  <span class="text-[10px] text-gray-400">文章</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-purple-400 rounded-t mx-auto" style="height:45%"></div>
+                  <span class="text-[10px] text-gray-400">商家</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-baam-400 rounded-t mx-auto" style="height:90%"></div>
+                  <span class="text-[10px] text-gray-400">帖子</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-green-400 rounded-t mx-auto" style="height:30%"></div>
+                  <span class="text-[10px] text-gray-400">达人</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-pink-400 rounded-t mx-auto" style="height:55%"></div>
+                  <span class="text-[10px] text-gray-400">活动</span>
+                </div>
+                <div class="flex flex-col items-center gap-1 flex-1">
+                  <div class="w-full max-w-10 bg-yellow-400 rounded-t mx-auto" style="height:25%"></div>
+                  <span class="text-[10px] text-gray-400">线索</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS -->
+  <!-- ============================================ -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('hidden');
+    }
+
+    // Active sidebar link
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.addEventListener('click', function (e) {
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+  <script src="../assets/js/prototype.js"></script>
+</body>
+</html>

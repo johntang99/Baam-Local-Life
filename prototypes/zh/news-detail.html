@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>纽约市宣布新的小企业税收减免计划 · Baam 新闻</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <!-- Desktop Nav -->
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== BREADCRUMB ==================== -->
+<div class="max-w-7xl mx-auto px-4 py-3">
+  <nav class="text-sm text-gray-400 flex items-center gap-1.5">
+    <a href="index.html" class="hover:text-baam-500">首页</a>
+    <span>/</span>
+    <a href="news-list.html" class="hover:text-baam-500">新闻</a>
+    <span>/</span>
+    <span class="text-gray-600">政策解读</span>
+  </nav>
+</div>
+
+<!-- ==================== MAIN CONTENT AREA ==================== -->
+<div class="max-w-7xl mx-auto px-4 pb-12">
+  <div class="lg:flex lg:gap-8">
+
+    <!-- ==================== ARTICLE MAIN COLUMN ==================== -->
+    <article class="lg:flex-1 min-w-0">
+
+      <!-- ===== Article Header ===== -->
+      <header class="mb-6">
+        <!-- Content type badge -->
+        <div class="flex items-center gap-3 mb-4">
+          <span class="badge badge-blue">政策解读</span>
+          <span class="badge badge-gray">税务财务</span>
+        </div>
+
+        <!-- H1 Title -->
+        <h1 class="text-2xl sm:text-3xl font-bold leading-snug mb-5">纽约市宣布新的小企业税收减免计划，华人商家可享最高30%优惠</h1>
+
+        <!-- Metadata row -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-4">
+          <span class="flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            发布于 2026年3月18日 10:30
+          </span>
+          <span class="text-gray-300">|</span>
+          <span>最后更新：2026年3月18日 15:45</span>
+          <span class="text-gray-300">|</span>
+          <span class="flex items-center gap-1.5">
+            <span class="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2 py-0.5 rounded-full text-xs font-medium">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              A类来源
+            </span>
+            NYC.gov
+          </span>
+          <span class="text-gray-300">|</span>
+          <span class="flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            纽约市
+          </span>
+        </div>
+
+        <!-- Language toggle -->
+        <button class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-400 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+          English Version
+        </button>
+      </header>
+
+      <!-- ===== AI Summary Card ===== -->
+      <div class="mb-8" id="ai-summary-section">
+        <div class="relative rounded-xl overflow-hidden border border-blue-200" style="background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #E0E7FF 100%);">
+          <!-- Header -->
+          <div class="flex items-center justify-between px-5 pt-4 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="bg-blue-500 text-white text-xs font-bold px-2.5 py-1 rounded-full tracking-wide">AI 摘要</span>
+              <span class="text-xs text-blue-500/70">由AI自动生成，仅供参考</span>
+            </div>
+            <button id="ai-summary-toggle" class="text-blue-500 hover:text-blue-700 p-1" onclick="document.getElementById('ai-summary-body').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180');">
+              <svg class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+            </button>
+          </div>
+          <!-- Body -->
+          <div id="ai-summary-body" class="px-5 pb-5">
+            <ul class="space-y-2 text-sm text-gray-700 leading-relaxed">
+              <li class="flex gap-2">
+                <span class="text-blue-500 font-bold mt-0.5">1.</span>
+                <span>纽约市政府推出"小企业税务纾困计划"（Small Business Tax Relief Program），年营收低于100万美元的小企业可申请<strong>最高30%的商业租赁税及一般公司税减免</strong>，新移民创业者另享额外5%优惠。</span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-blue-500 font-bold mt-0.5">2.</span>
+                <span>该计划自<strong>2026年7月1日起正式生效</strong>，申请截止日期为2026年9月30日。法拉盛、日落公园、华埠等华人聚居区的商户预计最直接受益，惠及约5,000家华人企业。</span>
+              </li>
+              <li class="flex gap-2">
+                <span class="text-blue-500 font-bold mt-0.5">3.</span>
+                <span>商家需通过NYC Business Portal在线申请，需提供最近两年税务申报记录、商业注册证明等材料。市府将在法拉盛设立中文服务窗口协助申请。</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Key Facts Card ===== -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 sm:p-6 mb-8">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          关键事实速览
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">生效时间</p>
+            <p class="text-sm font-semibold text-gray-800">2026年7月1日</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">申请截止日期</p>
+            <p class="text-sm font-semibold text-gray-800">2026年9月30日</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">影响对象</p>
+            <p class="text-sm font-semibold text-gray-800">年营收 &le; $1,000,000 的纽约市注册小企业</p>
+          </div>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-xs text-blue-500 font-medium mb-1">减免幅度</p>
+            <p class="text-sm font-semibold text-gray-800">商业租赁税 & 一般公司税最高减免30%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Article Body ===== -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 sm:p-8 mb-8">
+        <div class="prose prose-gray max-w-none text-base leading-relaxed space-y-6">
+
+          <!-- Section 1: 什么变了 -->
+          <h2 class="text-xl font-bold text-gray-900 border-l-4 border-baam-500 pl-3 !mt-0">什么变了</h2>
+          <p>纽约市长Eric Adams于2026年3月18日正式签署了《小企业税务纾困法案》（Small Business Tax Relief Act），宣布推出全新的"小企业税务纾困计划"。该计划是纽约市近十年来规模最大的小企业税收减免措施，旨在缓解通胀压力下小企业的经营成本负担。</p>
+          <p>根据该法案，在纽约五大行政区内注册且年营业收入不超过100万美元的小企业，均有资格申请以下两项税务减免：</p>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li><strong>商业租赁税减免（Commercial Rent Tax Credit）：</strong>符合条件的企业可获得最高30%的商业租赁税退税，直接降低店铺运营成本。目前纽约市对曼哈顿96街以南年租金超过$250,000的商业物业征收3.9%的商业租赁税，此次减免范围扩展至五大行政区。</li>
+            <li><strong>一般公司税减免（General Corporation Tax Credit）：</strong>年应纳税所得额低于$250,000的企业可获得最高30%的一般公司税减免。对于成立不满3年的新移民创业企业，另可享受额外5%的优惠，总减免幅度最高可达35%。</li>
+          </ul>
+
+          <!-- Section 2: 为什么重要 -->
+          <h2 class="text-xl font-bold text-gray-900 border-l-4 border-baam-500 pl-3">为什么重要</h2>
+          <p>近年来，纽约市小企业面临前所未有的经营压力。根据纽约市审计长办公室的数据，2024-2025财年内，全市有超过12,000家小企业因经营困难而关闭，其中约15%为华人经营的餐饮、零售和服务类企业。</p>
+          <p>法拉盛商业改善区（Flushing BID）执行总监余国安表示："这项政策对法拉盛的小商家来说无疑是一剂强心针。以一家年租金约$80,000的中餐馆为例，仅商业租赁税一项，每年就可以节省约$940至$2,400。对于利润率本就微薄的餐饮业者来说，这笔钱可能就是决定一家店能不能继续经营下去的关键。"</p>
+          <p>纽约市经济发展局（NYCEDC）预计，该计划将惠及全市约45,000家小企业，其中皇后区和布鲁克林区受益商户最多。据估算，仅法拉盛地区就有超过5,000家华人商户符合申请条件。</p>
+
+          <!-- Section 3: 影响谁 -->
+          <h2 class="text-xl font-bold text-gray-900 border-l-4 border-baam-500 pl-3">影响谁</h2>
+          <p>以下类型的企业和个人最有可能从该计划中受益：</p>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li><strong>华人餐饮业者：</strong>法拉盛、日落公园、华埠等地的中餐馆、奶茶店、面包房等餐饮店铺，大多数年营收在$300,000至$800,000之间，完全符合申请条件。</li>
+            <li><strong>华人零售商户：</strong>超市、杂货店、服装店、礼品店等零售业态的小商家。</li>
+            <li><strong>专业服务提供者：</strong>会计师事务所、律师事务所、保险经纪、房产中介等年营收较低的专业服务机构。</li>
+            <li><strong>新移民创业者：</strong>成立不满3年且由新移民（持有绿卡或工作签证不满5年）创办的企业，可额外获得5%税务减免。</li>
+            <li><strong>自雇人士和自由职业者：</strong>以个体经营形式（Sole Proprietorship）注册且有实际商业租赁的自雇人士。</li>
+          </ul>
+
+          <!-- Section 4: 如何申请 -->
+          <h2 class="text-xl font-bold text-gray-900 border-l-4 border-baam-500 pl-3">如何申请</h2>
+          <p>符合条件的小企业可通过以下步骤完成申请：</p>
+          <ol class="list-decimal pl-5 space-y-3 text-gray-700">
+            <li>
+              <strong>确认资格：</strong>访问 <span class="text-blue-600 underline">NYC.gov/SmallBizRelief</span> 使用在线资格评估工具，输入企业基本信息，系统将自动判断是否符合条件。
+            </li>
+            <li>
+              <strong>准备申请材料：</strong>
+              <ul class="list-disc pl-5 mt-2 space-y-1">
+                <li>最近两年（2024-2025）的联邦和州税务申报记录（Form 1120/1120-S/1065）</li>
+                <li>有效的纽约市商业注册证明（Certificate of Authority）</li>
+                <li>当前商业租赁合同副本</li>
+                <li>最近12个月的银行流水或财务报表</li>
+                <li>新移民创业者需额外提供移民身份证明文件</li>
+              </ul>
+            </li>
+            <li>
+              <strong>在线提交申请：</strong>登录 NYC Business Portal 注册账号并提交电子申请。系统支持中文界面，全程可在线操作。
+            </li>
+            <li>
+              <strong>等待审核：</strong>市财政局将在收到申请后45个工作日内完成审核。审核通过后，退税将直接汇入企业指定银行账户。
+            </li>
+          </ol>
+          <p class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm">
+            <strong>温馨提示：</strong>申请窗口期为2026年7月1日至9月30日，建议商家尽早准备材料。纽约市财政局将于6月份在法拉盛图书馆和法拉盛市政厅举办三场免费中文说明会，届时将有专人协助解答申请疑问。具体时间和报名方式将稍后公布。
+          </p>
+        </div>
+      </div>
+
+      <!-- ===== "为什么与你有关" Card ===== -->
+      <div class="rounded-xl p-5 sm:p-6 mb-8" style="background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1px solid #FDBA74;">
+        <h2 class="text-lg font-bold text-baam-700 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          为什么与你有关
+        </h2>
+        <div class="space-y-4 text-sm text-gray-700">
+          <div class="bg-white/70 rounded-lg p-4">
+            <p class="font-semibold text-baam-600 mb-1">如果你是小企业主...</p>
+            <p>你可能每年可以节省数百到数千美元的税务支出。以法拉盛一家年营收$500,000的中餐馆为例，商业租赁税和一般公司税合计减免后，预计每年可节省$1,800-$3,500。建议尽快咨询你的会计师，评估具体减免金额，并提前准备好申请材料。</p>
+          </div>
+          <div class="bg-white/70 rounded-lg p-4">
+            <p class="font-semibold text-baam-600 mb-1">如果你是新移民创业者...</p>
+            <p>你不仅可以享受标准的30%减免，还可以额外获得5%的新移民创业税务优惠。如果你正在考虑创业或刚刚开始经营，这项政策可以显著降低你的初始运营成本。建议在申请时同时提交移民身份证明文件以获取额外优惠。</p>
+          </div>
+          <div class="bg-white/70 rounded-lg p-4">
+            <p class="font-semibold text-baam-600 mb-1">如果你是小企业的员工...</p>
+            <p>你的雇主获得税务减免后，可能有更多资金用于维持或扩大经营，有助于保障你的工作稳定性。你也可以将这个消息转告给你的老板，帮助他们了解并申请这项优惠。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Official Source Link ===== -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 mb-8 flex items-start gap-4">
+        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-gray-800 mb-1">官方来源</p>
+          <p class="text-sm text-gray-500 mb-2">本文信息来源于纽约市政府官方网站发布的政策文件，属于A类（政府官方）来源，信息可靠性高。</p>
+          <a href="#" class="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800">
+            查看 NYC.gov 原文: Small Business Tax Relief Program
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- ===== Share Buttons ===== -->
+      <div class="flex items-center gap-3 mb-10 flex-wrap">
+        <span class="text-sm font-medium text-gray-500">分享这篇文章：</span>
+        <button class="inline-flex items-center gap-2 px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg hover:bg-green-600 transition">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.6 4.1c-.1-.1-.2-.2-.4-.2-.1 0-.2 0-.3.1L12 11.9 4.1 4C4 3.9 3.9 3.9 3.8 3.9c-.1 0-.3.1-.4.2-.2.2-.2.5 0 .7l7.2 7.2-7.2 7.2c-.2.2-.2.5 0 .7.1.1.2.2.4.2.1 0 .2 0 .3-.1L12 12.1l7.9 7.9c.1.1.2.1.3.1.1 0 .3-.1.4-.2.2-.2.2-.5 0-.7l-7.2-7.2 7.2-7.2c.2-.2.2-.5 0-.7z"/></svg>
+          微信分享
+        </button>
+        <button class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </button>
+        <button onclick="navigator.clipboard.writeText(window.location.href); this.textContent='已复制!'; setTimeout(()=>{this.innerHTML='<svg class=\'w-4 h-4\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3\'/></svg> 复制链接';}, 2000)" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+          复制链接
+        </button>
+      </div>
+
+      <!-- ==================== CROSS-MODULE LINKS ==================== -->
+      <div class="space-y-8">
+
+        <!-- ===== 相关生活指南 ===== -->
+        <section>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="text-xl">📚</span> 相关生活指南
+          </h2>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <a href="guide-detail.html" class="card cursor-pointer">
+              <div class="h-28 bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center text-3xl">💼</div>
+              <div class="p-4">
+                <span class="badge badge-blue text-xs mb-2">How-To</span>
+                <h3 class="font-semibold text-sm line-clamp-2 mb-1">2026年报税季完全指南：华人常见问题汇总</h3>
+                <p class="text-xs text-gray-400">8分钟阅读</p>
+              </div>
+            </a>
+            <a href="guide-detail.html" class="card cursor-pointer">
+              <div class="h-28 bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center text-3xl">🏪</div>
+              <div class="p-4">
+                <span class="badge badge-green text-xs mb-2">Checklist</span>
+                <h3 class="font-semibold text-sm line-clamp-2 mb-1">在纽约开小店：华人创业者必读的注册与许可清单</h3>
+                <p class="text-xs text-gray-400">12分钟阅读</p>
+              </div>
+            </a>
+            <a href="guide-detail.html" class="card cursor-pointer">
+              <div class="h-28 bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center text-3xl">📊</div>
+              <div class="p-4">
+                <span class="badge badge-purple text-xs mb-2">对比</span>
+                <h3 class="font-semibold text-sm line-clamp-2 mb-1">法拉盛中文报税服务怎么选：5家机构对比评测</h3>
+                <p class="text-xs text-gray-400">6分钟阅读</p>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- ===== 相关论坛讨论 ===== -->
+        <section>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="text-xl">💬</span> 相关论坛讨论
+          </h2>
+          <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+            <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-primary text-xs">税务报税</span>
+                  <span class="text-xs text-red-500 font-medium">热帖</span>
+                </div>
+                <h3 class="text-sm font-medium line-clamp-1">有人了解这个新的小企业税收减免怎么申请吗？</h3>
+                <p class="text-xs text-gray-400 mt-1">AI摘要：多位商家主讨论申请流程，有会计师建议尽早准备最近两年的税表材料...</p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <p class="text-sm font-bold text-baam-500">42</p>
+                <p class="text-xs text-gray-400">回复</p>
+              </div>
+            </a>
+            <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-blue text-xs">创业经营</span>
+                </div>
+                <h3 class="text-sm font-medium line-clamp-1">法拉盛小餐馆老板的一年经营成本分享，这个减税真的有用</h3>
+                <p class="text-xs text-gray-400 mt-1">AI摘要：楼主详细列出了餐馆各项开支，年租金$72,000，预计减税后可省$1,500左右...</p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <p class="text-sm font-bold text-baam-500">35</p>
+                <p class="text-xs text-gray-400">回复</p>
+              </div>
+            </a>
+            <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="badge badge-green text-xs">新移民</span>
+                </div>
+                <h3 class="text-sm font-medium line-clamp-1">新移民开公司，是选LLC还是S-Corp？有个新税务优惠要注意</h3>
+                <p class="text-xs text-gray-400 mt-1">AI摘要：讨论了不同公司类型的税务区别，多人提到新减免政策对S-Corp更有利...</p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <p class="text-sm font-bold text-baam-500">28</p>
+                <p class="text-xs text-gray-400">回复</p>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- ===== 相关商家 ===== -->
+        <section>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="text-xl">🏪</span> 相关商家
+          </h2>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <!-- Business 1 -->
+            <div class="biz-inline-card">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-lg">💼</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <h3 class="font-semibold text-sm truncate">华信会计师事务所</h3>
+                  <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5">CPA · 法拉盛 · ★4.7 (94评价)</p>
+                <div class="flex gap-1.5 mt-1.5">
+                  <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+                  <span class="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">报税季热门</span>
+                </div>
+              </div>
+              <a href="#" class="flex-shrink-0 px-3 py-1.5 bg-baam-500 text-white text-xs font-medium rounded-lg hover:bg-baam-600 transition">联系</a>
+            </div>
+            <!-- Business 2 -->
+            <div class="biz-inline-card">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-lg">📋</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <h3 class="font-semibold text-sm truncate">安达报税服务中心</h3>
+                </div>
+                <p class="text-xs text-gray-400 mt-0.5">报税 · 法拉盛 · ★4.5 (67评价)</p>
+                <div class="flex gap-1.5 mt-1.5">
+                  <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+                  <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">免费咨询</span>
+                </div>
+              </div>
+              <a href="#" class="flex-shrink-0 px-3 py-1.5 bg-baam-500 text-white text-xs font-medium rounded-lg hover:bg-baam-600 transition">联系</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 相关达人观点 ===== -->
+        <section>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="text-xl">🎙️</span> 相关达人观点
+          </h2>
+          <div class="card p-5">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-lg">💼</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h3 class="font-semibold text-sm">David 张会计</h3>
+                  <svg class="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  <span class="text-xs text-blue-600">认证CPA</span>
+                </div>
+                <p class="text-sm text-gray-600 leading-relaxed">"这次的减免力度确实不小。我建议所有符合条件的华人商家在7月之前就把材料准备好。特别要注意的是，如果你去年换过会计师或者有逾期未报的税务记录，一定要尽早处理，否则可能影响申请资格。另外，新移民创业者那个额外5%的优惠力度很大，不要错过。"</p>
+                <div class="flex items-center gap-4 mt-3">
+                  <span class="text-xs text-gray-400">2小时前</span>
+                  <button class="text-xs text-baam-500 font-medium hover:underline">查看更多观点 &rarr;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== AI助手推荐提问 ===== -->
+        <section>
+          <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <span class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">AI</span>
+            AI助手推荐提问
+          </h2>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <button class="text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-400 hover:shadow-sm transition group">
+              <p class="text-sm text-gray-700 group-hover:text-baam-600">这个政策对我的小餐馆有影响吗？</p>
+              <p class="text-xs text-gray-400 mt-1">点击向AI助手提问 &rarr;</p>
+            </button>
+            <button class="text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-400 hover:shadow-sm transition group">
+              <p class="text-sm text-gray-700 group-hover:text-baam-600">我刚来美国2年，开了一家奶茶店，能享受额外5%优惠吗？</p>
+              <p class="text-xs text-gray-400 mt-1">点击向AI助手提问 &rarr;</p>
+            </button>
+            <button class="text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-400 hover:shadow-sm transition group">
+              <p class="text-sm text-gray-700 group-hover:text-baam-600">申请这个减免需要找会计师吗？费用大概多少？</p>
+              <p class="text-xs text-gray-400 mt-1">点击向AI助手提问 &rarr;</p>
+            </button>
+            <button class="text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-400 hover:shadow-sm transition group">
+              <p class="text-sm text-gray-700 group-hover:text-baam-600">我的网店也算小企业吗？没有实体店面能申请吗？</p>
+              <p class="text-xs text-gray-400 mt-1">点击向AI助手提问 &rarr;</p>
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </article>
+
+    <!-- ==================== DESKTOP SIDEBAR ==================== -->
+    <aside class="hidden lg:block lg:w-80 flex-shrink-0 space-y-6 mt-2">
+
+      <!-- Newsletter Subscribe -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <h3 class="font-bold text-sm mb-2">📬 订阅纽约本地周报</h3>
+        <p class="text-xs text-gray-500 mb-4">每周精选本地新闻、政策解读、商家优惠，直达你的邮箱。</p>
+        <input type="email" placeholder="输入你的邮箱" class="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm mb-3 focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        <button class="w-full h-10 bg-baam-500 text-white text-sm font-medium rounded-lg hover:bg-baam-600 transition">免费订阅</button>
+        <p class="text-xs text-gray-400 mt-2 text-center">1,200+ 纽约华人已订阅</p>
+      </div>
+
+      <!-- 热门新闻 -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <h3 class="font-bold text-sm mb-4">🔥 热门新闻</h3>
+        <div class="space-y-4">
+          <a href="#" class="flex gap-3 group">
+            <span class="text-lg font-bold text-baam-400 leading-none mt-0.5">1</span>
+            <div>
+              <h4 class="text-sm font-medium line-clamp-2 group-hover:text-baam-500 transition">DMV新规：4月起驾照更新必须预约，网上预约系统全面开放</h4>
+              <p class="text-xs text-gray-400 mt-1">5小时前</p>
+            </div>
+          </a>
+          <a href="#" class="flex gap-3 group">
+            <span class="text-lg font-bold text-baam-300 leading-none mt-0.5">2</span>
+            <div>
+              <h4 class="text-sm font-medium line-clamp-2 group-hover:text-baam-500 transition">法拉盛Main St地铁站电梯终于要修好了，预计下月恢复使用</h4>
+              <p class="text-xs text-gray-400 mt-1">3小时前</p>
+            </div>
+          </a>
+          <a href="#" class="flex gap-3 group">
+            <span class="text-lg font-bold text-baam-200 leading-none mt-0.5">3</span>
+            <div>
+              <h4 class="text-sm font-medium line-clamp-2 group-hover:text-baam-500 transition">皇后区学区重新划分方案公布，华人家长激烈讨论中</h4>
+              <p class="text-xs text-gray-400 mt-1">6小时前</p>
+            </div>
+          </a>
+          <a href="#" class="flex gap-3 group">
+            <span class="text-lg font-bold text-gray-300 leading-none mt-0.5">4</span>
+            <div>
+              <h4 class="text-sm font-medium line-clamp-2 group-hover:text-baam-500 transition">纽约市将对外卖平台佣金设上限，餐馆老板拍手叫好</h4>
+              <p class="text-xs text-gray-400 mt-1">8小时前</p>
+            </div>
+          </a>
+          <a href="#" class="flex gap-3 group">
+            <span class="text-lg font-bold text-gray-300 leading-none mt-0.5">5</span>
+            <div>
+              <h4 class="text-sm font-medium line-clamp-2 group-hover:text-baam-500 transition">法拉盛新世界商城旁开业新中式面包房，当地居民排队超两小时</h4>
+              <p class="text-xs text-gray-400 mt-1">今天</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- 相关达人 -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5">
+        <h3 class="font-bold text-sm mb-4">🎙️ 相关达人</h3>
+        <div class="space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-sm">💼</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1">
+                <h4 class="text-sm font-semibold truncate">David 张会计</h4>
+                <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              </div>
+              <p class="text-xs text-gray-400">认证CPA · 456粉丝</p>
+            </div>
+            <button data-follow class="px-3 py-1 bg-baam-500 text-white text-xs rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-sm">⚖️</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1">
+                <h4 class="text-sm font-semibold truncate">Linda 王律师</h4>
+                <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              </div>
+              <p class="text-xs text-gray-400">商业律师 · 312粉丝</p>
+            </div>
+            <button data-follow class="px-3 py-1 bg-baam-500 text-white text-xs rounded-lg hover:bg-baam-600 transition">+ 关注</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky ad / CTA -->
+      <div class="sticky top-20 bg-gradient-to-br from-baam-50 to-orange-100 border border-baam-200 rounded-xl p-5 text-center">
+        <p class="text-sm font-semibold text-baam-700 mb-2">需要报税帮助？</p>
+        <p class="text-xs text-gray-600 mb-3">浏览Baam上经过认证的法拉盛中文报税服务机构</p>
+        <a href="business-list.html" class="block w-full py-2 bg-baam-500 text-white text-sm font-medium rounded-lg hover:bg-baam-600 transition">查看报税服务商家 &rarr;</a>
+      </div>
+
+    </aside>
+
+  </div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400 mt-12">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2026 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6">
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
+          <input type="text" placeholder="你的显示名称" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

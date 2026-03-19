@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商家目录 · Baam 纽约华人本地商家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-white border-b border-gray-200">
+  <div class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-bold">商家目录</h1>
+        <p class="text-sm text-gray-500 mt-1">共 156 家商家 · 法拉盛及周边地区华人商家信息</p>
+      </div>
+      <!-- Map/List Toggle (Desktop) -->
+      <div class="hidden lg:flex items-center bg-gray-100 rounded-lg p-1">
+        <button class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
+          <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          列表
+        </button>
+        <button class="px-4 py-2 text-sm font-medium text-gray-500 rounded-md hover:text-gray-700">
+          <svg class="w-4 h-4 inline-block mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+          地图
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FILTERS ==================== -->
+<section class="bg-white border-b border-gray-200 sticky top-16 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-4 space-y-3">
+
+    <!-- Category Filter Pills (horizontal scroll on mobile) -->
+    <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4">
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-baam-500 text-white rounded-full">全部</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">餐饮美食 🍜</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">医疗健康 🏥</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">法律移民 ⚖️</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">地产保险 🏠</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">教育培训 📚</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">装修家居 🔧</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">汽车服务 🚗</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">财税服务 💼</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">美容保健 💆</button>
+      <button class="flex-shrink-0 px-4 py-2 text-sm font-medium bg-gray-100 text-gray-700 rounded-full hover:bg-orange-50 hover:text-baam-500 transition">其他服务</button>
+    </div>
+
+    <!-- Second row: Region + Feature Tags + Sort -->
+    <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+      <!-- Region Dropdown -->
+      <select class="h-9 px-3 pr-8 text-sm border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none cursor-pointer">
+        <option>法拉盛</option>
+        <option>皇后区</option>
+        <option>纽约市</option>
+      </select>
+
+      <!-- Feature Filter Tags -->
+      <button class="px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition">提供中文服务</button>
+      <button class="px-3 py-1.5 text-xs font-medium border border-gray-200 bg-white text-gray-600 rounded-full hover:bg-gray-50 transition">周末营业</button>
+      <button class="px-3 py-1.5 text-xs font-medium border border-gray-200 bg-white text-gray-600 rounded-full hover:bg-gray-50 transition">接受Medicaid</button>
+      <button class="px-3 py-1.5 text-xs font-medium border border-gray-200 bg-white text-gray-600 rounded-full hover:bg-gray-50 transition">现在营业</button>
+
+      <!-- Sort Dropdown (pushed to right on desktop) -->
+      <div class="sm:ml-auto">
+        <select class="h-9 px-3 pr-8 text-sm border border-gray-300 rounded-lg bg-white text-gray-700 focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none cursor-pointer">
+          <option>推荐（AI排序）</option>
+          <option>评分最高</option>
+          <option>最近更新</option>
+          <option>距离最近</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RESULTS ==================== -->
+<div class="max-w-7xl mx-auto px-4 py-6">
+
+  <!-- Results Count -->
+  <p class="text-sm text-gray-500 mb-5">显示 1-20 / 共 156 家</p>
+
+  <!-- Business Card Grid -->
+  <div class="grid lg:grid-cols-2 gap-5">
+
+    <!-- ===== FEATURED CARD 1: Medical ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border-2 border-baam-400 shadow-sm hover:shadow-md transition relative overflow-hidden">
+      <div class="absolute top-0 left-0 bg-baam-500 text-white text-xs font-bold px-3 py-1 rounded-br-lg">推荐</div>
+      <div class="p-5 sm:p-6">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-blue-200 to-blue-400 flex-shrink-0 flex items-center justify-center text-2xl sm:text-3xl">🏥</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-base sm:text-lg truncate">王氏家庭医疗中心</h3>
+              <svg class="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <!-- Bookmark -->
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-blue">医疗健康</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-500 font-medium">4.8</span>
+                <span class="text-xs text-gray-400">(126评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+              <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">接受Medicaid</span>
+              <span class="text-xs bg-orange-50 text-orange-700 px-2 py-0.5 rounded-full">用户常提到：耐心</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Roosevelt Ave</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== FEATURED CARD 2: Legal ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border-2 border-baam-400 shadow-sm hover:shadow-md transition relative overflow-hidden">
+      <div class="absolute top-0 left-0 bg-baam-500 text-white text-xs font-bold px-3 py-1 rounded-br-lg">推荐</div>
+      <div class="p-5 sm:p-6">
+        <div class="flex items-start gap-4">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl bg-gradient-to-br from-red-200 to-red-400 flex-shrink-0 flex items-center justify-center text-2xl sm:text-3xl">⚖️</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-base sm:text-lg truncate">张律师事务所</h3>
+              <svg class="w-5 h-5 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-red">法律移民</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-500 font-medium">4.5</span>
+                <span class="text-xs text-gray-400">(83评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">免费咨询</span>
+              <span class="text-xs bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full">用户常提到：专业</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Main St</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 1: Medical ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-teal-200 to-teal-300 flex-shrink-0 flex items-center justify-center text-xl">🩺</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">仁和家庭诊所</h3>
+              <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-blue">医疗健康</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-500 font-medium">4.6</span>
+                <span class="text-xs text-gray-400">(104评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">接受Medicaid</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">现在营业</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Kissena Blvd</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 2: Food ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-yellow-200 to-yellow-300 flex-shrink-0 flex items-center justify-center text-xl">🍜</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">川味坊麻辣烫</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-primary">餐饮美食</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-500 font-medium">4.9</span>
+                <span class="text-xs text-gray-400">(256评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">现在营业</span>
+              <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">用户推荐</span>
+              <span class="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">用户常提到：味道正宗</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Prince St</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 3: Food ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-orange-200 to-orange-300 flex-shrink-0 flex items-center justify-center text-xl">🥟</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">金丰大酒楼</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-primary">餐饮美食</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-500 font-medium">4.3</span>
+                <span class="text-xs text-gray-400">(189评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+              <span class="text-xs bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded-full">用户常提到：早茶好</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · 38th Ave</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 4: Tax ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-xl">💼</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">华信会计师事务所</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-green">财税服务</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-500 font-medium">4.7</span>
+                <span class="text-xs text-gray-400">(94评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">报税季热门</span>
+              <span class="text-xs bg-orange-50 text-orange-700 px-2 py-0.5 rounded-full">用户常提到：效率高</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Main St</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 5: Legal ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-indigo-200 to-indigo-300 flex-shrink-0 flex items-center justify-center text-xl">⚖️</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">陈氏移民律师楼</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-red">法律移民</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-500 font-medium">4.4</span>
+                <span class="text-xs text-gray-400">(67评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+              <span class="text-xs bg-teal-50 text-teal-700 px-2 py-0.5 rounded-full">用户常提到：经验丰富</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Roosevelt Ave</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 6: Education ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-pink-200 to-pink-300 flex-shrink-0 flex items-center justify-center text-xl">📚</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">小天才教育中心</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-purple">教育培训</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-500 font-medium">4.6</span>
+                <span class="text-xs text-gray-400">(47评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文教学</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">适合儿童</span>
+              <span class="text-xs bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">用户常提到：老师负责</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · Northern Blvd</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 7: Renovation ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-cyan-200 to-cyan-300 flex-shrink-0 flex items-center justify-center text-xl">🔧</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">老李装修工程</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-gray">装修家居</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★☆</span>
+                <span class="text-xs text-gray-500 font-medium">4.4</span>
+                <span class="text-xs text-gray-400">(38评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">免费估价</span>
+              <span class="text-xs bg-cyan-50 text-cyan-700 px-2 py-0.5 rounded-full">用户常提到：价格实惠</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">皇后区 · Bayside</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- ===== STANDARD CARD 8: Medical ===== -->
+    <a href="business-detail.html" class="block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+      <div class="p-5">
+        <div class="flex items-start gap-4">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-rose-200 to-rose-300 flex-shrink-0 flex items-center justify-center text-xl">🦷</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-semibold text-sm truncate">林氏牙科诊所</h3>
+              <button class="ml-auto p-1 text-gray-300 hover:text-baam-500 flex-shrink-0" onclick="event.preventDefault();">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </button>
+            </div>
+            <div class="flex items-center gap-2 text-sm mb-2">
+              <span class="badge badge-blue">医疗健康</span>
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-500 text-xs">★★★★★</span>
+                <span class="text-xs text-gray-500 font-medium">4.7</span>
+                <span class="text-xs text-gray-400">(89评价)</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">中文服务</span>
+              <span class="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">周末营业</span>
+              <span class="text-xs bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full">用户常提到：不疼</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-xs text-gray-400">法拉盛 · 41st Ave</p>
+              <button class="text-xs font-medium text-white bg-baam-500 px-4 py-1.5 rounded-lg hover:bg-baam-600 transition" onclick="event.preventDefault();">联系</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ==================== LOAD MORE ==================== -->
+  <div class="text-center mt-8">
+    <button class="inline-flex items-center gap-2 px-8 py-3 bg-white border border-gray-300 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      加载更多
+    </button>
+    <p class="text-xs text-gray-400 mt-2">已显示 20 / 156 家商家</p>
+  </div>
+
+</div>
+
+<!-- ==================== BUSINESS CTA BANNER ==================== -->
+<section class="bg-gradient-to-r from-baam-500 to-orange-600 text-white">
+  <div class="max-w-7xl mx-auto px-4 py-10 sm:py-12 text-center">
+    <h2 class="text-xl sm:text-2xl font-bold mb-2">你是商家？立即入驻 Baam，获得更多曝光</h2>
+    <p class="text-orange-100 text-sm sm:text-base mb-6">免费创建商家主页 · AI 自动优化 · 精准触达本地华人客户</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <button class="w-full sm:w-auto px-8 py-3 bg-white text-baam-600 font-bold text-sm rounded-lg hover:bg-orange-50 transition shadow-lg">免费入驻</button>
+      <button class="w-full sm:w-auto px-8 py-3 border-2 border-white/50 text-white font-medium text-sm rounded-lg hover:bg-white/10 transition">了解更多</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2026 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6" data-tabs>
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+        <div class="relative my-4">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+          <div class="relative flex justify-center"><span class="bg-white px-3 text-xs text-gray-400">或者</span></div>
+        </div>
+        <button class="w-full h-11 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          使用 Google 登录
+        </button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

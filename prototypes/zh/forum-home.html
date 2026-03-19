@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社区论坛 · Baam 纽约华人社区</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-baam-500 bg-orange-50 rounded-md">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="hidden sm:flex items-center gap-1 text-sm text-gray-600 hover:text-baam-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>法拉盛</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <button data-modal-open="auth-modal" class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== PAGE HEADER ==================== -->
+<section class="bg-gradient-to-br from-baam-500 to-orange-600 text-white py-10 sm:py-14">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2">社区论坛</h1>
+    <p class="text-orange-100 text-lg">分享经验，互相帮助</p>
+    <!-- Forum Stats -->
+    <div class="flex items-center justify-center gap-6 mt-5 text-sm text-orange-100">
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        12,846 注册用户
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+        今日 210 新帖
+      </span>
+      <span class="hidden sm:flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+        358 在线
+      </span>
+    </div>
+    <!-- Search -->
+    <div class="relative max-w-xl mx-auto mt-6">
+      <input type="text" placeholder="搜索论坛帖子...例如「法拉盛租房」" class="w-full h-12 pl-5 pr-12 rounded-xl text-gray-900 text-sm shadow-lg border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-gray-400">
+      <button class="absolute right-2 top-2 w-8 h-8 bg-baam-500 text-white rounded-lg flex items-center justify-center hover:bg-baam-600">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="max-w-7xl mx-auto px-4 py-8 space-y-10">
+
+<!-- ==================== BOARD CARDS: 生活类 ==================== -->
+<section>
+  <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+    <span class="w-1 h-5 bg-baam-500 rounded-full"></span>
+    生活类
+  </h2>
+  <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <!-- 租房买房 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">🏠</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">租房买房</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">租房经验、买房攻略、室友</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日28帖</span>
+      </div>
+    </a>
+    <!-- 求职招聘 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">💼</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">求职招聘</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">工作机会、面试经验、职场</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日15帖</span>
+      </div>
+    </a>
+    <!-- 二手买卖 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">🛒</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">二手买卖</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">闲置转让、求购、免费赠送</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日42帖</span>
+      </div>
+    </a>
+    <!-- 美食推荐 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">🍜</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">美食推荐</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">餐厅推荐、探店分享、食谱</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日35帖</span>
+      </div>
+    </a>
+    <!-- 就医经验 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">🏥</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">就医经验</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">看病经验、医生推荐、保险</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日12帖</span>
+      </div>
+    </a>
+    <!-- 教育学区 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-baam-200 transition-all group">
+      <div class="text-3xl mb-2">📚</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-baam-500 transition">教育学区</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">学校选择、课外活动、升学</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-baam-500 bg-baam-50 px-2 py-0.5 rounded-full">今日8帖</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== BOARD CARDS: 资讯类 ==================== -->
+<section>
+  <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+    <span class="w-1 h-5 bg-blue-500 rounded-full"></span>
+    资讯类
+  </h2>
+  <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <!-- 法律移民问答 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-blue-200 transition-all group">
+      <div class="text-3xl mb-2">⚖️</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-blue-600 transition">法律移民问答</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">签证、绿卡、法律咨询</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">今日18帖</span>
+      </div>
+    </a>
+    <!-- 驾照交通 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-blue-200 transition-all group">
+      <div class="text-3xl mb-2">🚗</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-blue-600 transition">驾照交通</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">考驾照、交通规则、停车</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">今日6帖</span>
+      </div>
+    </a>
+    <!-- 理财信用卡 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-blue-200 transition-all group">
+      <div class="text-3xl mb-2">💳</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-blue-600 transition">理财信用卡</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">信用卡推荐、投资、银行</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">今日10帖</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== BOARD CARDS: 其他 ==================== -->
+<section>
+  <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+    <span class="w-1 h-5 bg-purple-500 rounded-full"></span>
+    其他
+  </h2>
+  <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <!-- 曝光台 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-purple-200 transition-all group">
+      <div class="text-3xl mb-2">🔍</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-purple-600 transition">曝光台</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">消费警告、防骗提醒</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">今日5帖</span>
+      </div>
+    </a>
+    <!-- 新闻讨论 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-purple-200 transition-all group">
+      <div class="text-3xl mb-2">📰</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-purple-600 transition">新闻讨论</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">热点新闻评论、社区动态</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">今日22帖</span>
+      </div>
+    </a>
+    <!-- 活动拼团 -->
+    <a href="forum-board.html" class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md hover:border-purple-200 transition-all group">
+      <div class="text-3xl mb-2">🎪</div>
+      <h3 class="font-semibold text-sm sm:text-base text-gray-900 group-hover:text-purple-600 transition">活动拼团</h3>
+      <p class="text-xs text-gray-500 mt-1 line-clamp-1">活动召集、拼团、社交</p>
+      <div class="flex items-center gap-1.5 mt-3">
+        <span class="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">今日9帖</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== 全站热帖 ==================== -->
+<section>
+  <div class="flex items-center justify-between mb-5">
+    <h2 class="text-xl font-bold flex items-center gap-2">
+      <span class="text-2xl">🔥</span> 全站热帖
+    </h2>
+    <select class="text-xs text-gray-500 border border-gray-200 rounded-md px-2 py-1 bg-white">
+      <option>今日热帖</option>
+      <option>本周热帖</option>
+      <option>本月热帖</option>
+    </select>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+    <!-- Hot Thread 1 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs font-medium rounded">美食推荐</span>
+          <span class="text-xs text-red-500 font-medium">🔥 热帖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">法拉盛有没有推荐的川菜馆？最近新开的那几家如何？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：多位用户推荐了Main St的川味坊和川渝人家，提到性价比高、味道正宗...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">68</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 2 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">租房买房</span>
+          <span class="text-xs text-red-500 font-medium">🔥 热帖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">2026年法拉盛租房行情怎么样？一室一厅大概多少钱？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：目前法拉盛一室一厅月租约$1900-2300，比去年上涨约8%...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">73</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 3 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-medium rounded">法律移民</span>
+          <span class="text-xs text-red-500 font-medium">🔥 热帖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">H1B抽签结果出来了吗？有没有今年中签的分享经验？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：部分用户已收到通知，讨论了中签后的时间线和材料准备注意事项...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">56</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 4 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded">二手买卖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">回国清仓！全新Dyson吸尘器、PS5、厨房用品等，价格好商量</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：楼主搬家回国，多件家电和电子产品低价出售，法拉盛自取...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">45</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 5 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded">曝光台</span>
+          <span class="text-xs text-red-500 font-medium">🔥 热帖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">小心！法拉盛某装修公司收了定金就消失了，有人遇到过吗？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：多位用户反映同一装修公司收取50%定金后失联，建议报警和BBB投诉...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">82</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 6 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium rounded">就医经验</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">法拉盛有没有推荐的中医诊所？最近肩颈不太舒服</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：多位用户推荐仁和堂和济世堂，擅长针灸推拿，接受多种保险...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">23</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 7 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">理财信用卡</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">Chase Sapphire Preferred值得申请吗？和Amex Gold比哪个好？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：两张卡各有优劣，CSP旅行权益强但年费低，Amex Gold吃饭返点更高...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">37</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 8 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded">教育学区</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">皇后区学区排名分享，哪些学校适合华人家庭？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：讨论集中在26学区和25学区，推荐了几所SAT成绩突出的高中...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">28</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 9 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded">驾照交通</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">分享纽约州路考经验，法拉盛考场一次过！附路线图</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：楼主分享了法拉盛路考详细路线和注意事项，多人确认有效...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">41</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+    <!-- Hot Thread 10 -->
+    <a href="forum-thread.html" class="flex items-center gap-4 p-4 hover:bg-gray-50 transition">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="px-2 py-0.5 bg-pink-100 text-pink-700 text-xs font-medium rounded">新闻讨论</span>
+          <span class="text-xs text-red-500 font-medium">🔥 热帖</span>
+        </div>
+        <h3 class="text-sm font-medium truncate">纽约市拟取消餐馆小费制度？大家怎么看？</h3>
+        <p class="text-xs text-gray-400 mt-1 truncate">AI摘要：观点分歧较大，餐饮从业者担心收入下降，消费者普遍支持透明定价...</p>
+      </div>
+      <div class="text-center flex-shrink-0 ml-2">
+        <p class="text-sm font-bold text-baam-500">91</p>
+        <p class="text-xs text-gray-400">回复</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== 本周精华 ==================== -->
+<section>
+  <div class="bg-gradient-to-r from-amber-50 via-orange-50 to-yellow-50 border border-amber-200 rounded-xl p-6 sm:p-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div class="flex-shrink-0">
+        <div class="w-14 h-14 bg-gradient-to-br from-baam-400 to-baam-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-md">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="bg-baam-500 text-white text-xs font-bold px-2.5 py-0.5 rounded-full">AI 精选</span>
+          <span class="text-xs text-amber-600 font-medium">每周更新</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">本周精华 · AI每周精选帖子合集</h3>
+        <p class="text-sm text-gray-600 mt-1">AI 自动从各版块筛选本周最有价值的帖子，整理成精华合集，帮你快速了解社区动态。</p>
+        <div class="flex flex-wrap items-center gap-3 mt-3">
+          <span class="text-xs text-gray-500 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            2026年3月第3周
+          </span>
+          <span class="text-xs text-gray-500">精选 15 篇帖子</span>
+          <span class="text-xs text-gray-500">覆盖 8 个版块</span>
+        </div>
+      </div>
+      <div class="flex-shrink-0 w-full sm:w-auto">
+        <button class="w-full sm:w-auto px-6 py-2.5 bg-baam-500 text-white text-sm font-medium rounded-lg hover:bg-baam-600 transition flex items-center justify-center gap-2">
+          查看本周精华
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- ==================== FLOATING 发帖 BUTTON ==================== -->
+<a href="#" class="fixed bottom-24 right-5 sm:bottom-8 sm:right-8 z-40 w-14 h-14 bg-baam-500 text-white rounded-full shadow-lg hover:bg-baam-600 hover:shadow-xl transition-all flex items-center justify-center group" title="发帖" data-modal-open="auth-modal">
+  <svg class="w-7 h-7 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+  <span class="absolute -top-8 right-0 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">发帖</span>
+</a>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400 mt-12">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。新闻、资讯、论坛、商家、达人，一站式解决本地生活问题。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+          <li><a href="voices-discover.html" class="hover:text-white transition">本地达人</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+          <li><a href="#" class="hover:text-white transition">产品套餐</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2026 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AUTH MODAL ==================== -->
+<div id="auth-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold">登录 Baam</h2>
+      <button data-modal-close class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+    </div>
+    <div class="flex border-b border-gray-200 mb-6">
+      <button class="tab active flex-1 text-center" data-tab="login">登录</button>
+      <button class="tab flex-1 text-center" data-tab="register">注册</button>
+    </div>
+    <div data-panel="login">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="输入密码" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">登录</button>
+        <div class="relative my-4">
+          <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+          <div class="relative flex justify-center"><span class="bg-white px-3 text-xs text-gray-400">或者</span></div>
+        </div>
+        <button class="w-full h-11 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          使用 Google 登录
+        </button>
+        <button class="w-full h-11 border border-gray-300 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed flex items-center justify-center gap-2" disabled>
+          <span class="text-lg">💬</span> 微信登录（即将开放）
+        </button>
+      </div>
+    </div>
+    <div data-panel="register" style="display:none">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+          <input type="email" placeholder="your@email.com" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">昵称</label>
+          <input type="text" placeholder="你的显示名称" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+          <input type="password" placeholder="至少8个字符" class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">所在地区</label>
+          <select class="w-full h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500 text-gray-600">
+            <option>法拉盛 Flushing</option>
+            <option>皇后区 Queens</option>
+            <option>纽约市 NYC</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <button class="w-full h-11 bg-baam-500 text-white font-medium rounded-lg hover:bg-baam-600 transition">创建账号</button>
+        <p class="text-xs text-gray-400 text-center">注册即表示你同意 <a href="#" class="text-baam-500">使用条款</a> 和 <a href="#" class="text-baam-500">隐私政策</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

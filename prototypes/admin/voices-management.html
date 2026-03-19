@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baam Admin · 达人管理</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    .drag-handle { cursor: grab; }
+    .drag-handle:active { cursor: grabbing; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="flex min-h-screen">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="w-60 bg-[#1F2937] text-gray-300 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 z-40 lg:static transition-transform -translate-x-full lg:translate-x-0" id="sidebar">
+    <div class="flex items-center gap-2 px-5 py-5 border-b border-gray-700">
+      <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+      <span class="text-lg font-bold text-white">Baam Admin</span>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📊 <span>Dashboard</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📝 <span>内容管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🏪 <span>商家管理</span></a>
+      <a href="forum-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">💬 <span>论坛管理</span></a>
+      <a href="voices-management.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-baam-500/20 text-baam-400 font-medium">🎙️ <span>达人管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📅 <span>活动管理</span></a>
+      <a href="leads.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">📥 <span>线索管理</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">👥 <span>用户管理</span></a>
+      <a href="ai-jobs.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">🤖 <span>AI任务</span></a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">💰 <span>广告管理</span></a>
+      <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-700/50 transition">⚙️ <span>系统设置</span></a>
+    </nav>
+    <div class="px-5 py-4 border-t border-gray-700 text-xs text-gray-500">Baam Admin v0.1</div>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <button class="lg:hidden p-2 text-gray-500 hover:text-gray-700" onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <h1 class="text-xl font-bold text-gray-900">🎙️ 达人管理</h1>
+      <div class="flex items-center gap-3">
+        <span class="text-sm text-gray-500">管理员</span>
+        <div class="w-8 h-8 bg-baam-500 rounded-full flex items-center justify-center text-white text-sm font-bold">A</div>
+      </div>
+    </header>
+
+    <main class="flex-1 p-6">
+      <!-- Tabs -->
+      <div class="border-b border-gray-200 mb-6">
+        <nav class="flex gap-6 -mb-px" id="voices-tabs">
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-baam-500 text-baam-600" data-tab="applications">申请审核<span class="ml-1.5 bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">4</span></button>
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="list">达人列表</button>
+          <button class="tab-btn pb-3 px-1 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700" data-tab="featured">Featured管理</button>
+        </nav>
+      </div>
+
+      <!-- Tab: 申请审核 -->
+      <div id="tab-applications" class="tab-content">
+        <div class="space-y-4">
+          <!-- Application 1 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0">林</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="font-semibold text-gray-900 text-lg">林美食 (MeishiLin)</h3>
+                  <span class="bg-pink-100 text-pink-700 text-xs px-2 py-0.5 rounded-full">美食博主</span>
+                  <span class="text-xs text-gray-400">申请时间: 2026-03-18</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">法拉盛美食探店达人，专注纽约华人餐厅测评。已在小红书拥有5万粉丝，希望在Baam平台分享更多本地美食内容。</p>
+                <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                  <span>📱 小红书粉丝: 50K</span>
+                  <span>📝 样本内容: 3篇</span>
+                  <span>📍 法拉盛</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                  <p class="text-xs text-gray-500 mb-1">样本内容预览:</p>
+                  <p class="text-sm text-gray-700">"法拉盛这家隐藏的湖南菜馆，辣得过瘾！剁椒鱼头是招牌，鱼肉嫩滑入味，配上他们家的手工米粉，简直绝了..." </p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">批准</button>
+                  <button class="px-4 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Application 2 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0">陈</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="font-semibold text-gray-900 text-lg">陈律师 (LawyerChen)</h3>
+                  <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">专业顾问</span>
+                  <span class="text-xs text-gray-400">申请时间: 2026-03-17</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">执业移民律师，10年经验，专注H1B、EB1/2/3及家庭移民。希望通过平台为华人社区提供免费移民资讯和法律常识科普。</p>
+                <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                  <span>🏢 纽约执业律师</span>
+                  <span>📝 样本内容: 2篇</span>
+                  <span>📍 曼哈顿</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                  <p class="text-xs text-gray-500 mb-1">样本内容预览:</p>
+                  <p class="text-sm text-gray-700">"2026年H1B抽签政策有重大变化！移民局近期公布了新的电子注册系统规则，本文为大家详细解读几个关键变化点..."</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">批准</button>
+                  <button class="px-4 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Application 3 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-teal-500 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0">张</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="font-semibold text-gray-900 text-lg">张跑跑 (RunnerZhang)</h3>
+                  <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">生活方式</span>
+                  <span class="text-xs text-gray-400">申请时间: 2026-03-16</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">跑步爱好者和健身教练，定期组织法拉盛公园晨跑活动。想通过Baam分享健康生活方式和本地运动资源。</p>
+                <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                  <span>🏃 NASM认证教练</span>
+                  <span>📝 样本内容: 2篇</span>
+                  <span>📍 法拉盛</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                  <p class="text-xs text-gray-500 mb-1">样本内容预览:</p>
+                  <p class="text-sm text-gray-700">"纽约最适合华人跑步的5条路线！从法拉盛草原公园到布鲁克林大桥，每条路线我都亲自跑过并标注了饮水站和洗手间..."</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">批准</button>
+                  <button class="px-4 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Application 4 -->
+          <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <div class="flex items-start gap-5">
+              <div class="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0">王</div>
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-1">
+                  <h3 class="font-semibold text-gray-900 text-lg">王省钱 (DealWang)</h3>
+                  <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">省钱达人</span>
+                  <span class="text-xs text-gray-400">申请时间: 2026-03-15</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-2">资深薅羊毛达人，擅长发现各种优惠信息、折扣码和返现活动。在多个华人社区活跃，粉丝基础良好。</p>
+                <div class="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                  <span>💰 微信群主(8个)</span>
+                  <span>📝 样本内容: 4篇</span>
+                  <span>📍 布鲁克林</span>
+                </div>
+                <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                  <p class="text-xs text-gray-500 mb-1">样本内容预览:</p>
+                  <p class="text-sm text-gray-700">"本周Costco必买清单！会员专属折扣汇总：Kirkland有机鸡蛋降价$3，Tide洗衣液买一送一，三星电视直降$200..."</p>
+                </div>
+                <div class="flex gap-2">
+                  <button class="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">批准</button>
+                  <button class="px-4 py-2 text-sm bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">拒绝</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: 达人列表 -->
+      <div id="tab-list" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <input type="text" placeholder="搜索达人名称..." class="text-sm border border-gray-300 rounded-lg px-3 py-2 w-64 focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+              <select class="text-sm border border-gray-300 rounded-lg px-3 py-2 outline-none">
+                <option>全部类型</option><option>美食博主</option><option>专业顾问</option><option>生活方式</option><option>省钱达人</option><option>教育培训</option>
+              </select>
+            </div>
+            <button class="px-4 py-2 bg-baam-500 text-white text-sm rounded-lg hover:bg-baam-600 transition">+ 邀请达人</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">达人</th>
+                  <th class="px-5 py-3">类型</th>
+                  <th class="px-5 py-3">关注者</th>
+                  <th class="px-5 py-3">帖子数</th>
+                  <th class="px-5 py-3">Featured</th>
+                  <th class="px-5 py-3">操作</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white text-xs font-bold">李</div><div><div class="font-medium">李厨娘</div><div class="text-xs text-gray-400">@chef_li</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-pink-100 text-pink-700 text-xs px-2 py-0.5 rounded-full">美食博主</span></td>
+                  <td class="px-5 py-3">2,345</td>
+                  <td class="px-5 py-3">87</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white text-xs font-bold">赵</div><div><div class="font-medium">赵医生</div><div class="text-xs text-gray-400">@dr_zhao</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full">专业顾问</span></td>
+                  <td class="px-5 py-3">1,890</td>
+                  <td class="px-5 py-3">45</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center text-white text-xs font-bold">周</div><div><div class="font-medium">周老师</div><div class="text-xs text-gray-400">@teacher_zhou</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full">教育培训</span></td>
+                  <td class="px-5 py-3">1,456</td>
+                  <td class="px-5 py-3">62</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer"><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">吴</div><div><div class="font-medium">吴省钱</div><div class="text-xs text-gray-400">@save_wu</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full">省钱达人</span></td>
+                  <td class="px-5 py-3">3,210</td>
+                  <td class="px-5 py-3">134</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">孙</div><div><div class="font-medium">孙装修</div><div class="text-xs text-gray-400">@renovate_sun</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full">家居装修</span></td>
+                  <td class="px-5 py-3">987</td>
+                  <td class="px-5 py-3">28</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer"><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-5 py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-xs font-bold">钱</div><div><div class="font-medium">钱地产</div><div class="text-xs text-gray-400">@realtor_qian</div></div></div></td>
+                  <td class="px-5 py-3"><span class="bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full">房产顾问</span></td>
+                  <td class="px-5 py-3">2,678</td>
+                  <td class="px-5 py-3">56</td>
+                  <td class="px-5 py-3"><label class="relative inline-flex items-center cursor-pointer"><input type="checkbox" class="sr-only peer" checked><div class="w-9 h-5 bg-gray-200 peer-checked:bg-baam-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full"></div></label></td>
+                  <td class="px-5 py-3"><div class="flex gap-1"><button class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100">查看</button><button class="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">编辑</button><button class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">停用</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-3 border-t border-gray-200 flex items-center justify-between text-sm text-gray-500">
+            <span>显示 1-6 / 共 23 位达人</span>
+            <div class="flex gap-1">
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">上一页</button>
+              <button class="px-3 py-1 bg-baam-500 text-white rounded">1</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">3</button>
+              <button class="px-3 py-1 border rounded hover:bg-gray-50">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Featured管理 -->
+      <div id="tab-featured" class="tab-content hidden">
+        <div class="bg-white rounded-xl border border-gray-200">
+          <div class="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h3 class="font-semibold text-gray-900">首页Featured达人排序</h3>
+              <p class="text-sm text-gray-500 mt-1">拖拽调整达人在首页的展示顺序</p>
+            </div>
+            <button class="px-4 py-2 bg-baam-500 text-white text-sm rounded-lg hover:bg-baam-600 transition">保存排序</button>
+          </div>
+          <div class="divide-y divide-gray-100">
+            <div class="px-5 py-4 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400 text-lg">⠿</span>
+              <span class="text-sm font-bold text-baam-500 w-6">1</span>
+              <div class="w-10 h-10 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-bold">李</div>
+              <div class="flex-1">
+                <div class="font-medium">李厨娘</div>
+                <div class="text-xs text-gray-400">美食博主 · 2,345 关注</div>
+              </div>
+              <span class="text-xs text-gray-400">87 篇内容</span>
+            </div>
+            <div class="px-5 py-4 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400 text-lg">⠿</span>
+              <span class="text-sm font-bold text-baam-500 w-6">2</span>
+              <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full flex items-center justify-center text-white text-sm font-bold">赵</div>
+              <div class="flex-1">
+                <div class="font-medium">赵医生</div>
+                <div class="text-xs text-gray-400">专业顾问 · 1,890 关注</div>
+              </div>
+              <span class="text-xs text-gray-400">45 篇内容</span>
+            </div>
+            <div class="px-5 py-4 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400 text-lg">⠿</span>
+              <span class="text-sm font-bold text-baam-500 w-6">3</span>
+              <div class="w-10 h-10 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full flex items-center justify-center text-white text-sm font-bold">吴</div>
+              <div class="flex-1">
+                <div class="font-medium">吴省钱</div>
+                <div class="text-xs text-gray-400">省钱达人 · 3,210 关注</div>
+              </div>
+              <span class="text-xs text-gray-400">134 篇内容</span>
+            </div>
+            <div class="px-5 py-4 flex items-center gap-4 hover:bg-gray-50">
+              <span class="drag-handle text-gray-400 text-lg">⠿</span>
+              <span class="text-sm font-bold text-baam-500 w-6">4</span>
+              <div class="w-10 h-10 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full flex items-center justify-center text-white text-sm font-bold">钱</div>
+              <div class="flex-1">
+                <div class="font-medium">钱地产</div>
+                <div class="text-xs text-gray-400">房产顾问 · 2,678 关注</div>
+              </div>
+              <span class="text-xs text-gray-400">56 篇内容</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+<script>
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('border-baam-500', 'text-baam-600'); b.classList.add('border-transparent', 'text-gray-500'); });
+      btn.classList.add('border-baam-500', 'text-baam-600');
+      btn.classList.remove('border-transparent', 'text-gray-500');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+    });
+  });
+</script>
+</body>
+</html>

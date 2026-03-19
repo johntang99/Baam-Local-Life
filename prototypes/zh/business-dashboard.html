@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商家管理后台 · 王氏家庭医疗中心 · Baam</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    .biz-sidebar-link { transition: all 0.15s ease; }
+    .biz-sidebar-link:hover { background-color: rgba(249,115,22,0.1); }
+    .biz-sidebar-link.active { background-color: rgba(249,115,22,0.15); border-right: 3px solid #F97316; color: #F97316; }
+    .stat-card { transition: box-shadow 0.2s ease; }
+    .stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+        </a>
+        <span class="text-xs bg-gray-800 text-white px-2.5 py-1 rounded-full font-medium">我的商家</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="business-detail.html" class="text-sm text-baam-500 hover:underline hidden sm:inline">查看我的商家页 →</a>
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full relative">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-sm">🏥</div>
+          <span class="text-sm font-medium hidden sm:inline">王氏医疗中心</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="flex">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="hidden lg:block w-60 min-h-[calc(100vh-64px)] bg-gray-800 flex-shrink-0">
+    <div class="p-5 border-b border-gray-700">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center text-lg">🏥</div>
+        <div>
+          <h3 class="text-white text-sm font-semibold">王氏家庭医疗中心</h3>
+          <span class="text-xs text-green-400">已认证</span>
+        </div>
+      </div>
+    </div>
+    <nav class="py-3">
+      <a href="#" class="biz-sidebar-link active flex items-center gap-3 px-5 py-2.5 text-sm text-white" onclick="switchTab('overview')">
+        <span class="w-5 text-center">📊</span> 概览
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('info')">
+        <span class="w-5 text-center">ℹ️</span> 基本信息
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('images')">
+        <span class="w-5 text-center">🖼️</span> 图片管理
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('ai')">
+        <span class="w-5 text-center">🤖</span> AI内容工具
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('reviews')">
+        <span class="w-5 text-center">⭐</span> 评价管理
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('analytics')">
+        <span class="w-5 text-center">📈</span> 数据洞察
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('leads')">
+        <span class="w-5 text-center">📥</span> 线索管理
+      </a>
+      <a href="#" class="biz-sidebar-link flex items-center gap-3 px-5 py-2.5 text-sm text-gray-300" onclick="switchTab('upgrade')">
+        <span class="w-5 text-center">💎</span> 套餐升级
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 p-6 lg:p-8 max-w-6xl">
+
+    <!-- Page Title -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">商家概览</h1>
+      <p class="text-sm text-gray-500 mt-1">欢迎回来，王氏家庭医疗中心</p>
+    </div>
+
+    <!-- ===== Stat Cards ===== -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <!-- Visit -->
+      <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">本周访问</span>
+          <span class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </span>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">1,234</div>
+        <div class="flex items-center gap-1 mt-1">
+          <span class="text-xs font-medium text-green-600">↑ 12%</span>
+          <span class="text-xs text-gray-400">较上周</span>
+        </div>
+      </div>
+      <!-- Phone clicks -->
+      <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">电话点击</span>
+          <span class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          </span>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">45</div>
+        <div class="flex items-center gap-1 mt-1">
+          <span class="text-xs font-medium text-green-600">↑ 8%</span>
+          <span class="text-xs text-gray-400">较上周</span>
+        </div>
+      </div>
+      <!-- Address clicks -->
+      <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">地址点击</span>
+          <span class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </span>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">89</div>
+        <div class="flex items-center gap-1 mt-1">
+          <span class="text-xs font-medium text-green-600">↑ 5%</span>
+          <span class="text-xs text-gray-400">较上周</span>
+        </div>
+      </div>
+      <!-- Form submissions -->
+      <div class="stat-card bg-white rounded-xl p-5 border border-gray-100">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">表单提交</span>
+          <span class="w-8 h-8 rounded-lg bg-baam-50 flex items-center justify-center text-baam-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </span>
+        </div>
+        <div class="text-2xl font-bold text-gray-900">12</div>
+        <div class="flex items-center gap-1 mt-1">
+          <span class="text-xs font-medium text-red-500">↓ 3%</span>
+          <span class="text-xs text-gray-400">较上周</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6 mb-8">
+
+      <!-- ===== To-Do / Action Items ===== -->
+      <div class="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 class="text-base font-semibold text-gray-900 mb-4">📋 待办事项</h2>
+
+        <!-- Profile completeness -->
+        <div class="mb-4">
+          <div class="flex items-center justify-between text-sm mb-1.5">
+            <span class="text-gray-600">资料完善度</span>
+            <span class="font-semibold text-baam-600">60%</span>
+          </div>
+          <div class="w-full bg-gray-100 rounded-full h-2.5">
+            <div class="bg-baam-500 h-2.5 rounded-full" style="width: 60%"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-1">补充完整信息可提高搜索排名</p>
+        </div>
+
+        <ul class="space-y-3">
+          <li class="flex items-center gap-3 p-2.5 rounded-lg bg-yellow-50 border border-yellow-100">
+            <span class="w-6 h-6 rounded-full bg-yellow-200 flex items-center justify-center text-xs">⚠️</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-800">3 条新评价待回复</p>
+              <p class="text-xs text-gray-500">及时回复可提升商家信誉</p>
+            </div>
+            <a href="#" class="text-xs text-baam-500 font-medium hover:underline">查看</a>
+          </li>
+          <li class="flex items-center gap-3 p-2.5 rounded-lg bg-blue-50 border border-blue-100">
+            <span class="w-6 h-6 rounded-full bg-blue-200 flex items-center justify-center text-xs">📥</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-800">2 条新线索</p>
+              <p class="text-xs text-gray-500">有客户通过表单联系您</p>
+            </div>
+            <a href="#" class="text-xs text-baam-500 font-medium hover:underline">查看</a>
+          </li>
+          <li class="flex items-center gap-3 p-2.5 rounded-lg bg-gray-50 border border-gray-100">
+            <span class="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs">📸</span>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-gray-800">添加更多照片</p>
+              <p class="text-xs text-gray-500">当前仅 2 张，建议上传 5+ 张</p>
+            </div>
+            <a href="#" class="text-xs text-baam-500 font-medium hover:underline">上传</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- ===== AI Brief Generator ===== -->
+      <div class="bg-white rounded-xl border border-gray-100 p-6">
+        <h2 class="text-base font-semibold text-gray-900 mb-4">🤖 AI内容助手</h2>
+        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-5 text-center mb-4">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-white shadow flex items-center justify-center text-2xl">✨</div>
+          <h3 class="font-semibold text-gray-900 mb-1">AI智能简介生成</h3>
+          <p class="text-xs text-gray-500 mb-4">基于您的商家信息，AI自动生成专业的中英文简介</p>
+          <button class="bg-baam-500 hover:bg-baam-600 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors">
+            生成AI简介
+          </button>
+        </div>
+        <div class="space-y-2">
+          <button class="w-full text-left text-sm px-3 py-2.5 rounded-lg border border-gray-200 hover:border-baam-300 hover:bg-baam-50 transition-colors flex items-center gap-2">
+            <span>📝</span> 生成FAQ常见问题
+          </button>
+          <button class="w-full text-left text-sm px-3 py-2.5 rounded-lg border border-gray-200 hover:border-baam-300 hover:bg-baam-50 transition-colors flex items-center gap-2">
+            <span>🏷️</span> AI推荐标签
+          </button>
+          <button class="w-full text-left text-sm px-3 py-2.5 rounded-lg border border-gray-200 hover:border-baam-300 hover:bg-baam-50 transition-colors flex items-center gap-2">
+            <span>📊</span> 竞品分析报告
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== Quick Stats / Upgrade CTA ===== -->
+      <div class="space-y-6">
+        <div class="bg-white rounded-xl border border-gray-100 p-6">
+          <h2 class="text-base font-semibold text-gray-900 mb-3">📦 当前套餐</h2>
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">免费版</span>
+            <span class="text-xs text-gray-400">基础展示功能</span>
+          </div>
+          <ul class="text-xs text-gray-500 space-y-1.5 mb-4">
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 基本商家页面</li>
+            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> 5张图片上传</li>
+            <li class="flex items-center gap-2"><span class="text-gray-300">✗</span> AI内容生成（3次/月）</li>
+            <li class="flex items-center gap-2"><span class="text-gray-300">✗</span> 数据洞察详情</li>
+          </ul>
+          <button class="w-full bg-gradient-to-r from-baam-500 to-baam-600 text-white text-sm font-medium py-2.5 rounded-lg hover:from-baam-600 hover:to-baam-700 transition-all">
+            升级到专业版 →
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl border border-gray-100 p-5">
+          <h2 class="text-sm font-semibold text-gray-900 mb-2">⏰ 营业状态</h2>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
+            <span class="text-sm text-green-700 font-medium">营业中</span>
+          </div>
+          <p class="text-xs text-gray-500 mt-1">周一至周五 9:00 - 18:00</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Recent Leads Table ===== -->
+    <div class="bg-white rounded-xl border border-gray-100 p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-gray-900">📥 最近线索</h2>
+        <a href="#" class="text-sm text-baam-500 hover:underline">查看全部 →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left border-b border-gray-100">
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">姓名</th>
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">联系方式</th>
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">来源</th>
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">消息</th>
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">时间</th>
+              <th class="pb-3 font-medium text-gray-500 text-xs uppercase">状态</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            <tr class="hover:bg-gray-50">
+              <td class="py-3 font-medium text-gray-900">张丽华</td>
+              <td class="py-3 text-gray-600">zhang***@gmail.com</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full">联系表单</span></td>
+              <td class="py-3 text-gray-600 max-w-[200px] truncate">请问周末可以预约体检吗？</td>
+              <td class="py-3 text-gray-400 text-xs">2小时前</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 text-xs rounded-full font-medium">待处理</span></td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="py-3 font-medium text-gray-900">李明</td>
+              <td class="py-3 text-gray-600">(718) 555-***2</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-green-50 text-green-600 text-xs rounded-full">电话点击</span></td>
+              <td class="py-3 text-gray-600">—</td>
+              <td class="py-3 text-gray-400 text-xs">5小时前</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">已联系</span></td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="py-3 font-medium text-gray-900">王小红</td>
+              <td class="py-3 text-gray-600">wang***@qq.com</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full">联系表单</span></td>
+              <td class="py-3 text-gray-600 max-w-[200px] truncate">想了解一下家庭医生计划的费用</td>
+              <td class="py-3 text-gray-400 text-xs">昨天</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-yellow-50 text-yellow-700 text-xs rounded-full font-medium">待处理</span></td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="py-3 font-medium text-gray-900">陈大伟</td>
+              <td class="py-3 text-gray-600">(917) 555-***8</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-purple-50 text-purple-600 text-xs rounded-full">微信</span></td>
+              <td class="py-3 text-gray-600 max-w-[200px] truncate">我需要办理体检报告翻译</td>
+              <td class="py-3 text-gray-400 text-xs">2天前</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-green-50 text-green-700 text-xs rounded-full font-medium">已联系</span></td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="py-3 font-medium text-gray-900">刘芳芳</td>
+              <td class="py-3 text-gray-600">liu***@hotmail.com</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full">联系表单</span></td>
+              <td class="py-3 text-gray-600 max-w-[200px] truncate">请问接受联合保险吗？</td>
+              <td class="py-3 text-gray-400 text-xs">3天前</td>
+              <td class="py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full font-medium">已关闭</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="border-t border-gray-200 bg-white mt-8">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between text-xs text-gray-400">
+    <span>&copy; 2026 Baam. All rights reserved.</span>
+    <a href="#" class="hover:text-baam-500">帮助中心</a>
+  </div>
+</footer>
+
+<script src="../assets/js/prototype.js"></script>
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.biz-sidebar-link').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>

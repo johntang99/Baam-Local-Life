@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布内容 · Baam 达人</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="voices-discover.html" class="px-3 py-2 text-sm font-medium text-baam-500 rounded-md bg-orange-50">达人</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button id="lang-toggle" class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <!-- User avatar (logged in) -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center text-sm">👩‍⚕️</div>
+          <span class="text-sm font-medium hidden sm:inline">Dr. 李文华</span>
+        </div>
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-500">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-200 pb-4">
+    <div class="px-4 pt-2 space-y-1">
+      <a href="news-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">新闻</a>
+      <a href="guides-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">生活资讯</a>
+      <a href="business-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">商家</a>
+      <a href="events-list.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">活动</a>
+      <a href="forum-home.html" class="block px-3 py-2 text-base font-medium text-gray-600 rounded-md hover:bg-orange-50">论坛</a>
+      <a href="voices-discover.html" class="block px-3 py-2 text-base font-medium text-baam-500 bg-orange-50 rounded-md">达人</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="max-w-3xl mx-auto px-4 py-8">
+
+  <h1 class="text-2xl font-bold mb-6">发布内容</h1>
+
+  <!-- Content Type Selector -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">内容类型</label>
+    <div class="flex gap-2">
+      <button class="px-5 py-2.5 text-sm font-medium rounded-lg border-2 border-gray-200 text-gray-600 hover:border-baam-300 hover:text-baam-600 transition">短帖</button>
+      <button class="px-5 py-2.5 text-sm font-medium rounded-lg border-2 border-baam-500 bg-orange-50 text-baam-600">博客</button>
+      <button class="px-5 py-2.5 text-sm font-medium rounded-lg border-2 border-gray-200 text-gray-600 hover:border-baam-300 hover:text-baam-600 transition">推荐清单</button>
+    </div>
+  </div>
+
+  <!-- Title Input -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">标题</label>
+    <input type="text" placeholder="输入你的文章标题..." value="在美国看急诊你需要知道的5件事" class="w-full h-12 px-4 border border-gray-300 rounded-lg text-base font-semibold focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+    <!-- AI Title Suggestions -->
+    <div class="mt-2 p-3 bg-blue-50 border border-blue-100 rounded-lg">
+      <div class="flex items-center gap-1.5 mb-2">
+        <span class="text-xs font-semibold text-blue-700 bg-blue-200 px-2 py-0.5 rounded-full">AI 建议</span>
+        <span class="text-xs text-blue-500">点击使用</span>
+      </div>
+      <div class="space-y-1.5">
+        <button class="block w-full text-left text-sm text-blue-700 hover:bg-blue-100 px-2 py-1 rounded transition">"急诊必读：5个华人在美国看ER前必须知道的事"</button>
+        <button class="block w-full text-left text-sm text-blue-700 hover:bg-blue-100 px-2 py-1 rounded transition">"美国急诊室攻略：何时去、带什么、账单怎么处理"</button>
+        <button class="block w-full text-left text-sm text-blue-700 hover:bg-blue-100 px-2 py-1 rounded transition">"华人在美看急诊的5大实用知识点"</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WYSIWYG Editor -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">内容</label>
+    <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-baam-500 focus-within:border-baam-500">
+      <!-- Toolbar -->
+      <div class="flex flex-wrap items-center gap-1 px-3 py-2 bg-gray-50 border-b border-gray-200">
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="加粗">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M6 4h8a4 4 0 014 4 4 4 0 01-4 4H6z"/><path d="M6 12h9a4 4 0 014 4 4 4 0 01-4 4H6z"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="斜体">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="标题">
+          <span class="text-xs font-bold">H</span>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="无序列表">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="有序列表">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="2" y="8" font-size="8" fill="currentColor">1</text><text x="2" y="14" font-size="8" fill="currentColor">2</text><text x="2" y="20" font-size="8" fill="currentColor">3</text></svg>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="链接">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="图片">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="引用">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+        </button>
+        <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition" title="代码块">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </button>
+        <div class="w-px h-5 bg-gray-300 mx-1"></div>
+        <button class="p-1.5 rounded hover:bg-blue-100 text-blue-600 transition flex items-center gap-1" title="AI 辅助写作">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+          <span class="text-xs font-medium">AI辅助</span>
+        </button>
+      </div>
+
+      <!-- Editor Area -->
+      <div contenteditable="true" class="min-h-[300px] p-5 text-sm leading-relaxed focus:outline-none" style="white-space: pre-wrap;">在美国生活，难免会遇到需要看急诊的情况。但很多华人朋友对美国的急诊系统并不了解，往往在紧急时刻手忙脚乱。
+
+## 1. 什么时候该去急诊室（ER）
+
+急诊室是为真正的紧急医疗情况设计的。以下情况应立即拨打911或前往最近的ER：
+- 胸痛或呼吸困难
+- 严重出血无法止住
+- 中风症状
+
+## 2. Urgent Care vs Emergency Room
+
+很多非紧急情况可以去Urgent Care，费用通常只有ER的十分之一...
+
+</div>
+
+      <!-- Image Drop Zone -->
+      <div class="mx-5 mb-4 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-baam-400 transition cursor-pointer">
+        <svg class="w-8 h-8 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <p class="text-sm text-gray-400">拖拽图片到这里上传，或<span class="text-baam-500 font-medium">点击选择</span></p>
+        <p class="text-xs text-gray-300 mt-1">支持 JPG, PNG, GIF，最大 5MB</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Tags -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">话题标签 <span class="text-gray-400 font-normal">（最多5个）</span></label>
+    <div class="flex flex-wrap gap-2 mb-3">
+      <!-- Selected Tags -->
+      <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-baam-100 text-baam-700 text-sm rounded-full">
+        医疗健康
+        <button class="hover:text-baam-900">&times;</button>
+      </span>
+      <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-baam-100 text-baam-700 text-sm rounded-full">
+        急诊
+        <button class="hover:text-baam-900">&times;</button>
+      </span>
+      <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-baam-100 text-baam-700 text-sm rounded-full">
+        新移民
+        <button class="hover:text-baam-900">&times;</button>
+      </span>
+      <input type="text" placeholder="输入标签..." class="px-3 py-1.5 border border-gray-300 rounded-full text-sm outline-none focus:ring-2 focus:ring-baam-500 w-32">
+    </div>
+    <!-- AI Suggested Tags -->
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full">AI 推荐</span>
+      <button class="px-3 py-1 text-xs border border-blue-200 text-blue-600 rounded-full hover:bg-blue-50 transition">+ 保险</button>
+      <button class="px-3 py-1 text-xs border border-blue-200 text-blue-600 rounded-full hover:bg-blue-50 transition">+ 就医经验</button>
+      <button class="px-3 py-1 text-xs border border-blue-200 text-blue-600 rounded-full hover:bg-blue-50 transition">+ 法拉盛</button>
+      <button class="px-3 py-1 text-xs border border-blue-200 text-blue-600 rounded-full hover:bg-blue-50 transition">+ 省钱攻略</button>
+    </div>
+  </div>
+
+  <!-- Region Selector -->
+  <div class="mb-6">
+    <label class="block text-sm font-medium text-gray-700 mb-2">地区</label>
+    <select class="w-full sm:w-64 h-11 px-4 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-baam-500 text-gray-600">
+      <option selected>纽约 · 法拉盛</option>
+      <option>纽约 · 皇后区</option>
+      <option>纽约 · 曼哈顿</option>
+      <option>纽约 · 布鲁克林</option>
+      <option>纽约（全市）</option>
+      <option>其他地区</option>
+    </select>
+  </div>
+
+  <!-- Visibility Selector -->
+  <div class="mb-8">
+    <label class="block text-sm font-medium text-gray-700 mb-2">可见范围</label>
+    <div class="flex gap-3">
+      <label class="flex items-center gap-2 px-4 py-2.5 border-2 border-baam-500 bg-orange-50 rounded-lg cursor-pointer">
+        <input type="radio" name="visibility" checked class="text-baam-500 focus:ring-baam-500">
+        <div>
+          <span class="text-sm font-medium text-baam-700">公开</span>
+          <p class="text-xs text-gray-400">所有人可见</p>
+        </div>
+      </label>
+      <label class="flex items-center gap-2 px-4 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition">
+        <input type="radio" name="visibility" class="text-baam-500 focus:ring-baam-500">
+        <div>
+          <span class="text-sm font-medium text-gray-700">仅粉丝</span>
+          <p class="text-xs text-gray-400">粉丝可见</p>
+        </div>
+      </label>
+      <label class="flex items-center gap-2 px-4 py-2.5 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition">
+        <input type="radio" name="visibility" class="text-baam-500 focus:ring-baam-500">
+        <div>
+          <span class="text-sm font-medium text-gray-700">草稿</span>
+          <p class="text-xs text-gray-400">仅自己可见</p>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex items-center gap-3 pb-8 border-t border-gray-200 pt-6">
+    <button class="bg-baam-500 text-white text-sm font-semibold px-8 py-3 rounded-lg hover:bg-baam-600 transition shadow-sm">发布</button>
+    <button class="border border-gray-300 text-gray-700 text-sm font-medium px-6 py-3 rounded-lg hover:bg-gray-50 transition">预览</button>
+    <button class="border border-gray-300 text-gray-500 text-sm font-medium px-6 py-3 rounded-lg hover:bg-gray-50 transition">保存草稿</button>
+    <span class="text-xs text-gray-400 ml-auto hidden sm:inline">草稿已自动保存于 2分钟前</span>
+  </div>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm leading-relaxed">AI驱动的纽约华人本地生活与商家增长平台。</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="news-list.html" class="hover:text-white transition">本地新闻</a></li>
+          <li><a href="guides-list.html" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="forum-home.html" class="hover:text-white transition">社区论坛</a></li>
+          <li><a href="business-list.html" class="hover:text-white transition">商家目录</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">商家服务</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">商家入驻</a></li>
+          <li><a href="#" class="hover:text-white transition">广告合作</a></li>
+          <li><a href="#" class="hover:text-white transition">达人申请</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-4">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs">&copy; 2025 Baam. All rights reserved.</p>
+      <div class="flex items-center gap-4">
+        <span class="text-xs">微信公众号</span>
+        <span class="text-xs">Facebook</span>
+        <span class="text-xs">Instagram</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== AI ASSISTANT FLOATING BUTTON ==================== -->
+<div class="fab" title="问小邻">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+</div>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>
