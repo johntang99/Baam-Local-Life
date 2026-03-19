@@ -1,5 +1,7 @@
 import '../globals.css';
+import { Suspense } from 'react';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
+import { AdminHeader } from '@/components/admin/admin-header';
 
 export const metadata = {
   title: 'Admin · Baam',
@@ -14,8 +16,13 @@ export default function AdminLayout({
   return (
     <html lang="zh-CN">
       <body className="bg-gray-50 text-gray-900 antialiased">
-        <AdminSidebar />
+        <Suspense>
+          <AdminSidebar />
+        </Suspense>
         <main className="lg:ml-60 min-h-screen">
+          <Suspense>
+            <AdminHeader />
+          </Suspense>
           {children}
         </main>
       </body>
