@@ -1,15 +1,17 @@
 /**
- * Admin site context — resolves site/region/locale from URL params + database
+ * Admin site context for SERVER components.
  *
- * Sites are stored in the `sites` table with many-to-many region mapping
- * via `site_regions`. Admins can add/remove regions through the admin panel
- * as coverage areas expand.
+ * Reads site selection from:
+ * 1. URL searchParams (for backward compatibility)
+ * 2. Cookie 'baam-admin-site' (set by client-side context)
+ * 3. Default to first site in DB
  *
- * Example: "NY Chinese" starts with Flushing, Queens, NYC
- * Later adds: Brooklyn, Manhattan, Bronx, etc.
+ * The client-side AdminSiteContext uses localStorage + sets a cookie
+ * so server components can read the same selection.
  */
 
 import { createAdminClient } from '@/lib/supabase/admin';
+import { cookies } from 'next/headers';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -19,43 +21,36 @@ export interface AdminSiteContext {
   siteSlug: string;
   siteName: string;
   locale: string;
-  regionIds: string[];  // UUID array for DB queries
+  regionIds: string[];
 }
 
-export interface SiteOption {
-  id: string;
-  slug: string;
-  name: string;
-  name_zh: string | null;
-  locale: string;
-  status: string;
-}
-
-/**
- * Fetch all available sites from DB (for header dropdown)
- */
-export async function getAvailableSites(): Promise<SiteOption[]> {
-  const supabase = createAdminClient();
-  const { data } = await supabase
-    .from('sites')
-    .select('id, slug, name, name_zh, locale, status')
-    .order('sort_order', { ascending: true });
-  return (data || []) as SiteOption[];
-}
-
-/**
- * Resolve full site context from URL search params.
- * Queries the database to get the site's region IDs.
- */
 export async function getAdminSiteContext(
-  searchParams: Record<string, string | string[] | undefined>
+  searchParams?: Record<string, string | string[] | undefined>
 ): Promise<AdminSiteContext> {
-  const siteSlug = typeof searchParams.region === 'string' ? searchParams.region : '';
-  const localeParam = typeof searchParams.locale === 'string' ? searchParams.locale : '';
-
   const supabase = createAdminClient();
 
-  // Find the site (by slug or default)
+  // Try to get site slug from: 1) URL params 2) cookie 3) default
+  let siteSlug = '';
+
+  // 1. URL params (backward compat)
+  if (searchParams) {
+    const param = typeof searchParams.region === 'string' ? searchParams.region : '';
+    if (param) siteSlug = param;
+  }
+
+  // 2. Cookie (set by client AdminSiteContext)
+  if (!siteSlug) {
+    try {
+      const cookieStore = await cookies();
+      const cookieVal = cookieStore.get('baam-admin-site')?.value;
+      if (cookieVal) {
+        const parsed = JSON.parse(cookieVal);
+        if (parsed.siteSlug) siteSlug = parsed.siteSlug;
+      }
+    } catch {}
+  }
+
+  // Find site in DB
   let site: AnyRow | null = null;
   if (siteSlug) {
     const { data } = await supabase.from('sites').select('*').eq('slug', siteSlug).single();
@@ -71,28 +66,36 @@ export async function getAdminSiteContext(
   }
 
   if (!site) {
-    // Fallback if no sites table exists yet
-    return {
-      siteId: '',
-      siteSlug: 'ny-zh',
-      siteName: 'New York Chinese',
-      locale: localeParam || 'zh',
-      regionIds: [],
-    };
+    return { siteId: '', siteSlug: 'ny-zh', siteName: 'New York Chinese', locale: 'zh', regionIds: [] };
   }
 
-  // Get all region IDs for this site
+  // Get region IDs for this site
   const { data: siteRegions } = await supabase
     .from('site_regions')
     .select('region_id')
     .eq('site_id', site.id);
   const regionIds = (siteRegions || []).map((sr: AnyRow) => sr.region_id);
 
+  // Get locale from URL params or cookie or site default
+  let locale = site.locale || 'zh';
+  if (searchParams && typeof searchParams.locale === 'string') {
+    locale = searchParams.locale;
+  } else {
+    try {
+      const cookieStore = await cookies();
+      const cookieVal = cookieStore.get('baam-admin-site')?.value;
+      if (cookieVal) {
+        const parsed = JSON.parse(cookieVal);
+        if (parsed.locale) locale = parsed.locale;
+      }
+    } catch {}
+  }
+
   return {
     siteId: site.id,
     siteSlug: site.slug,
     siteName: site.name,
-    locale: localeParam || site.locale || 'zh',
+    locale,
     regionIds,
   };
 }
