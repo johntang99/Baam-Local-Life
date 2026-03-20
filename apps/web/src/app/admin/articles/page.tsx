@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getAdminSiteContext } from '@/lib/admin-context';
+import ArticlesTable from './ArticlesTable';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -9,78 +10,213 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-const statusBadge: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600',
-  ai_drafted: 'bg-yellow-100 text-yellow-700',
-  human_reviewed: 'bg-blue-100 text-blue-700',
-  published: 'bg-green-100 text-green-700',
-  archived: 'bg-red-100 text-red-700',
-};
+const statusTabs = [
+  { key: '', label: '全部' },
+  { key: 'draft', label: '草稿' },
+  { key: 'ai_drafted', label: 'AI草稿' },
+  { key: 'human_reviewed', label: '已审核' },
+  { key: 'published', label: '已发布' },
+  { key: 'archived', label: '已归档' },
+];
 
-const verticalLabel: Record<string, string> = {
-  news_alert: '快报', news_brief: '简报', news_explainer: '解读', news_roundup: '汇总', news_community: '社区',
-  guide_howto: 'How-To', guide_checklist: 'Checklist', guide_bestof: 'Best-of', guide_comparison: '对比',
-};
+const typeOptions = [
+  { key: '', label: '全部类型' },
+  { key: 'news', label: '新闻' },
+  { key: 'guide', label: '指南' },
+];
 
 export default async function AdminArticlesPage({ searchParams }: Props) {
   const params = await searchParams;
   const ctx = await getAdminSiteContext(params);
-  const supabase = createAdminClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = createAdminClient() as any;
+
+  // Resolve filters from searchParams
+  const statusFilter = typeof params.status === 'string' ? params.status : '';
+  const typeFilter = typeof params.type === 'string' ? params.type : '';
+  const regionFilter = typeof params.filter_region === 'string' ? params.filter_region : '';
+
+  // Page
+  const page = Math.max(1, parseInt(typeof params.page === 'string' ? params.page : '1', 10));
+  const pageSize = 50;
 
   // Fetch region names for display
-  const { data: regRows } = await supabase.from('regions').select('id, name_zh, slug').in('id', ctx.regionIds);
+  const { data: regRows } = await supabase
+    .from('regions')
+    .select('id, name_zh, slug')
+    .in('id', ctx.regionIds);
   const regionNameMap: Record<string, string> = {};
-  (regRows || []).forEach((r: AnyRow) => { regionNameMap[r.id] = r.name_zh || r.slug; });
+  (regRows || []).forEach((r: AnyRow) => {
+    regionNameMap[r.id] = r.name_zh || r.slug;
+  });
 
-  // Query articles filtered by region
-  const { data: rawArticles } = await supabase
+  // Build query
+  let query = supabase
     .from('articles')
-    .select('*')
+    .select('*', { count: 'exact' })
     .in('region_id', ctx.regionIds)
-    .order('created_at', { ascending: false })
-    .limit(50);
-  const articles = (rawArticles || []) as AnyRow[];
+    .order('created_at', { ascending: false });
 
-  const siteName = ctx.siteName;
+  if (statusFilter) {
+    query = query.eq('editorial_status', statusFilter);
+  }
+
+  if (typeFilter === 'news') {
+    query = query.like('content_vertical', 'news_%');
+  } else if (typeFilter === 'guide') {
+    query = query.like('content_vertical', 'guide_%');
+  }
+
+  if (regionFilter) {
+    query = query.eq('region_id', regionFilter);
+  }
+
+  const from = (page - 1) * pageSize;
+  query = query.range(from, from + pageSize - 1);
+
+  const { data: rawArticles, count } = await query;
+  const articles = (rawArticles || []) as AnyRow[];
+  const totalCount = count ?? articles.length;
+
+  // Build base URL for filter links
+  const baseParams = new URLSearchParams();
+  if (params.region) baseParams.set('region', String(params.region));
+  if (params.locale) baseParams.set('locale', String(params.locale));
+
+  function filterUrl(overrides: Record<string, string>) {
+    const p = new URLSearchParams(baseParams);
+    for (const [k, v] of Object.entries(overrides)) {
+      if (v) p.set(k, v);
+      else p.delete(k);
+    }
+    // Preserve existing filters not being overridden
+    if (!('status' in overrides) && statusFilter) p.set('status', statusFilter);
+    if (!('type' in overrides) && typeFilter) p.set('type', typeFilter);
+    if (!('filter_region' in overrides) && regionFilter) p.set('filter_region', regionFilter);
+    return `/admin/articles?${p.toString()}`;
+  }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <p className="text-sm text-gray-500 mb-1">站点：{siteName} · {ctx.locale === 'zh' ? '中文' : 'English'}</p>
-          <p className="text-gray-500">共 {articles.length} 篇文章</p>
+    <div>
+      {/* Header */}
+      <div className="bg-bg-card border-b border-border px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold">内容管理</h1>
+            <p className="text-sm text-text-muted">管理所有文章、新闻和指南内容</p>
+          </div>
+          <Link
+            href="/admin/articles/new"
+            className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 inline-flex items-center"
+          >
+            + 新建文章
+          </Link>
         </div>
-        <button className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark">+ 新建文章</button>
       </div>
 
-      {articles.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center">
-          <p className="text-4xl mb-4">📝</p>
-          <p className="text-gray-500">该站点暂无文章</p>
-          <p className="text-sm text-gray-400 mt-1">切换站点或创建新文章</p>
-        </div>
-      ) : (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-          <table className="data-table">
-            <thead>
-              <tr><th>标题</th><th>频道</th><th>状态</th><th>地区</th><th>浏览</th><th>发布时间</th><th>操作</th></tr>
-            </thead>
-            <tbody>
-              {articles.map((a) => (
-                <tr key={a.id}>
-                  <td className="max-w-[300px]"><p className="font-medium truncate">{a.title_zh || a.title_en || '无标题'}</p></td>
-                  <td><span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{verticalLabel[a.content_vertical] || a.content_vertical}</span></td>
-                  <td><span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusBadge[a.editorial_status] || 'bg-gray-100'}`}>{a.editorial_status}</span></td>
-                  <td className="text-sm text-gray-500">{a.region_id ? (regionNameMap[a.region_id] || '—') : '—'}</td>
-                  <td className="text-sm text-gray-500">{a.view_count || 0}</td>
-                  <td className="text-sm text-gray-500">{a.published_at ? new Date(a.published_at).toLocaleDateString('zh-CN') : '—'}</td>
-                  <td><Link href={`/admin/articles?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="text-sm text-primary hover:underline">编辑</Link></td>
-                </tr>
+      <div className="p-6 space-y-4">
+        {/* Filter bar */}
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Status tabs */}
+          <div className="flex items-center gap-1 bg-bg-page border border-border rounded-lg p-1">
+            {statusTabs.map((tab) => (
+              <Link
+                key={tab.key}
+                href={filterUrl({ status: tab.key, page: '' })}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                  statusFilter === tab.key
+                    ? 'bg-bg-card text-text shadow-sm'
+                    : 'text-text-muted hover:text-text'
+                }`}
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Type dropdown */}
+          <div className="flex items-center gap-2">
+            {typeOptions.map((opt) => (
+              <Link
+                key={opt.key}
+                href={filterUrl({ type: opt.key, page: '' })}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                  typeFilter === opt.key
+                    ? 'border-primary text-primary bg-primary/5'
+                    : 'border-border text-text-muted hover:text-text'
+                }`}
+              >
+                {opt.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Region dropdown */}
+          {Object.keys(regionNameMap).length > 1 && (
+            <div className="flex items-center gap-1">
+              <Link
+                href={filterUrl({ filter_region: '', page: '' })}
+                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                  !regionFilter
+                    ? 'border-primary text-primary bg-primary/5'
+                    : 'border-border text-text-muted hover:text-text'
+                }`}
+              >
+                全部地区
+              </Link>
+              {Object.entries(regionNameMap).map(([id, name]) => (
+                <Link
+                  key={id}
+                  href={filterUrl({ filter_region: id, page: '' })}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                    regionFilter === id
+                      ? 'border-primary text-primary bg-primary/5'
+                      : 'border-border text-text-muted hover:text-text'
+                  }`}
+                >
+                  {name}
+                </Link>
               ))}
-            </tbody>
-          </table>
+            </div>
+          )}
         </div>
-      )}
+
+        {/* Articles table (client component for bulk actions) */}
+        {articles.length === 0 ? (
+          <div className="bg-bg-card border border-border rounded-xl p-12 text-center">
+            <p className="text-4xl mb-4">&#128221;</p>
+            <p className="text-text-muted">该站点暂无文章</p>
+            <p className="text-sm text-text-muted mt-1">切换站点或创建新文章</p>
+          </div>
+        ) : (
+          <ArticlesTable articles={articles} regionNameMap={regionNameMap} />
+        )}
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between text-sm text-text-muted">
+          <span>
+            显示 {from + 1}-{Math.min(from + articles.length, totalCount)} / 共 {totalCount} 条
+          </span>
+          <div className="flex items-center gap-2">
+            {page > 1 && (
+              <Link
+                href={filterUrl({ page: String(page - 1) })}
+                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+              >
+                上一页
+              </Link>
+            )}
+            {from + pageSize < totalCount && (
+              <Link
+                href={filterUrl({ page: String(page + 1) })}
+                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+              >
+                下一页
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
