@@ -39,7 +39,7 @@ interface Props {
 }
 
 export default async function AdminBusinessesPage({ searchParams }: Props) {
-  const ctx = getAdminSiteContext(await searchParams);
+  const ctx = await getAdminSiteContext(await searchParams);
   const supabase = createAdminClient();
 
   const [

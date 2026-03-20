@@ -20,15 +20,9 @@ interface Props {
 }
 
 export default async function AdminForumPage({ searchParams }: Props) {
-  const ctx = getAdminSiteContext(await searchParams);
+  const ctx = await getAdminSiteContext(await searchParams);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from slugs
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id, slug')
-    .in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
 
   const [
     { data: rawPendingThreads },
@@ -37,14 +31,14 @@ export default async function AdminForumPage({ searchParams }: Props) {
     supabase
       .from('forum_threads')
       .select('*')
-      .in('region_id', regionIds)
+      .in('region_id', ctx.regionIds)
       .or('status.eq.pending,ai_spam_score.gt.0.7')
       .order('created_at', { ascending: false })
       .limit(20),
     supabase
       .from('forum_threads')
       .select('*')
-      .in('region_id', regionIds)
+      .in('region_id', ctx.regionIds)
       .order('created_at', { ascending: false })
       .limit(30),
   ]);

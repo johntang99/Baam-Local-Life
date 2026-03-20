@@ -10,20 +10,14 @@ interface Props {
 }
 
 export default async function AdminEventsPage({ searchParams }: Props) {
-  const ctx = getAdminSiteContext(await searchParams);
+  const ctx = await getAdminSiteContext(await searchParams);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from slugs
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id, slug')
-    .in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
 
   const { data: rawEvents } = await supabase
     .from('events')
     .select('*')
-    .in('region_id', regionIds)
+    .in('region_id', ctx.regionIds)
     .order('start_at', { ascending: false })
     .limit(30);
   const events = (rawEvents || []) as AnyRow[];

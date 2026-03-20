@@ -10,15 +10,9 @@ interface Props {
 
 export default async function AdminDashboard({ searchParams }: Props) {
   const params = await searchParams;
-  const ctx = getAdminSiteContext(params);
+  const ctx = await getAdminSiteContext(params);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from slugs
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id, slug')
-    .in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
 
   // Filtered counts for this site
   const [
@@ -32,20 +26,20 @@ export default async function AdminDashboard({ searchParams }: Props) {
   ] = await Promise.all([
     supabase.from('articles').select('*', { count: 'exact', head: true })
       .eq('editorial_status', 'published')
-      .in('region_id', regionIds),
+      .in('region_id', ctx.regionIds),
     supabase.from('businesses').select('*', { count: 'exact', head: true })
       .eq('is_active', true),
     supabase.from('forum_threads').select('*', { count: 'exact', head: true })
       .eq('status', 'published')
-      .in('region_id', regionIds),
+      .in('region_id', ctx.regionIds),
     supabase.from('leads').select('*', { count: 'exact', head: true })
       .eq('status', 'new'),
     supabase.from('events').select('*', { count: 'exact', head: true })
       .eq('status', 'published')
-      .in('region_id', regionIds),
+      .in('region_id', ctx.regionIds),
     supabase.from('voice_posts').select('*', { count: 'exact', head: true })
       .eq('status', 'published')
-      .in('region_id', regionIds),
+      .in('region_id', ctx.regionIds),
     supabase.from('ai_jobs').select('*', { count: 'exact', head: true })
       .eq('status', 'pending'),
   ]);
@@ -54,7 +48,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
   const { data: rawArticles } = await supabase
     .from('articles')
     .select('*')
-    .in('region_id', regionIds)
+    .in('region_id', ctx.regionIds)
     .order('created_at', { ascending: false })
     .limit(5);
   const recentArticles = (rawArticles || []) as AnyRow[];
@@ -76,7 +70,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
     { label: '待处理线索', value: leadCount || 0, icon: '📥', color: 'text-red-600' },
   ];
 
-  const currentSiteName = ctx.siteId === 'ny-zh' ? 'New York Chinese' : 'Middletown OC English';
+  const currentSiteName = ctx.siteName;
 
   return (
     <div className="p-6 space-y-6">
@@ -87,7 +81,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
           <p className="text-lg font-bold">{currentSiteName}</p>
         </div>
         <div className="flex items-center gap-4 text-sm text-gray-500">
-          <span>地区：{ctx.regionSlugs.join(', ')}</span>
+          <span>地区：{ctx.regionIds.join(', ')}</span>
           <span>语言：{ctx.locale === 'zh' ? '中文' : 'English'}</span>
         </div>
       </div>
@@ -119,7 +113,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
                     <p className="text-sm font-medium truncate">{article.title_zh || article.title_en || '无标题'}</p>
                     <p className="text-xs text-gray-400">{article.content_vertical} · {article.editorial_status}</p>
                   </div>
-                  <a href={`/admin/articles?region=${ctx.siteId}&locale=${ctx.locale}`} className="text-xs text-primary hover:underline ml-2">编辑</a>
+                  <a href={`/admin/articles?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="text-xs text-primary hover:underline ml-2">编辑</a>
                 </div>
               ))}
             </div>
@@ -153,10 +147,10 @@ export default async function AdminDashboard({ searchParams }: Props) {
       <div className="bg-white border border-gray-200 rounded-xl p-5">
         <h2 className="font-semibold mb-4">快捷操作</h2>
         <div className="flex flex-wrap gap-3">
-          <a href={`/admin/articles?region=${ctx.siteId}&locale=${ctx.locale}`} className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark inline-flex items-center">+ 新建文章</a>
-          <a href={`/admin/businesses?region=${ctx.siteId}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核商家</a>
-          <a href={`/admin/forum?region=${ctx.siteId}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核帖子</a>
-          <a href={`/admin/leads?region=${ctx.siteId}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">处理线索</a>
+          <a href={`/admin/articles?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark inline-flex items-center">+ 新建文章</a>
+          <a href={`/admin/businesses?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核商家</a>
+          <a href={`/admin/forum?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核帖子</a>
+          <a href={`/admin/leads?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">处理线索</a>
         </div>
       </div>
     </div>

@@ -1,45 +1,98 @@
 /**
- * Admin site context — resolves region/locale from URL search params
- * Used by all site-scoped admin pages to filter data
+ * Admin site context — resolves site/region/locale from URL params + database
+ *
+ * Sites are stored in the `sites` table with many-to-many region mapping
+ * via `site_regions`. Admins can add/remove regions through the admin panel
+ * as coverage areas expand.
+ *
+ * Example: "NY Chinese" starts with Flushing, Queens, NYC
+ * Later adds: Brooklyn, Manhattan, Bronx, etc.
  */
 
-// Site definitions: each site has a set of region slugs and a locale
-export const ADMIN_SITES = [
-  {
-    id: 'ny-zh',
-    label: 'New York Chinese',
-    regionSlugs: ['flushing-ny', 'queens-ny', 'new-york-city'],
-    locale: 'zh',
-  },
-  {
-    id: 'oc-en',
-    label: 'Middletown OC English',
-    regionSlugs: ['middletown-ny', 'orange-county-ny'],
-    locale: 'en',
-  },
-] as const;
+import { createAdminClient } from '@/lib/supabase/admin';
 
-export type SiteId = typeof ADMIN_SITES[number]['id'];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyRow = Record<string, any>;
 
 export interface AdminSiteContext {
   siteId: string;
+  siteSlug: string;
+  siteName: string;
   locale: string;
-  regionSlugs: string[];
+  regionIds: string[];  // UUID array for DB queries
+}
+
+export interface SiteOption {
+  id: string;
+  slug: string;
+  name: string;
+  name_zh: string | null;
+  locale: string;
+  status: string;
 }
 
 /**
- * Parse site context from URL search params.
- * Returns the region slugs and locale for filtering queries.
+ * Fetch all available sites from DB (for header dropdown)
  */
-export function getAdminSiteContext(searchParams: Record<string, string | string[] | undefined>): AdminSiteContext {
-  const regionParam = (typeof searchParams.region === 'string' ? searchParams.region : 'ny-zh');
-  const localeParam = (typeof searchParams.locale === 'string' ? searchParams.locale : 'zh');
+export async function getAvailableSites(): Promise<SiteOption[]> {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from('sites')
+    .select('id, slug, name, name_zh, locale, status')
+    .order('sort_order', { ascending: true });
+  return (data || []) as SiteOption[];
+}
 
-  const site = ADMIN_SITES.find(s => s.id === regionParam);
+/**
+ * Resolve full site context from URL search params.
+ * Queries the database to get the site's region IDs.
+ */
+export async function getAdminSiteContext(
+  searchParams: Record<string, string | string[] | undefined>
+): Promise<AdminSiteContext> {
+  const siteSlug = typeof searchParams.region === 'string' ? searchParams.region : '';
+  const localeParam = typeof searchParams.locale === 'string' ? searchParams.locale : '';
+
+  const supabase = createAdminClient();
+
+  // Find the site (by slug or default)
+  let site: AnyRow | null = null;
+  if (siteSlug) {
+    const { data } = await supabase.from('sites').select('*').eq('slug', siteSlug).single();
+    site = data as AnyRow | null;
+  }
+  if (!site) {
+    const { data } = await supabase.from('sites').select('*').eq('is_default', true).single();
+    site = data as AnyRow | null;
+  }
+  if (!site) {
+    const { data } = await supabase.from('sites').select('*').order('created_at').limit(1).single();
+    site = data as AnyRow | null;
+  }
+
+  if (!site) {
+    // Fallback if no sites table exists yet
+    return {
+      siteId: '',
+      siteSlug: 'ny-zh',
+      siteName: 'New York Chinese',
+      locale: localeParam || 'zh',
+      regionIds: [],
+    };
+  }
+
+  // Get all region IDs for this site
+  const { data: siteRegions } = await supabase
+    .from('site_regions')
+    .select('region_id')
+    .eq('site_id', site.id);
+  const regionIds = (siteRegions || []).map((sr: AnyRow) => sr.region_id);
 
   return {
-    siteId: site?.id || 'ny-zh',
-    locale: localeParam,
-    regionSlugs: site?.regionSlugs ? [...site.regionSlugs] : ['flushing-ny', 'queens-ny', 'new-york-city'],
+    siteId: site.id,
+    siteSlug: site.slug,
+    siteName: site.name,
+    locale: localeParam || site.locale || 'zh',
+    regionIds,
   };
 }

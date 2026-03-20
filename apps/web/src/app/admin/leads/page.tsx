@@ -29,15 +29,9 @@ interface Props {
 }
 
 export default async function AdminLeadsPage({ searchParams }: Props) {
-  const ctx = getAdminSiteContext(await searchParams);
+  const ctx = await getAdminSiteContext(await searchParams);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from slugs
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id, slug')
-    .in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
 
   const [
     { count: totalCount },
@@ -45,16 +39,16 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
     { count: contactedCount },
     { count: convertedCount },
   ] = await Promise.all([
-    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', regionIds),
-    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', regionIds).eq('status', 'new'),
-    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', regionIds).eq('status', 'contacted'),
-    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', regionIds).eq('status', 'converted'),
+    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', ctx.regionIds),
+    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', ctx.regionIds).eq('status', 'new'),
+    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', ctx.regionIds).eq('status', 'contacted'),
+    supabase.from('leads').select('*', { count: 'exact', head: true }).in('region_id', ctx.regionIds).eq('status', 'converted'),
   ]);
 
   const { data: rawLeads } = await supabase
     .from('leads')
     .select('*')
-    .in('region_id', regionIds)
+    .in('region_id', ctx.regionIds)
     .order('created_at', { ascending: false })
     .limit(50);
   const leads = (rawLeads || []) as AnyRow[];

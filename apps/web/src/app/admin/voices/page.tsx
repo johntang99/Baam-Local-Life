@@ -20,21 +20,15 @@ interface Props {
 }
 
 export default async function AdminVoicesPage({ searchParams }: Props) {
-  const ctx = getAdminSiteContext(await searchParams);
+  const ctx = await getAdminSiteContext(await searchParams);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from slugs
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id, slug')
-    .in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
 
   const { data: rawProfiles } = await supabase
     .from('profiles')
     .select('*')
     .neq('profile_type', 'user')
-    .in('region_id', regionIds)
+    .in('region_id', ctx.regionIds)
     .order('follower_count', { ascending: false })
     .limit(50);
 

@@ -24,25 +24,24 @@ const verticalLabel: Record<string, string> = {
 
 export default async function AdminArticlesPage({ searchParams }: Props) {
   const params = await searchParams;
-  const ctx = getAdminSiteContext(params);
+  const ctx = await getAdminSiteContext(params);
   const supabase = createAdminClient();
 
-  // Resolve region IDs from site slugs
-  const { data: regionRows } = await supabase.from('regions').select('id, slug, name_zh').in('slug', ctx.regionSlugs);
-  const regionIds = (regionRows || []).map((r: AnyRow) => r.id);
+  // Fetch region names for display
+  const { data: regRows } = await supabase.from('regions').select('id, name_zh, slug').in('id', ctx.regionIds);
   const regionNameMap: Record<string, string> = {};
-  (regionRows || []).forEach((r: AnyRow) => { regionNameMap[r.id] = r.name_zh || r.slug; });
+  (regRows || []).forEach((r: AnyRow) => { regionNameMap[r.id] = r.name_zh || r.slug; });
 
   // Query articles filtered by region
   const { data: rawArticles } = await supabase
     .from('articles')
     .select('*')
-    .in('region_id', regionIds)
+    .in('region_id', ctx.regionIds)
     .order('created_at', { ascending: false })
     .limit(50);
   const articles = (rawArticles || []) as AnyRow[];
 
-  const siteName = ctx.siteId === 'ny-zh' ? 'New York Chinese' : 'Middletown OC English';
+  const siteName = ctx.siteName;
 
   return (
     <div className="p-6">
@@ -75,7 +74,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
                   <td className="text-sm text-gray-500">{a.region_id ? (regionNameMap[a.region_id] || '—') : '—'}</td>
                   <td className="text-sm text-gray-500">{a.view_count || 0}</td>
                   <td className="text-sm text-gray-500">{a.published_at ? new Date(a.published_at).toLocaleDateString('zh-CN') : '—'}</td>
-                  <td><Link href={`/admin/articles?region=${ctx.siteId}&locale=${ctx.locale}`} className="text-sm text-primary hover:underline">编辑</Link></td>
+                  <td><Link href={`/admin/articles?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="text-sm text-primary hover:underline">编辑</Link></td>
                 </tr>
               ))}
             </tbody>
