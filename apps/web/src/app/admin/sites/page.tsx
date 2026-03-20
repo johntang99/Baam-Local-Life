@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { SiteCard } from './site-card';
 import { AddRegionForm } from './add-region-form';
 import { AddSiteForm } from './add-site-form';
+import { RegionRow } from './region-row';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -111,37 +112,16 @@ export default async function AdminSitesPage() {
                 const belongsToSites = siteRegions
                   .filter((sr: AnyRow) => sr.region_id === region.id)
                   .map((sr: AnyRow) => sites.find((s: AnyRow) => s.id === sr.site_id)?.name)
-                  .filter(Boolean);
+                  .filter(Boolean) as string[];
 
                 return (
-                  <tr key={region.id}>
-                    <td className="font-mono text-xs">{region.slug}</td>
-                    <td>{region.name_zh || '—'}</td>
-                    <td>{region.name_en}</td>
-                    <td>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        region.type === 'city' ? 'bg-blue-100 text-blue-700' :
-                        region.type === 'county' ? 'bg-purple-100 text-purple-700' :
-                        region.type === 'state' ? 'bg-green-100 text-green-700' :
-                        region.type === 'neighborhood' ? 'bg-yellow-100 text-yellow-700' :
-                        region.type === 'borough' ? 'bg-orange-100 text-orange-700' :
-                        'bg-gray-100 text-gray-600'
-                      }`}>{region.type}</span>
-                    </td>
-                    <td className="text-sm text-gray-500">{parent?.name_zh || parent?.name_en || '—'}</td>
-                    <td>
-                      <div className="flex gap-1 flex-wrap">
-                        {belongsToSites.length > 0 ? belongsToSites.map((name, i) => (
-                          <span key={i} className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{name}</span>
-                        )) : <span className="text-xs text-gray-400">未分配</span>}
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${region.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
-                        {region.is_active ? '启用' : '禁用'}
-                      </span>
-                    </td>
-                  </tr>
+                  <RegionRow
+                    key={region.id}
+                    region={region}
+                    parent={parent}
+                    belongsToSites={belongsToSites}
+                    allRegions={regions}
+                  />
                 );
               })}
             </tbody>
