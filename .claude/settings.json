@@ -5,7 +5,8 @@
       "Read(*)",
       "Write(*)",
       "Edit(*)",
-      "Bash(grep -n \"select.*name\" /Users/johntang/Desktop/clients/baam-local/apps/web/src/app/admin/businesses/[id]/edit/page.tsx)"
+      "Bash(grep -n \"select.*name\" /Users/johntang/Desktop/clients/baam-local/apps/web/src/app/admin/businesses/[id]/edit/page.tsx)",
+      "Bash(find /Users/johntang/Desktop/clients/medical-clinic/chinese-medicine -name ImagePickerModal* -o -name imagePicker* -o -name MediaPicker*)"
     ],
     "additionalDirectories": []
   }
