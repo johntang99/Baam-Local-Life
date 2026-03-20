@@ -30,7 +30,7 @@ function extractBusinessFields(formData: FormData) {
     phone: (formData.get('phone') as string) || null,
     email: (formData.get('email') as string) || null,
     website_url: (formData.get('website_url') as string) || null,
-    wechat_id: (formData.get('wechat_id') as string) || null,
+
     facebook_url: (formData.get('facebook_url') as string) || null,
     instagram_url: (formData.get('instagram_url') as string) || null,
     tiktok_url: (formData.get('tiktok_url') as string) || null,

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { createBusiness, updateBusiness } from './actions';
+import ImageUploader from './ImageUploader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -38,6 +39,7 @@ interface BusinessFormProps {
   categories: AnyRow[];
   categoryTree: CategoryTreeItem[];
   selectedCategoryIds?: string[];
+  existingImages?: string[];
   isNew: boolean;
   siteParams?: string;
 }
@@ -46,11 +48,34 @@ const inputClass = 'w-full h-10 px-3 border border-border rounded-lg text-sm foc
 const textareaClass = 'w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y';
 const selectClass = 'w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white';
 
+function initCategorySelection(
+  categoryTree: CategoryTreeItem[],
+  selectedCategoryIds: string[]
+): { parentId: string; childId: string } {
+  if (selectedCategoryIds.length === 0) return { parentId: '', childId: '' };
+
+  // Check if the selected ID is a child category
+  for (const { parent, children } of categoryTree) {
+    for (const child of children) {
+      if (selectedCategoryIds.includes(child.id)) {
+        return { parentId: parent.id, childId: child.id };
+      }
+    }
+    // Check if the selected ID is a parent category
+    if (selectedCategoryIds.includes(parent.id)) {
+      return { parentId: parent.id, childId: '' };
+    }
+  }
+
+  return { parentId: '', childId: '' };
+}
+
 export default function BusinessForm({
   business,
   categories,
   categoryTree,
   selectedCategoryIds: initialSelectedCategoryIds = [],
+  existingImages = [],
   isNew,
   siteParams = '',
 }: BusinessFormProps) {
@@ -75,7 +100,6 @@ export default function BusinessForm({
   const [phone, setPhone] = useState(business?.phone || '');
   const [email, setEmail] = useState(business?.email || '');
   const [websiteUrl, setWebsiteUrl] = useState(business?.website_url || '');
-  const [wechatId, setWechatId] = useState(business?.wechat_id || '');
 
   // Social media
   const [facebookUrl, setFacebookUrl] = useState(business?.facebook_url || '');
@@ -93,17 +117,17 @@ export default function BusinessForm({
   const [currentPlan, setCurrentPlan] = useState(business?.current_plan || 'free');
   const [isFeatured, setIsFeatured] = useState(business?.is_featured || false);
 
-  // Categories — multi-select (1–3)
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(initialSelectedCategoryIds);
+  // Categories — sequential dropdowns
+  const initCat = initCategorySelection(categoryTree, initialSelectedCategoryIds);
+  const [selectedParentId, setSelectedParentId] = useState(initCat.parentId);
+  const [selectedChildId, setSelectedChildId] = useState(initCat.childId);
 
-  const toggleCategory = (catId: string) => {
-    setSelectedCategoryIds((prev) => {
-      if (prev.includes(catId)) {
-        return prev.filter((id) => id !== catId);
-      }
-      if (prev.length >= 3) return prev; // max 3
-      return [...prev, catId];
-    });
+  const parentCategories = categoryTree;
+  const childCategories = categoryTree.find((c) => c.parent.id === selectedParentId)?.children || [];
+
+  const handleParentChange = (parentId: string) => {
+    setSelectedParentId(parentId);
+    setSelectedChildId(''); // reset child when parent changes
   };
 
   const buildFormData = () => {
@@ -119,7 +143,6 @@ export default function BusinessForm({
     fd.set('phone', phone);
     fd.set('email', email);
     fd.set('website_url', websiteUrl);
-    fd.set('wechat_id', wechatId);
     fd.set('facebook_url', facebookUrl);
     fd.set('instagram_url', instagramUrl);
     fd.set('tiktok_url', tiktokUrl);
@@ -130,8 +153,9 @@ export default function BusinessForm({
     fd.set('verification_status', verificationStatus);
     fd.set('current_plan', currentPlan);
     fd.set('is_featured', isFeatured ? 'true' : 'false');
-    // Send category ids as JSON array
-    fd.set('category_ids', JSON.stringify(selectedCategoryIds));
+    // Send category ids as JSON array — use child if selected, otherwise parent
+    const categoryId = selectedChildId || selectedParentId;
+    fd.set('category_ids', JSON.stringify(categoryId ? [categoryId] : []));
     return fd;
   };
 
@@ -328,16 +352,6 @@ export default function BusinessForm({
                   className={inputClass}
                 />
               </div>
-              <div>
-                <label className="block text-xs text-text-muted mb-1">微信号</label>
-                <input
-                  type="text"
-                  value={wechatId}
-                  onChange={(e) => setWechatId(e.target.value)}
-                  placeholder="微信号"
-                  className={inputClass}
-                />
-              </div>
             </div>
           </div>
 
@@ -412,10 +426,17 @@ export default function BusinessForm({
               />
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">封面图片</label>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center text-text-muted text-sm">
-                图片上传功能即将上线
-              </div>
+              <label className="block text-xs text-text-muted mb-1">商家图片</label>
+              {!isNew && business?.slug ? (
+                <ImageUploader
+                  businessSlug={business.slug}
+                  existingImages={existingImages}
+                />
+              ) : (
+                <div className="border-2 border-dashed border-border rounded-lg p-6 text-center text-text-muted text-sm">
+                  保存商家后可上传图片
+                </div>
+              )}
             </div>
           </div>
 
@@ -482,50 +503,41 @@ export default function BusinessForm({
             </select>
           </div>
 
-          {/* Categories — hierarchical multi-select */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
-            <label className="block text-sm font-medium mb-2">
-              分类 <span className="text-xs text-text-muted font-normal">（可选1-3个）</span>
-            </label>
-            <p className="text-xs text-text-muted mb-3">
-              已选 {selectedCategoryIds.length} / 3
-            </p>
-            <div className="max-h-64 overflow-y-auto space-y-4">
-              {categoryTree.map(({ parent, children }) => (
-                <div key={parent.id}>
-                  <p className="text-xs font-semibold text-text-muted uppercase tracking-wide mb-1">
+          {/* Categories — sequential dropdowns */}
+          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+            <label className="block text-sm font-medium">分类</label>
+            <div>
+              <label className="block text-xs text-text-muted mb-1">主分类</label>
+              <select
+                value={selectedParentId}
+                onChange={(e) => handleParentChange(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">请选择分类</option>
+                {parentCategories.map(({ parent }) => (
+                  <option key={parent.id} value={parent.id}>
                     {parent.name_zh || parent.name || parent.slug}
-                  </p>
-                  {children.length > 0 ? (
-                    <div className="space-y-1 ml-1">
-                      {children.map((child) => (
-                        <label key={child.id} className="flex items-center gap-2 cursor-pointer text-sm hover:bg-bg-page rounded px-1 py-0.5">
-                          <input
-                            type="checkbox"
-                            checked={selectedCategoryIds.includes(child.id)}
-                            onChange={() => toggleCategory(child.id)}
-                            disabled={!selectedCategoryIds.includes(child.id) && selectedCategoryIds.length >= 3}
-                            className="rounded border-border"
-                          />
-                          {child.name_zh || child.name || child.slug}
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
-                    <label className="flex items-center gap-2 cursor-pointer text-sm hover:bg-bg-page rounded px-1 py-0.5 ml-1">
-                      <input
-                        type="checkbox"
-                        checked={selectedCategoryIds.includes(parent.id)}
-                        onChange={() => toggleCategory(parent.id)}
-                        disabled={!selectedCategoryIds.includes(parent.id) && selectedCategoryIds.length >= 3}
-                        className="rounded border-border"
-                      />
-                      {parent.name_zh || parent.name || parent.slug}
-                    </label>
-                  )}
-                </div>
-              ))}
+                  </option>
+                ))}
+              </select>
             </div>
+            {selectedParentId && childCategories.length > 0 && (
+              <div>
+                <label className="block text-xs text-text-muted mb-1">子分类</label>
+                <select
+                  value={selectedChildId}
+                  onChange={(e) => setSelectedChildId(e.target.value)}
+                  className={selectClass}
+                >
+                  <option value="">请选择子分类</option>
+                  {childCategories.map((child) => (
+                    <option key={child.id} value={child.id}>
+                      {child.name_zh || child.name || child.slug}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Is Featured */}

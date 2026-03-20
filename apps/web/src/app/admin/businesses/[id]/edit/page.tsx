@@ -75,12 +75,21 @@ export default async function EditBusinessPage({ params, searchParams }: Props) 
     .eq('business_id', id);
   const selectedCategoryIds = ((rawBizCats || []) as AnyRow[]).map((r: AnyRow) => r.category_id as string);
 
+  // Fetch existing images for this business
+  const { data: rawMedia } = await supabase
+    .from('business_media')
+    .select('media_url')
+    .eq('business_id', id)
+    .order('sort_order', { ascending: true });
+  const existingImages = ((rawMedia || []) as AnyRow[]).map((r: AnyRow) => r.media_url as string);
+
   return (
     <BusinessForm
       business={business}
       categories={categories}
       categoryTree={categoryTree}
       selectedCategoryIds={selectedCategoryIds}
+      existingImages={existingImages}
       isNew={false}
       siteParams={siteParamsObj.toString()}
     />
