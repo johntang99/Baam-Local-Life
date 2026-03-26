@@ -2,7 +2,10 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { createArticle, updateArticle, publishArticle, generateAISummary } from './actions';
+import { createArticle, updateArticle, publishArticle, generateAISummary, generateAIFAQ } from './actions';
+import { AIContentGenerator } from './AIContentGenerator';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -72,8 +75,14 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
   const [seoTitleZh, setSeoTitleZh] = useState(article?.seo_title_zh || '');
   const [seoDescZh, setSeoDescZh] = useState(article?.seo_desc_zh || '');
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>(article?.audience_types || []);
-  const [aiSummaryZh] = useState(article?.ai_summary_zh || '');
-  const [aiSummaryEn] = useState(article?.ai_summary_en || '');
+  const [aiSummaryZh, setAiSummaryZh] = useState(article?.ai_summary_zh || '');
+  const [aiSummaryEn, setAiSummaryEn] = useState(article?.ai_summary_en || '');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [aiFaq, setAiFaq] = useState<{ q: string; a: string }[]>((article?.ai_faq as { q: string; a: string }[]) || []);
+  const [faqLoading, setFaqLoading] = useState(false);
+  const [faqError, setFaqError] = useState('');
+  const [previewLang, setPreviewLang] = useState<'zh' | 'en' | null>(null);
 
   const buildFormData = () => {
     const fd = new FormData();
@@ -128,18 +137,75 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
     });
   };
 
-  const handleGenerateAISummary = () => {
+  const handleGenerateAISummary = async () => {
     if (!article?.id) return;
-    startTransition(async () => {
-      await generateAISummary(article.id);
-      router.refresh();
-    });
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const result = await generateAISummary(article.id);
+      if (result.error) {
+        setAiError(result.error);
+      } else {
+        // Re-fetch the updated article to get new summaries
+        router.refresh();
+        // Optimistic: fetch directly since router.refresh won't update useState
+        const res = await fetch(`/api/admin/article-summary?id=${article.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ai_summary_zh) setAiSummaryZh(data.ai_summary_zh);
+          if (data.ai_summary_en) setAiSummaryEn(data.ai_summary_en);
+        }
+      }
+    } catch (err) {
+      setAiError('AI生成失败，请稍后重试');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleGenerateFAQ = async () => {
+    if (!article?.id) return;
+    setFaqLoading(true);
+    setFaqError('');
+    try {
+      const result = await generateAIFAQ(article.id);
+      if (result.error) {
+        setFaqError(result.error);
+      } else if (result.faq) {
+        setAiFaq(result.faq);
+        router.refresh();
+      }
+    } catch {
+      setFaqError('FAQ生成失败，请稍后重试');
+    } finally {
+      setFaqLoading(false);
+    }
   };
 
   const toggleAudience = (value: string) => {
     setSelectedAudiences((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleAIGenerated = (data: any) => {
+    console.log('[AI Generated]', JSON.stringify(data).slice(0, 500));
+    if (!data || typeof data !== 'object') {
+      console.error('[AI] Invalid data received:', data);
+      return;
+    }
+    if (data.title_zh) setTitleZh(data.title_zh);
+    if (data.title_en) setTitleEn(data.title_en);
+    if (data.body_zh) setBodyZh(data.body_zh);
+    if (data.body_en) setBodyEn(data.body_en);
+    setAiSummaryZh(data.ai_summary_zh || '');
+    setAiSummaryEn(data.ai_summary_en || '');
+    setAiFaq(data.ai_faq || []);
+    setSeoTitleZh(data.seo_title_zh || '');
+    setSeoDescZh(data.seo_desc_zh || '');
+    // Set status to ai_drafted
+    setEditorialStatus('ai_drafted');
   };
 
   return (
@@ -177,6 +243,11 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
         {error && (
           <p className="text-sm text-red-600 mt-2">{error}</p>
         )}
+      </div>
+
+      {/* AI Content Generator */}
+      <div className="px-6 pt-6">
+        <AIContentGenerator onGenerated={handleAIGenerated} />
       </div>
 
       {/* Two-column layout */}
@@ -223,7 +294,10 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
 
           {/* Body ZH */}
           <div className="bg-bg-card border border-border rounded-xl p-5">
-            <label className="block text-sm font-medium mb-2">正文（中文）</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">正文（中文）</label>
+              {bodyZh && <button type="button" onClick={() => setPreviewLang('zh')} className="text-xs text-blue-600 hover:underline">预览</button>}
+            </div>
             <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
               {toolbarButtons.map((btn) => (
                 <button
@@ -246,7 +320,10 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
 
           {/* Body EN */}
           <div className="bg-bg-card border border-border rounded-xl p-5">
-            <label className="block text-sm font-medium mb-2">正文（英文）</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">正文（英文）</label>
+              {bodyEn && <button type="button" onClick={() => setPreviewLang('en')} className="text-xs text-blue-600 hover:underline">预览</button>}
+            </div>
             <div className="flex items-center gap-1 mb-2 pb-2 border-b border-border">
               {toolbarButtons.map((btn) => (
                 <button
@@ -274,15 +351,30 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
               <button
                 type="button"
                 onClick={handleGenerateAISummary}
-                disabled={isPending || isNew}
+                disabled={isPending || isNew || aiLoading}
                 className="h-8 px-3 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                AI生成摘要
+                {aiLoading ? (
+                  <>
+                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    AI生成中...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    AI生成摘要
+                  </>
+                )}
               </button>
             </div>
+            {aiError && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">{aiError}</div>
+            )}
             {(aiSummaryZh || aiSummaryEn) ? (
               <div className="space-y-3">
                 {aiSummaryZh && (
@@ -299,7 +391,7 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
                 )}
               </div>
             ) : (
-              <p className="text-sm text-text-muted">保存文章后可生成AI摘要</p>
+              <p className="text-sm text-text-muted">{isNew ? '💡 先点击「保存草稿」，然后可单独重新生成摘要' : '点击「AI生成摘要」按钮'}</p>
             )}
           </div>
 
@@ -309,18 +401,34 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
               <label className="text-sm font-medium">AI FAQ</label>
               <button
                 type="button"
-                disabled
+                onClick={handleGenerateFAQ}
+                disabled={isPending || isNew || faqLoading}
                 className="h-8 px-3 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
               >
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                生成FAQ
+                {faqLoading ? (
+                  <>
+                    <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    生成FAQ
+                  </>
+                )}
               </button>
             </div>
-            {article?.ai_faq ? (
+            {faqError && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">{faqError}</div>
+            )}
+            {aiFaq.length > 0 ? (
               <div className="space-y-2">
-                {(article.ai_faq as { q: string; a: string }[]).map((item: { q: string; a: string }, i: number) => (
+                {aiFaq.map((item, i) => (
                   <div key={i} className="bg-bg-page border border-border rounded-lg p-3">
                     <p className="text-sm font-medium">Q: {item.q}</p>
                     <p className="text-sm text-text-muted mt-1">A: {item.a}</p>
@@ -328,7 +436,7 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-text-muted">保存文章后可生成FAQ</p>
+              <p className="text-sm text-text-muted">{isNew ? '💡 先点击「保存草稿」，然后可单独重新生成FAQ' : '点击「生成FAQ」按钮生成常见问题'}</p>
             )}
           </div>
         </div>
@@ -470,6 +578,103 @@ export default function ArticleForm({ article, categories, regions, isNew, siteP
           </div>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {previewLang && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]" onClick={() => setPreviewLang(null)}>
+          <div className="bg-white rounded-2xl max-w-3xl w-[90%] max-h-[90vh] shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
+              <div className="flex items-center gap-4">
+                <h3 className="font-bold text-lg">文章预览</h3>
+                <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => setPreviewLang('zh')}
+                    className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all ${previewLang === 'zh' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  >中文</button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewLang('en')}
+                    className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all ${previewLang === 'en' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                  >English</button>
+                </div>
+              </div>
+              <button onClick={() => setPreviewLang(null)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">&times;</button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="overflow-auto flex-1">
+              <div className="max-w-2xl mx-auto px-8 py-10">
+                {/* Title */}
+                <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-4 text-gray-900">
+                  {previewLang === 'zh' ? titleZh : titleEn}
+                </h1>
+
+                {/* Meta */}
+                <div className="flex items-center gap-3 text-xs text-gray-400 mb-6 pb-6 border-b border-gray-100">
+                  <span>Baam 编辑部</span>
+                  <span>·</span>
+                  <span>{new Date().toLocaleDateString('zh-CN')}</span>
+                  {aiSummaryZh && <span>·</span>}
+                  {aiSummaryZh && <span className="text-blue-500">AI辅助</span>}
+                </div>
+
+                {/* AI Summary */}
+                {(previewLang === 'zh' ? aiSummaryZh : aiSummaryEn) && (
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-r-lg px-5 py-4 mb-8">
+                    <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">AI 摘要</p>
+                    <p className="text-sm text-gray-700 leading-relaxed">{previewLang === 'zh' ? aiSummaryZh : aiSummaryEn}</p>
+                  </div>
+                )}
+
+                {/* Article Body */}
+                <div className="
+                  text-base leading-[1.8] text-gray-800
+                  [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-10 [&_h1]:mb-4 [&_h1]:text-gray-900
+                  [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:text-gray-900 [&_h2]:border-b [&_h2]:border-gray-100 [&_h2]:pb-2
+                  [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-gray-900
+                  [&_p]:mb-5 [&_p]:leading-[1.8]
+                  [&_ul]:mb-5 [&_ul]:pl-6 [&_ul]:list-disc [&_ul]:space-y-2
+                  [&_ol]:mb-5 [&_ol]:pl-6 [&_ol]:list-decimal [&_ol]:space-y-2
+                  [&_li]:leading-[1.7]
+                  [&_strong]:font-semibold [&_strong]:text-gray-900
+                  [&_a]:text-blue-600 [&_a]:underline [&_a]:underline-offset-2
+                  [&_blockquote]:border-l-4 [&_blockquote]:border-gray-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-600 [&_blockquote]:my-6
+                  [&_hr]:my-8 [&_hr]:border-gray-200
+                  [&_code]:bg-gray-100 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-sm [&_code]:text-red-600
+                ">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {previewLang === 'zh' ? bodyZh : bodyEn}
+                  </ReactMarkdown>
+                </div>
+
+                {/* FAQ */}
+                {aiFaq.length > 0 && (
+                  <div className="mt-10 pt-8 border-t border-gray-200">
+                    <h3 className="text-lg font-bold text-gray-900 mb-5">常见问题</h3>
+                    <div className="space-y-3">
+                      {aiFaq.map((item, i) => (
+                        <details key={i} className="group border border-gray-200 rounded-xl overflow-hidden">
+                          <summary className="px-5 py-4 text-sm font-medium cursor-pointer flex items-center justify-between hover:bg-gray-50 transition-colors">
+                            <span>{item.q}</span>
+                            <svg className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </summary>
+                          <div className="px-5 pb-4 text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
+                            {item.a}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

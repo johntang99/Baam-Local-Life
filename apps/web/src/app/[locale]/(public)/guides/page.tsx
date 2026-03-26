@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/routing';
+import { NewsletterForm } from '@/components/shared/newsletter-form';
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,13 +130,14 @@ export default async function GuidesListPage() {
               全部
             </Link>
             {categories.map((cat) => (
-              <button
+              <Link
                 key={cat.id}
+                href={`/guides?cat=${cat.slug}`}
                 className="flex-shrink-0 px-4 py-2 text-sm font-medium text-text-secondary bg-border-light rounded-full hover:bg-primary-50 hover:text-primary transition"
               >
                 {cat.icon && <span className="mr-1">{cat.icon}</span>}
                 {cat.name_zh || cat.name_en || cat.name}
-              </button>
+              </Link>
             ))}
           </div>
         </div>
@@ -290,14 +292,7 @@ export default async function GuidesListPage() {
                 <section className="bg-bg-card rounded-xl border border-border p-8 text-center">
                   <h2 className="text-xl font-bold mb-2">订阅纽约本地周报</h2>
                   <p className="text-sm text-text-secondary mb-5">每周一封，精选本地新闻、实用指南、活动推荐和社区精华</p>
-                  <div className="flex max-w-md mx-auto gap-3">
-                    <input
-                      type="email"
-                      placeholder="输入你的邮箱地址"
-                      className="flex-1 h-11 px-4 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                    />
-                    <button className="btn btn-primary h-11 px-6 text-sm flex-shrink-0">订阅</button>
-                  </div>
+                  <NewsletterForm source="guides_cta" className="max-w-md mx-auto" />
                 </section>
               </>
             )}

@@ -1,10 +1,13 @@
 import { createClient } from '@/lib/supabase/server';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/routing';
+import { Pagination } from '@/components/shared/pagination';
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
+
+const PAGE_SIZE = 24;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('nav');
@@ -24,11 +27,19 @@ const filterTags = [
   { key: 'education', label: '教育' },
 ];
 
-export default async function VoicesListPage() {
+interface Props {
+  searchParams: Promise<{ page?: string; tag?: string }>;
+}
+
+export default async function VoicesListPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
+  const activeTag = sp.tag || 'all';
+
   const supabase = await createClient();
   const t = await getTranslations();
 
-  // Fetch featured voices
+  // Fetch featured voices (always shown, not paginated)
   const { data: rawFeatured } = await supabase
     .from('profiles')
     .select('*')
@@ -38,15 +49,40 @@ export default async function VoicesListPage() {
 
   const featured = (rawFeatured || []) as AnyRow[];
 
-  // Fetch standard voice cards
-  const { data: rawVoices, error } = await supabase
+  // Count total voices for pagination
+  let countQuery = supabase
+    .from('profiles')
+    .select('id', { count: 'exact', head: true })
+    .neq('profile_type', 'user');
+
+  if (activeTag === 'expert') {
+    countQuery = countQuery.eq('is_verified', true);
+  } else if (activeTag !== 'all') {
+    countQuery = countQuery.contains('tags', [activeTag]);
+  }
+
+  const { count } = await countQuery;
+  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+
+  // Fetch paginated voices
+  const from = (currentPage - 1) * PAGE_SIZE;
+  let dataQuery = supabase
     .from('profiles')
     .select('*')
     .neq('profile_type', 'user')
-    .order('follower_count', { ascending: false })
-    .limit(24);
+    .order('follower_count', { ascending: false });
 
+  if (activeTag === 'expert') {
+    dataQuery = dataQuery.eq('is_verified', true);
+  } else if (activeTag !== 'all') {
+    dataQuery = dataQuery.contains('tags', [activeTag]);
+  }
+
+  const { data: rawVoices, error } = await dataQuery.range(from, from + PAGE_SIZE - 1);
   const voices = (rawVoices || []) as AnyRow[];
+
+  const preservedParams: Record<string, string> = {};
+  if (activeTag !== 'all') preservedParams.tag = activeTag;
 
   return (
     <main>
@@ -62,52 +98,40 @@ export default async function VoicesListPage() {
           </Link>
         </div>
 
-        {/* Filter Tags */}
+        {/* Filter Tags — now functional */}
         <div className="flex gap-1 mb-8 overflow-x-auto pb-2">
-          {filterTags.map((tag, i) => (
-            <button
+          {filterTags.map((tag) => (
+            <Link
               key={tag.key}
-              className={`px-4 py-2 text-sm font-medium rounded-full ${
-                i === 0
+              href={tag.key === 'all' ? '/voices' : `/voices?tag=${tag.key}`}
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                activeTag === tag.key
                   ? 'bg-primary text-text-inverse'
                   : 'bg-border-light text-text-secondary hover:bg-gray-200'
               }`}
             >
               {tag.label}
-            </button>
+            </Link>
           ))}
         </div>
 
         {/* Featured Voices */}
-        {featured.length > 0 && (
+        {featured.length > 0 && currentPage === 1 && (
           <section className="mb-10">
             <h2 className="text-lg font-bold mb-4">精选达人</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {featured.map((voice) => (
-                <Link
-                  key={voice.id}
-                  href={`/voices/${voice.username}`}
-                  className="card p-6 block"
-                >
+                <Link key={voice.id} href={`/voices/${voice.username}`} className="card p-6 block">
                   <div className="flex items-start gap-4">
-                    {/* Avatar placeholder */}
                     <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">
                       {voice.display_name?.[0] || '?'}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-base truncate">
-                          {voice.display_name || voice.username}
-                        </h3>
-                        {voice.is_verified && (
-                          <span className="badge badge-blue text-xs">已认证</span>
-                        )}
+                        <h3 className="font-semibold text-base truncate">{voice.display_name || voice.username}</h3>
+                        {voice.is_verified && <span className="badge badge-blue text-xs">已认证</span>}
                       </div>
-                      {voice.headline && (
-                        <p className="text-sm text-text-secondary line-clamp-2 mb-2">
-                          {voice.headline}
-                        </p>
-                      )}
+                      {voice.headline && <p className="text-sm text-text-secondary line-clamp-2 mb-2">{voice.headline}</p>}
                       <div className="flex items-center gap-3 text-xs text-text-muted">
                         <span>{voice.follower_count || 0} 关注者</span>
                       </div>
@@ -134,23 +158,14 @@ export default async function VoicesListPage() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {voices.map((voice) => (
-                <Link
-                  key={voice.id}
-                  href={`/voices/${voice.username}`}
-                  className="card p-4 block"
-                >
+                <Link key={voice.id} href={`/voices/${voice.username}`} className="card p-4 block">
                   <div className="flex items-center gap-3 mb-3">
-                    {/* Avatar placeholder */}
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">
                       {voice.display_name?.[0] || '?'}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-medium text-sm truncate">
-                        {voice.display_name || voice.username}
-                      </h3>
-                      {voice.region && (
-                        <span className="text-xs text-text-muted">{voice.region}</span>
-                      )}
+                      <h3 className="font-medium text-sm truncate">{voice.display_name || voice.username}</h3>
+                      {voice.region && <span className="text-xs text-text-muted">{voice.region}</span>}
                     </div>
                   </div>
                   {voice.tags && (
@@ -168,6 +183,13 @@ export default async function VoicesListPage() {
               ))}
             </div>
           )}
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            basePath="/voices"
+            searchParams={preservedParams}
+          />
         </section>
       </div>
     </main>

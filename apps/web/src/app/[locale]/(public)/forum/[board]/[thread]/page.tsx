@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import { Link } from '@/lib/i18n/routing';
+import { ForumReplyForm } from '@/components/shared/forum-reply-form';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
@@ -39,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ForumThreadPage({ params }: Props) {
   const { board, thread } = await params;
   const supabase = await createClient();
+  const user = await getCurrentUser();
 
   // Fetch thread
   const { data: rawThread, error: threadError } = await supabase
@@ -201,16 +204,9 @@ export default async function ForumThreadPage({ params }: Props) {
               )}
             </section>
 
-            {/* Reply Form Placeholder */}
-            <section className="mt-6 card p-5">
-              <h3 className="text-sm font-semibold mb-3">发表回复</h3>
-              <textarea
-                placeholder="写下你的回复..."
-                className="w-full h-24 px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
-              />
-              <div className="flex justify-end mt-3">
-                <button className="btn btn-primary px-6">提交回复</button>
-              </div>
+            {/* Reply Form */}
+            <section className="mt-6">
+              <ForumReplyForm threadId={threadData.id} isLoggedIn={!!user} />
             </section>
 
             {/* Related Threads */}

@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
+import { getCurrentUser } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import { Link } from '@/lib/i18n/routing';
+import { FollowButton, LikeButton, CommentForm } from '@/components/shared/social-actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
@@ -48,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function VoicePostDetailPage({ params }: Props) {
   const { username, slug } = await params;
   const supabase = await createClient();
+  const currentUser = await getCurrentUser().catch(() => null);
 
   // Fetch author profile
   const { data: profileData, error: profileError } = await supabase
@@ -129,7 +132,7 @@ export default async function VoicePostDetailPage({ params }: Props) {
                 </div>
                 <p className="text-xs text-text-muted">{profile.follower_count || 0} 关注者</p>
               </div>
-              <button className="btn btn-primary h-8 px-4 text-xs">关注</button>
+              <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs rounded-lg" />
             </div>
 
             {/* Post Header */}
@@ -157,29 +160,21 @@ export default async function VoicePostDetailPage({ params }: Props) {
             )}
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-3 py-4 border-t border-b border-border mb-8">
-              <button className="btn btn-outline h-8 px-3 text-xs flex items-center gap-1">
-                <span>👍</span> {post.like_count || 0} 赞
-              </button>
-              <button className="btn btn-outline h-8 px-3 text-xs flex items-center gap-1">
-                <span>💬</span> {post.comment_count || 0} 评论
-              </button>
-              <button className="btn btn-outline h-8 px-3 text-xs">收藏</button>
-              <button className="btn btn-outline h-8 px-3 text-xs">分享</button>
+            <div className="flex items-center gap-4 py-4 border-t border-b border-border mb-8">
+              <LikeButton postId={post.id} isLiked={false} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
+              <span className="text-sm text-text-muted">💬 {post.comment_count || 0} 评论</span>
             </div>
 
             {/* Comments */}
             <section className="mb-8">
               <h2 className="text-lg font-bold mb-4">评论 ({comments.length})</h2>
-              {comments.length === 0 ? (
-                <p className="text-text-secondary text-sm py-4">暂无评论，快来发表第一条评论吧</p>
-              ) : (
-                <div className="space-y-4">
+              {comments.length > 0 && (
+                <div className="space-y-4 mb-4">
                   {comments.map((comment) => (
                     <div key={comment.id} className="card p-4">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs flex-shrink-0">
-                          ?
+                          {(comment.author_name || '?')[0]}
                         </div>
                         <span className="text-sm font-medium">{comment.author_name || '匿名用户'}</span>
                         {comment.created_at && (
@@ -193,6 +188,7 @@ export default async function VoicePostDetailPage({ params }: Props) {
                   ))}
                 </div>
               )}
+              <CommentForm postId={post.id} isLoggedIn={!!currentUser} />
             </section>
 
             {/* More from Author */}

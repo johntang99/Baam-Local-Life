@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/lib/i18n/routing';
+import { LeadForm } from '@/components/shared/lead-form';
+import { NewsletterForm } from '@/components/shared/newsletter-form';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
@@ -611,50 +613,14 @@ export default async function BusinessDetailPage({ params }: Props) {
             <div className="lead-capture" id="lead-form">
               <h3 className="font-bold text-base mb-1">咨询这家商家</h3>
               <p className="text-xs text-text-muted mb-4">填写信息，商家将尽快与您联系</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-xs font-medium mb-1">您的姓名 *</label>
-                  <input
-                    type="text"
-                    placeholder="请输入姓名"
-                    className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1">联系电话 *</label>
-                  <input
-                    type="tel"
-                    placeholder="(xxx) xxx-xxxx"
-                    className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium mb-1">咨询内容</label>
-                  <textarea
-                    rows={3}
-                    placeholder="请简要描述您的需求..."
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card resize-none"
-                  />
-                </div>
-                <button className="btn btn-primary w-full h-11 text-sm">提交咨询</button>
-                <p className="text-xs text-text-muted text-center">
-                  提交即表示同意 <Link href="/privacy" className="text-primary">隐私政策</Link> · 通常1个工作日内回复
-                </p>
-              </div>
+              <LeadForm businessId={biz.id} sourceType="business_page" />
             </div>
 
             {/* Newsletter */}
             <div className="bg-bg-card rounded-xl border border-border p-5">
               <h3 className="font-semibold text-sm mb-3">📬 订阅本地周报</h3>
               <p className="text-xs text-text-secondary mb-3">每周精选本地新闻、指南、活动</p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="输入邮箱"
-                  className="flex-1 h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                />
-                <button className="btn btn-primary h-9 px-4 text-sm">订阅</button>
-              </div>
+              <NewsletterForm source="business_detail" />
             </div>
           </div>
 

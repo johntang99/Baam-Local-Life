@@ -3,17 +3,21 @@ import { Suspense } from 'react';
 import { AdminSidebar } from '@/components/admin/admin-sidebar';
 import { AdminHeader } from '@/components/admin/admin-header';
 import { AdminSiteProvider } from '@/components/admin/AdminSiteContext';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export const metadata = {
   title: 'Admin · Baam',
   description: 'Baam Admin Panel',
 };
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Auth gate: only admin users can access /admin/*
+  await requireAdmin();
+
   return (
     <html lang="zh-CN">
       <body className="bg-gray-50 text-gray-900 antialiased">

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/routing';
+import { NewsletterForm } from '@/components/shared/newsletter-form';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -361,10 +362,7 @@ export default async function HomePage() {
         <section className="bg-bg-card rounded-xl border border-border p-8 text-center">
           <h2 className="text-xl font-bold mb-2">📬 {t('home.newsletter.title')}</h2>
           <p className="text-sm text-text-secondary mb-5">{t('home.newsletter.subtitle')}</p>
-          <div className="flex max-w-md mx-auto gap-3">
-            <input type="email" placeholder={t('home.newsletter.placeholder')} className="flex-1 h-11 px-4 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" />
-            <button className="btn btn-primary h-11 px-6 text-sm">{t('home.newsletter.subscribe')}</button>
-          </div>
+          <NewsletterForm source="homepage" className="max-w-md mx-auto" />
           <p className="text-xs text-text-muted mt-3">{t('home.newsletter.subscriberCount', { count: '1,200' })}</p>
         </section>
 

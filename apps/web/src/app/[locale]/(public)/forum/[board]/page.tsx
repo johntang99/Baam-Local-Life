@@ -1,14 +1,18 @@
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/lib/i18n/routing';
+import { Pagination } from '@/components/shared/pagination';
 import type { Metadata } from 'next';
 
 interface Props {
   params: Promise<{ locale: string; board: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
+
+const PAGE_SIZE = 20;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { board } = await params;
@@ -29,8 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ForumBoardPage({ params }: Props) {
+export default async function ForumBoardPage({ params, searchParams }: Props) {
   const { board } = await params;
+  const sp = await searchParams;
+  const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
+  const sortBy = sp.sort || 'latest_reply';
+
   const supabase = await createClient();
 
   // Fetch board info
@@ -44,17 +52,43 @@ export default async function ForumBoardPage({ params }: Props) {
   const boardData = rawBoard as AnyRow | null;
   if (boardError || !boardData) notFound();
 
-  // Fetch threads for this board
-  const { data: rawThreads } = await supabase
+  // Count total threads
+  const { count } = await supabase
+    .from('forum_threads')
+    .select('id', { count: 'exact', head: true })
+    .eq('board_id', boardData.id)
+    .eq('status', 'published');
+
+  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+
+  // Build query with sort
+  const from = (currentPage - 1) * PAGE_SIZE;
+  let dataQuery = supabase
     .from('forum_threads')
     .select('*')
     .eq('board_id', boardData.id)
     .eq('status', 'published')
-    .order('is_pinned', { ascending: false })
-    .order('last_replied_at', { ascending: false })
-    .limit(20);
+    .order('is_pinned', { ascending: false });
 
+  if (sortBy === 'newest') {
+    dataQuery = dataQuery.order('created_at', { ascending: false });
+  } else if (sortBy === 'hot') {
+    dataQuery = dataQuery.order('reply_count', { ascending: false });
+  } else {
+    dataQuery = dataQuery.order('last_replied_at', { ascending: false });
+  }
+
+  const { data: rawThreads } = await dataQuery.range(from, from + PAGE_SIZE - 1);
   const threads = (rawThreads || []) as AnyRow[];
+
+  const preservedParams: Record<string, string> = {};
+  if (sortBy !== 'latest_reply') preservedParams.sort = sortBy;
+
+  const sortOptions = [
+    { key: 'latest_reply', label: '最新回复' },
+    { key: 'newest', label: '最新发布' },
+    { key: 'hot', label: '最热' },
+  ];
 
   return (
     <main>
@@ -69,7 +103,6 @@ export default async function ForumBoardPage({ params }: Props) {
         </nav>
 
         <div className="lg:flex gap-8">
-          {/* Main Content */}
           <div className="flex-1">
             {/* Board Header */}
             <div className="mb-6">
@@ -82,11 +115,21 @@ export default async function ForumBoardPage({ params }: Props) {
               )}
             </div>
 
-            {/* Sort Buttons */}
+            {/* Sort Buttons — now functional */}
             <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-primary text-text-inverse">最新回复</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">最新发布</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">最热</button>
+              {sortOptions.map((opt) => (
+                <Link
+                  key={opt.key}
+                  href={opt.key === 'latest_reply' ? `/forum/${board}` : `/forum/${board}?sort=${opt.key}`}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                    sortBy === opt.key
+                      ? 'bg-primary text-text-inverse'
+                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {opt.label}
+                </Link>
+              ))}
             </div>
 
             {/* Thread List */}
@@ -120,12 +163,8 @@ export default async function ForumBoardPage({ params }: Props) {
                           <div className="flex items-center gap-3 text-xs text-text-muted">
                             <span>{thread.author_name || '匿名用户'}</span>
                             <span>{timeAgo}</span>
-                            <span className="flex items-center gap-1">
-                              💬 {thread.reply_count || 0}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              👀 {thread.view_count || 0}
-                            </span>
+                            <span className="flex items-center gap-1">💬 {thread.reply_count || 0}</span>
+                            <span className="flex items-center gap-1">👀 {thread.view_count || 0}</span>
                             {thread.ai_summary_zh && (
                               <span className="text-primary" title="AI 速读可用">🤖</span>
                             )}
@@ -137,11 +176,17 @@ export default async function ForumBoardPage({ params }: Props) {
                 })}
               </div>
             )}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath={`/forum/${board}`}
+              searchParams={preservedParams}
+            />
           </div>
 
           {/* Sidebar */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
-            {/* Board Rules */}
             <div className="bg-bg-card rounded-xl border border-border p-5">
               <h3 className="font-semibold text-sm mb-3">📜 版规</h3>
               <ul className="text-xs text-text-secondary space-y-2">
@@ -151,8 +196,6 @@ export default async function ForumBoardPage({ params }: Props) {
                 <li>4. 请使用正确的版块发帖</li>
               </ul>
             </div>
-
-            {/* Related Businesses */}
             <div className="bg-bg-card rounded-xl border border-border p-5">
               <h3 className="font-semibold text-sm mb-3">🏪 相关商家</h3>
               <p className="text-xs text-text-muted">商家推荐将在这里显示</p>

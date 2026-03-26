@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
 import { Link } from '@/lib/i18n/routing';
+import { LeadForm } from '@/components/shared/lead-form';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Metadata } from 'next';
@@ -251,38 +252,7 @@ export default async function GuideDetailPage({ params }: Props) {
               <p className="text-sm text-text-secondary mb-4">
                 留下你的信息，我们将为你匹配最合适的本地服务商家，免费咨询。
               </p>
-              <form className="space-y-3">
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-medium text-text-secondary mb-1">姓名</label>
-                    <input
-                      type="text"
-                      placeholder="你的姓名"
-                      className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-text-secondary mb-1">电话</label>
-                    <input
-                      type="tel"
-                      placeholder="联系电话"
-                      className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-text-secondary mb-1">你的需求</label>
-                  <textarea
-                    placeholder="简单描述你需要什么帮助，例如：需要找法拉盛附近的中文报税会计..."
-                    rows={3}
-                    className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card resize-none"
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary h-10 px-6 text-sm">
-                  免费获取推荐
-                </button>
-                <p className="text-xs text-text-muted">提交即表示同意我们的隐私政策。信息仅用于匹配商家，不会泄露给第三方。</p>
-              </form>
+              <LeadForm sourceType="guide" sourceArticleId={article.id} />
             </section>
 
             {/* Share */}

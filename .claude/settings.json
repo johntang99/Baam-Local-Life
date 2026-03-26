@@ -6,7 +6,17 @@
       "Write(*)",
       "Edit(*)",
       "Bash(grep -n \"select.*name\" /Users/johntang/Desktop/clients/baam-local/apps/web/src/app/admin/businesses/[id]/edit/page.tsx)",
-      "Bash(find /Users/johntang/Desktop/clients/medical-clinic/chinese-medicine -name ImagePickerModal* -o -name imagePicker* -o -name MediaPicker*)"
+      "Bash(find /Users/johntang/Desktop/clients/medical-clinic/chinese-medicine -name ImagePickerModal* -o -name imagePicker* -o -name MediaPicker*)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_console_messages",
+      "WebSearch",
+      "WebFetch(domain:supabase.com)",
+      "WebFetch(domain:github.com)"
     ],
     "additionalDirectories": []
   }

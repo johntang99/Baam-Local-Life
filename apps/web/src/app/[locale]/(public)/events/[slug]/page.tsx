@@ -22,12 +22,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = data as AnyRow | null;
   if (!event) return { title: 'Not Found' };
 
+  const title = event.title_zh || event.title_en || event.title || '';
+  const desc = event.description_zh || event.description_en || event.description || '';
   return {
-    title: `${event.title} · Baam`,
-    description: event.description?.slice(0, 160) || '',
+    title: `${title} · Baam`,
+    description: desc.slice(0, 160),
     openGraph: {
-      title: event.title || '',
-      description: event.description?.slice(0, 160) || '',
+      title,
+      description: desc.slice(0, 160),
       images: event.cover_image_url ? [event.cover_image_url] : [],
     },
   };
@@ -87,7 +89,7 @@ export default async function EventDetailPage({ params }: Props) {
           <span className="mx-2">›</span>
           <Link href="/events" className="hover:text-primary">活动</Link>
           <span className="mx-2">›</span>
-          <span className="text-text-secondary">{event.title}</span>
+          <span className="text-text-secondary">{event.title_zh || event.title_en || event.title}</span>
         </nav>
 
         <div className="lg:flex gap-8">
@@ -100,7 +102,7 @@ export default async function EventDetailPage({ params }: Props) {
                   {isFree ? '免费' : '付费'}
                 </span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-4">{event.title}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-4">{event.title_zh || event.title_en || event.title}</h1>
 
               {/* Event Meta */}
               <div className="space-y-2 text-sm text-text-secondary">
@@ -116,10 +118,10 @@ export default async function EventDetailPage({ params }: Props) {
                     <span>{timeStr}{endTimeStr ? ` - ${endTimeStr}` : ''}</span>
                   </div>
                 )}
-                {event.venue && (
+                {(event.venue_name || event.venue) && (
                   <div className="flex items-center gap-2">
                     <span className="text-text-muted">地点</span>
-                    <span>{event.venue}</span>
+                    <span>{(event.venue_name || event.venue)}</span>
                   </div>
                 )}
                 {event.address && (
@@ -138,9 +140,9 @@ export default async function EventDetailPage({ params }: Props) {
             </header>
 
             {/* Description */}
-            {event.description && (
+            {(event.description_zh || event.description_en || event.description) && (
               <div className="prose prose-sm max-w-none mb-8 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4">
-                <p>{event.description}</p>
+                <p>{(event.description_zh || event.description_en || event.description)}</p>
               </div>
             )}
 

@@ -24,40 +24,146 @@ const searchTabs = [
 ];
 
 interface Props {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; tab?: string }>;
 }
 
 export default async function SearchPage({ searchParams }: Props) {
-  const { q } = await searchParams;
-  const query = q?.trim() || '';
+  const sp = await searchParams;
+  const query = sp.q?.trim() || '';
+  const activeTab = sp.tab || 'all';
   const supabase = await createClient();
   const t = await getTranslations();
 
+  // Results containers
   let businesses: AnyRow[] = [];
-  let articles: AnyRow[] = [];
+  let news: AnyRow[] = [];
+  let guides: AnyRow[] = [];
+  let threads: AnyRow[] = [];
+  let voices: AnyRow[] = [];
+  let events: AnyRow[] = [];
 
   if (query) {
-    // Search businesses
-    const { data: rawBiz } = await supabase
-      .from('businesses')
-      .select('*')
-      .ilike('display_name', `%${query}%`)
-      .limit(10);
+    const searchPattern = `%${query}%`;
 
-    businesses = (rawBiz || []) as AnyRow[];
+    // Run queries in parallel based on active tab
+    const shouldSearch = (tab: string) => activeTab === 'all' || activeTab === tab;
 
-    // Search articles
-    const { data: rawArticles } = await supabase
-      .from('articles')
-      .select('*')
-      .ilike('title_zh', `%${query}%`)
-      .eq('editorial_status', 'published')
-      .limit(10);
+    const promises: PromiseLike<void>[] = [];
 
-    articles = (rawArticles || []) as AnyRow[];
+    if (shouldSearch('biz')) {
+      promises.push(
+        supabase
+          .from('businesses')
+          .select('*')
+          .eq('status', 'active')
+          .or(`display_name.ilike.${searchPattern},display_name_zh.ilike.${searchPattern},short_desc_zh.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+          .order('is_featured', { ascending: false })
+          .limit(activeTab === 'all' ? 6 : 20)
+          .then(({ data }) => { businesses = (data || []) as AnyRow[]; })
+      );
+    }
+
+    if (shouldSearch('news')) {
+      promises.push(
+        supabase
+          .from('articles')
+          .select('*')
+          .eq('editorial_status', 'published')
+          .in('content_vertical', ['news_alert', 'news_brief', 'news_explainer', 'news_roundup', 'news_community'])
+          .or(`title_zh.ilike.${searchPattern},title_en.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+          .order('published_at', { ascending: false })
+          .limit(activeTab === 'all' ? 5 : 20)
+          .then(({ data }) => { news = (data || []) as AnyRow[]; })
+      );
+    }
+
+    if (shouldSearch('guides')) {
+      promises.push(
+        supabase
+          .from('articles')
+          .select('*')
+          .eq('editorial_status', 'published')
+          .in('content_vertical', ['guide_howto', 'guide_checklist', 'guide_bestof', 'guide_comparison', 'guide_neighborhood', 'guide_seasonal', 'guide_resource', 'guide_scenario'])
+          .or(`title_zh.ilike.${searchPattern},title_en.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+          .order('published_at', { ascending: false })
+          .limit(activeTab === 'all' ? 5 : 20)
+          .then(({ data }) => { guides = (data || []) as AnyRow[]; })
+      );
+    }
+
+    if (shouldSearch('forum')) {
+      promises.push(
+        supabase
+          .from('forum_threads')
+          .select('*')
+          .eq('status', 'published')
+          .or(`title.ilike.${searchPattern},body.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+          .order('reply_count', { ascending: false })
+          .limit(activeTab === 'all' ? 5 : 20)
+          .then(({ data }) => { threads = (data || []) as AnyRow[]; })
+      );
+    }
+
+    if (shouldSearch('voices')) {
+      promises.push(
+        supabase
+          .from('profiles')
+          .select('*')
+          .neq('profile_type', 'user')
+          .or(`display_name.ilike.${searchPattern},headline.ilike.${searchPattern},username.ilike.${searchPattern}`)
+          .order('follower_count', { ascending: false })
+          .limit(activeTab === 'all' ? 4 : 20)
+          .then(({ data }) => { voices = (data || []) as AnyRow[]; })
+      );
+    }
+
+    if (shouldSearch('events')) {
+      promises.push(
+        supabase
+          .from('events')
+          .select('*')
+          .eq('status', 'published')
+          .or(`title_zh.ilike.${searchPattern},title_en.ilike.${searchPattern},summary_zh.ilike.${searchPattern},venue_name.ilike.${searchPattern}`)
+          .order('start_at', { ascending: true })
+          .limit(activeTab === 'all' ? 4 : 20)
+          .then(({ data }) => { events = (data || []) as AnyRow[]; })
+      );
+    }
+
+    await Promise.all(promises);
   }
 
-  const hasResults = businesses.length > 0 || articles.length > 0;
+  const totalResults = businesses.length + news.length + guides.length + threads.length + voices.length + events.length;
+
+  // Generate AI search summary (only when results exist, uses fast Haiku model)
+  let aiSummary = '';
+  if (query && totalResults > 0) {
+    try {
+      const { generateSearchSummary } = await import('@/lib/ai/claude');
+      const resultTypes = [
+        { type: '商家', count: businesses.length },
+        { type: '新闻', count: news.length },
+        { type: '指南', count: guides.length },
+        { type: '论坛帖子', count: threads.length },
+        { type: '达人', count: voices.length },
+        { type: '活动', count: events.length },
+      ].filter(r => r.count > 0);
+      const result = await generateSearchSummary(query, resultTypes);
+      aiSummary = result.data;
+    } catch {
+      // AI summary is optional, don't block search results
+    }
+  }
+
+  const counts: Record<string, number> = {
+    all: totalResults,
+    biz: businesses.length,
+    news: news.length,
+    guides: guides.length,
+    forum: threads.length,
+    voices: voices.length,
+    events: events.length,
+  };
 
   return (
     <main>
@@ -66,6 +172,7 @@ export default async function SearchPage({ searchParams }: Props) {
         <div className="mb-6">
           <h1 className="text-2xl font-bold mb-4">搜索</h1>
           <form className="max-w-2xl">
+            <input type="hidden" name="tab" value={activeTab} />
             <div className="flex gap-2">
               <input
                 type="search"
@@ -79,30 +186,30 @@ export default async function SearchPage({ searchParams }: Props) {
           </form>
         </div>
 
-        {/* AI Summary Placeholder */}
+        {/* Tab Navigation — now functional links with counts */}
         {query && (
-          <div className="ai-summary-card mb-6">
-            <p className="text-sm text-secondary-dark leading-relaxed">
-              AI 摘要功能即将上线 — 将为您智能总结「{query}」的相关结果
-            </p>
+          <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
+            {searchTabs.map((tab) => {
+              const count = counts[tab.key] || 0;
+              const href = tab.key === 'all' ? `/search?q=${encodeURIComponent(query)}` : `/search?q=${encodeURIComponent(query)}&tab=${tab.key}`;
+
+              return (
+                <Link
+                  key={tab.key}
+                  href={href}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${
+                    activeTab === tab.key
+                      ? 'bg-primary text-text-inverse'
+                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {tab.label}
+                  {query && count > 0 && <span className="ml-1 text-xs opacity-75">({count})</span>}
+                </Link>
+              );
+            })}
           </div>
         )}
-
-        {/* Tab Navigation */}
-        <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
-          {searchTabs.map((tab, i) => (
-            <button
-              key={tab.key}
-              className={`px-4 py-2 text-sm font-medium rounded-full ${
-                i === 0
-                  ? 'bg-primary text-text-inverse'
-                  : 'bg-border-light text-text-secondary hover:bg-gray-200'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
 
         {/* Results */}
         {!query ? (
@@ -110,8 +217,23 @@ export default async function SearchPage({ searchParams }: Props) {
             <p className="text-4xl mb-4">🔍</p>
             <p className="text-text-secondary">输入关键词开始搜索</p>
             <p className="text-text-muted text-sm mt-1">搜索商家、新闻、指南、达人、活动</p>
+            {/* Popular Searches */}
+            <div className="mt-8 max-w-md mx-auto">
+              <p className="text-sm text-text-muted mb-3">热门搜索</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {['家庭医生', '报税', '中文律师', '装修', '搬家', '驾照', '月嫂', '学区'].map((term) => (
+                  <Link
+                    key={term}
+                    href={`/search?q=${encodeURIComponent(term)}`}
+                    className="px-3 py-1.5 text-sm bg-border-light text-text-secondary rounded-full hover:bg-primary/10 hover:text-primary transition"
+                  >
+                    {term}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
-        ) : !hasResults ? (
+        ) : totalResults === 0 ? (
           <div className="py-12 text-center">
             <p className="text-4xl mb-4">😔</p>
             <p className="text-text-secondary">没有找到「{query}」的相关结果</p>
@@ -119,19 +241,92 @@ export default async function SearchPage({ searchParams }: Props) {
           </div>
         ) : (
           <div className="space-y-8">
+            {/* AI Summary */}
+            {/* AI Summary */}
+            {aiSummary && (
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-r-lg px-5 py-4">
+                <p className="text-xs font-semibold text-blue-600 mb-1">🤖 AI 搜索摘要</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{aiSummary}</p>
+              </div>
+            )}
+
             {/* Business Results */}
             {businesses.length > 0 && (
               <section>
-                <h2 className="text-lg font-bold mb-4">商家 ({businesses.length})</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">🏪 商家 ({businesses.length})</h2>
+                  {activeTab === 'all' && businesses.length >= 6 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=biz`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {businesses.map((biz) => (
-                    <Link key={biz.id} href={`/biz/${biz.slug}`} className="card p-4 block">
-                      <h3 className="font-semibold text-sm mb-1">{biz.display_name}</h3>
-                      {biz.category && (
-                        <span className="badge badge-gray text-xs">{biz.category}</span>
+                    <Link key={biz.id} href={`/businesses/${biz.slug}`} className="card p-4 block">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">🏢</div>
+                        <div className="min-w-0">
+                          <h3 className="font-semibold text-sm truncate">{biz.display_name || biz.name_zh}</h3>
+                          {biz.category_name && <span className="text-xs text-text-muted">{biz.category_name}</span>}
+                        </div>
+                      </div>
+                      {biz.avg_rating > 0 && (
+                        <div className="flex items-center gap-1 text-xs mb-1">
+                          <span className="text-yellow-500">{'★'.repeat(Math.round(biz.avg_rating))}</span>
+                          <span className="text-text-muted">{biz.avg_rating?.toFixed(1)} ({biz.review_count || 0})</span>
+                        </div>
                       )}
-                      {biz.address && (
-                        <p className="text-xs text-text-muted mt-2 line-clamp-1">{biz.address}</p>
+                      {biz.short_desc_zh && <p className="text-xs text-text-muted line-clamp-2">{biz.short_desc_zh}</p>}
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* News Results */}
+            {news.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">📰 新闻 ({news.length})</h2>
+                  {activeTab === 'all' && news.length >= 5 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=news`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
+                <div className="space-y-3">
+                  {news.map((article) => (
+                    <Link key={article.id} href={`/news/${article.slug}`} className="card p-4 block">
+                      <h3 className="font-semibold text-sm mb-1 line-clamp-2">{article.title_zh || article.title_en}</h3>
+                      {(article.ai_summary_zh || article.summary_zh) && (
+                        <p className="text-xs text-text-secondary line-clamp-2">{article.ai_summary_zh || article.summary_zh}</p>
+                      )}
+                      <span className="text-xs text-text-muted mt-1 block">{article.source_name || ''}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Guide Results */}
+            {guides.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">📚 指南 ({guides.length})</h2>
+                  {activeTab === 'all' && guides.length >= 5 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=guides`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
+                <div className="space-y-3">
+                  {guides.map((guide) => (
+                    <Link key={guide.id} href={`/guides/${guide.slug}`} className="card p-4 block">
+                      <h3 className="font-semibold text-sm mb-1 line-clamp-2">{guide.title_zh || guide.title_en}</h3>
+                      {(guide.ai_summary_zh || guide.summary_zh) && (
+                        <p className="text-xs text-text-secondary line-clamp-2">{guide.ai_summary_zh || guide.summary_zh}</p>
+                      )}
+                      {guide.audience_tags && Array.isArray(guide.audience_tags) && (
+                        <div className="flex gap-1 mt-1">
+                          {guide.audience_tags.slice(0, 3).map((tag: string) => (
+                            <span key={tag} className="text-xs bg-green-50 text-green-700 px-1.5 py-0.5 rounded">{tag}</span>
+                          ))}
+                        </div>
                       )}
                     </Link>
                   ))}
@@ -139,27 +334,83 @@ export default async function SearchPage({ searchParams }: Props) {
               </section>
             )}
 
-            {/* Article Results */}
-            {articles.length > 0 && (
+            {/* Forum Results */}
+            {threads.length > 0 && (
               <section>
-                <h2 className="text-lg font-bold mb-4">新闻与指南 ({articles.length})</h2>
-                <div className="space-y-4">
-                  {articles.map((article) => (
-                    <Link
-                      key={article.id}
-                      href={`/news/${article.slug}`}
-                      className="card p-5 block"
-                    >
-                      <h3 className="font-semibold text-base mb-2 line-clamp-2">
-                        {article.title_zh || article.title_en}
-                      </h3>
-                      {(article.ai_summary_zh || article.summary_zh) && (
-                        <p className="text-sm text-text-secondary line-clamp-2">
-                          {article.ai_summary_zh || article.summary_zh}
-                        </p>
-                      )}
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">💬 论坛 ({threads.length})</h2>
+                  {activeTab === 'all' && threads.length >= 5 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=forum`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
+                <div className="space-y-3">
+                  {threads.map((thread) => (
+                    <Link key={thread.id} href={`/forum/${thread.board_slug || 'general'}/${thread.slug}`} className="card p-4 block">
+                      <h3 className="font-semibold text-sm mb-1 line-clamp-1">{thread.title_zh || thread.title}</h3>
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
+                        <span>{thread.author_name || '匿名'}</span>
+                        <span>💬 {thread.reply_count || 0}</span>
+                        <span>👀 {thread.view_count || 0}</span>
+                      </div>
                     </Link>
                   ))}
+                </div>
+              </section>
+            )}
+
+            {/* Voices Results */}
+            {voices.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">🎙️ 达人 ({voices.length})</h2>
+                  {activeTab === 'all' && voices.length >= 4 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=voices`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {voices.map((voice) => (
+                    <Link key={voice.id} href={`/voices/${voice.username}`} className="card p-4 block">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                          {voice.display_name?.[0] || '?'}
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="font-medium text-sm truncate">{voice.display_name || voice.username}</h3>
+                          {voice.is_verified && <span className="text-xs text-blue-600">已认证</span>}
+                        </div>
+                      </div>
+                      {voice.headline && <p className="text-xs text-text-secondary line-clamp-2">{voice.headline}</p>}
+                      <span className="text-xs text-text-muted mt-1 block">{voice.follower_count || 0} 关注者</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Events Results */}
+            {events.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold">🎉 活动 ({events.length})</h2>
+                  {activeTab === 'all' && events.length >= 4 && (
+                    <Link href={`/search?q=${encodeURIComponent(query)}&tab=events`} className="text-sm text-primary hover:underline">查看全部 →</Link>
+                  )}
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {events.map((event) => {
+                    const startDate = event.start_at ? new Date(event.start_at) : null;
+                    const dateStr = startDate ? startDate.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) : '';
+                    return (
+                      <Link key={event.id} href={`/events/${event.slug}`} className="card p-4 block">
+                        <h3 className="font-semibold text-sm mb-1 line-clamp-2">{event.title_zh || event.title_en || event.title}</h3>
+                        <div className="flex items-center gap-2 text-xs text-text-muted">
+                          {dateStr && <span>📅 {dateStr}</span>}
+                          {event.venue_name && <span>📍 {event.venue_name}</span>}
+                          {event.is_free && <span className="badge badge-green text-xs">免费</span>}
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               </section>
             )}

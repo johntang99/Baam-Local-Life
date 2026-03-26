@@ -172,17 +172,187 @@ export async function bulkArchive(articleIds: string[]) {
 export async function generateAISummary(articleId: string) {
   const supabase = db();
 
-  const { error } = await supabase
+  // Fetch article content
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: article, error: fetchError } = await (supabase as any)
     .from('articles')
-    .update({
-      ai_summary_zh: '[AI摘要占位] 这是一篇关于本地社区资讯的文章摘要，将在AI服务接入后自动生成。',
-    })
-    .eq('id', articleId);
+    .select('title_zh, title_en, body_zh, body_en')
+    .eq('id', articleId)
+    .single();
 
-  revalidatePath('/admin/articles');
-
-  if (error) {
-    return { error: error.message };
+  if (fetchError || !article) {
+    return { error: fetchError?.message || 'Article not found' };
   }
-  return { error: null };
+
+  const bodyText = article.body_zh || article.body_en || '';
+  const titleText = article.title_zh || article.title_en || '';
+
+  if (!bodyText && !titleText) {
+    return { error: '文章内容为空，无法生成摘要' };
+  }
+
+  try {
+    const { generateSummary, generateTags } = await import('@/lib/ai/claude');
+
+    // Generate Chinese summary
+    const contentForSummary = `标题：${titleText}\n\n${bodyText.slice(0, 3000)}`;
+    const summaryResult = await generateSummary(contentForSummary, 'zh');
+
+    // Generate tags
+    const tagsResult = await generateTags(contentForSummary).catch(() => null);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateData: Record<string, any> = {
+      ai_summary_zh: summaryResult.data,
+    };
+    if (tagsResult?.data) {
+      updateData.ai_tags = tagsResult.data;
+    }
+
+    // Also generate English summary if English content exists
+    if (article.body_en || article.title_en) {
+      const enContent = `Title: ${article.title_en || titleText}\n\n${(article.body_en || bodyText).slice(0, 3000)}`;
+      const enResult = await generateSummary(enContent, 'en').catch(() => null);
+      if (enResult?.data) {
+        updateData.ai_summary_en = enResult.data;
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any)
+      .from('articles')
+      .update(updateData)
+      .eq('id', articleId);
+
+    revalidatePath('/admin/articles');
+
+    if (error) return { error: error.message };
+
+    // Log AI job (best-effort, don't fail if this errors)
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (supabase as any).from('ai_jobs').insert({
+        job_type: 'summary',
+        entity_type: 'article',
+        entity_id: articleId,
+        status: 'completed',
+        model_name: summaryResult.model,
+        input_tokens: summaryResult.inputTokens,
+        output_tokens: summaryResult.outputTokens,
+        cost_usd: ((summaryResult.inputTokens * 0.25 + summaryResult.outputTokens * 1.25) / 1_000_000),
+      });
+    } catch {
+      // ignore logging errors
+    }
+
+    return { error: null };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'AI generation failed';
+    return { error: `AI生成失败：${message}` };
+  }
+}
+
+export async function generateAIFAQ(articleId: string) {
+  const supabase = db();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: article, error: fetchError } = await (supabase as any)
+    .from('articles')
+    .select('title_zh, title_en, body_zh, body_en')
+    .eq('id', articleId)
+    .single();
+
+  if (fetchError || !article) {
+    return { error: fetchError?.message || 'Article not found' };
+  }
+
+  const bodyText = article.body_zh || article.body_en || '';
+  const titleText = article.title_zh || article.title_en || '';
+
+  if (!bodyText && !titleText) {
+    return { error: '文章内容为空，无法生成FAQ' };
+  }
+
+  try {
+    const { generateFAQ } = await import('@/lib/ai/claude');
+
+    const contentForFAQ = `标题：${titleText}\n\n${bodyText.slice(0, 4000)}`;
+    const faqResult = await generateFAQ(contentForFAQ, 5);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any)
+      .from('articles')
+      .update({ ai_faq: faqResult.data })
+      .eq('id', articleId);
+
+    revalidatePath('/admin/articles');
+
+    if (error) return { error: error.message };
+    return { error: null, faq: faqResult.data };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'AI generation failed';
+    return { error: `FAQ生成失败：${message}` };
+  }
+}
+
+// ─── AI Article Generation (from scratch or rewrite) ──────────────────
+
+export async function aiGenerateArticle(params: {
+  mode: 'generate' | 'rewrite';
+  // Generate mode fields
+  topic?: string;
+  keywords?: string;
+  region?: string;
+  category?: string;
+  style?: string;
+  tone?: string;
+  audience?: string;
+  sourceUrl?: string;
+  notes?: string;
+  // Rewrite mode fields
+  sourceContent?: string;
+}) {
+  try {
+    const { generateArticleFromScratch, rewriteArticle } = await import('@/lib/ai/claude');
+
+    let result;
+    if (params.mode === 'rewrite') {
+      if (!params.sourceContent?.trim()) {
+        return { error: '请粘贴原文内容' };
+      }
+      result = await rewriteArticle({
+        sourceContent: params.sourceContent,
+        style: params.style,
+        tone: params.tone,
+        audience: params.audience,
+        notes: params.notes,
+      });
+    } else {
+      if (!params.topic?.trim()) {
+        return { error: '请输入文章主题' };
+      }
+      result = await generateArticleFromScratch({
+        topic: params.topic,
+        keywords: params.keywords,
+        region: params.region,
+        category: params.category,
+        style: params.style,
+        tone: params.tone,
+        audience: params.audience,
+        sourceUrl: params.sourceUrl,
+        notes: params.notes,
+      });
+    }
+
+    return {
+      error: null,
+      article: result.data,
+      model: result.model,
+      tokens: result.inputTokens + result.outputTokens,
+      prompt: (result as { prompt?: string }).prompt || '',
+    };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'AI generation failed';
+    return { error: `AI生成失败：${message}` };
+  }
 }

@@ -1,10 +1,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/lib/i18n/routing';
+import { Pagination } from '@/components/shared/pagination';
+import { NewsletterForm } from '@/components/shared/newsletter-form';
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
+
+const PAGE_SIZE = 20;
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('nav');
@@ -14,33 +18,58 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Badge color mapping for content verticals
-const verticalConfig: Record<string, { label: string; className: string }> = {
-  news_alert: { label: '快报', className: 'badge-red' },
-  news_brief: { label: '简报', className: 'badge-blue' },
-  news_explainer: { label: '政策解读', className: 'badge-purple' },
-  news_roundup: { label: '周度汇总', className: 'badge-primary' },
-  news_community: { label: '社区新闻', className: 'badge-green' },
+const verticalConfig: Record<string, { label: string; className: string; key: string }> = {
+  news_alert: { label: '快报', className: 'badge-red', key: 'alert' },
+  news_brief: { label: '简报', className: 'badge-blue', key: 'brief' },
+  news_explainer: { label: '政策解读', className: 'badge-purple', key: 'explainer' },
+  news_roundup: { label: '周度汇总', className: 'badge-primary', key: 'roundup' },
+  news_community: { label: '社区新闻', className: 'badge-green', key: 'community' },
 };
 
-export default async function NewsListPage() {
+const filterTabs = [
+  { key: 'all', label: '全部', verticals: ['news_alert', 'news_brief', 'news_explainer', 'news_roundup', 'news_community'] },
+  { key: 'alert', label: '快报', verticals: ['news_alert'] },
+  { key: 'brief', label: '简报', verticals: ['news_brief'] },
+  { key: 'explainer', label: '解读', verticals: ['news_explainer'] },
+  { key: 'roundup', label: '汇总', verticals: ['news_roundup'] },
+  { key: 'community', label: '社区', verticals: ['news_community'] },
+];
+
+interface Props {
+  searchParams: Promise<{ page?: string; type?: string }>;
+}
+
+export default async function NewsListPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
+  const activeType = sp.type || 'all';
+  const activeTab = filterTabs.find(t => t.key === activeType) || filterTabs[0];
+
   const supabase = await createClient();
   const t = await getTranslations();
 
-  // Fetch published news articles, newest first
+  // Count total for pagination
+  const countQuery = supabase
+    .from('articles')
+    .select('id', { count: 'exact', head: true })
+    .in('content_vertical', activeTab.verticals)
+    .eq('editorial_status', 'published');
+  const { count } = await countQuery;
+  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
+
+  // Fetch page of articles
+  const from = (currentPage - 1) * PAGE_SIZE;
   const { data: rawArticles, error } = await supabase
     .from('articles')
     .select('*')
-    .in('content_vertical', [
-      'news_alert', 'news_brief', 'news_explainer', 'news_roundup', 'news_community',
-    ])
+    .in('content_vertical', activeTab.verticals)
     .eq('editorial_status', 'published')
     .order('published_at', { ascending: false })
-    .limit(20);
+    .range(from, from + PAGE_SIZE - 1);
 
   const articles = (rawArticles || []) as AnyRow[];
 
-  // Fetch active alerts (unexpired)
+  // Fetch active alerts (always show)
   const { data: rawAlerts } = await supabase
     .from('articles')
     .select('*')
@@ -50,8 +79,11 @@ export default async function NewsListPage() {
     .limit(3);
 
   const alerts = (rawAlerts || []) as AnyRow[];
-
   const hasAlerts = alerts.length > 0;
+
+  // Build preserved search params for pagination links
+  const preservedParams: Record<string, string> = {};
+  if (activeType !== 'all') preservedParams.type = activeType;
 
   return (
     <main>
@@ -72,7 +104,6 @@ export default async function NewsListPage() {
       )}
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <span>📰</span> {t('nav.news')}
@@ -80,16 +111,22 @@ export default async function NewsListPage() {
         </div>
 
         <div className="lg:flex gap-8">
-          {/* Main Content */}
           <div className="flex-1">
-            {/* Filter Tabs */}
+            {/* Filter Tabs — now functional links */}
             <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-primary text-text-inverse">全部</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">快报</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">简报</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">解读</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">汇总</button>
-              <button className="px-4 py-2 text-sm font-medium rounded-full bg-border-light text-text-secondary hover:bg-gray-200">社区</button>
+              {filterTabs.map((tab) => (
+                <Link
+                  key={tab.key}
+                  href={tab.key === 'all' ? '/news' : `/news?type=${tab.key}`}
+                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                    activeType === tab.key
+                      ? 'bg-primary text-text-inverse'
+                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
             </div>
 
             {/* News List */}
@@ -141,22 +178,22 @@ export default async function NewsListPage() {
                 })}
               </div>
             )}
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath="/news"
+              searchParams={preservedParams}
+            />
           </div>
 
           {/* Sidebar */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
-            {/* Newsletter Subscribe */}
             <div className="bg-bg-card rounded-xl border border-border p-5">
               <h3 className="font-semibold text-sm mb-3">📬 订阅本地周报</h3>
               <p className="text-xs text-text-secondary mb-3">每周精选本地新闻、指南、活动</p>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="输入邮箱"
-                  className="flex-1 h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                />
-                <button className="btn btn-primary h-9 px-4 text-sm">订阅</button>
-              </div>
+              <NewsletterForm source="news_sidebar" />
             </div>
           </aside>
         </div>
