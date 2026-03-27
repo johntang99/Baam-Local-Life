@@ -38,6 +38,18 @@ export default async function middleware(request: NextRequest) {
   const host = request.headers.get('host');
   const site = resolveSite(host);
 
+  // ─── Locale redirect based on site ────────────────────────────────
+  // NY Chinese site: redirect /en/* to /zh/*
+  if (site.locale === 'zh' && pathname.startsWith('/en')) {
+    const zhPath = pathname.replace(/^\/en/, '/zh') || '/zh';
+    return NextResponse.redirect(new URL(zhPath, request.url));
+  }
+  // OC English site (future): redirect /zh/* to /en/*
+  if (site.locale === 'en' && pathname.startsWith('/zh')) {
+    const enPath = pathname.replace(/^\/zh/, '/en') || '/en';
+    return NextResponse.redirect(new URL(enPath, request.url));
+  }
+
   // ─── Admin & API routes ──────────────────────────────────────────
   if (pathname.startsWith('/admin') || pathname.startsWith('/api')) {
     const response = NextResponse.next({
