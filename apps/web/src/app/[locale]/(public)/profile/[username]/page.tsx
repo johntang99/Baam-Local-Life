@@ -14,11 +14,12 @@ type AnyRow = Record<string, any>;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { username } = await params;
   const supabase = await createClient();
-  const { data } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data } = await (supabase as any)
     .from('profiles')
     .select('display_name')
     .eq('username', username)
-    .single() as { data: AnyRow | null };
+    .single();
 
   return {
     title: data ? `${data.display_name} · Baam` : 'Not Found',
@@ -31,7 +32,8 @@ export default async function UserProfilePage({ params }: Props) {
   const currentUser = await getCurrentUser().catch(() => null);
 
   // Fetch profile
-  const { data: profileData, error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: profileData, error } = await (supabase as any)
     .from('profiles')
     .select('*')
     .eq('username', username)
