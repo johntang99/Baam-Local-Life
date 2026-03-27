@@ -15,13 +15,57 @@ interface AskResult {
   }[];
 }
 
+// Split Chinese query into searchable keywords
+function extractKeywords(query: string): string[] {
+  const q = query.trim();
+
+  // Known location words to split on
+  const locations = ['法拉盛', '皇后区', '曼哈顿', '布鲁克林', '纽约', '唐人街'];
+  // Common stop/filler words
+  const stopWords = ['有', '哪些', '什么', '怎么', '如何', '哪里', '好吃的', '推荐', '附近', '本地', '的', '吗', '呢', '吧', '了', '在', '找', '去', '要', '想', '好', '能', '可以', '请问', '帮我', '告诉我'];
+
+  // Extract known locations first
+  const foundLocations: string[] = [];
+  let remaining = q;
+  for (const loc of locations) {
+    if (remaining.includes(loc)) {
+      foundLocations.push(loc);
+      remaining = remaining.replace(loc, ' ');
+    }
+  }
+
+  // Remove stop words
+  stopWords.forEach(w => { remaining = remaining.replace(new RegExp(w, 'g'), ' '); });
+
+  // Split remaining into segments
+  const segments = remaining.split(/[\s,，、]+/).filter(w => w.length >= 2);
+
+  // Combine: full query + locations + segments
+  const keywords = [q, ...foundLocations, ...segments];
+
+  // Deduplicate and limit
+  return [...new Set(keywords)].slice(0, 6);
+}
+
 export async function askXiaoLin(query: string): Promise<{ error?: string; data?: AskResult }> {
   if (!query?.trim() || query.length < 2) {
     return { error: '请输入你的问题' };
   }
 
   const supabase = createAdminClient();
-  const searchPattern = `%${query}%`;
+  const keywords = extractKeywords(query);
+
+  // Build OR conditions for each keyword across multiple columns
+  function buildOr(columns: string[]): string {
+    const conditions: string[] = [];
+    for (const kw of keywords) {
+      const pattern = `%${kw}%`;
+      for (const col of columns) {
+        conditions.push(`${col}.ilike.${pattern}`);
+      }
+    }
+    return conditions.join(',');
+  }
 
   // ─── RAG: Search all 6 content sources in parallel ──────────────
 
@@ -32,7 +76,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .select('slug, display_name, display_name_zh, short_desc_zh, ai_tags, avg_rating, review_count, phone')
       .eq('status', 'active')
       .eq('is_active', true)
-      .or(`display_name.ilike.${searchPattern},display_name_zh.ilike.${searchPattern},short_desc_zh.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+      .or(buildOr(['display_name', 'display_name_zh', 'short_desc_zh', 'ai_summary_zh']))
       .limit(5),
 
     // News
@@ -41,7 +85,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .select('slug, title_zh, ai_summary_zh, content_vertical, published_at')
       .eq('editorial_status', 'published')
       .in('content_vertical', ['news_alert', 'news_brief', 'news_explainer', 'news_roundup', 'news_community'])
-      .or(`title_zh.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+      .or(buildOr(['title_zh', 'ai_summary_zh']))
       .order('published_at', { ascending: false })
       .limit(3),
 
@@ -51,7 +95,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .select('slug, title_zh, ai_summary_zh, content_vertical')
       .eq('editorial_status', 'published')
       .in('content_vertical', ['guide_howto', 'guide_checklist', 'guide_bestof', 'guide_comparison', 'guide_neighborhood', 'guide_seasonal', 'guide_resource', 'guide_scenario'])
-      .or(`title_zh.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern},body_zh.ilike.${searchPattern}`)
+      .or(buildOr(['title_zh', 'ai_summary_zh', 'body_zh']))
       .limit(5),
 
     // Forum threads
@@ -59,7 +103,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .from('forum_threads')
       .select('slug, title, ai_summary_zh, reply_count, board_id, categories:board_id(slug)')
       .eq('status', 'published')
-      .or(`title.ilike.${searchPattern},body.ilike.${searchPattern},ai_summary_zh.ilike.${searchPattern}`)
+      .or(buildOr(['title', 'body', 'ai_summary_zh']))
       .order('reply_count', { ascending: false })
       .limit(3),
 
@@ -68,7 +112,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .from('voice_posts')
       .select('slug, title, excerpt, author_id')
       .eq('status', 'published')
-      .or(`title.ilike.${searchPattern},content.ilike.${searchPattern}`)
+      .or(buildOr(['title', 'content']))
       .limit(3),
 
     // Events
@@ -76,7 +120,7 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       .from('events')
       .select('slug, title_zh, title_en, summary_zh, venue_name, start_at, is_free')
       .eq('status', 'published')
-      .or(`title_zh.ilike.${searchPattern},title_en.ilike.${searchPattern},summary_zh.ilike.${searchPattern},venue_name.ilike.${searchPattern}`)
+      .or(buildOr(['title_zh', 'title_en', 'summary_zh', 'venue_name']))
       .order('start_at', { ascending: true })
       .limit(3),
   ]);
