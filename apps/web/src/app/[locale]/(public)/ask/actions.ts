@@ -15,40 +15,8 @@ interface AskResult {
   }[];
 }
 
-// Known business-related terms that map to category concepts
-const CATEGORY_KEYWORDS: Record<string, string[]> = {
-  '火锅': ['火锅', 'hotpot', 'hot pot', '麻辣烫', '串串'],
-  '中餐': ['中餐', '中国菜', '川菜', '粤菜', '湘菜', '东北菜'],
-  '日料': ['日料', '日本菜', '寿司', 'sushi', '拉面', 'ramen'],
-  '韩餐': ['韩餐', '韩国菜', '烤肉', 'korean'],
-  '奶茶': ['奶茶', '茶饮', '珍珠', 'bubble tea', 'boba'],
-  '烘焙': ['面包', '蛋糕', '烘焙', '甜品', 'bakery'],
-  '咖啡': ['咖啡', 'coffee', 'cafe'],
-  '点心': ['点心', '早茶', 'dim sum', '饮茶'],
-  '中医': ['中医', '针灸', 'acupuncture', '推拿', '拔罐', '刮痧', '艾灸', '中药'],
-  '牙科': ['牙科', '牙医', '牙齿', '看牙', '洗牙', '补牙', '拔牙', '种植牙', 'dental', 'dentist'],
-  '眼科': ['眼科', '配镜', '验光', 'optometry'],
-  '律师': ['律师', '法律', 'lawyer', 'attorney', '移民', '绿卡', '签证', '工卡', '身份'],
-  '会计': ['会计', '报税', 'CPA', 'accountant', '税务', '退税', '个税', '公司税'],
-  '保险': ['保险', 'insurance'],
-  '地产': ['地产', '房产', '买房', '租房', 'realtor', 'real estate'],
-  '美发': ['美发', '理发', '发型', '剪头发', '烫发', '染发', 'hair', 'salon'],
-  '美甲': ['美甲', '做指甲', 'nail'],
-  '按摩': ['按摩', 'spa', 'massage', '足疗', '推油'],
-  '搬家': ['搬家', 'moving', '搬运'],
-  '装修': ['装修', 'renovation', '水管', '电工', '刷墙', '铺地板'],
-  '汽车': ['汽车', '修车', 'auto', 'car repair', '换轮胎', '换机油', '车检'],
-  '驾校': ['驾校', '学车', 'driving school', '考驾照', '练车'],
-  '补习': ['补习', '辅导', '培训', 'tutoring', '家教', '补课'],
-  '超市': ['超市', '杂货', 'supermarket', 'grocery', '买菜', '菜市场'],
-  '药房': ['药房', '药店', 'pharmacy'],
-  '快递': ['快递', '物流', 'shipping'],
-  '旅行': ['旅行社', '旅游', 'travel'],
-  '摄影': ['摄影', '拍照', 'photography'],
-  '宠物': ['宠物', 'pet'],
-};
-
 // Split Chinese query into searchable keywords
+// Category synonym matching is now handled by search_terms column in the categories table
 function extractKeywords(query: string): string[] {
   const q = query.trim();
 
@@ -76,21 +44,9 @@ function extractKeywords(query: string): string[] {
   // Split remaining into 2-4 char segments for Chinese
   const segments = remaining.split(/[\s,，、.。!！?？·]+/).filter(w => w.length >= 2);
 
-  // Also match known category keywords from the query
-  // Push BOTH the matched term AND the category key (for DB category name matching)
-  const matchedCategoryTerms: string[] = [];
-  for (const [catKey, terms] of Object.entries(CATEGORY_KEYWORDS)) {
-    for (const term of terms) {
-      if (q.includes(term)) {
-        matchedCategoryTerms.push(term);
-        matchedCategoryTerms.push(catKey); // e.g., "牙医" → also add "牙科"
-        break; // one match per category is enough
-      }
-    }
-  }
-
-  // Combine: locations + category terms + segments (NO full query — it's too long)
-  const keywords = [...foundLocations, ...matchedCategoryTerms, ...segments];
+  // Combine: locations + segments
+  // Category matching is now handled by search_terms in the DB, no need for hardcoded mapping
+  const keywords = [...foundLocations, ...segments];
 
   // Deduplicate and limit
   return [...new Set(keywords)].filter(k => k.length >= 2).slice(0, 8);
@@ -130,15 +86,16 @@ export async function askXiaoLin(query: string): Promise<{ error?: string; data?
       }
     };
 
-    // Strategy 1: Match keywords against category names → find businesses by category
+    // Strategy 1: Match keywords against category search_terms + name → find businesses by category
     const allCats: AnyRow[] = [];
     for (const kw of keywords) {
       if (kw.length < 2) continue;
+      // Search both name_zh and search_terms array
       const { data } = await (supabase as any)
         .from('categories')
         .select('id, name_zh, slug, parent_id')
         .eq('type', 'business')
-        .ilike('name_zh', `%${kw}%`);
+        .or(`name_zh.ilike.%${kw}%,search_terms.cs.{"${kw}"}`);
       if (data) allCats.push(...data);
     }
 
