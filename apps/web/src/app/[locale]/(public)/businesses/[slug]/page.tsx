@@ -226,7 +226,7 @@ export default async function BusinessDetailPage({ params }: Props) {
       </section>
 
       {/* Business Header */}
-      <section className="max-w-7xl mx-auto px-4 pt-14 sm:pt-16 pb-4">
+      <section className="max-w-7xl mx-auto px-4 pt-14 sm:pt-16 pb-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             {/* Name + Verified */}
@@ -285,7 +285,7 @@ export default async function BusinessDetailPage({ params }: Props) {
       </section>
 
       {/* CTA Buttons — click-to-action */}
-      <section className="max-w-7xl mx-auto px-4 pb-4">
+      <section className="max-w-7xl mx-auto px-4 pb-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {biz.phone && (
             <a
@@ -326,42 +326,21 @@ export default async function BusinessDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Social Media Links */}
-      {socialLinks.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 pb-4">
-          <div className="flex flex-wrap gap-3">
-            {socialLinks.map((social) => (
-              <a
-                key={social.label}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 h-9 px-4 bg-bg-card border border-border text-sm rounded-lg hover:bg-border-light transition text-text-secondary hover:text-text-primary"
-                title={social.label}
-              >
-                {social.icon}
-                <span className="hidden sm:inline">{social.label}</span>
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
       {/* Main Content + Sidebar */}
-      <div className="max-w-7xl mx-auto px-4 pb-12">
-        <div className="lg:flex lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 pb-16">
+        <div className="lg:flex lg:gap-10">
 
           {/* Main Content Column */}
           <div className="flex-1 min-w-0">
 
             {/* ===== Overview Section ===== */}
-            <h2 className="text-lg font-bold mb-4 mt-6 flex items-center gap-2" id="overview">
+            <h2 className="text-xl font-bold mb-5 mt-8 flex items-center gap-2" id="overview">
               概述
             </h2>
 
             {/* AI Description */}
             {description && (
-              <div className="ai-summary-card mb-6">
+              <div className="ai-summary-card mb-8">
                 <h3 className="font-semibold text-sm mb-2">关于{name}</h3>
                 <div className="text-sm leading-relaxed prose prose-sm max-w-none [&_p]:mb-3 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline">
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
@@ -371,8 +350,8 @@ export default async function BusinessDetailPage({ params }: Props) {
 
             {/* Website Link Preview — FB-style card */}
             {(biz.website_url || biz.website) && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <div className="mb-10">
+                <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                   </svg>
@@ -411,13 +390,13 @@ export default async function BusinessDetailPage({ params }: Props) {
 
             {/* Business Articles (from business website) */}
             {businessArticles.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <div className="mb-10 pt-8 border-t border-border">
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                   </svg>
                   商家文章
-                </h3>
+                </h2>
                 <div className="space-y-3">
                   {businessArticles.map((article) => {
                     const domain = (article.source_url || '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/.*$/, '');
@@ -455,14 +434,14 @@ export default async function BusinessDetailPage({ params }: Props) {
 
             {/* Video Section */}
             {videoUrl && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+              <div className="mb-10 pt-8 border-t border-border">
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   商家视频
-                </h3>
+                </h2>
                 {youtubeId ? (
                   <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
                     <iframe
@@ -489,13 +468,13 @@ export default async function BusinessDetailPage({ params }: Props) {
 
             {/* Photo Gallery */}
             {galleryPhotos.length > 0 && (
-              <div className="mb-6">
-                <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
+              <div className="mb-10 pt-8 border-t border-border">
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   商家图片 ({photos.length})
-                </h3>
+                </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {galleryPhotos.map((photo) => (
                     <div key={photo.name} className="relative aspect-[4/3] rounded-lg overflow-hidden group">
@@ -511,7 +490,8 @@ export default async function BusinessDetailPage({ params }: Props) {
             )}
 
             {/* ===== Reviews Section ===== */}
-            <h2 className="text-lg font-bold mb-4 mt-8 flex items-center gap-2" id="reviews">
+            <div className="pt-8 border-t border-border">
+            <h2 className="text-xl font-bold mb-5 flex items-center gap-2" id="reviews">
               评价 ({biz.review_count || reviews.length})
             </h2>
 
@@ -573,10 +553,11 @@ export default async function BusinessDetailPage({ params }: Props) {
               </div>
             )}
 
+            </div>
             {/* ===== FAQ Section ===== */}
             {faq && faq.length > 0 && (
-              <>
-                <h2 className="text-lg font-bold mb-4 mt-8 flex items-center gap-2" id="faq">
+              <div className="pt-8 border-t border-border">
+                <h2 className="text-xl font-bold mb-5 flex items-center gap-2" id="faq">
                   常见问题
                 </h2>
 
@@ -600,11 +581,12 @@ export default async function BusinessDetailPage({ params }: Props) {
                     </details>
                   ))}
                 </div>
-              </>
+              </div>
             )}
 
             {/* ===== Contact & Hours Section ===== */}
-            <h2 className="text-lg font-bold mb-4 mt-8 flex items-center gap-2" id="contact">
+            <div className="pt-8 border-t border-border">
+            <h2 className="text-xl font-bold mb-5 flex items-center gap-2" id="contact">
               联系方式
             </h2>
 
@@ -748,10 +730,11 @@ export default async function BusinessDetailPage({ params }: Props) {
               </div>
             </div>
 
+            </div>
             {/* Related Guides (editorial) */}
             {relatedGuides.length > 0 && (
-              <section className="mt-8">
-                <h2 className="text-lg font-bold mb-4">📚 相关生活指南</h2>
+              <section className="pt-8 border-t border-border mb-8">
+                <h2 className="text-xl font-bold mb-5">📚 相关生活指南</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {relatedGuides.map((guide) => (
                     <Link key={guide.id} href={`/guides/${guide.slug}`} className="card p-4 block hover:border-primary/30 transition-colors group">
@@ -768,10 +751,10 @@ export default async function BusinessDetailPage({ params }: Props) {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:w-80 flex-shrink-0 space-y-6 mt-6 lg:mt-0">
+          <div className="lg:w-80 flex-shrink-0 space-y-8 mt-8 lg:mt-8">
 
             {/* Lead Capture Form */}
-            <div className="lead-capture" id="lead-form">
+            <div className="lead-capture sticky top-20" id="lead-form">
               <h3 className="font-bold text-base mb-1">咨询这家商家</h3>
               <p className="text-xs text-text-muted mb-4">填写信息，商家将尽快与您联系</p>
               <LeadForm businessId={biz.id} sourceType="business_page" />
