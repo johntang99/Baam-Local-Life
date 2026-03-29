@@ -140,6 +140,44 @@ export default async function GuideDetailPage({ params }: Props) {
               </div>
             </header>
 
+            {/* Cover Image */}
+            {article.cover_image_url && (
+              <div className="mb-6 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                <img
+                  src={article.cover_image_url}
+                  alt={title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
+            {/* Source Attribution (for business_website articles) */}
+            {(article.source_type === 'business_website' || article.source_type === 'business_post') && (article.source_name || article.source_url) && (
+              <div className="flex items-center gap-3 p-3 bg-blue-50 border border-blue-100 rounded-lg mb-6">
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-blue-800">
+                    本文来源：{article.source_name || '商家供稿'}
+                  </p>
+                  {article.source_url && (
+                    <a
+                      href={article.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-600 hover:underline truncate block"
+                    >
+                      查看原文 →{' '}
+                      {article.source_url.replace(/^https?:\/\/(www\.)?/, '').slice(0, 60)}
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Medical/Legal Content Update Notice */}
             {isSensitiveContent && article.last_reviewed_at && (
               <div className="flex items-center gap-2 p-3 bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg mb-6">

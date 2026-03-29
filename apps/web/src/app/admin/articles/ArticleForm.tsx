@@ -6,6 +6,7 @@ import { createArticle, updateArticle, publishArticle, generateAISummary, genera
 import { AIContentGenerator } from './AIContentGenerator';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { ImagePickerModal } from '@/components/admin/ImagePickerModal';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -81,6 +82,8 @@ export default function ArticleForm({ article, categories, regions, businesses =
   const [selectedAudiences, setSelectedAudiences] = useState<string[]>(article?.audience_types || []);
   const [selectedBusinessIds, setSelectedBusinessIds] = useState<string[]>(linkedBusinessIds);
   const [bizSearchTerm, setBizSearchTerm] = useState('');
+  const [coverImageUrl, setCoverImageUrl] = useState(article?.cover_image_url || '');
+  const [coverPickerOpen, setCoverPickerOpen] = useState(false);
   const [aiSummaryZh, setAiSummaryZh] = useState(article?.ai_summary_zh || '');
   const [aiSummaryEn, setAiSummaryEn] = useState(article?.ai_summary_en || '');
   const [aiLoading, setAiLoading] = useState(false);
@@ -107,6 +110,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
     fd.set('seo_desc_zh', seoDescZh);
     fd.set('audience_types', JSON.stringify(selectedAudiences));
     fd.set('linked_business_ids', JSON.stringify(selectedBusinessIds));
+    fd.set('cover_image_url', coverImageUrl);
     return fd;
   };
 
@@ -535,10 +539,50 @@ export default function ArticleForm({ article, categories, regions, businesses =
           {/* Cover Image */}
           <div className="bg-bg-card border border-border rounded-xl p-5">
             <label className="block text-sm font-medium mb-2">封面图片</label>
-            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
-              <p className="text-sm text-text-muted">点击或拖拽上传封面图片</p>
-              <p className="text-xs text-text-muted mt-1">建议尺寸 1200x630</p>
-            </div>
+            {coverImageUrl ? (
+              <div className="relative group rounded-lg overflow-hidden mb-2">
+                <img src={coverImageUrl} alt="封面" className="w-full aspect-[16/9] object-cover" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => setCoverPickerOpen(true)}
+                    className="bg-white text-gray-800 text-xs px-3 py-1.5 rounded shadow"
+                  >
+                    更换图片
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCoverImageUrl('')}
+                    className="bg-red-600 text-white text-xs px-3 py-1.5 rounded shadow"
+                  >
+                    删除
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setCoverPickerOpen(true)}
+                className="w-full border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors"
+              >
+                <p className="text-sm text-text-secondary">点击选择封面图片</p>
+                <p className="text-xs text-text-muted mt-1">建议尺寸 1200x630</p>
+              </button>
+            )}
+            {/* Also allow pasting URL directly */}
+            <input
+              type="text"
+              value={coverImageUrl}
+              onChange={(e) => setCoverImageUrl(e.target.value)}
+              placeholder="或直接粘贴图片 URL"
+              className="w-full h-8 px-3 mt-2 border border-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+            />
+            <ImagePickerModal
+              open={coverPickerOpen}
+              folder="articles/covers"
+              onClose={() => setCoverPickerOpen(false)}
+              onSelect={(url) => { setCoverImageUrl(url); setCoverPickerOpen(false); }}
+            />
           </div>
 
           {/* Audience Types */}

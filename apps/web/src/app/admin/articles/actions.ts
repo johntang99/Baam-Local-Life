@@ -38,6 +38,7 @@ export async function createArticle(formData: FormData) {
       source_url: formData.get('source_url') as string || null,
       seo_title_zh: formData.get('seo_title_zh') as string || null,
       seo_desc_zh: formData.get('seo_desc_zh') as string || null,
+      cover_image_url: formData.get('cover_image_url') as string || null,
       audience_types: JSON.parse((formData.get('audience_types') as string) || '[]'),
       slug,
     })
@@ -95,6 +96,7 @@ export async function updateArticle(articleId: string, formData: FormData) {
       source_url: formData.get('source_url') as string || null,
       seo_title_zh: formData.get('seo_title_zh') as string || null,
       seo_desc_zh: formData.get('seo_desc_zh') as string || null,
+      cover_image_url: formData.get('cover_image_url') as string || null,
       audience_types: JSON.parse((formData.get('audience_types') as string) || '[]'),
     })
     .eq('id', articleId);
