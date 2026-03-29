@@ -17,9 +17,10 @@ interface CategoryFormData {
   icon: string;
   parent_id: string;
   sort_order: string;
+  search_terms: string[];
 }
 
-const emptyForm: CategoryFormData = { slug: '', name_en: '', name_zh: '', icon: '', parent_id: '', sort_order: '0' };
+const emptyForm: CategoryFormData = { slug: '', name_en: '', name_zh: '', icon: '', parent_id: '', sort_order: '0', search_terms: [] };
 
 export function CategoryTree({ categories }: CategoryTreeProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -53,6 +54,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
       icon: cat.icon || '',
       parent_id: cat.parent_id || '',
       sort_order: String(cat.sort_order ?? 0),
+      search_terms: Array.isArray(cat.search_terms) ? cat.search_terms : [],
     });
     setError('');
     setModalOpen(true);
@@ -80,6 +82,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
     fd.set('icon', formData.icon);
     fd.set('parent_id', formData.parent_id);
     fd.set('sort_order', formData.sort_order);
+    fd.set('search_terms', JSON.stringify(formData.search_terms));
 
     const result = editingId
       ? await updateCategory(editingId, fd)
@@ -239,6 +242,55 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
+              </div>
+
+              {/* Search Terms — tag input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  搜索关键词 <span className="text-xs text-gray-400 font-normal">（AI搜索匹配用，越多越好）</span>
+                </label>
+                <div className="min-h-[80px] p-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary">
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {formData.search_terms.map((term, i) => (
+                      <span key={i} className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary pl-2 pr-1 py-1 rounded-md">
+                        {term}
+                        <button
+                          type="button"
+                          onClick={() => setFormData(prev => ({
+                            ...prev,
+                            search_terms: prev.search_terms.filter((_, idx) => idx !== i),
+                          }))}
+                          className="hover:bg-primary/20 rounded p-0.5"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="输入关键词后按回车添加（如：牙医、看牙、洗牙）"
+                    className="w-full text-sm outline-none"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ',') {
+                        e.preventDefault();
+                        const input = e.currentTarget;
+                        // Support comma-separated batch input
+                        const newTerms = input.value.split(/[,，、\s]+/).map(t => t.trim()).filter(t => t.length >= 1);
+                        if (newTerms.length > 0) {
+                          setFormData(prev => ({
+                            ...prev,
+                            search_terms: [...new Set([...prev.search_terms, ...newTerms])],
+                          }));
+                          input.value = '';
+                        }
+                      }
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-1">按回车添加，支持逗号批量输入。中英文均可。</p>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">

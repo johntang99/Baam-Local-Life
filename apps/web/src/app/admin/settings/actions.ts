@@ -20,6 +20,9 @@ export async function addCategory(formData: FormData) {
   const sort_order = parseInt((formData.get('sort_order') as string) || '0', 10);
   if (!slug || !name_en) return { error: 'Slug and English name are required' };
 
+  const searchTermsRaw = formData.get('search_terms') as string;
+  const search_terms = searchTermsRaw ? JSON.parse(searchTermsRaw) : [];
+
   const { error } = await db().from('categories').insert({
     slug,
     name_en,
@@ -28,6 +31,7 @@ export async function addCategory(formData: FormData) {
     parent_id: parent_id || null,
     icon: icon || null,
     sort_order: isNaN(sort_order) ? 0 : sort_order,
+    search_terms,
   });
   if (error) return { error: error.message };
   reval();
@@ -43,12 +47,16 @@ export async function updateCategory(categoryId: string, formData: FormData) {
   const sort_order = parseInt((formData.get('sort_order') as string) || '0', 10);
   if (!name_en) return { error: 'English name is required' };
 
+  const searchTermsRaw = formData.get('search_terms') as string;
+  const search_terms = searchTermsRaw ? JSON.parse(searchTermsRaw) : [];
+
   const updates: Record<string, unknown> = {
     name_en,
     name_zh: name_zh || null,
     icon: icon || null,
     parent_id: parent_id || null,
     sort_order: isNaN(sort_order) ? 0 : sort_order,
+    search_terms,
   };
   if (slug) updates.slug = slug;
 
