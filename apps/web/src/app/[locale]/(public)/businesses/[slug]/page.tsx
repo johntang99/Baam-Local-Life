@@ -79,6 +79,7 @@ export default async function BusinessDetailPage({ params }: Props) {
   const fullDesc = biz.full_desc_zh || '';
   const shortDesc = biz.short_desc_zh || biz.ai_summary_zh || biz.short_desc_en || '';
   const description = fullDesc || shortDesc;
+  const shortDescPreview = (biz.short_desc_zh || biz.short_desc_en || '').slice(0, 100);
   const aiTags = ((biz.ai_tags || []) as string[]).filter(t => t !== 'GBP已认领');
   const faq = biz.ai_faq as Array<{ q: string; a: string }> | null;
 
@@ -343,13 +344,75 @@ export default async function BusinessDetailPage({ params }: Props) {
           {/* Main Content Column */}
           <div className="flex-1 min-w-0">
 
-            {/* ===== Video Embed ===== */}
+            {/* ===== Overview Section ===== */}
+            <h2 className="text-lg font-bold mb-4 mt-6 flex items-center gap-2" id="overview">
+              概述
+            </h2>
+
+            {/* AI Description */}
+            {description && (
+              <div className="ai-summary-card mb-6">
+                <h3 className="font-semibold text-sm mb-2">关于{name}</h3>
+                <div className="text-sm leading-relaxed prose prose-sm max-w-none [&_p]:mb-3 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
+                </div>
+              </div>
+            )}
+
+            {/* Website Link Preview — FB-style card */}
+            {(biz.website_url || biz.website) && (
+              <div className="mb-6">
+                <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                  </svg>
+                  官方网站
+                </h3>
+                <a
+                  href={biz.website_url || biz.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block card overflow-hidden hover:border-primary/30 transition-colors group"
+                >
+                  <div className="p-4 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex-shrink-0 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium group-hover:text-primary transition-colors truncate">
+                        {name} — 官方网站
+                      </p>
+                      <p className="text-xs text-text-muted truncate">
+                        {(biz.website_url || biz.website).replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
+                      </p>
+                      {shortDescPreview && (
+                        <p className="text-xs text-text-secondary mt-1 line-clamp-2">{shortDescPreview}</p>
+                      )}
+                    </div>
+                    <svg className="w-5 h-5 text-text-muted flex-shrink-0 group-hover:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            )}
+
+            {/* Video Section */}
             {videoUrl && (
-              <div className="mb-6 mt-4">
+              <div className="mb-6">
+                <h3 className="font-semibold text-base mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  商家视频
+                </h3>
                 {youtubeId ? (
-                  <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                  <div className="relative w-full rounded-xl overflow-hidden" style={{ paddingBottom: '56.25%' }}>
                     <iframe
-                      className="absolute inset-0 w-full h-full rounded-xl"
+                      className="absolute inset-0 w-full h-full"
                       src={`https://www.youtube.com/embed/${youtubeId}`}
                       title="Business video"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -369,25 +432,6 @@ export default async function BusinessDetailPage({ params }: Props) {
                 )}
               </div>
             )}
-
-            {/* ===== Overview Section ===== */}
-            <h2 className="text-lg font-bold mb-4 mt-6 flex items-center gap-2" id="overview">
-              概述
-            </h2>
-
-            {/* AI Description */}
-            {description && (
-              <div className="ai-summary-card mb-6">
-                <h3 className="font-semibold text-sm mb-2">关于{name}</h3>
-                <div className="text-sm leading-relaxed prose prose-sm max-w-none [&_p]:mb-3 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:mt-4 [&_h2]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
-                </div>
-              </div>
-            )}
-
-            {/* Categories shown in header badges — no separate section needed */}
-
-            {/* Business Hours — moved to contact section below */}
 
             {/* Photo Gallery */}
             {galleryPhotos.length > 0 && (
