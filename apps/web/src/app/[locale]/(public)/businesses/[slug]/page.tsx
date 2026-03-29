@@ -75,7 +75,10 @@ export default async function BusinessDetailPage({ params }: Props) {
   if (error || !biz) notFound();
 
   const name = biz.display_name_zh || biz.name_zh || biz.display_name || biz.name;
-  const description = biz.short_desc_zh || biz.ai_summary_zh || biz.full_desc_zh || biz.short_desc_en || '';
+  // Prefer full description, fallback to short, then AI summary
+  const fullDesc = biz.full_desc_zh || '';
+  const shortDesc = biz.short_desc_zh || biz.ai_summary_zh || biz.short_desc_en || '';
+  const description = fullDesc || shortDesc;
   const aiTags = ((biz.ai_tags || []) as string[]).filter(t => t !== 'GBP已认领');
   const faq = biz.ai_faq as Array<{ q: string; a: string }> | null;
 
@@ -183,7 +186,7 @@ export default async function BusinessDetailPage({ params }: Props) {
       <section className="max-w-7xl mx-auto px-4">
         <div className="relative rounded-xl overflow-hidden">
           {coverPhoto ? (
-            <div className="h-48 sm:h-64 lg:h-80 relative">
+            <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
               <img
                 src={coverPhoto.url}
                 alt={name}
@@ -191,7 +194,7 @@ export default async function BusinessDetailPage({ params }: Props) {
               />
             </div>
           ) : (
-            <div className="h-48 sm:h-64 lg:h-80 bg-gradient-to-br from-blue-200 via-blue-100 to-teal-100 relative">
+            <div className="relative w-full bg-gradient-to-br from-blue-200 via-blue-100 to-teal-100" style={{ aspectRatio: '16/9' }}>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center text-blue-300">
                   <svg className="w-16 h-16 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,53 +385,9 @@ export default async function BusinessDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Services / Categories */}
-            {categories.length > 0 && (
-              <div className="card p-5 mb-6">
-                <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                  </svg>
-                  服务类别
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((cat: string) => (
-                    <span key={cat} className="inline-flex items-center text-sm bg-primary/10 text-primary px-3 py-1.5 rounded-lg">
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Categories shown in header badges — no separate section needed */}
 
-            {/* Business Hours */}
-            <div className="card p-5 mb-6">
-              <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                营业时间
-              </h3>
-              {hoursJson && Object.keys(hoursJson).length > 0 ? (
-                <div className="space-y-2">
-                  {dayOrder.map((day) => {
-                    const hours = hoursJson[day];
-                    return (
-                      <div key={day} className="flex items-center justify-between text-sm">
-                        <span className="font-medium text-text-secondary w-10">{dayLabels[day]}</span>
-                        {hours ? (
-                          <span className="text-text-primary">{hours.open} - {hours.close}</span>
-                        ) : (
-                          <span className="text-text-muted">休息</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-sm text-text-muted">营业时间信息即将更新</p>
-              )}
-            </div>
+            {/* Business Hours — moved to contact section below */}
 
             {/* Photo Gallery */}
             {galleryPhotos.length > 0 && (
@@ -546,7 +505,7 @@ export default async function BusinessDetailPage({ params }: Props) {
               </>
             )}
 
-            {/* ===== Contact Section ===== */}
+            {/* ===== Contact & Hours Section ===== */}
             <h2 className="text-lg font-bold mb-4 mt-8 flex items-center gap-2" id="contact">
               联系方式
             </h2>
@@ -568,114 +527,128 @@ export default async function BusinessDetailPage({ params }: Props) {
               </div>
             )}
 
-            {/* Contact Details */}
-            <div className="card p-5 mb-6">
-              <h3 className="font-semibold text-base mb-4">联系信息</h3>
-              <div className="space-y-4">
-                {fullAddress && (
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">地址</p>
-                      <a
-                        href={mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {fullAddress}
-                      </a>
+            {/* Two-column: Contact Info (left) + Hours (right) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+              {/* Left: Contact Details */}
+              <div className="card p-5">
+                <h3 className="font-semibold text-base mb-4">联系信息</h3>
+                <div className="space-y-4">
+                  {fullAddress && (
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium">地址</p>
+                        <a
+                          href={mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary hover:underline"
+                        >
+                          {fullAddress}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {biz.phone && (
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">电话</p>
-                      <a
-                        href={`tel:${biz.phone.replace(/[^+\d]/g, '')}`}
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {biz.phone}
-                      </a>
+                  )}
+                  {biz.phone && (
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium">电话</p>
+                        <a href={`tel:${biz.phone.replace(/[^+\d]/g, '')}`} className="text-sm text-primary hover:underline">{biz.phone}</a>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {biz.email && (
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">邮箱</p>
-                      <a
-                        href={`mailto:${biz.email}`}
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {biz.email}
-                      </a>
+                  )}
+                  {biz.email && (
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium">邮箱</p>
+                        <a href={`mailto:${biz.email}`} className="text-sm text-primary hover:underline">{biz.email}</a>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {(biz.website_url || biz.website) && (
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">网站</p>
-                      <a
-                        href={biz.website_url || biz.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-primary hover:underline"
-                      >
-                        {biz.website_url || biz.website}
-                      </a>
+                  )}
+                  {(biz.website_url || biz.website) && (
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium">网站</p>
+                        <a href={biz.website_url || biz.website} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline break-all">{biz.website_url || biz.website}</a>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {biz.wechat_id && (
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-medium">微信</p>
-                      <p className="text-sm text-text-secondary">{biz.wechat_id}</p>
+                  )}
+                  {biz.wechat_id && (
+                    <div className="flex items-start gap-3">
+                      <svg className="w-5 h-5 text-text-muted mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-medium">微信</p>
+                        <p className="text-sm text-text-secondary">{biz.wechat_id}</p>
+                      </div>
                     </div>
+                  )}
+                  {/* Social Media */}
+                  {socialLinks.length > 0 && (
+                    <div className="pt-3 border-t border-border">
+                      <p className="text-sm font-medium mb-2">社交媒体</p>
+                      <div className="flex flex-wrap gap-2">
+                        {socialLinks.map((social) => (
+                          <a
+                            key={social.label}
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 h-8 px-3 bg-bg-page border border-border text-xs rounded-lg hover:bg-border-light transition text-text-secondary hover:text-text-primary"
+                            title={social.label}
+                          >
+                            {social.icon}
+                            <span className="hidden sm:inline">{social.label}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right: Business Hours */}
+              <div className="card p-5">
+                <h3 className="font-semibold text-base mb-4 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  营业时间
+                </h3>
+                {hoursJson && Object.keys(hoursJson).length > 0 ? (
+                  <div className="space-y-3">
+                    {dayOrder.map((day) => {
+                      const hours = hoursJson[day];
+                      return (
+                        <div key={day} className="flex items-center justify-between text-sm">
+                          <span className="font-medium text-text-secondary w-10">{dayLabels[day]}</span>
+                          {hours ? (
+                            <span className="text-text-primary">{hours.open} - {hours.close}</span>
+                          ) : (
+                            <span className="text-text-muted">休息</span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
+                ) : (
+                  <p className="text-sm text-text-muted">营业时间信息即将更新</p>
                 )}
               </div>
             </div>
-
-            {/* Social Media in Contact Section */}
-            {socialLinks.length > 0 && (
-              <div className="card p-5 mb-6">
-                <h3 className="font-semibold text-base mb-4">社交媒体</h3>
-                <div className="flex flex-wrap gap-3">
-                  {socialLinks.map((social) => (
-                    <a
-                      key={social.label}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 h-10 px-4 bg-bg-page border border-border text-sm rounded-lg hover:bg-border-light transition text-text-secondary hover:text-text-primary"
-                      title={social.label}
-                    >
-                      {social.icon}
-                      {social.label}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Related Guides */}
             {relatedGuides.length > 0 && (
