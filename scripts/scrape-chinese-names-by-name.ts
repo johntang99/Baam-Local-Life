@@ -10,6 +10,8 @@
  *
  *   # Apply
  *   source apps/web/.env.local && npx tsx scripts/scrape-chinese-names-by-name.ts --apply
+ *
+ * Default excludes flushing-ny (primary location), same as pass 1. Use --all-regions for legacy.
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL!;
@@ -17,6 +19,17 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const args = process.argv.slice(2);
 const applyChanges = args.includes('--apply');
+const allRegions = args.includes('--all-regions');
+const excludeRegionSlugsArg = args.find((a) => a.startsWith('--exclude-region-slugs='));
+const excludeRegionSlugs = allRegions
+  ? []
+  : excludeRegionSlugsArg
+    ? excludeRegionSlugsArg
+        .slice('--exclude-region-slugs='.length)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : ['flushing-ny'];
 
 async function supaFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
@@ -33,6 +46,41 @@ async function supaFetch(path: string, options?: RequestInit) {
   if (res.status === 204) return null;
   const text = await res.text();
   return text ? JSON.parse(text) : null;
+}
+
+type AnyRow = Record<string, any>;
+
+async function supaFetchAll(selectPath: string): Promise<AnyRow[]> {
+  const out: AnyRow[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const sep = selectPath.includes('?') ? '&' : '?';
+    const batch = (await supaFetch(`${selectPath}${sep}limit=1000&offset=${offset}`)) as AnyRow[];
+    if (!batch?.length) break;
+    out.push(...batch);
+    if (batch.length < 1000) break;
+  }
+  return out;
+}
+
+async function primaryBusinessIdsInRegions(slugs: string[]): Promise<Set<string>> {
+  if (!slugs.length) return new Set();
+  const slugList = slugs.map((s) => encodeURIComponent(s)).join(',');
+  const regions = (await supaFetch(`regions?slug=in.(${slugList})&select=id,slug`)) as AnyRow[];
+  if (!regions.length) {
+    console.warn(`   ⚠️ No regions matched slugs: ${slugs.join(', ')}`);
+    return new Set();
+  }
+  const rids = regions.map((r) => r.id).join(',');
+  const ids = new Set<string>();
+  for (let offset = 0; ; offset += 1000) {
+    const locs = (await supaFetch(
+      `business_locations?region_id=in.(${rids})&is_primary=eq.true&select=business_id&limit=1000&offset=${offset}`,
+    )) as AnyRow[];
+    if (!locs?.length) break;
+    for (const l of locs) ids.add(l.business_id);
+    if (locs.length < 1000) break;
+  }
+  return ids;
 }
 
 // Skip patterns for bad results
@@ -109,20 +157,35 @@ async function searchByName(name: string): Promise<string | null> {
 
 async function main() {
   console.log('🔍 Chinese Name Scraper — Pass 2: Search by English Name');
-  console.log(`   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}\n`);
+  console.log(`   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}`);
+  if (excludeRegionSlugs.length > 0) {
+    console.log(`   Excluding primary in regions: ${excludeRegionSlugs.join(', ')}`);
+  } else {
+    console.log(`   Regions: all (no exclude)`);
+  }
+  console.log('');
 
-  // Get businesses still missing Chinese names
-  const businesses = await supaFetch(
-    'businesses?select=id,slug,display_name,display_name_zh,phone&is_active=eq.true&order=slug.asc'
-  ) as Array<{ id: string; slug: string; display_name: string; display_name_zh: string | null; phone: string | null }>;
+  const excludedIds = await primaryBusinessIdsInRegions(excludeRegionSlugs);
 
-  const needsName = businesses.filter(b => {
+  const rawList = (await supaFetchAll(
+    'businesses?select=id,slug,display_name,display_name_zh,phone&is_active=eq.true&order=slug.asc',
+  )) as Array<{
+    id: string;
+    slug: string;
+    display_name: string;
+    display_name_zh: string | null;
+    phone: string | null;
+  }>;
+
+  const businesses = rawList.filter((b) => !excludedIds.has(b.id));
+
+  const needsName = businesses.filter((b) => {
     const hasZh = (b.display_name_zh || '').trim().length > 0;
     const hasZhInEn = /[\u4e00-\u9fff]/.test(b.display_name || '');
     return !hasZh && !hasZhInEn;
   });
 
-  console.log(`📊 Total businesses: ${businesses.length}`);
+  console.log(`📊 Loaded active: ${rawList.length} (after exclude: ${businesses.length})`);
   console.log(`🔎 Still need Chinese name: ${needsName.length}\n`);
 
   let matched = 0, notFound = 0, errors = 0;

@@ -24,6 +24,8 @@ REGION_SLUGS = [
     "bensonhurst-ny",
     "long-island-city-ny",
     "forest-hills-ny",
+    "lower-east-side-ny",
+    "murray-hill-queens-ny",
 ]
 COMPARE_FLUSHING = "flushing-ny"
 

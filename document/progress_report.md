@@ -88,6 +88,7 @@
 | `20260330_google_reviews.sql` | `google_place_id` on businesses; `source`, `google_author_name`, `google_review_id`, `google_publish_time`, `language` on reviews; nullable `author_id` for Google reviews |
 | `20260401_business_data_regions_and_review_trigger.sql` | Regions: `sunset-park-ny`, `elmhurst-ny`, `manhattan-chinatown-ny`; `sync_business_reviews()` skips overwriting `review_count` / `avg_rating` when `google_place_id` is set |
 | `20260402_nyc_chinese_corridors_p0_p1.sql` | v1 corridors: `avenue-u-brooklyn-ny`, `corona-ny`, `bensonhurst-ny`, `long-island-city-ny`, `forest-hills-ny` (Queens children under `queens-ny`; Brooklyn under `new-york-city`) |
+| `20260403_lower_east_murray_hill_corridors.sql` | `lower-east-side-ny` (parent `new-york-city`); `murray-hill-queens-ny` (parent `queens-ny`) |
 
 ---
 

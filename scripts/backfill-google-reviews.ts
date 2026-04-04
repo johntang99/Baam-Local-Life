@@ -22,6 +22,9 @@
  *
  *   # Skip businesses that already have at least one stored Google review (faster re-runs)
  *   npx tsx scripts/backfill-google-reviews.ts --apply --reviews-only --skip-existing
+ *
+ *   # Only businesses whose primary location is in these regions (comma slugs)
+ *   npx tsx scripts/backfill-google-reviews.ts --apply --reviews-only --skip-existing --region-slugs=lower-east-side-ny,murray-hill-queens-ny
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL!;
@@ -32,6 +35,14 @@ const args = process.argv.slice(2);
 const applyChanges = args.includes('--apply');
 const reviewsOnly = args.includes('--reviews-only');
 const skipExisting = args.includes('--skip-existing');
+const regionSlugsArg = args.find((a) => a.startsWith('--region-slugs='));
+const regionSlugs = regionSlugsArg
+  ? regionSlugsArg
+      .slice('--region-slugs='.length)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : null;
 
 type AnyRow = Record<string, any>;
 
@@ -68,6 +79,19 @@ async function supaGetAll(pathBase: string): Promise<AnyRow[]> {
     if (batch.length < 1000) break;
   }
   return out;
+}
+
+async function businessIdsInRegions(slugs: string[]): Promise<Set<string>> {
+  const slugList = slugs.map((s) => encodeURIComponent(s)).join(',');
+  const regions = await supaGetAll(`regions?slug=in.(${slugList})&select=id,slug`);
+  const foundSlugs = new Set(regions.map((r: AnyRow) => r.slug));
+  const missing = slugs.filter((s) => !foundSlugs.has(s));
+  if (missing.length > 0) throw new Error(`Unknown region slug(s): ${missing.join(', ')}`);
+  const rids = regions.map((r: AnyRow) => r.id).join(',');
+  const locs = await supaGetAll(
+    `business_locations?region_id=in.(${rids})&is_primary=eq.true&select=business_id`,
+  );
+  return new Set(locs.map((l: AnyRow) => l.business_id));
 }
 
 async function supaUpsert(table: string, data: AnyRow, onConflict: string) {
@@ -173,7 +197,7 @@ async function fetchReviews(placeId: string): Promise<GoogleReview[]> {
 async function main() {
   console.log('📝 Google Reviews Backfill');
   console.log(
-    `   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}${reviewsOnly ? ' (reviews only)' : ''}${skipExisting ? ' (skip existing)' : ''}\n`,
+    `   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}${reviewsOnly ? ' (reviews only)' : ''}${skipExisting ? ' (skip existing)' : ''}${regionSlugs?.length ? ` (regions: ${regionSlugs.join(', ')})` : ''}\n`,
   );
 
   if (!GOOGLE_API_KEY) {
@@ -200,6 +224,15 @@ async function main() {
       return true;
     });
     console.log(`📊 Skip existing: ${skippedExisting} already have Google reviews | Remaining: ${businesses.length} (was ${before})\n`);
+  }
+
+  if (regionSlugs && regionSlugs.length > 0) {
+    const allowed = await businessIdsInRegions(regionSlugs);
+    const before = businesses.length;
+    businesses = businesses.filter((b) => allowed.has(b.id));
+    console.log(
+      `📊 Region filter — primary location in [${regionSlugs.join(', ')}]: ${businesses.length} businesses (was ${before})\n`,
+    );
   }
 
   console.log(`📊 Total active businesses to process: ${businesses.length}\n`);

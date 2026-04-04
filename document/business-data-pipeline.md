@@ -13,7 +13,7 @@ This document and the scripts below cover **business listing data** (`businesses
 ### Step 1: Discover Businesses
 **Script:** `scripts/discover-chinese-businesses.ts` (for Chinese-focused) or `scripts/backfill-business-data.ts` (general)
 
-**Regions:** Pass `--region=<slug>` (default `flushing-ny`). Run `npx tsx scripts/discover-chinese-businesses.ts --list-regions` for slugs. Presets cover **Flushing**, **Sunset Park** (八大道), **Elmhurst**, **Manhattan Chinatown**, plus v1 expansion **Avenue U / Homecrest** (`avenue-u-brooklyn-ny`, 布鲁克林U大道), **Corona** (`corona-ny`, 可乐娜), **Bensonhurst** (`bensonhurst-ny`), **Long Island City** (`long-island-city-ny`, 长岛市), and **Forest Hills / Rego Park** (`forest-hills-ny`, 森林小丘). Ensure `regions` rows exist: `supabase/migrations/20260401_business_data_regions_and_review_trigger.sql` and `20260402_nyc_chinese_corridors_p0_p1.sql`.
+**Regions:** Pass `--region=<slug>` (default `flushing-ny`). Run `npx tsx scripts/discover-chinese-businesses.ts --list-regions` for slugs. Includes Flushing, Sunset Park, Elmhurst, Manhattan Chinatown, v1 corridors (Avenue U, Corona, Bensonhurst, LIC, Forest Hills), plus **Lower East Side & East Village** (`lower-east-side-ny`, 曼哈顿东村) and **Murray Hill, Queens / Northern Blvd** (`murray-hill-queens-ny`, 皇后默里山). Apply region SQL in `supabase/migrations/` up through `20260403_lower_east_murray_hill_corridors.sql` before `--apply` discovery.
 
 **Method:** Google Places Text Search API (`places:searchText`)
 - Search using Chinese terms for Chinese businesses (e.g. "法拉盛川菜", "法拉盛华人牙医")
@@ -62,6 +62,8 @@ This document and the scripts below cover **business listing data** (`businesses
 **Script:** `scripts/scrape-chinese-names.ts` (by phone) + `scripts/scrape-chinese-names-by-name.ts` (by English name)
 
 **Method:** Search nychinaren.com using business phone number or English name, extract Chinese name from results.
+
+**Region filter:** By default both scripts **exclude** businesses whose **primary** `business_locations` row is in **`flushing-ny`** (Flushing was enriched earlier). Pagination loads the full `businesses` table. Use **`--all-regions`** to process everyone, or **`--exclude-region-slugs=slug1,slug2`** to override the default list.
 
 ### Step 6: Category Assignment
 **Script:** `scripts/assign-categories.ts`

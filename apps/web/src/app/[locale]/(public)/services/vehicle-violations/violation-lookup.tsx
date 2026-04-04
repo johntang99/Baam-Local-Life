@@ -1,8 +1,27 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useChineseScript } from '@/lib/i18n/chinese-converter';
 import { cn } from '@/lib/utils';
+
+const PLATE_HISTORY_KEY = 'baam-plate-search-history';
+const MAX_HISTORY = 8;
+
+interface PlateHistory {
+  plate: string;
+  state: string;
+}
+
+function getPlateHistory(): PlateHistory[] {
+  if (typeof window === 'undefined') return [];
+  try { return JSON.parse(localStorage.getItem(PLATE_HISTORY_KEY) || '[]'); } catch { return []; }
+}
+
+function addToPlateHistory(plate: string, state: string) {
+  const h = getPlateHistory().filter(i => !(i.plate === plate && i.state === state));
+  h.unshift({ plate, state });
+  localStorage.setItem(PLATE_HISTORY_KEY, JSON.stringify(h.slice(0, MAX_HISTORY)));
+}
 
 interface Violation {
   summons_number: string;
@@ -97,6 +116,10 @@ export function ViolationLookup() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<ViolationResponse | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [history, setHistory] = useState<PlateHistory[]>([]);
+
+  useEffect(() => { setHistory(getPlateHistory()); }, []);
 
   const handleSearch = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +129,11 @@ export function ViolationLookup() {
     setLoading(true);
     setError('');
     setResult(null);
+    setShowHistory(false);
+
+    // Save to history
+    addToPlateHistory(trimmedPlate, state);
+    setHistory(getPlateHistory());
 
     try {
       const res = await fetch(`/api/services/vehicle-violations?plate=${encodeURIComponent(trimmedPlate)}&state=${encodeURIComponent(state)}`);
@@ -131,17 +159,41 @@ export function ViolationLookup() {
       {/* Search Form */}
       <form onSubmit={handleSearch} className="bg-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-sm mb-6">
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1">
+          <div className="flex-1 relative">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">{convert('车牌号码')}</label>
             <input
               type="text"
               value={plate}
               onChange={(e) => setPlate(e.target.value.toUpperCase())}
+              onFocus={() => { if (history.length > 0 && !plate) setShowHistory(true); }}
+              onBlur={() => setTimeout(() => setShowHistory(false), 200)}
               placeholder="ABC1234"
               maxLength={10}
               className="w-full h-11 px-4 border border-gray-300 rounded-xl text-base font-mono tracking-wider focus:ring-2 focus:ring-primary focus:border-primary outline-none transition uppercase"
               required
             />
+            {/* Search History Dropdown */}
+            {showHistory && history.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
+                <div className="px-3 py-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{convert('最近查询')}</div>
+                {history.map((h, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onMouseDown={() => {
+                      setPlate(h.plate);
+                      setState(h.state);
+                      setShowHistory(false);
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-orange-50 hover:text-primary transition flex items-center gap-3"
+                  >
+                    <svg className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span className="font-mono font-bold text-gray-700">{h.plate}</span>
+                    <span className="text-xs text-gray-400">{h.state}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="sm:w-48">
             <label className="block text-sm font-medium text-gray-700 mb-1.5">{convert('车牌所属州')}</label>

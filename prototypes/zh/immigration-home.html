@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>移民签证服务 — Baam 纽约华人本地服务</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="discover-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">发现</a>
+          <a href="services-home.html" class="px-3 py-2 text-sm font-medium text-baam-500 rounded-md bg-orange-50">实用工具</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-5xl mx-auto px-4 py-8 sm:py-12">
+
+  <!-- ==================== BREADCRUMB ==================== -->
+  <nav class="flex items-center gap-2 text-sm text-gray-400 mb-6">
+    <a href="services-home.html" class="hover:text-baam-500 transition">实用工具</a>
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    <span class="text-gray-600">移民签证服务</span>
+  </nav>
+
+  <!-- ==================== HERO ==================== -->
+  <div class="text-center mb-8">
+    <div class="text-5xl mb-4">🛂</div>
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">移民签证服务</h1>
+    <p class="text-gray-500 text-lg max-w-2xl mx-auto mb-4">纽约华人移民签证实用工具 — AI评估、排期查询、政策解读</p>
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-baam-50 border border-baam-200 rounded-full text-sm text-baam-600 font-medium">
+      全部免费 · 中文服务 · AI驱动
+    </div>
+  </div>
+
+  <!-- ==================== LEGAL DISCLAIMER ==================== -->
+  <div class="mb-10 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+    <span class="text-xl flex-shrink-0 mt-0.5">⚠️</span>
+    <p class="text-sm text-amber-800 leading-relaxed">本页面所有工具仅提供一般性信息参考，不构成法律建议。请咨询持牌移民律师获取专业意见。</p>
+  </div>
+
+  <!-- ==================== FEATURED TOOLS ==================== -->
+  <div class="mb-12">
+    <div class="flex items-center gap-2 mb-5">
+      <h2 class="text-lg font-bold text-gray-900">核心工具</h2>
+      <span class="text-xs text-white bg-baam-500 px-2 py-0.5 rounded-full">推荐</span>
+    </div>
+
+    <!-- Card 1: Visa Screener — HERO FEATURE -->
+    <a href="#" class="group block bg-gradient-to-br from-baam-500 via-baam-600 to-amber-600 rounded-2xl p-6 sm:p-8 mb-4 text-white relative overflow-hidden hover:shadow-xl transition">
+      <div class="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-bl-full"></div>
+      <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-tr-full"></div>
+      <div class="relative z-10">
+        <div class="flex flex-col sm:flex-row sm:items-start gap-5">
+          <div class="w-16 h-16 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-3xl flex-shrink-0">🤖</div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-2 mb-2">
+              <span class="text-[11px] font-semibold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">AI驱动</span>
+              <span class="text-[11px] font-semibold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">免费</span>
+              <span class="text-[11px] font-semibold bg-white/20 backdrop-blur px-2.5 py-0.5 rounded-full">中文</span>
+            </div>
+            <h3 class="text-xl sm:text-2xl font-bold mb-2">签证资格智能评估</h3>
+            <p class="text-white/80 text-sm sm:text-base leading-relaxed mb-5">回答6个简单问题，AI帮你分析可能适合的签证类别</p>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+              <span class="inline-flex items-center gap-2 bg-white text-baam-600 font-bold text-sm px-6 py-3 rounded-xl group-hover:bg-orange-50 transition">
+                开始评估
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+              </span>
+              <span class="text-white/60 text-xs">已有 1,000+ 华人使用本工具</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Card 2: Immigration Policy News -->
+    <a href="#" class="group block bg-white border border-gray-200 rounded-2xl p-6 hover:border-blue-300 hover:shadow-lg transition relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-50 to-transparent rounded-bl-full"></div>
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">📰</div>
+        <div class="flex-1">
+          <h3 class="text-base font-bold text-gray-900 group-hover:text-blue-600 transition mb-1.5">移民政策动态</h3>
+          <p class="text-sm text-gray-500 leading-relaxed mb-3">最新移民政策变化、签证排期更新，中文解读</p>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-medium text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">每日更新</span>
+            <span class="text-[11px] font-medium text-green-700 bg-green-50 px-2 py-0.5 rounded-full">免费</span>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 bg-blue-50 px-5 py-2.5 rounded-xl group-hover:bg-blue-100 transition flex-shrink-0">
+          查看最新动态
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </span>
+      </div>
+    </a>
+  </div>
+
+  <!-- ==================== COMING SOON TOOLS ==================== -->
+  <div class="mb-12">
+    <h2 class="text-lg font-bold text-gray-900 mb-5">更多工具</h2>
+    <div class="grid sm:grid-cols-2 gap-3">
+
+      <!-- USCIS Case Status -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 opacity-75">
+        <div class="w-11 h-11 bg-gray-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">🔍</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">USCIS案件状态查询</h3>
+            <span class="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">即将上线</span>
+          </div>
+          <p class="text-xs text-gray-500">查询你的移民申请进度</p>
+        </div>
+      </div>
+
+      <!-- Visa Bulletin -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 opacity-75">
+        <div class="w-11 h-11 bg-gray-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">📊</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">签证排期查询</h3>
+            <span class="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">即将上线</span>
+          </div>
+          <p class="text-xs text-gray-500">查看EB/Family类绿卡排期</p>
+        </div>
+      </div>
+
+      <!-- Processing Times -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 opacity-75">
+        <div class="w-11 h-11 bg-gray-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">⏱️</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">处理时间查询</h3>
+            <span class="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">即将上线</span>
+          </div>
+          <p class="text-xs text-gray-500">查看各类签证当前处理时间</p>
+        </div>
+      </div>
+
+      <!-- Immigration Court -->
+      <div class="bg-white border border-gray-200 rounded-xl p-5 flex items-start gap-4 opacity-75">
+        <div class="w-11 h-11 bg-gray-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">⚖️</div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <h3 class="text-sm font-bold text-gray-900">移民法庭日期</h3>
+            <span class="text-[10px] font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">即将上线</span>
+          </div>
+          <p class="text-xs text-gray-500">查看移民法庭开庭日期</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== QUICK GUIDE: VISA CATEGORIES ==================== -->
+  <div class="mb-12">
+    <h2 class="text-lg font-bold text-gray-900 mb-2">美国签证和移民类别简介</h2>
+    <p class="text-sm text-gray-500 mb-5">了解常见的签证和移民途径，找到适合你的类别</p>
+    <div class="grid sm:grid-cols-2 gap-4">
+
+      <!-- Work Visas -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-lg">💼</div>
+          <h3 class="text-base font-bold text-gray-900">工作签证</h3>
+        </div>
+        <ul class="space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">H-1B</span>
+            <span class="text-sm text-gray-600">专业工作签证</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">L-1</span>
+            <span class="text-sm text-gray-600">跨国公司调动</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">O-1</span>
+            <span class="text-sm text-gray-600">杰出人才签证</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">E-2</span>
+            <span class="text-sm text-gray-600">投资者签证</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Green Card -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-lg">🟢</div>
+          <h3 class="text-base font-bold text-gray-900">绿卡 / 永久居留</h3>
+        </div>
+        <ul class="space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">EB-1/2/3</span>
+            <span class="text-sm text-gray-600">职业移民</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">家庭</span>
+            <span class="text-sm text-gray-600">家庭移民 (F1-F4)</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">DV</span>
+            <span class="text-sm text-gray-600">抽奖移民 (DV Lottery)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Student Visas -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-lg">🎓</div>
+          <h3 class="text-base font-bold text-gray-900">学生签证</h3>
+        </div>
+        <ul class="space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">F-1</span>
+            <span class="text-sm text-gray-600">学术学生签证</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">J-1</span>
+            <span class="text-sm text-gray-600">交流访问学者</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">M-1</span>
+            <span class="text-sm text-gray-600">职业培训签证</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Family Immigration -->
+      <div class="bg-white border border-gray-200 rounded-2xl p-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-rose-50 rounded-lg flex items-center justify-center text-lg">👨‍👩‍👧‍👦</div>
+          <h3 class="text-base font-bold text-gray-900">家庭移民</h3>
+        </div>
+        <ul class="space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">直系</span>
+            <span class="text-sm text-gray-600">配偶、未婚未成年子女</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-xs font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded mt-0.5 flex-shrink-0">优先</span>
+            <span class="text-sm text-gray-600">兄弟姐妹、已婚子女等</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== AI ASSISTANT CARD ==================== -->
+  <div class="mb-12">
+    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 sm:p-8">
+      <div class="flex flex-col sm:flex-row items-start gap-5">
+        <div class="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-lg font-bold text-blue-900 mb-2">有移民问题？问AI小邻</h3>
+          <p class="text-sm text-blue-700/70 mb-4">用中文直接提问，AI小邻为你解答常见移民问题</p>
+          <div class="flex flex-wrap gap-2 mb-5">
+            <span class="text-xs text-blue-600 bg-white border border-blue-200 px-3 py-1.5 rounded-full">"H1B转绿卡需要多久？"</span>
+            <span class="text-xs text-blue-600 bg-white border border-blue-200 px-3 py-1.5 rounded-full">"我能给父母申请移民吗？"</span>
+          </div>
+          <a href="#" class="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-xl hover:bg-blue-600 transition">
+            问AI小邻
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONSULTATION CTA ==================== -->
+  <div class="mb-12">
+    <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-center text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-48 h-48 bg-baam-500/10 rounded-bl-full"></div>
+      <div class="relative z-10">
+        <h3 class="text-xl font-bold mb-2">需要专业移民律师帮助？</h3>
+        <p class="text-slate-300 text-sm mb-5 max-w-lg mx-auto">Baam合作的移民律师提供免费初次咨询</p>
+        <a href="#" class="inline-flex items-center gap-2 px-6 py-3 bg-baam-500 text-white text-sm font-bold rounded-xl hover:bg-baam-600 transition">
+          找移民律师
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <p class="text-slate-400 text-xs mt-4">覆盖纽约、新泽西、康涅狄格</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EMAIL CAPTURE ==================== -->
+  <div class="mb-12">
+    <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 text-center">
+      <h3 class="text-lg font-bold text-gray-900 mb-2">订阅移民政策中文快报</h3>
+      <p class="text-sm text-gray-500 mb-5">每月排期变化、政策更新、实用攻略</p>
+      <div class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+        <input type="email" placeholder="输入你的邮箱" class="flex-1 h-11 px-4 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-baam-500 focus:border-baam-500 outline-none">
+        <button class="h-11 px-6 bg-baam-500 text-white text-sm font-semibold rounded-xl hover:bg-baam-600 transition">订阅</button>
+      </div>
+      <p class="text-xs text-gray-400 mt-3">可随时退订 · 我们不会分享你的邮箱</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400 mt-4">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm">AI驱动的纽约华人本地生活平台</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">实用工具</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="services-violations.html" class="hover:text-white transition">停车罚单查询</a></li>
+          <li><a href="services-restaurant-search.html" class="hover:text-white transition">餐厅卫生评分</a></li>
+          <li><a href="services-property-tax.html" class="hover:text-white transition">房产税查询</a></li>
+          <li><a href="immigration-home.html" class="hover:text-white transition">移民签证服务</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">新闻</a></li>
+          <li><a href="#" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="#" class="hover:text-white transition">商家</a></li>
+          <li><a href="#" class="hover:text-white transition">论坛</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 text-xs">© 2026 Baam. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="../assets/js/prototype.js"></script>
+</body>
+</html>

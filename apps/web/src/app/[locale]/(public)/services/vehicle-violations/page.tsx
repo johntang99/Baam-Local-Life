@@ -1,3 +1,4 @@
+import { Link } from '@/lib/i18n/routing';
 import { ViolationLookup } from './violation-lookup';
 import type { Metadata } from 'next';
 
@@ -25,8 +26,21 @@ export default function VehicleViolationsPage() {
       {/* Lookup Component */}
       <ViolationLookup />
 
+      {/* Coverage Notice */}
+      <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800">
+        <p className="font-semibold mb-1">本工具查询范围：</p>
+        <ul className="list-disc list-inside space-y-0.5 text-xs">
+          <li>NYC停车罚单（咪表过期、消防栓、扫街、双排停车等）</li>
+          <li>NYC交通摄像头罚单（闯红灯摄像头、学校区域超速摄像头、公交车道摄像头）</li>
+        </ul>
+        <p className="mt-2 text-xs text-blue-600"><strong>不包含：</strong>警察现场开具的交通违规罚单（闯红灯、闯停车标志、超速等移动违规）、驾照扣分、暂停/吊销记录。</p>
+        <Link href="/services/vehicle-violations/guide" className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-primary hover:underline">
+          📋 如何查看完整驾驶违规记录（包括警察罚单和扣分）→
+        </Link>
+      </div>
+
       {/* Disclaimer */}
-      <div className="mt-8 text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-6">
+      <div className="mt-4 text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-6">
         <p className="mb-2">
           <strong>数据来源：</strong>NYC Open Data — Open Parking and Camera Violations（纽约市公开数据平台）。
         </p>

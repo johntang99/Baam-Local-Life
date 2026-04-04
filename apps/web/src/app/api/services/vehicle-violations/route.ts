@@ -75,6 +75,16 @@ export async function GET(request: Request) {
       summons_image: r.summons_image || null,
     }));
 
+    // Sort by date descending (issue_date is MM/DD/YYYY string — parse to compare)
+    violations.sort((a, b) => {
+      const parseDate = (d: string) => {
+        const parts = d.split('/');
+        if (parts.length === 3) return new Date(parseInt(parts[2]), parseInt(parts[0]) - 1, parseInt(parts[1])).getTime();
+        return 0;
+      };
+      return parseDate(b.issue_date) - parseDate(a.issue_date);
+    });
+
     const summary = violations.reduce(
       (acc, v) => {
         acc.totalFines += v.fine_amount + v.penalty_amount + v.interest_amount;

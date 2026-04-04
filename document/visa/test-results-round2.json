@@ -1,0 +1,2234 @@
+[
+  {
+    "testId": 1,
+    "scenario": "Chinese H1B, PhD CS, 3yr exp, 10 papers, wants GC, sponsor YES",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "H1B 工作签证",
+      "occupation": "计算机科学研究员",
+      "yearsExperience": "1-3",
+      "hasEmployerSponsor": "是",
+      "highestDegree": "博士 (PhD)",
+      "fieldOfStudy": "计算机科学",
+      "hasExtraordinaryAchievements": true,
+      "hasPublishedPapers": true,
+      "numberOfPublications": "10+",
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-1A",
+        "name": "职业移民第一类杰出人才",
+        "match": "high",
+        "description": "适合在科学、艺术、教育、商业或体育领域具有杰出能力的个人。作为计算机科学PhD研究员且有突出成就（论文、专利等），你可能符合EB-1A的标准。",
+        "processingTime": "约1-2年（含排期，中国出生申请人无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "证明在领域内的杰出能力（至少满足10条标准中的3条）",
+          "典型证据：已发表的学术论文、专利、获奖、学术引用、会议邀请演讲等",
+          "不需要雇主担保（自行申请）"
+        ],
+        "pros": [
+          "无排期，中国出生申请人可快速获批",
+          "不需要雇主担保，灵活性最高",
+          "处理时间最短（1-2年）",
+          "配偶和未满21岁子女可作为附属申请人"
+        ],
+        "cons": [
+          "证据要求严格，需要充分的学术/专业成就文档",
+          "申请准备周期可能较长（3-6个月），需要收集大量支持材料",
+          "案件复杂，强烈建议律师协助准备I-140表"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类（有高等学位或特殊能力）",
+        "match": "high",
+        "description": "适合持有PhD学位的专业人才。EB-2下还可申请NIW（国家利益豁免），自行申请无需雇主PERM劳工认证。",
+        "processingTime": "约4-6年（含排期，中国出生约3-5年排期）",
+        "employerRequired": false,
+        "requirements": [
+          "PhD学位（符合）或硕士+5年相关工作经验",
+          "如选择NIW路线，需证明工作对美国国家利益的显著益处（无需传统PERM招聘）",
+          "如选择传统路线，雇主愿意担保（已确认）"
+        ],
+        "pros": [
+          "PhD持有人可直接满足学历要求",
+          "NIW路线无需雇主PERM劳工认证，加速流程",
+          "可从H-1B直接过渡",
+          "配偶可作为附属申请人"
+        ],
+        "cons": [
+          "中国出生申请人排期约3-5年，总处理时间较长",
+          "传统EB-2需要PERM劳工认证（约1-2年）"
+        ]
+      },
+      {
+        "code": "EB-1B",
+        "name": "职业移民第一类（杰出教授/研究人员）",
+        "match": "medium",
+        "description": "如果你目前受聘于大学、科研机构或有研究职能的企业从事研究工作，可能符合EB-1B。需要雇主担保，但处理时间短于EB-2。",
+        "processingTime": "约2-3年（含排期，中国出生申请人无排期）",
+        "employerRequired": true,
+        "requirements": [
+          "在大学、研究机构或企业研究部门工作",
+          "至少3年在本领域的研究经验",
+          "具有国际声誉（论文引用、同行认可等）",
+          "雇主担保（已确认）"
+        ],
+        "pros": [
+          "中国出生申请人无排期，处理速度快",
+          "作为研究员身份符合要求",
+          "配偶和子女可作为附属申请人"
+        ],
+        "cons": [
+          "需要证明在研究领域的国际声誉",
+          "必须有雇主担保和支持信（比EB-1A要求更多）",
+          "不如EB-1A灵活（受雇主限制）"
+        ]
+      },
+      {
+        "code": "H-1B",
+        "name": "H-1B工作签证续签+绿卡过渡",
+        "match": "medium",
+        "description": "如果暂不符合EB-1A/EB-1B，可继续持H-1B工作签证，同时启动EB-2绿卡申请。H-1B可多次续签，期间可进行绿卡申请（双重意图合法）。",
+        "processingTime": "H-1B每次3年（续签无抽签），EB-2申请同时进行（4-6年含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "雇主愿意继续担保（已确认）",
+          "H-1B身份持续有效",
+          "同时启动EB-2/NIW绿卡申请"
+        ],
+        "pros": [
+          "可维持合法工作身份，无需等待绿卡批准",
+          "H-1B持有者续签不需再次参加抽签（已获批）",
+          "配偶可申请EAD工作授权和AP出国再入境许可"
+        ],
+        "cons": [
+          "需要雇主持续担保",
+          "仍需经历绿卡排期（中国出生约3-5年）"
+        ]
+      }
+    ],
+    "notes": [
+      "优先推荐方案：EB-1A > EB-1B > EB-2（NIW）。你作为PhD研究员且有突出成就，EB-1A是最快的绿卡路径（1-2年，无排期）。",
+      "中国出生申请人重要提醒：EB-2和EB-3都面临排期。EB-1A和EB-1B对中国出生申请人无排期，是最优选择。",
+      "EB-1A vs EB-1B：EB-1A灵活度更高（无需依赖雇主），但证据准备更繁琐；EB-1B依赖雇主但相对明确。建议先评估你的学术成就是否足以EB-1A（已发表论文数、引用量、会议邀请、获奖等）。",
+      "EB-2 NIW选项：如EB-1A证据不足，NIW是补充方案，无需PERM劳工认证，相比传统EB-2更快（虽然仍有3-5年排期）。",
+      "配偶可作为附属申请人一同获得绿卡，无需单独申请。"
+    ],
+    "nextSteps": "强烈建议立即咨询持牌移民律师。具体步骤：\n1. 收集材料：整理所有已发表论文、专利证书、论文引用统计（Google Scholar）、获奖证书、学术会议邀请信等，评估EB-1A可行性。\n2. 评估EB-1A：律师根据Kazdan标准（至少3项标准）评估你的符合度。若强度较高，立即启动I-140申请（EB-1A）。\n3. 如EB-1A风险较高：同步考虑EB-1B（咨询雇主是否愿意提供支持信）或EB-2 NIW作为备选。\n4. 准备文件：推荐信（学术导师、同行专家）、简历、学历证明、H-1B批件复印件。\n5. 启动I-140申请：选定类别后，律师代理提交I-140（移民申请），中国出生申请人可并行提交I-485（身份调整）。",
+    "error": null
+  },
+  {
+    "testId": 2,
+    "scenario": "Chinese in China, married to LPR, wants to join spouse",
+    "input": {
+      "goal": "与家人团聚",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在中国",
+      "currentStatus": "无签证",
+      "occupation": "",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": true,
+      "familyRelationship": "配偶 (Spouse)"
+    },
+    "categories": [
+      {
+        "code": "F-2A",
+        "name": "职业移民第二类A（绿卡持有者的配偶或未婚未成年子女）",
+        "match": "high",
+        "description": "如果您有绿卡持有者的配偶或未婚未成年子女身份，可以通过此类别申请绿卡。此类别优先级较高，排期相对较短。",
+        "processingTime": "约2-3年（含排期和处理时间）",
+        "employerRequired": false,
+        "requirements": [
+          "绿卡持有者是您的直系亲属（配偶或未婚未成年子女，21岁以下）",
+          "与绿卡持有者有真实的亲属关系",
+          "通过I-130家庭请愿表申请"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "排期相对较短（2-3年）",
+          "配偶可申请工作许可证(EAD)",
+          "申请流程相对直接"
+        ],
+        "cons": [
+          "必须与绿卡持有者有直系亲属关系",
+          "如果配偶已婚，则不符合F-2A"
+        ]
+      },
+      {
+        "code": "F-2B",
+        "name": "职业移民第二类B（绿卡持有者的未婚成年子女）",
+        "match": "medium",
+        "description": "如果您是绿卡持有者的未婚成年子女（21岁以上），可通过此类别申请绿卡。",
+        "processingTime": "约6-9年（含排期和处理时间）",
+        "employerRequired": false,
+        "requirements": [
+          "绿卡持有者是您的父母",
+          "您未婚且21岁以上",
+          "通过I-130家庭请愿表申请"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "相比F-4排期更短"
+        ],
+        "cons": [
+          "排期较长（6-9年）",
+          "如果结婚则不符合资格"
+        ]
+      },
+      {
+        "code": "F-4",
+        "name": "家庭移民第四类（美国公民或绿卡持有者的兄弟姐妹）",
+        "match": "medium",
+        "description": "如果您的兄弟姐妹是美国公民或绿卡持有者，可通过此类别申请绿卡。",
+        "processingTime": "约15-22年（中国出生，含排期和处理时间）",
+        "employerRequired": false,
+        "requirements": [
+          "兄弟姐妹是美国公民或绿卡持有者",
+          "与兄弟姐妹有真实的血缘关系",
+          "通过I-130家庭请愿表申请"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "申请流程相对直接"
+        ],
+        "cons": [
+          "中国出生申请人排期极长（15-22年）",
+          "需要长期等待"
+        ]
+      },
+      {
+        "code": "IR-5",
+        "name": "直接亲属（美国公民的父母）",
+        "match": "low",
+        "description": "如果您的成年子女是美国公民（21岁以上），可以作为父母申请绿卡。",
+        "processingTime": "约1-2年（无排期，直接亲属优先）",
+        "employerRequired": false,
+        "requirements": [
+          "您的成年子女是美国公民，年满21岁以上",
+          "通过I-130亲属请愿表申请",
+          "您的子女提供经济担保(I-864表)"
+        ],
+        "pros": [
+          "无排期等待，属于直接亲属优先类别",
+          "处理时间较短（1-2年）",
+          "无需雇主担保"
+        ],
+        "cons": [
+          "仅限于有成年公民子女的申请人"
+        ]
+      }
+    ],
+    "notes": [
+      "您明确表示有美国绿卡持有者家属，这是获得绿卡最直接的途径，无需雇主担保。",
+      "请明确您与美国绿卡持有者家属的具体关系（配偶、子女、父母还是兄弟姐妹），以确定最适合的类别。",
+      "F-2A类别（配偶或未婚未成年子女）排期最短，约2-3年；F-2B和F-4排期较长，特别是F-4在中国出生申请人中排期长达15-22年。",
+      "中国出生申请人在F-2B和F-4类别中面临较长排期，建议优先考虑F-2A（如符合条件）。",
+      "家庭请愿(I-130)需由美国的绿卡持有者或公民亲属提出，不能自己申请。"
+    ],
+    "nextSteps": "建议按以下步骤推进：\n1. 与美国的绿卡持有者家属确认你们的具体关系，并了解他们是否愿意为您提出家庭请愿。\n2. 准备所需文件：出生证明、结婚证（如适用）、身份证复印件、与美国亲属的亲属关系证明（如家庭照片、往来通信等）。\n3. 联系持牌移民律师，由美国亲属的律师或您的律师协助准备和提交I-130家庭请愿表。\n4. 一旦I-130获批，您将进入领事移民程序，在美国领事馆进行面试并申请移民签证。\n5. 律师可以帮助评估您是否符合任何公开表述类别，并规划最有效的家庭移民路径。",
+    "error": null
+  },
+  {
+    "testId": 3,
+    "scenario": "Chinese F1, Masters Art History non-STEM, wants to work, no sponsor",
+    "input": {
+      "goal": "在美国工作",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "F1 学生签证",
+      "occupation": "",
+      "yearsExperience": "0",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "硕士 (Master)",
+      "fieldOfStudy": "艺术史",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "OPT",
+        "name": "选择性实习训练（毕业后工作授权）",
+        "match": "high",
+        "description": "F-1学生毕业后可申请OPT获得工作授权。艺术史专业属于非STEM领域，可获得12个月工作授权。",
+        "processingTime": "约2-3个月申请处理",
+        "employerRequired": false,
+        "requirements": [
+          "已完成F-1课程或即将毕业",
+          "向DSO（学生顾问）提交I-20表格确认资格",
+          "申请EAD（就业授权文件）",
+          "在美国工作并保持合法身份"
+        ],
+        "pros": [
+          "不需要雇主提前承诺",
+          "获得12个月合法工作授权",
+          "可在此期间寻找愿意赞助的雇主",
+          "工作经验有助于后续绿卡申请"
+        ],
+        "cons": [
+          "12个月后需要转换其他签证或离美",
+          "非STEM专业无法享受24个月STEM延期"
+        ]
+      },
+      {
+        "code": "H-1B",
+        "name": "专业人士非移民签证",
+        "match": "medium",
+        "description": "完成OPT后，如果找到愿意担保的雇主，可申请H-1B。需参加年度抽签，中签率约25-30%。",
+        "processingTime": "约4-6个月（抽签+审批）",
+        "employerRequired": true,
+        "requirements": [
+          "OPT期间找到愿意赞助H-1B的雇主",
+          "拥有硕士学位（可优先参加高学位抽签池，中签率更高）",
+          "位置符合'specialty occupation'定义",
+          "雇主通过H-1B抽签"
+        ],
+        "pros": [
+          "硕士学位可参加高学位抽签池，中签率约40-50%",
+          "有效期3年，可续签",
+          "可跳转到EB-2/EB-3绿卡申请"
+        ],
+        "cons": [
+          "需要抽签，不保证获批",
+          "需要找到愿意赞助的雇主",
+          "艺术史等非理工科专业可能更难获得赞助"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类",
+        "match": "low",
+        "description": "如在H-1B期间积累相关工作经验和专业成就，可在雇主赞助下申请绿卡。艺术史专业走EB-2通常较困难。",
+        "processingTime": "约5-7年（中国出生，含PERM和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "硕士学位✓",
+          "2年以上相关工作经验",
+          "雇主愿意赞助并完成PERM劳工认证",
+          "具备杰出研究或出版记录（非STEM专业较难证明）"
+        ],
+        "pros": [
+          "硕士学位符合基础要求",
+          "可从H-1B转换"
+        ],
+        "cons": [
+          "艺术史专业难以证明'advanced degree'的必要性",
+          "中国出生申请人排期约3-5年",
+          "需要PERM劳工认证，耗时1-2年",
+          "总周期较长"
+        ]
+      }
+    ],
+    "notes": [
+      "当前F-1身份优势：OPT是最直接的路径，无需现有雇主担保，立即毕业后申请。",
+      "时间规划建议：毕业前6个月与DSO确认OPT资格 → 毕业后立即申请OPT → 在12个月OPT期间积极找工作。",
+      "雇主赞助难度提示：艺术史专业（非STEM、非紧缺职业）获得H-1B和绿卡赞助的难度较大。建议关注美术馆、拍卖行、画廊、文化机构、高校等可能愿意赞助的雇主。",
+      "中国出生申请人排期影响：如最终走绿卡路线（H-1B→EB-2），中国出生需承受3-5年EB-2排期。",
+      "替代方案：考虑是否愿意在美国攻读更高学位（PhD）并寻求学术路径，可能增加获得赞助机会。"
+    ],
+    "nextSteps": "具体建议：\n1. 现在就与学校DSO确认毕业后OPT资格和具体申请时间\n2. 毕业前最后一学期开始有针对性地投递简历（重点关注美术馆、博物馆、高校、文化机构、拍卖行等可能赞助H-1B的雇主）\n3. OPT期间持续找工作，优先寻找愿意赞助的雇主\n4. 如OPT期间无法获得赞助，需提前规划离美日期（避免逾期居留产生的长期后果）\n5. 咨询持牌移民律师制定详细的身份转换方案和长期规划。",
+    "error": null
+  },
+  {
+    "testId": 4,
+    "scenario": "Chinese B1/B2 tourist, wealthy, wants EB-5 1M+, no family",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "B1/B2 旅游/商务签证",
+      "occupation": "企业家/商人",
+      "yearsExperience": "10+",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "商业管理",
+      "hasExtraordinaryAchievements": false,
+      "investmentCapital": "100万美元以上",
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-5",
+        "name": "职业移民第五类（投资移民）",
+        "match": "high",
+        "description": "通过在美国投资创造就业机会来获得绿卡。无需雇主担保，适合有资本的企业家。",
+        "processingTime": "约3-5年（传统EB-5，含排期）；约1-2年（农村/低就业地区TEA，目前无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "$800,000-$1,050,000投资金额（取决于项目地区）",
+          "证明资金合法来源",
+          "投资必须创造至少10个全职就业机会",
+          "被动投资或通过区域中心投资皆可"
+        ],
+        "pros": [
+          "无需雇主担保，完全自主",
+          "配偶及21岁以下未婚子女可作为附属申请人",
+          "农村/低就业区TEA项目排期短或无排期",
+          "符合企业家身份和资本优势"
+        ],
+        "cons": [
+          "投资门槛高，资金来源需严格审查",
+          "需要证明投资会创造足够就业机会",
+          "传统项目排期较长（中国出生申请人），需8-15年",
+          "投资风险存在，需选择有信誉的项目"
+        ]
+      },
+      {
+        "code": "L-1A",
+        "name": "跨国经理/高管签证",
+        "match": "medium",
+        "description": "如果你在中国拥有或经营公司，可通过该公司在美国设立分支机构（子公司或分公司），以高管/经理身份申请L-1A签证，之后可调整身份申请绿卡。",
+        "processingTime": "L-1A批准：约1-3个月；调整为绿卡：需配合EB-1C或EB-2，约2-5年（含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "在中国拥有或控制至少51%的企业（或作为高管/经理）",
+          "在中国公司任职1年以上（过去3年内）",
+          "美国新设公司需建立真实运营（员工、办公室等）",
+          "拟在美国担任经理、高管或专业职位"
+        ],
+        "pros": [
+          "充分利用既有企业背景",
+          "相对快速的初始签证获批",
+          "配偶可申请EAD（工作授权）和旅行文件",
+          "为后续绿卡申请奠定基础"
+        ],
+        "cons": [
+          "需在中国有实际运营的企业或对企业有控制权",
+          "美国新公司需真实运营，不能仅纸面存在",
+          "后续绿卡仍需通过EB-1C或EB-2路径，仍有排期",
+          "当前B1/B2身份需先转换为L-1A"
+        ]
+      },
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类",
+        "match": "low",
+        "description": "为具有学士学位的专业人士和技术工人的绿卡类别。需要找到愿意担保的雇主并完成PERM劳工认证。",
+        "processingTime": "约5-8年（中国出生，含PERM和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "至少学士学位或等同工作经验",
+          "找到愿意担保的美国雇主",
+          "通过PERM劳工认证流程",
+          "无需本领域杰出成就"
+        ],
+        "pros": [
+          "要求相对较宽泛，学士学位满足",
+          "可从当前身份调整或在美获批"
+        ],
+        "cons": [
+          "需要雇主主动担保（用户声明雇主目前不愿意）",
+          "中国出生申请人排期较长（5-8年）",
+          "PERM劳工认证流程冗长复杂"
+        ]
+      },
+      {
+        "code": "E-2",
+        "name": "条约投资者签证",
+        "match": "不适用",
+        "description": "中国大陆与美国没有E-2条约，中国护照持有人无法申请此类别。",
+        "processingTime": "N/A",
+        "employerRequired": false,
+        "requirements": [],
+        "pros": [],
+        "cons": [
+          "中国大陆不在E-2条约国名单中",
+          "仅港澳特区护照或第三国国籍可能符合条件"
+        ]
+      }
+    ],
+    "notes": [
+      "【重要】当前身份与计划冲突：B1/B2旅游/商务签证不允许在美工作。若以EB-5或L-1A路径，需先解决身份转换问题。建议咨询律师如何安全转换。",
+      "EB-5投资移民对你最匹配：你有企业家背景和资本，无需依赖雇主担保。农村/低就业区TEA项目（set-aside）目前排期短或无排期，相比传统EB-5（8-15年排期）更有优势。",
+      "L-1A路径可行性取决于你是否在中国拥有/控制实际运营的企业。若有，这是短期内获得美国工作签证的快速通道。",
+      "中国出生申请人所有就业类绿卡都面临排期：EB-2约3-5年，EB-3约5-8年。相比之下，EB-5投资移民虽然也有排期，但农村TEA项目排期已消除，值得优先考虑。",
+      "配偶和21岁以下未婚子女可作为附属申请人随行，获得相同身份和绿卡。"
+    ],
+    "nextSteps": "建议立即采取以下步骤：\n\n1. **优先路径（EB-5投资移民）**\n   - 咨询持牌移民律师，评估投资能力和资金合法来源\n   - 与经验丰富的EB-5区域中心沟通，了解项目选项（尤其关注农村/低就业区TEA项目以避免排期）\n   - 准备财务文件、税务记录、银行账单等证明资金来源\n   - 预计投资决策和申请准备需2-4个月\n\n2. **次要路径（L-1A跨国经理签证）**\n   - 评估你在中国是否拥有/控制实际运营企业\n   - 若有，准备公司文件：营业执照、股权证明、员工记录、财务报表\n   - 咨询律师制定美国分支机构设立计划\n   - 准备L-1A申请，可能需要2-3个月\n\n3. **解决身份问题**\n   - 在启动任何申请前，咨询律师如何在B1/B2身份下安全进行移民签证申请\n   - 确认是否需要先转换身份或出境重新申请\n   - 某些情况下可申请身份转换（如I-140获批），具体需律师指导\n\n4. **专业支持**\n   - 联系持牌移民律师（EB-5专业律师优先）\n   - 考虑聘请会计师审查资金来源合法性\n   - 收集所有身份、财务、企业相关文件",
+    "error": null
+  },
+  {
+    "testId": 5,
+    "scenario": "Chinese in China, sibling is US citizen, family reunification",
+    "input": {
+      "goal": "与家人团聚",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在中国",
+      "currentStatus": "无签证",
+      "occupation": "",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": true,
+      "hasLPRFamily": false,
+      "familyRelationship": "兄弟姐妹 (Sibling)"
+    },
+    "categories": [
+      {
+        "code": "F-4",
+        "name": "家庭移民第四类（美国公民的兄弟姐妹）",
+        "match": "high",
+        "description": "美国公民可以为成年兄弟姐妹申请移民。这是家庭团聚的直接途径。",
+        "processingTime": "约15-22年（中国出生，含领事馆排期）",
+        "employerRequired": false,
+        "requirements": [
+          "兄弟姐妹必须是美国公民（不是绿卡持有者）",
+          "申请人年满21岁",
+          "提供出生证明、护照等亲属关系证明文件",
+          "通过体检和背景调查"
+        ],
+        "pros": [
+          "不需要雇主担保",
+          "不需要工作经历或特殊技能",
+          "家庭团聚的直接途径",
+          "配偶和未成年子女可作为附属申请人"
+        ],
+        "cons": [
+          "中国出生申请人排期极长（15-22年）",
+          "等待期间需要保持合法身份",
+          "成本相对较低但时间成本很高"
+        ]
+      },
+      {
+        "code": "EB-5",
+        "name": "职业移民第五类（投资移民）",
+        "match": "medium",
+        "description": "通过在美国创造就业机会的投资获得绿卡。不需要雇主担保或工作技能要求。",
+        "processingTime": "约8-15年（中国出生传统项目，含排期）；Set-aside/农村TEA项目可能更快",
+        "employerRequired": false,
+        "requirements": [
+          "投资金额：$800,000-$1,050,000美元（取决于项目类型和地区）",
+          "证明投资资金合法来源",
+          "投资必须创造至少10个美国就业机会",
+          "通过体检和背景调查"
+        ],
+        "pros": [
+          "不需要工作经历或学位要求",
+          "全家可同时获得绿卡（配偶和子女）",
+          "Set-aside/农村TEA项目排期较短",
+          "可选择区域中心投资（相对风险低）"
+        ],
+        "cons": [
+          "需要大额资本投资（最低$800K）",
+          "投资存在风险，需谨慎选择项目",
+          "中国出生申请人传统项目排期很长（8-15年）",
+          "需要证明资金来源合法性"
+        ]
+      },
+      {
+        "code": "IR-5",
+        "name": "家庭移民（美国公民的父母）",
+        "match": "low",
+        "description": "如果申请人年满21岁，美国公民配偶可为申请人的父母申请。这不直接适用于申请人本身，但可作为备选路径。",
+        "processingTime": "约1-2年（如申请人成为美国公民后）",
+        "employerRequired": false,
+        "requirements": [
+          "申请人必须先成为美国公民",
+          "申请人年满21岁",
+          "美国公民与父母的亲属关系证明"
+        ],
+        "pros": [
+          "处理时间相对快速",
+          "不需要劳工认证"
+        ],
+        "cons": [
+          "申请人需要先获得绿卡，再申请入籍成为美国公民（需5年）",
+          "这是长期方案，不是立即可行的选项"
+        ]
+      }
+    ],
+    "notes": [
+      "您的最佳选择是F-4类别（美国公民兄弟姐妹担保），但中国出生申请人面临15-22年的漫长排期。建议立即启动申请以尽早排队。",
+      "EB-5投资移民是无需工作经历的替代方案，但需要充足的投资资金。如有资本，可同时并行探索。",
+      "在等待期间，您可申请赴美旅游签证(B1/B2)与家人短期团聚。",
+      "中国出生申请人的主要挑战是排期限制，这是由美国移民法中每个国家的签证配额限制导致的。"
+    ],
+    "nextSteps": "建议采取以下步骤：\n1. 确认兄弟姐妹已成为美国公民，获取其入籍证书或公民身份证明\n2. 准备亲属关系证明文件（出生证明、结婚证等）\n3. 立即咨询持牌移民律师，启动I-130亲属担保申请\n4. 如有投资能力，同时评估EB-5投资移民项目\n5. 向律师咨询在美期间可能的临时访问选项（B1/B2签证）\n\n重要提醒：所有移民事项建议由持牌移民律师处理，确保申请流程正确合规。",
+    "error": null
+  },
+  {
+    "testId": 6,
+    "scenario": "Indian F1, PhD Biomedical Eng STEM, publications, wants to stay",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "印度",
+      "birthCountry": "印度",
+      "currentLocation": "在美国",
+      "currentStatus": "F1 学生签证",
+      "occupation": "生物医学研究员",
+      "yearsExperience": "1-3",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "博士 (PhD)",
+      "fieldOfStudy": "生物医学工程",
+      "hasExtraordinaryAchievements": true,
+      "hasPublishedPapers": true,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-1A",
+        "name": "职业移民第一类杰出人才",
+        "match": "high",
+        "description": "为具有杰出能力的个人设计，包括科学家、研究人员等。适合有博士学位、已发表论文、获得认可的申请人。无需雇主担保，可自行申请。",
+        "processingTime": "约1.5-3年（无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "博士学位（已满足）",
+          "在生物医学工程领域有突出成就",
+          "已发表的同行评审论文或其他学术贡献",
+          "符合EB-1A标准中的至少3项（如论文、引用、学术奖项等）"
+        ],
+        "pros": [
+          "无需雇主担保，完全自主",
+          "无排期，处理速度最快",
+          "符合自己的专业发展轨迹",
+          "博士+已发表论文通常满足门槛"
+        ],
+        "cons": [
+          "需要强有力的学术证明材料",
+          "准备申请需时间和专业指导",
+          "建议聘请律师协助准备"
+        ]
+      },
+      {
+        "code": "EB-2 NIW",
+        "name": "职业移民第二类 - 国家利益豁免",
+        "match": "high",
+        "description": "为在科学、艺术、教育、商业或体育领域具有非凡能力的个人设计。生物医学研究人员特别适合。无需雇主担保，自行申请。使用Dhanasar标准评估。",
+        "processingTime": "约2-4年（印度出生EB-2排期约10年以上）",
+        "employerRequired": false,
+        "requirements": [
+          "硕士或博士学位（已满足）",
+          "至少2年专业工作经验（已满足）",
+          "有突出成就（已发表论文、认可度等）",
+          "工作对美国国家利益有益"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "自行申请，不受雇主变化影响",
+          "比普通EB-2更灵活",
+          "研究人员和学者的常见选择"
+        ],
+        "cons": [
+          "印度出生申请人面临极长排期（10年+）",
+          "需要证明国家利益豁免资格",
+          "处理周期可能很长"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类（通过雇主）",
+        "match": "medium",
+        "description": "适合持有硕士以上学位、专业工作经验的申请人。需要雇主赞助和劳工认证(PERM)。",
+        "processingTime": "约4-7年（包含PERM劳工认证和排期等待，印度出生排期10年+）",
+        "employerRequired": true,
+        "requirements": [
+          "硕士或博士学位（已满足）",
+          "符合岗位要求的工作经验",
+          "找到愿意赞助的雇主（当前无）",
+          "通过劳工认证(PERM)"
+        ],
+        "pros": [
+          "如找到愿意赞助的研究机构/大学，是传统路径",
+          "配偶可作为附属申请人同时获得绿卡"
+        ],
+        "cons": [
+          "当前无雇主担保",
+          "印度出生申请人面临极长排期（10年以上）",
+          "需要PERM劳工认证流程复杂",
+          "等待时间可能远超中国或其他国家申请人"
+        ]
+      },
+      {
+        "code": "F-1 OPT",
+        "name": "F-1学生工作授权（OPT）",
+        "match": "medium",
+        "description": "允许F-1学生在毕业后获得工作经验。生物医学工程属STEM专业，可获得最长36个月OPT。",
+        "processingTime": "约3-6个月（获批OPT），12-36个月（工作期限）",
+        "employerRequired": false,
+        "requirements": [
+          "F-1学生身份（已满足）",
+          "STEM专业（生物医学工程符合）",
+          "获得校园外工作授权批准"
+        ],
+        "pros": [
+          "立即可用，无需等待",
+          "STEM专业可获36个月工作授权",
+          "可在美国工作积累经验",
+          "为后续绿卡申请积累材料"
+        ],
+        "cons": [
+          "仅为工作授权，非移民身份",
+          "需在OPT期间建立绿卡申请基础",
+          "OPT期满后需转换身份或离境"
+        ]
+      }
+    ],
+    "notes": [
+      "您作为印度出生的申请人面临一个关键挑战：印度在EB-2和EB-3类别的排期极其严重（10年以上），远比中国申请人长。这是所有EB绿卡路径的重大瓶颈。",
+      "EB-1A（杰出人才）是您最优选项，因为：(1)无需雇主；(2)无排期；(3)您的博士+已发表论文组合很可能符合标准。强烈建议优先探索这条路径。",
+      "EB-2 NIW虽然也无需雇主，但因为印度排期问题，您仍需等待10年以上才能获得绿卡批准。相比之下，EB-1A更有优势。",
+      "当前身份为F-1学生，建议：(1)立即启动OPT申请以获得工作授权；(2)同时筹备EB-1A申请材料（论文、推荐信、证明成就的文件）。",
+      "如果您所在的研究机构（大学、研究中心）愿意赞助，EB-2虽然排期长，但仍是备选方案。但请务必了解印度排期的严重性。"
+    ],
+    "nextSteps": "强烈建议立即采取以下行动：\n\n1. 【优先】与持牌移民律师咨询EB-1A申请可行性。准备材料：所有已发表论文副本、引用记录、学术奖项/认可证明、推荐信（来自领域内知名学者）。\n\n2. 同步启动OPT申请流程：联系学校国际学生办公室(ISO)获取表格和流程指导。OPT可立即给予工作授权，为绿卡申请争取时间。\n\n3. 探索雇主赞助机会（备选）：如有研究机构对赞助感兴趣，了解其赞助程序和意愿，但要认识到EB-2排期的长期成本。\n\n4. 务必咨询律师时重点讨论：印度排期问题、EB-1A vs EB-2 NIW的权衡、如何最大化申请成功率。",
+    "error": null
+  },
+  {
+    "testId": 7,
+    "scenario": "Chinese H1B, registered nurse RN, Bachelor nursing, sponsor YES",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "H1B 工作签证",
+      "occupation": "注册护士",
+      "yearsExperience": "3-5",
+      "hasEmployerSponsor": "是",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "护理学",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-3（医疗保健工作者）",
+        "name": "职业移民第三类 - 熟练工人（注册护士）",
+        "match": "high",
+        "description": "注册护士可通过Schedule A Group I快速通道获得绿卡，无需经历传统PERM劳工认证流程。这是护士最常见和最高效的移民路径。",
+        "processingTime": "约2-3年（中国出生，包含PERM豁免和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "有效的注册护士执照（美国各州认可）",
+          "Schedule A认证资格（CGFNS VisaScreen证书）",
+          "雇主愿意担保（已确认）",
+          "符合医疗保健工作者条件"
+        ],
+        "pros": [
+          "Schedule A Group I豁免PERM招聘，大幅缩短流程",
+          "排期相对较短（EB-3在3-5年之间）",
+          "当前H-1B身份可无缝转换",
+          "雇主已确认担保意愿",
+          "配偶可作为附属申请人获得绿卡"
+        ],
+        "cons": [
+          "需要获得CGFNS VisaScreen证书（如尚未获得）",
+          "中国出生仍需排期等待（比其他国家长）",
+          "EB-3相对EB-2需时更长"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类 - 高等学位专业人才",
+        "match": "medium",
+        "description": "如具备学士学位且拥有3-5年相关工作经验，理论上可申请EB-2。但对于护士而言，Schedule A Group I的EB-3路径通常更快、更实用。",
+        "processingTime": "约3-5年（中国出生，含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "学士学位（已满足）",
+          "3年以上工作经验（已满足）",
+          "PERM劳工认证",
+          "雇主继续担保"
+        ],
+        "pros": [
+          "排期略短于EB-3",
+          "学历和经验均符合条件"
+        ],
+        "cons": [
+          "需完整PERM流程，比Schedule A耗时更长",
+          "中国出生排期仍较长（3-5年）",
+          "对护士而言不如EB-3 Schedule A高效"
+        ]
+      }
+    ],
+    "notes": [
+      "【重点建议】注册护士应优先选择EB-3 Schedule A Group I路径，这是护士移民的黄金通道。无需传统PERM招聘流程，可显著加快绿卡审批。",
+      "【VisaScreen证书】如尚未取得CGFNS VisaScreen证书，这是Schedule A的必要条件。建议立即申请（处理时间约4-6周）。",
+      "【排期影响】中国出生申请人面临排期：EB-3约5-8年（但Schedule A可能更快），EB-2约3-5年。实际总时间 = 申请处理 + 排期等待。",
+      "【配偶权益】如已婚，配偶可作为附属申请人（NL绿卡）获得永久居留。",
+      "【H-1B过渡】当前H-1B身份在申请期间保持有效，I-485调整身份申请后可申请AP（Advance Parole）和EAD（工作授权），可在当前雇主或其他雇主继续工作。"
+    ],
+    "nextSteps": "【立即行动步骤】\n1. 【验证VisaScreen】确认是否已取得CGFNS VisaScreen证书。如未获得，立即申请（https://www.cgfns.org/）\n2. 【与雇主沟通】通知HR启动绿卡申请流程，准备Schedule A相关文件\n3. 【材料准备】收集执业执照扫描件、护理学学位证明、工作经历证明、薪资证明等\n4. 【咨询律师】联系持牌移民律师制定具体时间表。大多数护士案件律师费用相对较低（通常$3,000-$5,000），因为Schedule A流程简化\n5. 【预估时间线】\n   - VisaScreen申请：4-6周\n   - I-140/I-485并行递交：约6-12个月审批\n   - 排期和绿卡颁发：额外2-3年\n   - 总计：约2-3年获得绿卡\n\n强烈建议立即启动，护士绿卡是最高效的职业移民路径之一。",
+    "error": null
+  },
+  {
+    "testId": 8,
+    "scenario": "Chinese overstay 2yr, married to USC, US-born child",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "逾期滞留",
+      "occupation": "",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "高中",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": true,
+      "hasLPRFamily": false,
+      "familyRelationship": "配偶 (Spouse)",
+      "hasUSCitizenChild": true,
+      "overstayYears": "2"
+    },
+    "categories": [
+      {
+        "code": "CR-1",
+        "name": "美国公民配偶（条件绿卡）",
+        "match": "high",
+        "description": "作为美国公民配偶，可通过家庭移民途径获得永久居留权。如结婚不满2年，获得条件绿卡(CR-1)；满2年则获得IR-1。",
+        "processingTime": "约8-12个月（I-485申请处理，不计排期）",
+        "employerRequired": false,
+        "requirements": [
+          "美国公民配偶提出I-130申请",
+          "证明有效婚姻关系",
+          "通过体检和背景调查",
+          "满足经济担保要求（配偶需证明收入或资产）"
+        ],
+        "pros": [
+          "美国公民直系亲属，无排期",
+          "不需要雇主担保",
+          "可立即在美调整身份（I-485）",
+          "配偶可作为受益人支持申请"
+        ],
+        "cons": [
+          "需要配偶积极参与申请流程",
+          "逾期滞留身份可能影响申请（见notes）"
+        ]
+      },
+      {
+        "code": "I-601A",
+        "name": "临时豁免（逾期滞留豁免）",
+        "match": "high",
+        "description": "对于因逾期滞留而可能面临入境禁令的申请人，可在配偶提出I-130后申请临时豁免（I-601A），允许在美调整身份而无需离美。",
+        "processingTime": "约4-8个月",
+        "employerRequired": false,
+        "requirements": [
+          "美国公民配偶已提出或将提出I-130",
+          "证明逾期滞留会对配偶造成极端困难",
+          "符合豁免资格的家庭关系"
+        ],
+        "pros": [
+          "避免离境导致的3-10年入境禁令",
+          "允许在美国境内完成绿卡申请",
+          "与CR-1/IR-1申请联合进行"
+        ],
+        "cons": [
+          "豁免不是自动批准，需证明极端困难",
+          "申请费用约585美元",
+          "审批时间可能较长"
+        ]
+      }
+    ],
+    "notes": [
+      "【逾期滞留后果说明】你目前的逾期滞留状态创造了严重法律风险。如果在未来离开美国，你将面临：1-3年逾期 = 3年入境禁令；3年以上逾期 = 10年入境禁令。这意味着即使获得绿卡，也无法离开美国返回中国而不冒失去身份的风险。",
+      "【建议策略】在配偶的支持下，立即启动I-130 + I-485 + I-601A联合申请。这是你当前最可行且最具保护性的路径。I-601A豁免专门为你这种情况设计，允许你在美国境内调整身份，同时避免触发10年禁令。",
+      "【配偶角色至关重要】配偶需要：1) 证明美国公民身份 2) 证明足够的经济能力（通过I-864表格） 3) 积极参与全过程。如果配偶无法担保或不愿参与，此路径无法进行。",
+      "【高中学历的限制】你的高中学历排除了传统的职业移民路径（EB-2/EB-3通常需要高中以上+工作经验，但本科优先）。家庭移民是你唯一现实的选择。"
+    ],
+    "nextSteps": "立即采取行动（时间敏感）：\n1. 【确认配偶意愿】与美国公民配偶确认其愿意并能够提出I-130申请，以及是否能满足经济担保要求（Form I-864）\n2. 【咨询持牌律师】这是你的优先任务。逾期滞留 + I-601A豁免涉及复杂的法律风险，必须由持牌移民律师评估。律师需要了解：你的具体逾期时间、入境美国的方式、婚姻的真实性等细节\n3. 【准备文件】收集证明有效婚姻关系的文件（结婚证、共同资产证明、照片等）和配偶的经济证明（过去3年税表、银行对账单、W-2表等）\n4. 【尽快启动申请】不要延迟。逾期时间越长，I-601A豁免的难度可能越大。",
+    "error": null
+  },
+  {
+    "testId": 9,
+    "scenario": "Mexican in Mexico, SW eng, Masters CS, wants to work in US",
+    "input": {
+      "goal": "在美国工作",
+      "citizenship": "墨西哥",
+      "birthCountry": "墨西哥",
+      "currentLocation": "在墨西哥",
+      "currentStatus": "无签证",
+      "occupation": "软件工程师",
+      "yearsExperience": "5-10",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "硕士 (Master)",
+      "fieldOfStudy": "计算机科学",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "H-1B",
+        "name": "专业职业工作签证",
+        "match": "high",
+        "description": "适合持有硕士学位的专业人才，包括软件工程师。需要美国雇主担保。",
+        "processingTime": "约4-6个月（申请处理），中签率约25-30%",
+        "employerRequired": true,
+        "requirements": [
+          "硕士或以上学位（已具备）",
+          "美国雇主提供工作机会并愿意担保",
+          "工作岗位符合H-1B资格要求",
+          "赢得H-1B抽签"
+        ],
+        "pros": [
+          "墨西哥国籍无排期压力",
+          "可在美国合法工作和生活",
+          "配偶可申请H-4依赖签证",
+          "可作为跳板申请职业移民绿卡（EB-2或EB-3）"
+        ],
+        "cons": [
+          "需要等待雇主机会",
+          "存在抽签风险（约70-75%未中签概率）",
+          "H-1B签证有6年上限",
+          "目前需找到愿意赞助的美国雇主"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类（雇主赞助）",
+        "match": "medium",
+        "description": "针对持有高等学位的专业人才的绿卡类别。通常通过H-1B转换身份申请。",
+        "processingTime": "约3-5年（墨西哥出生无排期，含PERM和I-140/I-485处理时间）",
+        "employerRequired": true,
+        "requirements": [
+          "硕士或以上学位（已具备）",
+          "美国雇主赞助并完成PERM劳工认证",
+          "职位符合EB-2要求",
+          "通常需先在美国工作（如H-1B身份）"
+        ],
+        "pros": [
+          "墨西哥无排期优势，处理速度相对较快",
+          "获得永久绿卡和工作自由度",
+          "配偶和子女可随同申请绿卡",
+          "可成为跳板申请美国公民身份"
+        ],
+        "cons": [
+          "目前无雇主赞助意愿，需先找到赞助雇主",
+          "需要完成PERM劳工认证流程（耗时）",
+          "通常需要先获得H-1B或其他工作签证"
+        ]
+      },
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类（雇主赞助）",
+        "match": "medium",
+        "description": "针对持有学位或技术工作经验的专业人才的绿卡类别。相对EB-2要求更灵活。",
+        "processingTime": "约4-6年（墨西哥出生无排期，含PERM和I-140/I-485处理时间）",
+        "employerRequired": true,
+        "requirements": [
+          "学士学位或等同技术经验（5-10年工作经验满足）",
+          "美国雇主赞助并完成PERM劳工认证",
+          "职位符合EB-3要求",
+          "通常需先在美国工作"
+        ],
+        "pros": [
+          "墨西哥无排期，处理相对快速",
+          "要求比EB-2灵活",
+          "获得绿卡和工作自由度",
+          "可随同申请家庭成员"
+        ],
+        "cons": [
+          "目前无雇主赞助意愿",
+          "需要完成PERM劳工认证",
+          "通常需要先获得工作签证"
+        ]
+      },
+      {
+        "code": "L-1B",
+        "name": "跨国企业内部转账签证（专业人员）",
+        "match": "low",
+        "description": "如果申请人在墨西哥的公司有美国分支机构或关联公司，可申请L-1B转入美国工作。",
+        "processingTime": "约2-3个月（签证申请处理）",
+        "employerRequired": true,
+        "requirements": [
+          "申请人在墨西哥公司工作至少1年",
+          "墨西哥公司有美国关联企业或分支机构",
+          "美国公司愿意赞助L-1B申请",
+          "职位涉及专业知识或管理职能"
+        ],
+        "pros": [
+          "处理速度快",
+          "无需PERM劳工认证",
+          "可作为跳板申请绿卡"
+        ],
+        "cons": [
+          "需要在跨国企业框架内工作",
+          "申请人当前无此条件",
+          "仅适用于特定企业结构"
+        ]
+      }
+    ],
+    "notes": [
+      "墨西哥国籍申请人在职业移民中享有优势：无排期问题，处理相对快速。",
+      "硕士学位+5-10年软件工程经验是EB-2/EB-3的理想资格。",
+      "当前最大障碍是缺少雇主赞助。建议优先通过H-1B获得美国工作机会，再由雇主赞助申请绿卡。",
+      "H-1B虽有抽签风险，但墨西哥国籍申请人应积极参加多次抽签机会，中签后可启动绿卡申请。"
+    ],
+    "nextSteps": "建议采取以下步骤：\n\n1. **求职准备**：在LinkedIn、GitHub等平台准备专业档案，积极投递美国科技公司的职位（Google、Meta、Amazon、Microsoft、Apple等大型科技公司或初创企业）。\n\n2. **联系美国雇主**：许多美国科技公司愿意为合格的海外软件工程师赞助H-1B。重点关注有国际招聘经验的公司。\n\n3. **咨询持牌移民律师**：一旦获得工作机会和H-1B赞助承诺后，立即咨询律师制定详细的移民路线图（H-1B → EB-2/EB-3）。\n\n4. **准备材料**：整理硕士学位证书、工作经验证明、项目业绩等材料，为未来的PERM和绿卡申请做准备。",
+    "error": null
+  },
+  {
+    "testId": 10,
+    "scenario": "Chinese O1 artist musician, wants GC, no sponsor, extraordinary YES",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "O1 杰出人才签证",
+      "occupation": "音乐家/艺术家",
+      "yearsExperience": "10+",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "音乐",
+      "hasExtraordinaryAchievements": true,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-1A",
+        "name": "职业移民第一类（杰出人才）",
+        "match": "high",
+        "description": "适合在艺术、音乐、文化领域具有国家级或国际级成就的个人。无需雇主担保，可自行申请。",
+        "processingTime": "约1.5-3年（中国出生，一般无排期或排期较短）",
+        "employerRequired": false,
+        "requirements": [
+          "在音乐/艺术领域获得主要国家或国际奖项",
+          "作品在主要艺术出版物或媒体广泛报道",
+          "在所在领域获得国际认可",
+          "10年以上的专业成就"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "可自行申请",
+          "处理时间相对较快",
+          "您当前O-1身份已证明杰出才能，移民局会参考此认可",
+          "成功申请后配偶可作为附属申请人"
+        ],
+        "cons": [
+          "需要充分证明国际级别的艺术成就",
+          "证据材料准备复杂",
+          "审批标准严格"
+        ]
+      },
+      {
+        "code": "EB-2 NIW",
+        "name": "职业移民第二类（国家利益豁免）",
+        "match": "high",
+        "description": "无需雇主担保的绿卡申请。若您的艺术成就能证明对美国文化或社会的重要贡献，可适用此类别。",
+        "processingTime": "约3-5年（中国出生，含排期）",
+        "employerRequired": false,
+        "requirements": [
+          "在音乐/艺术领域有突出成就",
+          "证明您的工作对美国有国家利益意义",
+          "学位或相关经验认可"
+        ],
+        "pros": [
+          "无需雇主担保",
+          "自行申请",
+          "对艺术家友好的备选路径",
+          "排期通常比EB-2普通类别更快"
+        ],
+        "cons": [
+          "国家利益证明的标准因人而异",
+          "仍需排队（约3-5年）"
+        ]
+      },
+      {
+        "code": "EB-1B",
+        "name": "职业移民第一类（杰出教授/研究人员）",
+        "match": "medium",
+        "description": "若您在高校或研究机构任教或进行艺术研究，且获得过重要学术认可，可探索此类别。需要雇主（大学/研究机构）担保。",
+        "processingTime": "约1.5-3年（排期一般较短）",
+        "employerRequired": true,
+        "requirements": [
+          "在高等教育机构或研究机构担任教授或研究职位",
+          "在音乐/艺术领域获得杰出成就（论文发表、获奖、学术影响力）",
+          "雇主愿意提交I-140申请"
+        ],
+        "pros": [
+          "处理时间快",
+          "第一优先级"
+        ],
+        "cons": [
+          "需要教育/研究机构雇主",
+          "您目前表示雇主不愿担保，此条件难以满足",
+          "需要符合教学或研究型职位"
+        ]
+      },
+      {
+        "code": "O-1 转换路径规划",
+        "name": "O-1身份维持与后续规划",
+        "match": "medium",
+        "description": "在准备EB-1A的同时，确保维持有效的O-1身份。O-1在某些情况下可与绿卡申请并行。",
+        "processingTime": "取决于EB-1A申请进展",
+        "employerRequired": false,
+        "requirements": [
+          "维持O-1身份的所有要求（赞助人支持、成就证明等）",
+          "根据移民律师建议规划身份过渡时间表"
+        ],
+        "pros": [
+          "可继续在美合法工作",
+          "维持身份稳定性",
+          "为EB-1A申请积累更多成就证据"
+        ],
+        "cons": [
+          "需要持续的赞助人支持",
+          "O-1续期时间和EB-1A申请需协调"
+        ]
+      }
+    ],
+    "notes": [
+      "您的O-1杰出人才签证身份本身已证明移民局认可您在音乐领域的国家级成就，这对EB-1A申请极为有利。",
+      "中国出生申请人通常面临排期，但EB-1A因无排期或排期极短而更为有利。建议优先考虑EB-1A。",
+      "关键是准备充分的证据材料：国际奖项、展演记录、出版作品、媒体报道、业界推荐信等。",
+      "EB-2 NIW是备选方案，若EB-1A标准难以达到，NIW提供了另一条无雇主担保的路径。",
+      "配偶可作为附属申请人随您一起申请绿卡。",
+      "强烈建议尽早咨询专业的移民律师，特别是有处理艺术家绿卡案例经验的律师。"
+    ],
+    "nextSteps": "建议采取以下步骤：\n1. 收集所有成就证据：主要奖项证书、获奖记录、国际演出证明、媒体报道截图、出版作品、业界推荐信\n2. 联系专门处理艺术家移民案件的持牌移民律师，评估您的EB-1A和EB-2 NIW资格\n3. 根据律师意见选择最优申请路径\n4. 咨询现有O-1赞助人关于绿卡申请的协调事宜\n5. 同时确保维持O-1身份有效性，直到绿卡获批",
+    "error": null
+  },
+  {
+    "testId": 11,
+    "scenario": "Chinese L1A manager, 15yr exp, MBA, wants GC, large co sponsor",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "L1 公司内部调动签证",
+      "occupation": "高级经理/总监",
+      "yearsExperience": "10+",
+      "hasEmployerSponsor": "是",
+      "highestDegree": "硕士 (Master)",
+      "fieldOfStudy": "工商管理(MBA)",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-1C",
+        "name": "职业移民第一类C（跨国经理/主管）",
+        "match": "high",
+        "description": "专为持L-1A签证的跨国经理和主管设计。您作为高级经理/总监，若在中国母公司或关联企业中担任类似管理职位至少1年，可直接通过EB-1C申请绿卡，无需PERM劳工认证。",
+        "processingTime": "约1.5-3年（中国出生，含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "L-1A签证身份",
+          "在美国关联企业担任经理/主管职位",
+          "过去3年内在中国母公司或其他关联企业担任类似职位至少1年",
+          "雇主愿意担保（已确认）"
+        ],
+        "pros": [
+          "无需PERM劳工认证，显著加快流程",
+          "EB-1C排期比EB-2/EB-3短",
+          "充分利用现有L-1A身份",
+          "高管身份更容易证明"
+        ],
+        "cons": [
+          "需证明关联企业间的管理关系",
+          "中国出生仍有排期",
+          "需详细的公司组织结构文件"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类",
+        "match": "high",
+        "description": "适合持硕士学位的专业人才。您的MBA学位+10年管理经验符合EB-2要求。可通过PERM劳工认证或NIW方式申请。",
+        "processingTime": "约3-5年（中国出生，含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "硕士或以上学位（您已具备MBA）",
+          "相关专业工作经验（10年符合）",
+          "雇主愿意担保（已确认）"
+        ],
+        "pros": [
+          "排期比EB-3短",
+          "可从L-1身份直接转换",
+          "配偶可作为附属申请人"
+        ],
+        "cons": [
+          "需完成PERM劳工认证流程（通常8-18个月）",
+          "中国出生排期较长（3-5年）",
+          "总周期较EB-1C长"
+        ]
+      },
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类",
+        "match": "medium",
+        "description": "为本科学位或熟练工人设计。虽然您持硕士学位可申请EB-3，但鉴于您的教育背景，EB-2或EB-1C是更优先选择。",
+        "processingTime": "约5-8年（中国出生，含排期）",
+        "employerRequired": true,
+        "requirements": [
+          "本科或以上学位",
+          "相关工作经验",
+          "雇主愿意担保"
+        ],
+        "pros": [
+          "有雇主担保情况下可申请",
+          "适用于各行业"
+        ],
+        "cons": [
+          "排期远长于EB-2和EB-1C",
+          "中国出生排期最长（5-8年），不推荐"
+        ]
+      }
+    ],
+    "notes": [
+      "【首选方案】EB-1C是最适合您的路径。您的L-1A身份、高级经理职位、MBA学位和国际公司背景完美符合EB-1C要求。相比EB-2/EB-3，EB-1C无需冗长的PERM劳工认证，可节省8-18个月。",
+      "【关键要点】EB-1C排期通常比EB-2短6-12个月，对中国出生申请人尤其重要。",
+      "【排期提醒】作为中国出生申请人，无论选择哪个类别都面临排期。中国出生EB-1C排期约1.5-3年，EB-2约3-5年，EB-3约5-8年。",
+      "【配偶及子女】您的配偶和未婚未成年子女可作为附属申请人同时申请绿卡。",
+      "【EB-1C前提条件】需确认：(1)您在中国母公司或关联企业曾担任高管职位至少1年；(2)美国关联企业与中国母公司的所有权/控制权关系明确。"
+    ],
+    "nextSteps": "1. 【第一步】与雇主HR/律师确认您的L-1A身份是否为L-1A管理者类别（关键！），以及中国母公司过往高管职位记录；2. 【第二步】收集证明材料：过去3年的职位证明信、组织结构图、关联企业协议、财务文件等；3. 【第三步】立即咨询持牌移民律师评估EB-1C可行性。由于EB-1C优势明显，建议在考虑EB-2之前先确定EB-1C是否可行；4. 【第四步】如EB-1C条件不满足，立即启动PERM劳工认证流程（EB-2为备选方案）。总体建议时间敏感性高，尽快行动。",
+    "error": null
+  },
+  {
+    "testId": 12,
+    "scenario": "Chinese in China, HS diploma, age 55, daughter USC age 30",
+    "input": {
+      "goal": "与家人团聚",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在中国",
+      "currentStatus": "无签证",
+      "occupation": "退休",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "高中",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": true,
+      "hasLPRFamily": false,
+      "familyRelationship": "子女 (Son/Daughter)",
+      "age": "55"
+    },
+    "categories": [
+      {
+        "code": "IR-2",
+        "name": "美国公民的未婚未成年子女",
+        "match": "high",
+        "description": "如果您的子女是美国公民且未满21岁未婚，您作为其父母可以通过此类别申请移民。这是最直接的家庭团聚路径。",
+        "processingTime": "约1-2年（不受排期影响，优先处理）",
+        "employerRequired": false,
+        "requirements": [
+          "子女必须是美国公民",
+          "子女必须未满21岁且未婚",
+          "子女需要为您递交I-130亲属请愿书",
+          "通过体检和背景调查"
+        ],
+        "pros": [
+          "无排期，快速处理",
+          "不需要经济来源证明（由子女担保）",
+          "可与配偶和其他未成年子女一起申请"
+        ],
+        "cons": [
+          "必须子女年满21岁才能担保其他成年亲属",
+          "如子女已满21岁，不适用此类别"
+        ]
+      },
+      {
+        "code": "F-2A",
+        "name": "绿卡持有者的配偶或未婚未成年子女",
+        "match": "medium",
+        "description": "如果您的子女持有美国绿卡（而非公民），且配偶也是绿卡持有者，您可能通过此类别申请。排期通常较短。",
+        "processingTime": "约2-3年（含排期）",
+        "employerRequired": false,
+        "requirements": [
+          "子女必须持有美国绿卡",
+          "子女需要为您递交I-130请愿书",
+          "通过体检和背景调查",
+          "绿卡持有者配偶可作为共同担保人"
+        ],
+        "pros": [
+          "排期相对较短（2-3年）",
+          "不需要工作经历或学历要求"
+        ],
+        "cons": [
+          "排期较IR-2长",
+          "如子女是美国公民，应优先使用IR-2"
+        ]
+      },
+      {
+        "code": "CR-1/IR-1",
+        "name": "美国公民配偶",
+        "match": "low",
+        "description": "如果您与美国公民已婚，可通过此类别申请。CR-1用于婚龄不满2年（条件绿卡），IR-1用于婚龄满2年以上（直接绿卡）。",
+        "processingTime": "约8-18个月（无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "与美国公民配偶合法婚姻满2年（IR-1）或不满2年（CR-1）",
+          "配偶为您递交I-130请愿书",
+          "提交结婚证明、经济担保、无犯罪记录等文件",
+          "面试通过"
+        ],
+        "pros": [
+          "优先无排期处理",
+          "快速绿卡获得"
+        ],
+        "cons": [
+          "仅适用于已婚人士",
+          "根据题目信息，您未提及配偶是美国公民"
+        ]
+      }
+    ],
+    "notes": [
+      "**关键信息确认**：您的子女是否已经是美国公民或绿卡持有者？这直接决定了您的最佳移民路径。",
+      "如您的子女是美国公民且未满21岁，IR-2是最快、最优的选择（无排期，约1-2年）。",
+      "如您的子女是美国绿卡持有者，F-2A是可选项，排期约2-3年。",
+      "作为退休人士，您不需要工作或经济自给能力，但需要您的子女或其配偶提供经济担保（I-864表格）。",
+      "在中国进行的整个过程需要通过美国驻华大使馆或领事馆处理。"
+    ],
+    "nextSteps": "**立即行动**：1. 确认您子女在美国的移民身份（公民还是绿卡）2. 联系您的子女，讨论为您担保的意愿和能力 3. 如决定进行，请您的子女联系持牌移民律师（子女作为请愿人） 4. 律师将准备I-130亲属请愿书并指导整个流程。建议在进行任何官方申请前咨询移民律师，确保符合所有要求。",
+    "error": null
+  },
+  {
+    "testId": 13,
+    "scenario": "Taiwanese H1B, wants E-2 investor visa to start business",
+    "input": {
+      "goal": "在美国创业",
+      "citizenship": "台湾",
+      "birthCountry": "台湾",
+      "currentLocation": "在美国",
+      "currentStatus": "H1B 工作签证",
+      "occupation": "企业家",
+      "yearsExperience": "5-10",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "硕士 (Master)",
+      "fieldOfStudy": "商业管理",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "E-2",
+        "name": "条约投资者签证",
+        "match": "high",
+        "description": "台湾国籍申请人可以利用台湾-美国E-2条约，以投资者身份在美国创办和运营企业。无需雇主担保，完全由申请人自主控制业务。",
+        "processingTime": "约3-6个月（领事馆审批）",
+        "employerRequired": false,
+        "requirements": [
+          "台湾国籍护照",
+          "实质性投资（通常$50K-$100K+）",
+          "创业计划书和财务预测",
+          "创造就业机会（至少为美国公民/绿卡持有者）",
+          "证明投资为合法获得"
+        ],
+        "pros": [
+          "完全自主创业，无需依赖雇主",
+          "可携带配偶和21岁以下未婚子女",
+          "可无限续期（每次2年，只要业务持续运营）",
+          "创业成功后可申请EB-5投资移民获得绿卡",
+          "处理速度快，成功率高"
+        ],
+        "cons": [
+          "需要实质性资金投入",
+          "必须证明企业为美国经济做出贡献",
+          "E-2身份不转换为绿卡，需后续EB-5或其他路径获得永居"
+        ]
+      },
+      {
+        "code": "EB-5",
+        "name": "投资移民（绿卡）",
+        "match": "high",
+        "description": "通过在美国创造就业机会的投资获得永久居民身份。适合有充足资本的创业者直接获得绿卡。",
+        "processingTime": "约2-3年（标准投资区），1-2年（农村/TEA项目，目前无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "投资$800,000（标准）或$1,050,000（非农村TEA）",
+          "或投资获批的区域中心项目",
+          "创造至少10个全职就业机会",
+          "资金合法来源证明",
+          "商业计划书"
+        ],
+        "pros": [
+          "一步到位获得绿卡（无排期等待）",
+          "可携带配偶和21岁以下未婚子女",
+          "无需雇主担保，完全自主创业",
+          "农村/SET-ASIDE项目投资额更低（$1.05M），且目前无排期",
+          "成功后全家获得永居身份"
+        ],
+        "cons": [
+          "需要大额资本投入",
+          "必须证明创造10个就业机会",
+          "私营投资风险较高；区域中心项目相对安全但费用高",
+          "处理周期较长",
+          "I-485审批前资金需冻结在项目中"
+        ]
+      },
+      {
+        "code": "L-1A",
+        "name": "跨国企业主管/经理签证",
+        "match": "medium",
+        "description": "如果申请人在台湾已有企业或母公司，可通过L-1A在美国建立子公司/分支机构并担任经理职位。",
+        "processingTime": "约2-4个月（获批）",
+        "employerRequired": true,
+        "requirements": [
+          "台湾现有企业或母公司至少1年营运历史",
+          "美国子公司/分支机构成立",
+          "申请人在母公司担任管理/执行职位至少1年",
+          "美国企业需要执行经理/董事级职位",
+          "企业营运文件和财务记录"
+        ],
+        "pros": [
+          "快速获得工作签证，无需等待排期",
+          "可携带配偶和21岁以下未婚子女",
+          "L-1可转换为EB-1C获得绿卡（快速且无排期）",
+          "期间可创办美国业务",
+          "无PERM劳工认证要求"
+        ],
+        "cons": [
+          "需要在台湾已有运营企业作为基础",
+          "美国子公司需要实质运营（不能是壳公司）",
+          "需定期证明跨国管理角色的真实性"
+        ]
+      },
+      {
+        "code": "EB-1C",
+        "name": "职业移民第一类（跨国企业主管/经理）",
+        "match": "medium",
+        "description": "持有L-1A签证至少1年后，可申请EB-1C绿卡。为企业高管提供的快速绿卡路径。",
+        "processingTime": "约1-2年（无排期，台湾无EB排期）",
+        "employerRequired": true,
+        "requirements": [
+          "持L-1A至少1年",
+          "继续在美国企业担任经理/执行职位",
+          "经理职位为永久职位（不临时）",
+          "美国企业证明资料和财务状况",
+          "跨国公司结构文件"
+        ],
+        "pros": [
+          "EB-1优先级，无排期等待",
+          "处理速度快（6-12个月I-485）",
+          "可携带配偶和21岁以下未婚子女",
+          "不需要PERM劳工认证",
+          "直接转换L-1A身份"
+        ],
+        "cons": [
+          "必须先获得L-1A签证",
+          "需要维持真实的跨国经理角色"
+        ]
+      }
+    ],
+    "notes": [
+      "台湾国籍优势：可直接申请E-2条约投资签证（中国大陆国籍不适用）",
+      "创业路径建议优先级：E-2（快速试验业务） → 后续根据成功情况升级为EB-5（绿卡）或EB-1C（如有台湾母公司）",
+      "E-2签证可多次续期，但不转换为绿卡；如计划永久居留，应同步规划EB-5或EB-1C",
+      "EB-5农村/SET-ASIDE项目目前无排期，投资额较低（$1.05M），值得优先考虑",
+      "H-1B身份下创业受限；建议立即改变身份到E-2，获得完全的商业自由"
+    ],
+    "nextSteps": "强烈建议咨询持牌移民律师，根据资本规模制定方案：\n\n1. 立即行动（E-2路径）：评估投资额，准备商业计划书和资金证明，申请E-2条约投资签证；\n\n2. 长期规划（绿卡路径）：若资本充足（$1.05M+），同步准备EB-5申请；若在台湾有母公司，准备L-1A和后续EB-1C申请；\n\n3. 文件准备：台湾护照、硕士学位证、5-10年工作经验证明、资金来源文件、创业计划书、预计财务预测；\n\n4. 建议律师专业领域：E-2签证、EB-5投资移民、L-1A/EB-1C跨国企业主管。",
+    "error": null
+  },
+  {
+    "testId": 14,
+    "scenario": "Chinese F1, Bachelors CS STEM, graduating, wants OPT then H1B",
+    "input": {
+      "goal": "在美国工作",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "F1 学生签证",
+      "occupation": "",
+      "yearsExperience": "0",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "计算机科学",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "OPT",
+        "name": "选择性实习训练（毕业后工作授权）",
+        "match": "high",
+        "description": "F-1学生毕业后获得12个月的工作授权。计算机科学属于STEM专业，可额外延期24个月，共36个月工作授权。",
+        "processingTime": "毕业后约2-3个月获批，总授权期限36个月（STEM延期）",
+        "employerRequired": false,
+        "requirements": [
+          "F-1身份毕业",
+          "在美国完成学位",
+          "毕业后60天内申请OPT",
+          "STEM专业（计算机科学符合）"
+        ],
+        "pros": [
+          "无需雇主提前承诺",
+          "STEM延期可获36个月工作时间",
+          "期间可合法工作并积累经验",
+          "为后续H-1B申请打基础"
+        ],
+        "cons": [
+          "OPT期间不具有移民身份",
+          "36个月后需要转换其他身份或离美"
+        ]
+      },
+      {
+        "code": "H-1B",
+        "name": "专业职业工作签证",
+        "match": "high",
+        "description": "需要美国雇主担保的工作签证。需要有学士或以上学位的职位，但目前雇主未确认担保意愿。",
+        "processingTime": "申请处理4-6个月，需抽签（约25-30%中签率），通常在毕业后的OPT期间申请",
+        "employerRequired": true,
+        "requirements": [
+          "美国雇主的工作offer",
+          "职位需要学士或以上学位",
+          "雇主愿意提交H-1B申请",
+          "通过H-1B抽签"
+        ],
+        "pros": [
+          "可在OPT期间申请（延续工作授权）",
+          "H-1B有效期3年，可延期至6年",
+          "可作为绿卡申请的跳板"
+        ],
+        "cons": [
+          "抽签制，不保证获批（约70%未中签）",
+          "雇主需主动赞助",
+          "需要prevailing wage",
+          "当前雇主未确认担保"
+        ]
+      },
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类 - 技术工人",
+        "match": "medium",
+        "description": "如果在H-1B工作期间，雇主愿意启动PERM劳工认证和绿卡申请。学士学位可适用EB-3技术工人类别。",
+        "processingTime": "申请处理2-3年 + 中国排期5-8年，总计约7-11年",
+        "employerRequired": true,
+        "requirements": [
+          "H-1B或其他工作签证身份",
+          "雇主愿意启动PERM劳工认证",
+          "职位需要特定技能证明",
+          "通过劳工认证"
+        ],
+        "pros": [
+          "持学士学位可申请",
+          "一旦获得绿卡，工作灵活性增加"
+        ],
+        "cons": [
+          "中国排期较长（5-8年）",
+          "需要PERM招聘流程（6-12个月）",
+          "当前无雇主赞助确认",
+          "整体周期10年以上"
+        ]
+      },
+      {
+        "code": "CPT",
+        "name": "课程实习训练（在学期间工作）",
+        "match": "medium",
+        "description": "如果还未毕业，可在学期间通过CPT获得工作授权，要求学校和雇主批准。",
+        "processingTime": "申请约2-4周，可在学期间进行",
+        "employerRequired": false,
+        "requirements": [
+          "学校同意CPT",
+          "找到相关雇主",
+          "确保不超过学位要求的12个月或更少"
+        ],
+        "pros": [
+          "毕业前获得工作经验",
+          "为OPT和后续H-1B打基础",
+          "无需雇主提前承诺赞助"
+        ],
+        "cons": [
+          "需要学校批准",
+          "时间受学业限制",
+          "不能作为长期留美途径"
+        ]
+      }
+    ],
+    "notes": [
+      "您目前处于F-1学生身份，最佳路径是：毕业 → OPT（12-36个月）→ 寻找愿意担保的雇主 → H-1B → 绿卡申请",
+      "计算机科学是STEM专业，可享受24个月OPT延期，共获36个月在美工作时间，这为找到赞助雇主提供了充足窗口",
+      "中国出生申请人的EB-3排期为5-8年，总周期可能达10年以上，建议咨询律师是否考虑其他路径（如EB-1A如您有杰出成就）",
+      "当前雇主未确认赞助意愿是主要挑战，建议在OPT期间积极寻找愿意赞助H-1B和PERM的雇主",
+      "大型科技公司（如Google、Meta、Microsoft等）通常更愿意赞助H-1B和绿卡申请"
+    ],
+    "nextSteps": "1. 确认毕业时间，准备OPT申请材料（I-765表格、EAD）；2. 在OPT期间积极寻找CS相关工作机会，优先考虑有绿卡赞助历史的公司；3. 获得工作offer后，与公司HR确认H-1B赞助意愿；4. 咨询持牌移民律师，了解个人是否符合EB-1A（杰出人才）条件，这可大幅缩短绿卡周期",
+    "error": null
+  },
+  {
+    "testId": 15,
+    "scenario": "Chinese GC holder 6yr, wants citizenship, married to USC",
+    "input": {
+      "goal": "获得美国公民身份",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "绿卡持有人",
+      "occupation": "",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": true,
+      "hasLPRFamily": false,
+      "familyRelationship": "配偶 (Spouse)",
+      "greenCardYears": "6"
+    },
+    "categories": [
+      {
+        "code": "N/A - 直接申请入籍",
+        "name": "美国公民身份申请（入籍）",
+        "match": "high",
+        "description": "作为绿卡持有人，您已经处于获得美国公民身份的最直接路径上。入籍是将绿卡转换为公民身份的正式程序。",
+        "processingTime": "约6-12个月（取决于USCIS地区）",
+        "employerRequired": false,
+        "requirements": [
+          "持有绿卡满5年（或与美国公民配偶满3年），且申请前6个月内未离开美国超过6个月",
+          "英语能力（基础读、写、说）",
+          "通过公民知识考试（美国历史、政府制度等基础知识100题中答对至少6题）",
+          "品德良好（Good Moral Character）",
+          "宣誓效忠美国"
+        ],
+        "pros": [
+          "您已持有绿卡，无需再走移民程序",
+          "有美国公民配偶，可能符合3年婚姻豁免条件（如适用）",
+          "获得美国护照，享受完全政治和法律权利"
+        ],
+        "cons": [
+          "需要满足实际居住要求（5年内不能离开超过6个月，或与公民配偶需满足特殊条件）",
+          "需要通过英语和公民知识考试",
+          "放弃中国国籍（中国不允许双重国籍）"
+        ]
+      },
+      {
+        "code": "绿卡身份维持",
+        "name": "保持并优化绿卡身份（如暂不入籍）",
+        "match": "medium",
+        "description": "如果您暂不准备申请入籍，应了解如何维持绿卡有效性，避免被认定为放弃绿卡身份。",
+        "processingTime": "长期维持（永久）",
+        "employerRequired": false,
+        "requirements": [
+          "每年进行税务申报（美国纳税）",
+          "维持美国居所和生活重心",
+          "避免长期离开美国（连续超过1年可能导致绿卡失效）",
+          "每10年更新绿卡卡片（I-90申请）"
+        ],
+        "pros": [
+          "保留中国国籍身份",
+          "保有美国合法永久居民权益",
+          "可随时申请入籍"
+        ],
+        "cons": [
+          "无法享受美国公民投票权和政治权利",
+          "无法担任特定政府职位",
+          "国际旅行仅限绿卡"
+        ]
+      }
+    ],
+    "notes": [
+      "您已经处于最有利的位置——持有绿卡。获得美国公民身份只是最后一步正式程序，不涉及排期或雇主担保。",
+      "与美国公民配偶的婚姻可能为您提供更短的等待期。如果您们结婚满3年，您可能仅需满足3年绿卡持有期（而非标准5年）。建议确认您的具体情况。",
+      "如有任何长期出国计划，在申请入籍前务必咨询移民律师，确保不会影响入籍资格。",
+      "入籍申请需准备：I-485获批信、绿卡、护照、税务记录、无犯罪证明等。"
+    ],
+    "nextSteps": "建议采取以下步骤：\n1. **确认入籍资格**：检查您的I-485/I-130获批日期，计算是否满足5年（或3年，如与公民配偶）的持有期；\n2. **准备入籍考试**：免费复习USCIS官方100题公民知识题库，熟悉基础英语（官方提供学习资源）；\n3. **收集必要文件**：取得税务记录、无犯罪背景证明、I-864表格等；\n4. **预约入籍申请**：向USCIS提交N-400表格（完整版约131页表格的简化版），支付$480-$640申请费；\n5. **可选但推荐**：与持牌移民律师预约30分钟免费咨询，审核您的具体情况，特别是如果有任何出入境疑虑。\n\n绝大多数绿卡持有人的入籍过程相对顺利。您的优势是有美国公民配偶，这通常会加快流程。",
+    "error": null
+  },
+  {
+    "testId": 16,
+    "scenario": "Chinese chef, Michelin star, wants O1, extraordinary YES",
+    "input": {
+      "goal": "在美国工作",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在中国",
+      "currentStatus": "无签证",
+      "occupation": "主厨/厨师",
+      "yearsExperience": "10+",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "专科/职业学校",
+      "fieldOfStudy": "烹饪",
+      "hasExtraordinaryAchievements": true,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类（技能工人）",
+        "match": "high",
+        "description": "适合具有10+年工作经验的技能工人。主厨属于认可的技能职业，可通过PERM劳工认证申请绿卡。",
+        "processingTime": "约7-10年（中国出生，含PERM招聘期和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "10年以上相关工作经验（符合）",
+          "需找到愿意担保的美国雇主（餐饮集团、五星级酒店等）",
+          "通过PERM劳工认证",
+          "通过医学体检和背景调查"
+        ],
+        "pros": [
+          "主厨职业在EB-3下认可度较高",
+          "10+年经验满足技能要求",
+          "无需高等学位"
+        ],
+        "cons": [
+          "中国出生排期漫长（5-8年）",
+          "需要找愿意担保的美国雇主，目前无担保方",
+          "PERM劳工认证流程需2-3年"
+        ]
+      },
+      {
+        "code": "H-2B",
+        "name": "临时非农业工人签证",
+        "match": "medium",
+        "description": "在绿卡申请期间，可申请H-2B临时工作签证在美国餐饮业工作。需雇主担保。",
+        "processingTime": "约3-6个月（H-2B审批）",
+        "employerRequired": true,
+        "requirements": [
+          "美国雇主提出申请",
+          "雇主证明无法在美国找到合适员工",
+          "往返美国的能力",
+          "工作岗位为季节性或临时性"
+        ],
+        "pros": [
+          "相对快速获得美国工作授权",
+          "可与EB-3绿卡申请并行进行",
+          "不需要特殊学历要求"
+        ],
+        "cons": [
+          "H-2B签证数量有限，竞争激烈",
+          "通常为季节性工作，非永久性",
+          "仍需找到愿意担保的美国雇主",
+          "需要通过劳工认证证明美国劳动力短缺"
+        ]
+      },
+      {
+        "code": "O-1",
+        "name": "杰出能力工作签证",
+        "match": "low",
+        "description": "如果您在烹饪领域获得了国家级或国际性奖项、媒体报道或其他突出成就，可能符合O-1（杰出人才）签证。",
+        "processingTime": "约2-4周（申请处理）",
+        "employerRequired": true,
+        "requirements": [
+          "在烹饪领域具有突出成就（国际获奖、知名媒体报道、行业认可等）",
+          "美国雇主或中介担保",
+          "提供证据证明杰出能力"
+        ],
+        "pros": [
+          "审批速度快",
+          "获批后可直接在美国工作",
+          "可长期续签"
+        ],
+        "cons": [
+          "需要证明在烹饪领域的\"杰出成就\"，标准较高",
+          "仍需美国雇主或中介担保",
+          "获奖类别需经美国移民局认可"
+        ]
+      },
+      {
+        "code": "L-1A",
+        "name": "跨国企业高管/经理签证",
+        "match": "low",
+        "description": "如果您在中国已拥有或计划创办餐饮企业，可通过L-1A签证赴美国子公司或分支机构工作，后期可申请绿卡。",
+        "processingTime": "约1-2年（L-1A转绿卡通常走EB-1C，总计约3-5年）",
+        "employerRequired": true,
+        "requirements": [
+          "在中国拥有或即将创办一家餐饮企业",
+          "在中国企业中担任高管或经理职位至少1年",
+          "中国企业与美国企业有母子公司或分支关系",
+          "美国企业最少创立半年以上"
+        ],
+        "pros": [
+          "相对快速获得美国工作身份",
+          "L-1A可转EB-1C绿卡，EB-1C无排期（即时生效）",
+          "灵活创业的机会"
+        ],
+        "cons": [
+          "需要在中国已有企业基础或投资创办美国餐饮企业",
+          "前期投资成本较高",
+          "美国企业的合法合规要求严格"
+        ]
+      }
+    ],
+    "notes": [
+      "当前最现实的路径是EB-3：您有10+年经验，符合技能工人类别，但中国出生面临5-8年排期。总周期可能7-10年。",
+      "关键瓶颈：目前无美国雇主愿意担保。建议通过以下渠道寻找：(1)联系美国大型餐饮集团（如Ruth's Chris、The Cheesecake Factory等）; (2)五星级酒店（Hilton、Four Seasons等）; (3)移民律师或餐饮业人才中介。",
+      "您提到有\"突出成就\"——如果这包括国际烹饪大赛获奖、米其林星级餐厅经验、著名媒体报道等，O-1可能更快（2-4周审批）。但O-1仍需美国雇主担保。",
+      "短期替代方案：H-2B可作为过渡方案，在等待EB-3绿卡期间获得美国工作授权，但仍需找到愿意担保的美国雇主。",
+      "长期创业选项：如果您有意在美国开设中餐或美食餐厅，L-1A + EB-1C路径可能更快（无排期），但需要投资和企业运营经验。"
+    ],
+    "nextSteps": "第一步：尽快咨询持牌移民律师（建议选择有餐饮业经验的律师）。第二步：准备材料：(1)工作经验证明（雇主信函、税务记录、10年工作历史）; (2)\"突出成就\"的具体证据（奖项证书、媒体报道等），明确说明获奖级别; (3)简历和专业资格认证。第三步：制定针对性方案——律师会根据您的具体成就评估O-1可行性，同时启动寻找EB-3担保雇主的过程。第四步：考虑是否有创业或L-1A的可能性。时间紧迫——建议立即行动，因为绿卡周期较长。",
+    "error": null
+  },
+  {
+    "testId": 17,
+    "scenario": "Korean H1B dentist, wants GC, sponsor YES, Bachelors only",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "韩国",
+      "birthCountry": "韩国",
+      "currentLocation": "在美国",
+      "currentStatus": "H1B 工作签证",
+      "occupation": "牙医",
+      "yearsExperience": "5-10",
+      "hasEmployerSponsor": "是",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "牙科",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类（技术工人）",
+        "match": "high",
+        "description": "牙医作为持证专业人士符合EB-3技术工人类别。具有5-10年牙科工作经验，雇主已确认担保意愿，可通过此路径申请绿卡。",
+        "processingTime": "约4-6年（韩国国籍，无排期等待）",
+        "employerRequired": true,
+        "requirements": [
+          "现有雇主愿意担保",
+          "有效的牙科执业执照",
+          "牙科学士学位（已满足）",
+          "通过PERM劳工认证",
+          "满足DOL prevailing wage要求"
+        ],
+        "pros": [
+          "韩国国籍无排期延迟，处理速度相对快",
+          "牙医属于紧缺职业，雇主支持度高",
+          "可在H-1B有效期内持续工作",
+          "配偶和子女可作为附属申请人"
+        ],
+        "cons": [
+          "需要完整PERM劳工认证流程（约6-12个月）",
+          "雇主需支付prevailing wage",
+          "I-140和I-485处理需要时间"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类（专业人士）",
+        "match": "medium",
+        "description": "如果牙医资格被认定为需要高等学位的专业岗位，可考虑EB-2。虽然学士学位看似不符，但牙科DDS/DMD通常被认可为高等专业学位。建议与律师确认是否符合。",
+        "processingTime": "约3-5年（韩国国籍，无排期等待）",
+        "employerRequired": true,
+        "requirements": [
+          "DDS/DMD视为高等专业学位",
+          "现有雇主担保",
+          "通过PERM劳工认证或申请NIW豁免",
+          "相关工作经验"
+        ],
+        "pros": [
+          "排期和处理时间短于EB-3",
+          "可选择NIW豁免以绕过PERM招聘流程",
+          "韩国国籍无排期延迟"
+        ],
+        "cons": [
+          "需要证明DDS等同于高等学位认可",
+          "PERM流程仍然耗时"
+        ]
+      },
+      {
+        "code": "EB-1A",
+        "name": "职业移民第一类（杰出人才）",
+        "match": "low",
+        "description": "值得探索。若您在牙科领域有杰出成就（如国家认可的奖项、专业执照、在学术或临床领域的重要贡献、获得广泛认可），可考虑EB-1A（无需雇主担保）。很多专业人士低估了自己的资质。",
+        "processingTime": "约2-3年（韩国国籍，无排期）",
+        "employerRequired": false,
+        "requirements": [
+          "至少三项以下证据：国家级奖项、协会成员资格、专业出版物、重要贡献证明等",
+          "在业内广泛认可的杰出地位",
+          "自行申请（无需雇主）"
+        ],
+        "pros": [
+          "最快的绿卡路径（如符合条件）",
+          "无雇主依赖",
+          "韩国国籍无排期",
+          "优先日期立即生效"
+        ],
+        "cons": [
+          "审批标准严格",
+          "申请人需充分证明杰出地位",
+          "并非所有牙医都符合条件"
+        ]
+      }
+    ],
+    "notes": [
+      "韩国国籍申请人在职业移民类别中无排期限制，相对于中国/印度申请人优势明显，预计总处理时间为4-6年。",
+      "牙医属于紧缺职业，雇主支持度高，PERM劳工认证通过概率较大。",
+      "DDS/DMD学位的EB-2/EB-3分类认定因情况而异，需律师明确评估。",
+      "如有国家级执业认证、奖项或学术发表，强烈建议并行评估EB-1A选项，可显著加快绿卡获得。",
+      "配偶和21岁以下未婚子女可作为附属申请人一起获得绿卡。"
+    ],
+    "nextSteps": "建议立即采取以下步骤：1. 咨询持牌移民律师，确认DDS学位在您雇主和岗位下的EB-2/EB-3分类 2. 与雇主HR确认启动PERM劳工认证流程的时间表 3. 收集所有专业资质、执照、任何奖项或发表物以备EB-1A评估 4. 准备I-140申请所需的完整工作经验和教育文件 5. 建议选择EB-3作为主路线，同时探索EB-1A和EB-2的可行性作为备选方案",
+    "error": null
+  },
+  {
+    "testId": 18,
+    "scenario": "Chinese asylum seeker, political persecution, expired tourist visa",
+    "input": {
+      "goal": "获得庇护/难民身份",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "逾期滞留",
+      "occupation": "",
+      "yearsExperience": "",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "",
+      "hasExtraordinaryAchievements": false,
+      "hasPersecutionFear": true,
+      "persecutionType": "政治迫害",
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "ASYLUM",
+        "name": "难民/寻求庇护身份",
+        "match": "high",
+        "description": "如果您在中国因政治、宗教、种族、国籍或社会群体身份遭受迫害或面临迫害风险，可以申请庇护。申请必须在抵达美国后一年内提交（Form I-589）。",
+        "processingTime": "约1-4年（案件复杂程度和移民法院积压情况而定）",
+        "employerRequired": false,
+        "requirements": [
+          "在美国境内（已满足）",
+          "证明在原国家或回国后面临基于五类保护理由的迫害风险",
+          "证明政府无法保护或不愿保护申请人",
+          "在抵达美国后一年内申请（时间紧迫）"
+        ],
+        "pros": [
+          "一旦获批，可获得难民身份和工作授权(EAD)",
+          "可在一年后申请绿卡",
+          "不需要雇主担保",
+          "配偶和21岁以下子女可作为附属申请人"
+        ],
+        "cons": [
+          "需要充分证据证明迫害风险",
+          "审批时间长，期间身份不确定",
+          "如果被拒，可能面临递解出境",
+          "当前逾期滞留身份可能影响案件（需律师指导）"
+        ]
+      },
+      {
+        "code": "TPS",
+        "name": "临时保护身份(TPS)",
+        "match": "low",
+        "description": "仅适用于指定国家因战争、自然灾害或其他特殊情况的居民。中国目前不在TPS指定国家名单中。",
+        "processingTime": "不适用",
+        "employerRequired": false,
+        "requirements": [
+          "所属国家必须被指定为TPS国家（中国未指定）"
+        ],
+        "pros": [],
+        "cons": [
+          "中国不符合TPS资格",
+          "此选项对您不可用"
+        ]
+      },
+      {
+        "code": "U-VISA",
+        "name": "U类非移民签证（犯罪受害者）",
+        "match": "low",
+        "description": "适用于遭受重大人身伤害、系特定犯罪受害者、对执法部门进行调查或起诉有帮助的人。",
+        "processingTime": "约2-4年",
+        "employerRequired": false,
+        "requirements": [
+          "遭受特定犯罪（贩运、酷刑、强奸等）的受害人",
+          "犯罪行为违反美国联邦或州法律",
+          "遭受实质性人身伤害",
+          "掌握与犯罪有关的信息",
+          "愿意协助执法部门"
+        ],
+        "pros": [
+          "不需要雇主担保",
+          "获批后可获得工作授权"
+        ],
+        "cons": [
+          "仅适用于特定犯罪受害者，范围有限",
+          "需要执法部门的I-918B确认信"
+        ]
+      }
+    ],
+    "notes": [
+      "⚠️ 重要警告：您目前处于逾期滞留状态，这在任何移民申请中都是严重问题。逾期滞留时间和后续影响：",
+      "  • 180天至1年非法居留 → 离开美国后3年内禁止入境",
+      "  • 超过1年非法居留 → 离开美国后10年内禁止入境",
+      "⚠️ 庇护申请的关键期限：庇护申请必须在抵达美国后一年内提交（Form I-589）。如果您已经超过一年，将丧失申请资格（除非有例外情况）。请立即检查您的入境日期。",
+      "⚠️ 在美国境内调整身份：作为逾期滞留者，您通常不能在美国申请其他移民福利。但难民/寻求庇护身份是例外——可以在美国境内申请。",
+      "⚠️ 申请前必须咨询律师：逾期滞留和庇护申请结合涉及复杂法律问题，包括行政遣返(expedited removal)风险和时间要求。您需要立即咨询有庇护经验的持牌移民律师。"
+    ],
+    "nextSteps": "立即采取行动（时间紧迫）：\n\n第一步：紧急法律咨询\n1. 尽快联系专门处理庇护案件的持牌移民律师或合法援助组织\n2. 确认您的抵达美国日期，以判断是否仍在一年申请期限内\n3. 律师评估您是否符合庇护五类保护理由\n\n第二步：准备庇护申请\n1. 记录详细的迫害经历和证据（文件、新闻报道、医疗记录等）\n2. 获取国情报告(Country Conditions Report)关于中国的迫害风险\n3. 收集证人声明（如适用）\n\n第三步：提交Form I-589\n1. 由律师协助准备完整的庇护申请\n2. 同时申请工作授权(EAD, Form I-765)\n3. 获批前不要离开美国\n\n关键资源：\n• 全国移民法律中心(National Immigration Law Center): www.nilc.org\n• 美国难民委员会(American Council for Refugees): www.refugees.org\n• 寻求当地免费法律援助组织或低成本律师服务",
+    "error": null
+  },
+  {
+    "testId": 19,
+    "scenario": "Chinese H1B SW eng, Bachelors only, 12yr exp, wants EB-2",
+    "input": {
+      "goal": "获得绿卡/永久居留",
+      "citizenship": "中国",
+      "birthCountry": "中国",
+      "currentLocation": "在美国",
+      "currentStatus": "H1B 工作签证",
+      "occupation": "软件工程师",
+      "yearsExperience": "10+",
+      "hasEmployerSponsor": "是",
+      "highestDegree": "学士 (Bachelor)",
+      "fieldOfStudy": "计算机科学",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "EB-3",
+        "name": "职业移民第三类",
+        "match": "high",
+        "description": "适合具有学士学位和专业工作经验的技能工人。作为软件工程师，你符合EB-3的专业人才(Skilled Worker)类别要求。",
+        "processingTime": "约7-10年（中国出生，含PERM招聘和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "学士学位或同等工作经验",
+          "雇主提供永久全职工作承诺",
+          "雇主完成PERM劳工认证流程",
+          "通过I-140移民申请"
+        ],
+        "pros": [
+          "你已在H-1B身份，可无缝转换",
+          "雇主已表示愿意担保",
+          "10+年工作经验强化申请",
+          "在美国境内可调整身份，避免回国面试"
+        ],
+        "cons": [
+          "中国出生申请人面临较长排期（5-8年）",
+          "需要完成PERM劳工认证（6-12个月）",
+          "总时间线较长"
+        ]
+      },
+      {
+        "code": "EB-2",
+        "name": "职业移民第二类",
+        "match": "medium",
+        "description": "虽然你持有学士学位，但考虑到10+年的专业工作经验和在技术领域的深度，部分律师可能通过'等价学位'论证(equivalent degree through work experience)来符合EB-2要求。这可以缩短排期。",
+        "processingTime": "约5-8年（中国出生，含PERM招聘和排期）",
+        "employerRequired": true,
+        "requirements": [
+          "通过工作经验论证等价于硕士学位的资质",
+          "雇主完成PERM劳工认证",
+          "可选：完成NIW（国家利益豁免）自行申请，无需PERM"
+        ],
+        "pros": [
+          "排期比EB-3短（约3-5年）",
+          "NIW选项可能无需雇主PERM流程，更灵活",
+          "10+年经验可强化等价学位论证"
+        ],
+        "cons": [
+          "等价学位论证需要律师精心设计和充分证据支持",
+          "成功率取决于具体案例和律师策略",
+          "并非所有雇主都愿意尝试此路线"
+        ]
+      },
+      {
+        "code": "EB-1A",
+        "name": "职业移民第一类（杰出能力人才）",
+        "match": "low",
+        "description": "如果你在软件工程领域有杰出成就（如重要专利、行业奖项、知名开源项目贡献、学术论文发表等），可考虑自行申请EB-1A，无需雇主。",
+        "processingTime": "约1-2年（无排期，中国出生）",
+        "employerRequired": false,
+        "requirements": [
+          "满足以下至少3项准则：专利、奖项、论文、媒体报道、行业领导角色等",
+          "证明在计算机科学或软件工程领域有国家或国际认可的杰出能力"
+        ],
+        "pros": [
+          "无需排期等待（即时移民排期）",
+          "自行申请，不依赖雇主",
+          "处理时间最短"
+        ],
+        "cons": [
+          "证明标准很高，需充分证据",
+          "大多数软件工程师难以满足此标准",
+          "建议先咨询律师评估资质"
+        ]
+      }
+    ],
+    "notes": [
+      "你目前持有H-1B身份且雇主愿意担保，这是启动绿卡程序的最佳条件。",
+      "中国出生申请人面临显著的排期：EB-3排期5-8年，EB-2排期3-5年。总处理时间包括PERM招聘期（6-12个月）。",
+      "建议优先考虑EB-3（高匹配度、确定性强）或探索EB-2的等价学位论证（如果律师评估可行）。",
+      "即使EB-3排期较长，在等待期间你可继续以H-1B身份工作，配偶可申请H-4衍生签证。",
+      "配偶可作为附属申请人一起获得绿卡（如适用）。",
+      "不建议因排期问题而中断H-1B身份，保持合法工作状态是最稳妥的策略。"
+    ],
+    "nextSteps": "建议立即采取以下步骤：\n\n1. **联系持牌移民律师**进行免费咨询（AILA或state bar认证）\n   - 律师将评估你是否有资格通过工作经验论证EB-2\n   - 律师将评估EB-1A可行性（若有相关成就）\n   - 律师将制定EB-3 vs EB-2的最优策略\n\n2. **与雇主HR/法务沟通**\n   - 确认雇主愿意启动PERM劳工认证流程\n   - 了解雇主是否有绿卡担保经验\n   - 确认职位是否适合永久全职工作承诺\n\n3. **准备申请材料**\n   - 收集学位证书、成绩单、工作证明信\n   - 整理10+年工作经验证明（职位描述、项目清单、成就说明）\n   - 如有专利、发表、奖项等，务必收集文件\n\n4. **预期时间规划**\n   - EB-3: 总耗时7-10年（其中PERM 6-12个月，排期5-8年）\n   - 在排期等待期间，保持H-1B身份有效，避免身份中断",
+    "error": null
+  },
+  {
+    "testId": 20,
+    "scenario": "Hong Kong SAR passport, wants to start business in US, E-2",
+    "input": {
+      "goal": "在美国创业",
+      "citizenship": "中国香港",
+      "birthCountry": "中国香港",
+      "currentLocation": "在中国香港",
+      "currentStatus": "无签证",
+      "occupation": "企业家",
+      "yearsExperience": "5-10",
+      "hasEmployerSponsor": "否",
+      "highestDegree": "硕士 (Master)",
+      "fieldOfStudy": "商业管理",
+      "hasExtraordinaryAchievements": false,
+      "hasUSCitizenFamily": false,
+      "hasLPRFamily": false,
+      "familyRelationship": ""
+    },
+    "categories": [
+      {
+        "code": "E-2",
+        "name": "条约投资者签证",
+        "match": "high",
+        "description": "香港特区护照持有者可根据美港之间的条约申请E-2签证。适合在美国创办或投资企业的企业家。无需绿卡排期，可快速获得在美工作和居住的权利。",
+        "processingTime": "约2-4个月（领事处理）",
+        "employerRequired": false,
+        "requirements": [
+          "香港特区护照（符合条约国资格）",
+          "在美国创办或收购企业",
+          "投资金额需为实质性且风险自负",
+          "企业需要为美国居民创造就业机会",
+          "申请人必须是企业主要管理人员"
+        ],
+        "pros": [
+          "处理速度快（2-4个月）",
+          "无需排期等待",
+          "可配偶和未成年子女随行",
+          "可无限期续签（每次2年）",
+          "不需要劳工认证或复杂申请流程"
+        ],
+        "cons": [
+          "E-2非移民身份，不直接导向绿卡",
+          "需要证明投资金额合理且企业可行",
+          "投资金额通常需要$50,000-$100,000+（取决于行业）",
+          "需要维持企业运营和创造就业"
+        ]
+      },
+      {
+        "code": "EB-5",
+        "name": "投资移民（职业移民第五类）",
+        "match": "medium",
+        "description": "通过在美国投资创造就业机会，直接申请永久居民身份。最终获得绿卡，无排期问题。",
+        "processingTime": "约2.5-4年（含I-485处理和有条件绿卡解除）",
+        "employerRequired": false,
+        "requirements": [
+          "投资标准金额：$1,050,000（标准项目）或$800,000（农村/高失业率TEA区域）",
+          "投资必须创造至少10个全职工作机会（美国工人）",
+          "资金来源合法证明",
+          "通过I-485申请调整身份或I-797领事处理"
+        ],
+        "pros": [
+          "直接申请绿卡（无需H-1B过渡）",
+          "无职业排期（set-aside项目快速处理）",
+          "配偶和21岁以下未婚子女可随行",
+          "相对低的教育和语言要求",
+          "首先获得有条件绿卡（2年），满足条件后转为永久绿卡"
+        ],
+        "cons": [
+          "投资金额门槛高（$800K-$1.05M）",
+          "需要证明资金合法来源",
+          "投资风险自负（可能亏损）",
+          "需要创造真实工作机会",
+          "处理时间较长（2.5-4年）",
+          "需要通过I-864经济担保人审查"
+        ]
+      },
+      {
+        "code": "L-1A",
+        "name": "跨国经理/高管签证",
+        "match": "medium",
+        "description": "如果你在中国香港已有公司或管理经验，可申请L-1A在美国开设分支机构或子公司，之后可转换为其他移民途径。",
+        "processingTime": "约1-3个月（H类签证加急处理可选）",
+        "employerRequired": true,
+        "requirements": [
+          "在香港或中国有公司至少1年（管理或行政职位）",
+          "在美国设立新的相关企业",
+          "美国企业与海外企业存在母子/姐妹/合资关系",
+          "在美国职位为经理或高管",
+          "拥有管理他人或部门的工作经验"
+        ],
+        "pros": [
+          "处理速度较快（1-3个月）",
+          "可携带配偶和子女",
+          "配偶可申请EAD工作许可",
+          "可续签（每次最多7年）",
+          "可双重意图（一边工作一边申请绿卡）",
+          "为后续EB-1C或其他移民途径打好基础"
+        ],
+        "cons": [
+          "需要证明真实的企业关系和运营",
+          "美国企业需要真实运营和雇员",
+          "不是直接的移民途径，需配合EB-1C或其他绿卡方案",
+          "需要满足经理/高管定义的严格标准"
+        ]
+      },
+      {
+        "code": "EB-1C",
+        "name": "跨国经理（职业移民第一类）",
+        "match": "low",
+        "description": "L-1A持有者可在美国工作1年后转换为EB-1C申请绿卡。需要证明在美国和香港/中国企业的管理职位。",
+        "processingTime": "约1-2年（美国出生地或菲律宾护照持有者可能更快；中国出生无排期问题）",
+        "employerRequired": true,
+        "requirements": [
+          "L-1A身份至少1年",
+          "在美国企业担任经理或高管职位",
+          "在香港/中国相关企业曾任经理或高管",
+          "企业母子/合资关系明确",
+          "雇主愿意担保I-140申请"
+        ],
+        "pros": [
+          "无排期等待（不受国家限制）",
+          "处理相对快速（1-2年）",
+          "配偶和子女可随行"
+        ],
+        "cons": [
+          "需要先完成L-1A阶段（1年+）",
+          "需要严格证明经理身份和跨国关系",
+          "企业需要真实运营"
+        ]
+      }
+    ],
+    "notes": [
+      "香港特区护照持有者拥有独特优势：可申请E-2条约投资者签证，这是最快、最灵活的创业途径，无排期。",
+      "E-2是创业首选：允许你在美国创办企业、运营业务，并快速获得工作权利。可无限续签，但不直接导向绿卡。",
+      "EB-5投资移民是获得绿卡的直接途径：但投资金额高($800K-$1.05M)，处理时间较长(2.5-4年)。",
+      "L-1A + EB-1C组合：如果你有中国或香港的公司，可先用L-1A在美国建立分公司，1年后转EB-1C申请绿卡。但这个过程需要2-3年。",
+      "建议先申请E-2启动美国业务，同时保持灵活性：如果未来想要绿卡，可在E-2期间进行EB-5投资或建立符合EB-1C条件的企业结构。"
+    ],
+    "nextSteps": "建议立即咨询持牌美国移民律师，制定综合策略。具体建议：1. 确认你拥有香港特区护照（用于E-2资格确认）2. 准备美国商业计划：明确投资金额、商业模式、就业创造方案 3. 评估两条路线：(a)E-2快速启动 vs (b)EB-5绿卡直通 4. 咨询律师关于在美国设立企业结构（如有中国/香港母公司，考虑L-1A路径）5. 准备资金来源文件和合法性证明",
+    "error": null
+  }
+]

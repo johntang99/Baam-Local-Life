@@ -1,10 +1,16 @@
 /**
- * Backfill Business Details: Hours, Chinese Names, Descriptions
+ * Backfill Business Details: Hours, Chinese Names, Descriptions, Contact
  *
- * Fills 3 major data gaps:
- * 1. hours_json — from Google Place Details
- * 2. display_name_zh — from Google Place Details (zh-CN language)
- * 3. short_desc_zh + short_desc_en — from Google editorial + AI generation
+ * Google Place Details (Places API v1) is the source of truth for:
+ * - hours_json, website_url, phone — English request (one call)
+ * - display_name_zh — only from Google zh-CN displayName (CJK); never invented
+ * - short_desc_* — Google editorial + optional AI (--skip-ai turns AI off)
+ *
+ * Data safety: we only fill empty fields (never overwrite existing website/phone/hours
+ * with blanks). Phone: nationalPhoneNumber, else internationalPhoneNumber.
+ *
+ * Hours + website + phone (one full English Place Details call per business; no AI / no zh-CN call):
+ *   npx tsx scripts/backfill-business-details.ts --apply --contact-only --concurrency=4 --delay-ms=60
  *
  * Usage:
  *   # Dry run
@@ -15,6 +21,10 @@
  *
  *   # Limit for testing
  *   set -a && source <(grep -v '^#' apps/web/.env.local | grep -v '^$' | grep -v '@') && set +a && npx tsx scripts/backfill-business-details.ts --apply --limit=20
+ *
+ *   npx tsx scripts/backfill-business-details.ts --apply --region-slugs=lower-east-side-ny,murray-hill-queens-ny
+ *
+ *   npx tsx scripts/backfill-business-details.ts --apply --contact-only --concurrency=4
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -24,8 +34,21 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY!;
 
 const args = process.argv.slice(2);
 const applyChanges = args.includes('--apply');
+const contactOnly = args.includes('--contact-only');
 const limitArg = parseInt(args.find(a => a.startsWith('--limit='))?.split('=')[1] || '0') || 0;
+const concurrency = Math.max(1, parseInt(args.find((a) => a.startsWith('--concurrency='))?.split('=')[1] || '1', 10) || 1);
+const delayArg = args.find((a) => a.startsWith('--delay-ms='))?.split('=')[1];
+const parsedDelay = delayArg !== undefined ? Math.max(0, parseInt(delayArg, 10) || 0) : NaN;
+const delayAfterBatch = Number.isNaN(parsedDelay) ? (contactOnly ? 80 : 300) : parsedDelay;
 const skipAI = args.includes('--skip-ai');
+const regionSlugsArg = args.find((a) => a.startsWith('--region-slugs='));
+const regionSlugs = regionSlugsArg
+  ? regionSlugsArg
+      .slice('--region-slugs='.length)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : null;
 
 type AnyRow = Record<string, any>;
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -51,6 +74,19 @@ async function supaPatch(table: string, id: string, data: AnyRow) {
   if (!res.ok) throw new Error(`Supabase PATCH ${res.status}: ${(await res.text()).slice(0, 100)}`);
 }
 
+async function businessIdsInRegionSlugs(slugs: string[]): Promise<Set<string>> {
+  const slugList = slugs.map((s) => encodeURIComponent(s)).join(',');
+  const regions = await supaGet(`regions?slug=in.(${slugList})&select=id,slug`);
+  const found = new Set(regions.map((r: AnyRow) => r.slug));
+  const missing = slugs.filter((s) => !found.has(s));
+  if (missing.length > 0) throw new Error(`Unknown region slug(s): ${missing.join(', ')}`);
+  const rids = regions.map((r: AnyRow) => r.id).join(',');
+  const locs = await supaGet(
+    `business_locations?region_id=in.(${rids})&is_primary=eq.true&select=business_id`,
+  );
+  return new Set(locs.map((l: AnyRow) => l.business_id));
+}
+
 // ─── Google Places API ───────────────────────────────────────────
 
 async function getPlaceDetailsEN(placeId: string): Promise<AnyRow | null> {
@@ -58,7 +94,8 @@ async function getPlaceDetailsEN(placeId: string): Promise<AnyRow | null> {
   const res = await fetch(`https://places.googleapis.com/v1/${id}`, {
     headers: {
       'X-Goog-Api-Key': GOOGLE_API_KEY,
-      'X-Goog-FieldMask': 'displayName,regularOpeningHours,editorialSummary,businessStatus,primaryType,primaryTypeDisplayName,types,websiteUri,nationalPhoneNumber',
+      'X-Goog-FieldMask':
+        'displayName,regularOpeningHours,editorialSummary,businessStatus,primaryType,primaryTypeDisplayName,types,websiteUri,nationalPhoneNumber,internationalPhoneNumber',
       'X-Goog-Api-Language': 'en',
     },
     signal: AbortSignal.timeout(10000),
@@ -87,21 +124,63 @@ async function getPlaceDetailsZH(placeId: string): Promise<AnyRow | null> {
 
 // ─── Hours conversion ────────────────────────────────────────────
 
+const DAY_NAMES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as const;
+
+function pad2(n: number): string {
+  return String(n ?? 0).padStart(2, '0');
+}
+
+/** Match backfill-hours-google.ts: periods may omit close (same-day end 23:59); last period wins per weekday */
 function convertHours(googleHours: AnyRow | undefined): AnyRow | null {
-  if (!googleHours?.periods) return null;
-  const dayNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const periods = googleHours?.periods;
+  if (!Array.isArray(periods) || periods.length === 0) return null;
   const result: AnyRow = {};
-  for (const period of googleHours.periods) {
-    const day = dayNames[period.open?.day];
-    if (day && period.open && period.close) {
-      const openH = String(period.open.hour).padStart(2, '0');
-      const openM = String(period.open.minute || 0).padStart(2, '0');
-      const closeH = String(period.close.hour).padStart(2, '0');
-      const closeM = String(period.close.minute || 0).padStart(2, '0');
-      result[day] = { open: `${openH}:${openM}`, close: `${closeH}:${closeM}` };
-    }
+
+  for (const period of periods) {
+    const open = period.open;
+    if (open?.day == null) continue;
+    const day = DAY_NAMES[open.day];
+    if (!day) continue;
+
+    const openH = pad2(open.hour ?? 0);
+    const openM = pad2(open.minute ?? 0);
+    const close = period.close;
+    const closeH = close != null ? pad2(close.hour ?? 0) : '23';
+    const closeM = close != null ? pad2(close.minute ?? 0) : '59';
+
+    result[day] = { open: `${openH}:${openM}`, close: `${closeH}:${closeM}` };
   }
   return Object.keys(result).length > 0 ? result : null;
+}
+
+function isBlank(s: string | null | undefined): boolean {
+  return !s || !String(s).trim();
+}
+
+/** True if URL is missing or effectively empty (e.g. "https://" only). */
+function isBlankWebsite(url: string | null | undefined): boolean {
+  if (!url || !String(url).trim()) return true;
+  const path = String(url).trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '').trim();
+  return path.length === 0;
+}
+
+function pickPhone(en: AnyRow): string | null {
+  const n = en.nationalPhoneNumber?.trim();
+  if (n) return n;
+  return en.internationalPhoneNumber?.trim() || null;
+}
+
+function normalizeWebsite(url: string): string {
+  const u = url.trim();
+  if (!u) return u;
+  if (/^https?:\/\//i.test(u)) return u;
+  return `https://${u}`;
+}
+
+function needsChineseDisplayName(b: AnyRow): boolean {
+  const zh = b.display_name_zh?.trim();
+  if (!zh) return true;
+  return !/[\u4e00-\u9fff]/.test(zh);
 }
 
 // ─── AI Description Generation ───────────────────────────────────
@@ -183,18 +262,71 @@ EN: [English description]`;
 
 // ─── Main ────────────────────────────────────────────────────────
 
+type Stats = { hours: number; zhName: number; descZh: number; descEn: number; website: number; phone: number; errors: number };
+
+function emptyStats(): Stats {
+  return { hours: 0, zhName: 0, descZh: 0, descEn: 0, website: 0, phone: 0, errors: 0 };
+}
+
+function mergeStats(a: Stats, b: Stats) {
+  a.hours += b.hours;
+  a.zhName += b.zhName;
+  a.descZh += b.descZh;
+  a.descEn += b.descEn;
+  a.website += b.website;
+  a.phone += b.phone;
+  a.errors += b.errors;
+}
+
+async function sleep(ms: number) {
+  await new Promise((r) => setTimeout(r, ms));
+}
+
+async function getPlaceDetailsENWithRetry(placeId: string): Promise<AnyRow | null> {
+  try {
+    return await getPlaceDetailsEN(placeId);
+  } catch (e) {
+    if (e instanceof Error && e.message === 'RATE_LIMITED') {
+      console.log('   ⏳ rate limited — wait 30s');
+      await sleep(30000);
+      return await getPlaceDetailsEN(placeId);
+    }
+    throw e;
+  }
+}
+
+async function getPlaceDetailsZHWithRetry(placeId: string): Promise<AnyRow | null> {
+  try {
+    return await getPlaceDetailsZH(placeId);
+  } catch (e) {
+    if (e instanceof Error && e.message === 'RATE_LIMITED') {
+      await sleep(30000);
+      return await getPlaceDetailsZH(placeId);
+    }
+    throw e;
+  }
+}
+
 async function main() {
   console.log('📋 Backfill Business Details: Hours, Chinese Names, Descriptions');
-  console.log(`   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}${skipAI ? ' (skip AI)' : ''}\n`);
+  const modeBits = [
+    contactOnly ? '📇 CONTACT (hours+web+phone, full EN Place)' : null,
+    skipAI ? 'skip AI' : null,
+    regionSlugs?.length ? `regions: ${regionSlugs.join(', ')}` : null,
+  ].filter(Boolean);
+  console.log(
+    `   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}${modeBits.length ? ` · ${modeBits.join(' · ')}` : ''}`,
+  );
+  console.log(`   concurrency=${concurrency} · delay ${delayAfterBatch}ms between batches\n`);
 
   // Fetch all businesses with gaps
   const businesses = await supaGet('businesses?is_active=eq.true&google_place_id=not.is.null&select=id,display_name,display_name_zh,phone,website_url,short_desc_en,short_desc_zh,address_full,avg_rating,review_count,ai_tags,google_place_id&order=review_count.desc.nullslast');
   const locations = await supaGet('business_locations?is_primary=eq.true&select=id,business_id,hours_json');
   const locMap = new Map(locations.map(l => [l.business_id, l]));
 
-  // Fetch reviews for AI descriptions
+  // Fetch reviews for AI descriptions (not needed for --contact-only)
   let reviewMap: Map<string, AnyRow[]> = new Map();
-  if (!skipAI) {
+  if (!skipAI && !contactOnly) {
     const reviews = await supaGet('reviews?source=eq.google&status=eq.approved&select=business_id,body,rating&order=rating.desc');
     for (const r of reviews) {
       if (!reviewMap.has(r.business_id)) reviewMap.set(r.business_id, []);
@@ -204,138 +336,146 @@ async function main() {
   }
 
   // Filter to businesses that need updates
-  const needsWork = businesses.filter(b => {
+  let needsWork = businesses.filter((b) => {
     const loc = locMap.get(b.id);
-    const needsHours = loc && (!loc.hours_json || Object.keys(loc.hours_json).length === 0);
-    const needsZhName = !b.display_name_zh;
+    const needsHours = Boolean(loc && (!loc.hours_json || Object.keys(loc.hours_json).length === 0));
+    const needsWebsite = isBlankWebsite(b.website_url);
+    const needsPhone = isBlank(b.phone);
+    if (contactOnly) return needsHours || needsWebsite || needsPhone;
+
+    const needsZhName = needsChineseDisplayName(b);
     const needsDesc = !b.short_desc_zh || !b.short_desc_en;
-    return needsHours || needsZhName || needsDesc;
+    return needsHours || needsZhName || needsDesc || needsWebsite || needsPhone;
   });
 
+  if (regionSlugs && regionSlugs.length > 0) {
+    const allowed = await businessIdsInRegionSlugs(regionSlugs);
+    const before = needsWork.length;
+    needsWork = needsWork.filter((b) => allowed.has(b.id));
+    console.log(
+      `   Region filter — need work in [${regionSlugs.join(', ')}]: ${needsWork.length} (was ${before} global need-work)\n`,
+    );
+  }
+
   const toProcess = limitArg ? needsWork.slice(0, limitArg) : needsWork;
-  console.log(`📊 Total: ${businesses.length} | Need updates: ${needsWork.length} | Processing: ${toProcess.length}\n`);
+  console.log(`📊 Total: ${businesses.length} | Need updates (after filter): ${needsWork.length} | Processing: ${toProcess.length}\n`);
 
-  let stats = { hours: 0, zhName: 0, descZh: 0, descEn: 0, website: 0, phone: 0, errors: 0 };
+  const stats = emptyStats();
 
-  for (let i = 0; i < toProcess.length; i++) {
-    const biz = toProcess[i];
+  /** Full profile: zh name, descriptions, AI. Contact-only skips these (still uses full EN Place Details for hours/web/phone). */
+  const doFullProfile = !contactOnly;
+
+  async function processOne(biz: AnyRow, ordinal: number): Promise<{ line: string; delta: Stats }> {
     const loc = locMap.get(biz.id);
     const displayName = (biz.display_name_zh || biz.display_name || '').slice(0, 30);
+    const delta = emptyStats();
     const updates: string[] = [];
-
-    process.stdout.write(`  [${i + 1}/${toProcess.length}] ${displayName.padEnd(32)} `);
 
     try {
       const bizUpdate: AnyRow = {};
       const locUpdate: AnyRow = {};
 
-      // ─── Google EN: hours, editorial, website, phone ───
-      const detailEN = await getPlaceDetailsEN(biz.google_place_id);
-      await new Promise(r => setTimeout(r, 100));
+      const detailEN = await getPlaceDetailsENWithRetry(biz.google_place_id);
+      if (doFullProfile) await sleep(100);
 
       if (detailEN) {
-        // Hours
         if (loc && (!loc.hours_json || Object.keys(loc.hours_json).length === 0)) {
           const hours = convertHours(detailEN.regularOpeningHours);
-          if (hours) { locUpdate.hours_json = hours; stats.hours++; updates.push('hours'); }
+          if (hours) {
+            locUpdate.hours_json = hours;
+            delta.hours++;
+            updates.push('hours');
+          }
         }
 
-        // English description from Google
-        if (!biz.short_desc_en && detailEN.editorialSummary?.text) {
+        if (doFullProfile && !biz.short_desc_en && detailEN.editorialSummary?.text) {
           bizUpdate.short_desc_en = detailEN.editorialSummary.text;
-          stats.descEn++;
+          delta.descEn++;
           updates.push('desc_en(google)');
         }
 
-        // Fill website/phone gaps
-        if (!biz.website_url && detailEN.websiteUri) {
-          bizUpdate.website_url = detailEN.websiteUri;
-          stats.website++;
+        // Website + phone first (priority fields)
+        if (isBlankWebsite(biz.website_url) && detailEN.websiteUri) {
+          bizUpdate.website_url = normalizeWebsite(detailEN.websiteUri);
+          delta.website++;
           updates.push('website');
         }
-        if (!biz.phone && detailEN.nationalPhoneNumber) {
-          bizUpdate.phone = detailEN.nationalPhoneNumber;
-          stats.phone++;
+        const phoneVal = pickPhone(detailEN);
+        if (isBlank(biz.phone) && phoneVal) {
+          bizUpdate.phone = phoneVal;
+          delta.phone++;
           updates.push('phone');
         }
       }
 
-      // ─── Google ZH: Chinese name, Chinese editorial ───
       let detailZH: AnyRow | null = null;
-      if (!biz.display_name_zh || (!biz.short_desc_zh && !skipAI)) {
-        detailZH = await getPlaceDetailsZH(biz.google_place_id);
-        await new Promise(r => setTimeout(r, 100));
+      if (
+        doFullProfile &&
+        (needsChineseDisplayName({ ...biz, ...bizUpdate }) || (!biz.short_desc_zh && !skipAI))
+      ) {
+        detailZH = await getPlaceDetailsZHWithRetry(biz.google_place_id);
+        await sleep(100);
 
         if (detailZH) {
-          // Chinese name
-          if (!biz.display_name_zh) {
-            const zhName = detailZH.displayName?.text || '';
-            // Only use if it contains Chinese characters
-            if (/[\u4e00-\u9fff]/.test(zhName)) {
-              bizUpdate.display_name_zh = zhName;
-              stats.zhName++;
-              updates.push('zh_name');
-            }
+          const zhName = detailZH.displayName?.text || '';
+          if (needsChineseDisplayName({ ...biz, ...bizUpdate }) && /[\u4e00-\u9fff]/.test(zhName)) {
+            bizUpdate.display_name_zh = zhName;
+            delta.zhName++;
+            updates.push('zh_name(google)');
           }
         }
       }
 
-      // ─── AI: Generate Chinese + English descriptions ───
-      if (!skipAI && (!biz.short_desc_zh || !biz.short_desc_en)) {
+      if (doFullProfile && !skipAI && (!biz.short_desc_zh || !biz.short_desc_en)) {
         const reviews = reviewMap.get(biz.id) || [];
-        const descs = await generateDescriptions(
-          { ...biz, ...bizUpdate }, // include any updates from above
-          detailEN,
-          detailZH,
-          reviews,
-        );
+        const descs = await generateDescriptions({ ...biz, ...bizUpdate }, detailEN, detailZH, reviews);
         if (descs) {
           if (!biz.short_desc_zh) {
             bizUpdate.short_desc_zh = descs.zh;
-            stats.descZh++;
+            delta.descZh++;
             updates.push('desc_zh(AI)');
           }
           if (!biz.short_desc_en && !bizUpdate.short_desc_en) {
             bizUpdate.short_desc_en = descs.en;
-            stats.descEn++;
+            delta.descEn++;
             updates.push('desc_en(AI)');
           }
         }
       }
 
-      // ─── Apply updates ───
-      if (updates.length > 0) {
-        console.log(`✅ ${updates.join(', ')}`);
-        if (applyChanges) {
-          if (Object.keys(bizUpdate).length > 0) await supaPatch('businesses', biz.id, bizUpdate);
-          if (Object.keys(locUpdate).length > 0 && loc) await supaPatch('business_locations', loc.id, locUpdate);
-        }
-      } else {
-        console.log('— nothing new from Google');
+      if (applyChanges) {
+        if (Object.keys(bizUpdate).length > 0) await supaPatch('businesses', biz.id, bizUpdate);
+        if (Object.keys(locUpdate).length > 0 && loc) await supaPatch('business_locations', loc.id, locUpdate);
       }
 
+      const tail =
+        updates.length > 0 ? `✅ ${updates.join(', ')}` : '— nothing new from Google';
+      return { line: `  [${ordinal}/${toProcess.length}] ${displayName.padEnd(32)} ${tail}`, delta };
     } catch (err) {
-      if (err instanceof Error && err.message === 'RATE_LIMITED') {
-        console.log('⏳ rate limited — waiting 30s');
-        await new Promise(r => setTimeout(r, 30000));
-        i--; continue;
-      }
-      stats.errors++;
-      console.log(`⚠️ ${err instanceof Error ? err.message.slice(0, 60) : 'error'}`);
+      delta.errors++;
+      const msg = err instanceof Error ? err.message.slice(0, 60) : 'error';
+      return { line: `  [${ordinal}/${toProcess.length}] ${displayName.padEnd(32)} ⚠️ ${msg}`, delta };
     }
+  }
 
-    // Rate limit between businesses
-    await new Promise(r => setTimeout(r, 300));
+  for (let base = 0; base < toProcess.length; base += concurrency) {
+    const slice = toProcess.slice(base, base + concurrency);
+    const results = await Promise.all(slice.map((biz, j) => processOne(biz, base + j + 1)));
+    for (const r of results) {
+      console.log(r.line);
+      mergeStats(stats, r.delta);
+    }
+    if (delayAfterBatch > 0 && base + concurrency < toProcess.length) await sleep(delayAfterBatch);
   }
 
   // ─── Summary ───
   console.log('\n' + '═'.repeat(60));
-  console.log(`  🕐 Hours filled:        ${stats.hours}`);
-  console.log(`  🇨🇳 Chinese names added: ${stats.zhName}`);
-  console.log(`  📝 Desc (zh) generated:  ${stats.descZh}`);
-  console.log(`  📝 Desc (en) filled:     ${stats.descEn}`);
   console.log(`  🌐 Websites added:       ${stats.website}`);
   console.log(`  📞 Phones added:         ${stats.phone}`);
+  console.log(`  🕐 Hours filled:        ${stats.hours}`);
+  console.log(`  🇨🇳 Chinese names (Google only): ${stats.zhName}`);
+  console.log(`  📝 Desc (zh) generated:  ${stats.descZh}`);
+  console.log(`  📝 Desc (en) filled:     ${stats.descEn}`);
   console.log(`  ⚠️ Errors:              ${stats.errors}`);
   if (!applyChanges) console.log(`\n  👀 DRY RUN — add --apply to save`);
   console.log('═'.repeat(60));

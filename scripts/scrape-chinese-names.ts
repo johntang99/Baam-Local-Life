@@ -13,6 +13,16 @@
  *
  *   # Test with single business
  *   source apps/web/.env.local && npx tsx scripts/scrape-chinese-names.ts --slug=apollo-bakery
+ *
+ * Region filter (default: skip Flushing — already scraped):
+ *   # Default: exclude primary locations in region slug flushing-ny
+ *   npx tsx scripts/scrape-chinese-names.ts --apply
+ *
+ *   # Include every region (legacy behavior)
+ *   npx tsx scripts/scrape-chinese-names.ts --apply --all-regions
+ *
+ *   # Custom excludes (comma-separated)
+ *   npx tsx scripts/scrape-chinese-names.ts --apply --exclude-region-slugs=flushing-ny,some-other-slug
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL!;
@@ -21,6 +31,17 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const args = process.argv.slice(2);
 const applyChanges = args.includes('--apply');
 const slugArg = args.find(a => a.startsWith('--slug='))?.split('=')[1];
+const allRegions = args.includes('--all-regions');
+const excludeRegionSlugsArg = args.find((a) => a.startsWith('--exclude-region-slugs='));
+const excludeRegionSlugs = allRegions
+  ? []
+  : excludeRegionSlugsArg
+    ? excludeRegionSlugsArg
+        .slice('--exclude-region-slugs='.length)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : ['flushing-ny'];
 
 // ─── Supabase helper ──────────────────────────────────────────────────
 
@@ -42,6 +63,42 @@ async function supaFetch(path: string, options?: RequestInit) {
   if (res.status === 204) return null;
   const text = await res.text();
   return text ? JSON.parse(text) : null;
+}
+
+type AnyRow = Record<string, any>;
+
+async function supaFetchAll(selectPath: string): Promise<AnyRow[]> {
+  const out: AnyRow[] = [];
+  for (let offset = 0; ; offset += 1000) {
+    const sep = selectPath.includes('?') ? '&' : '?';
+    const batch = (await supaFetch(`${selectPath}${sep}limit=1000&offset=${offset}`)) as AnyRow[];
+    if (!batch?.length) break;
+    out.push(...batch);
+    if (batch.length < 1000) break;
+  }
+  return out;
+}
+
+/** business_ids with is_primary in any of the given region slugs */
+async function primaryBusinessIdsInRegions(slugs: string[]): Promise<Set<string>> {
+  if (!slugs.length) return new Set();
+  const slugList = slugs.map((s) => encodeURIComponent(s)).join(',');
+  const regions = (await supaFetch(`regions?slug=in.(${slugList})&select=id,slug`)) as AnyRow[];
+  if (!regions.length) {
+    console.warn(`   ⚠️ No regions matched slugs: ${slugs.join(', ')}`);
+    return new Set();
+  }
+  const rids = regions.map((r) => r.id).join(',');
+  const ids = new Set<string>();
+  for (let offset = 0; ; offset += 1000) {
+    const locs = (await supaFetch(
+      `business_locations?region_id=in.(${rids})&is_primary=eq.true&select=business_id&limit=1000&offset=${offset}`,
+    )) as AnyRow[];
+    if (!locs?.length) break;
+    for (const l of locs) ids.add(l.business_id);
+    if (locs.length < 1000) break;
+  }
+  return ids;
 }
 
 // ─── Scrape nychinaren.com ────────────────────────────────────────────
@@ -190,25 +247,38 @@ async function main() {
   console.log('🔍 Chinese Name Scraper — nychinaren.com');
   console.log(`   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}`);
   if (slugArg) console.log(`   Target: ${slugArg}`);
+  if (excludeRegionSlugs.length > 0) {
+    console.log(`   Excluding primary in regions: ${excludeRegionSlugs.join(', ')}`);
+  } else {
+    console.log(`   Regions: all (no exclude)`);
+  }
   console.log('');
 
-  // Load businesses
-  let query = 'businesses?select=id,slug,display_name,display_name_zh,phone&is_active=eq.true&phone=neq.null&order=slug.asc';
-  if (slugArg) query += `&slug=eq.${slugArg}`;
+  const excludedIds = await primaryBusinessIdsInRegions(excludeRegionSlugs);
 
-  const businesses = await supaFetch(query) as Array<{
-    id: string; slug: string; display_name: string;
-    display_name_zh: string | null; phone: string;
+  // Load businesses (paginated)
+  let selectPath =
+    'businesses?select=id,slug,display_name,display_name_zh,phone&is_active=eq.true&phone=neq.null&order=slug.asc';
+  if (slugArg) selectPath += `&slug=eq.${slugArg}`;
+
+  const rawList = await supaFetchAll(selectPath) as Array<{
+    id: string;
+    slug: string;
+    display_name: string;
+    display_name_zh: string | null;
+    phone: string;
   }>;
 
+  const businesses = rawList.filter((b) => !excludedIds.has(b.id));
+
   // Filter to businesses needing Chinese names
-  const needsZhName = businesses.filter(b => {
+  const needsZhName = businesses.filter((b) => {
     const hasZh = b.display_name_zh && b.display_name_zh.trim().length > 0;
     const hasZhInEn = /[\u4e00-\u9fff]/.test(b.display_name || '');
     return !hasZh && !hasZhInEn;
   });
 
-  console.log(`📊 Total businesses with phone: ${businesses.length}`);
+  console.log(`📊 Loaded with phone: ${rawList.length} (after exclude: ${businesses.length})`);
   console.log(`🔎 Need Chinese name: ${needsZhName.length}`);
   console.log('');
 

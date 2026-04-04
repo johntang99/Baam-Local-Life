@@ -8,6 +8,8 @@
  * Usage:
  *   set -a && source <(grep -v '^#' apps/web/.env.local | grep -v '^$' | grep -v '@') && set +a && npx tsx scripts/assign-categories.ts
  *   set -a && source <(grep -v '^#' apps/web/.env.local | grep -v '^$' | grep -v '@') && set +a && npx tsx scripts/assign-categories.ts --apply
+ *
+ *   npx tsx scripts/assign-categories.ts --apply --region-slugs=lower-east-side-ny,murray-hill-queens-ny
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -18,6 +20,14 @@ const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY!;
 const args = process.argv.slice(2);
 const applyChanges = args.includes('--apply');
 const limitArg = parseInt(args.find(a => a.startsWith('--limit='))?.split('=')[1] || '0') || 0;
+const regionSlugsArg = args.find((a) => a.startsWith('--region-slugs='));
+const regionSlugs = regionSlugsArg
+  ? regionSlugsArg
+      .slice('--region-slugs='.length)
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : null;
 
 type AnyRow = Record<string, any>;
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
@@ -30,6 +40,19 @@ async function supaGet(path: string): Promise<AnyRow[]> {
     const b = await r.json(); all.push(...b); if (b.length < 1000) break;
   }
   return all;
+}
+
+async function businessIdsInRegionSlugs(slugs: string[]): Promise<Set<string>> {
+  const slugList = slugs.map((s) => encodeURIComponent(s)).join(',');
+  const regions = await supaGet(`regions?slug=in.(${slugList})&select=id,slug`);
+  const found = new Set(regions.map((r: AnyRow) => r.slug));
+  const missing = slugs.filter((s) => !found.has(s));
+  if (missing.length > 0) throw new Error(`Unknown region slug(s): ${missing.join(', ')}`);
+  const rids = regions.map((r: AnyRow) => r.id).join(',');
+  const locs = await supaGet(
+    `business_locations?region_id=in.(${rids})&is_primary=eq.true&select=business_id`,
+  );
+  return new Set(locs.map((l: AnyRow) => l.business_id));
 }
 
 async function supaInsert(table: string, data: AnyRow): Promise<boolean> {
@@ -176,7 +199,9 @@ ${CATEGORY_LIST}`,
 
 async function main() {
   console.log('📁 Assign primary category (missing is_primary)');
-  console.log(`   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}\n`);
+  console.log(
+    `   Mode: ${applyChanges ? '✅ APPLY' : '👀 DRY RUN'}${regionSlugs?.length ? ` (regions: ${regionSlugs.join(', ')})` : ''}\n`,
+  );
 
   // Get all businesses — need a *primary* category (Flushing-quality coverage)
   const allBiz = await supaGet('businesses?is_active=eq.true&select=id,display_name,display_name_zh,short_desc_zh,short_desc_en,google_place_id&order=review_count.desc.nullslast');
@@ -184,12 +209,21 @@ async function main() {
   const hasPrimary = new Set(primaryRows.map((l: AnyRow) => l.business_id));
   const noPrimary = allBiz.filter(b => !hasPrimary.has(b.id));
 
+  let pool = noPrimary;
+  if (regionSlugs && regionSlugs.length > 0) {
+    const allowed = await businessIdsInRegionSlugs(regionSlugs);
+    pool = noPrimary.filter((b) => allowed.has(b.id));
+    console.log(
+      `   Region filter: ${pool.length} missing primary in [${regionSlugs.join(', ')}] (global missing: ${noPrimary.length})\n`,
+    );
+  }
+
   // Load categories
   const categories = await supaGet('categories?type=eq.business&select=id,slug');
   const catMap = new Map(categories.map(c => [c.slug, c.id]));
 
-  const toProcess = limitArg ? noPrimary.slice(0, limitArg) : noPrimary;
-  console.log(`📊 Total: ${allBiz.length} | Missing primary category: ${noPrimary.length} | Processing: ${toProcess.length}\n`);
+  const toProcess = limitArg ? pool.slice(0, limitArg) : pool;
+  console.log(`📊 Total: ${allBiz.length} | Missing primary (after filter): ${pool.length} | Processing: ${toProcess.length}\n`);
 
   let byGoogle = 0, byAI = 0, failed = 0, errors = 0;
 

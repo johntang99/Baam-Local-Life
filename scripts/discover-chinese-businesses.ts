@@ -14,7 +14,7 @@
  *   npx tsx scripts/discover-chinese-businesses.ts --region=sunset-park-ny --apply
  *
  * Regions require matching `regions.slug` in Supabase (see migrations
- * 20260401_business_data_regions_and_review_trigger.sql, 20260402_nyc_chinese_corridors_p0_p1.sql).
+ * `supabase/migrations/` e.g. `20260403_lower_east_murray_hill_corridors.sql`.
  */
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -337,6 +337,31 @@ const DISCOVERY_REGIONS: Record<string, DiscoveryRegion> = {
       { name: 'Rego Park', lat: 40.726, lng: -73.853, radius: 1500 },
       { name: 'Forest Hills north', lat: 40.728, lng: -73.835, radius: 1500 },
       { name: 'Kew Gardens slope', lat: 40.708, lng: -73.830, radius: 1500 },
+    ],
+  },
+  // ─── LES / East Village + Murray Hill (Queens) Northern Blvd belt ─────────
+  'lower-east-side-ny': {
+    regionSlug: 'lower-east-side-ny',
+    queryPrefix: '曼哈顿东村',
+    locationCityEn: 'New York',
+    gridZones: [
+      { name: 'East Village core', lat: 40.729, lng: -73.987, radius: 1200 },
+      { name: 'East Village west', lat: 40.726, lng: -73.992, radius: 1200 },
+      { name: 'LES Delancey / Essex', lat: 40.719, lng: -73.988, radius: 1200 },
+      { name: 'Ave B corridor', lat: 40.724, lng: -73.981, radius: 1200 },
+      { name: 'Houston / Bowery', lat: 40.722, lng: -73.994, radius: 1200 },
+    ],
+  },
+  'murray-hill-queens-ny': {
+    regionSlug: 'murray-hill-queens-ny',
+    queryPrefix: '皇后默里山',
+    locationCityEn: 'Flushing',
+    gridZones: [
+      { name: 'Northern Blvd core', lat: 40.7627, lng: -73.8155, radius: 1500 },
+      { name: 'Murray Hill east', lat: 40.762, lng: -73.802, radius: 1500 },
+      { name: 'Murray Hill west', lat: 40.762, lng: -73.828, radius: 1500 },
+      { name: 'Murray Hill north', lat: 40.772, lng: -73.815, radius: 1500 },
+      { name: 'Murray Hill south', lat: 40.753, lng: -73.815, radius: 1500 },
     ],
   },
 };

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>签证资格评估 — Baam 纽约华人本地服务</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            baam: { 50:'#FFF7ED', 100:'#FFEDD5', 200:'#FED7AA', 300:'#FDBA74', 400:'#FB923C', 500:'#F97316', 600:'#EA580C', 700:'#C2410C' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../assets/css/prototype.css">
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 1; }
+      100% { transform: scale(2.2); opacity: 0; }
+    }
+    @keyframes spin-slow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .loading-ring { animation: pulse-ring 1.5s ease-out infinite; }
+    .spin-slow { animation: spin-slow 2s linear infinite; }
+    .radio-card input:checked + .radio-label {
+      border-color: #F97316;
+      background-color: #FFF7ED;
+      box-shadow: 0 0 0 2px #F97316;
+    }
+    .radio-card input:checked + .radio-label .radio-dot {
+      background-color: #F97316;
+      border-color: #F97316;
+    }
+    .radio-card input:checked + .radio-label .radio-dot::after {
+      content: '';
+      display: block;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<!-- ==================== NAVBAR ==================== -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-gray-900">Baam</span>
+          <span class="text-xs text-gray-400 hidden sm:inline">纽约</span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="news-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">新闻</a>
+          <a href="guides-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">生活资讯</a>
+          <a href="business-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">商家</a>
+          <a href="events-list.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">活动</a>
+          <a href="forum-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">论坛</a>
+          <a href="discover-home.html" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-baam-500 rounded-md hover:bg-orange-50">发现</a>
+          <a href="services-home.html" class="px-3 py-2 text-sm font-medium text-baam-500 rounded-md bg-orange-50">实用工具</a>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="p-2 text-gray-500 hover:text-baam-500 hover:bg-orange-50 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </button>
+        <button class="px-2 py-1 text-xs font-medium text-gray-500 border border-gray-300 rounded hover:bg-gray-100">繁</button>
+        <button class="bg-baam-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-baam-600 transition">登录 / 注册</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="max-w-5xl mx-auto px-4 py-6 sm:py-10">
+
+  <!-- ==================== BREADCRUMB ==================== -->
+  <nav class="flex items-center gap-2 text-sm text-gray-400 mb-6">
+    <a href="index.html" class="hover:text-baam-500 transition">首页</a>
+    <span>/</span>
+    <a href="services-home.html" class="hover:text-baam-500 transition">实用工具</a>
+    <span>/</span>
+    <span class="text-gray-700 font-medium">签证资格评估</span>
+  </nav>
+
+  <!-- ==================== PAGE HEADER ==================== -->
+  <div class="text-center mb-8">
+    <div class="text-5xl mb-4">🛂</div>
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">签证资格智能评估</h1>
+    <p class="text-gray-400 text-base mb-1">AI Visa Eligibility Screener</p>
+    <p class="text-gray-500 text-lg max-w-xl mx-auto">回答几个简单问题，AI帮你分析可能适合的签证类别</p>
+  </div>
+
+  <!-- ==================== LEGAL DISCLAIMER ==================== -->
+  <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 sm:p-5 mb-8 flex gap-3">
+    <span class="text-xl flex-shrink-0 mt-0.5">&#9888;&#65039;</span>
+    <p class="text-sm text-amber-800 leading-relaxed">
+      <strong>免责声明：</strong>本工具仅提供一般性信息参考，不构成法律建议。移民法律复杂且因人而异，请务必咨询持牌移民律师后再做决定。
+    </p>
+  </div>
+
+  <!-- ==================== GUIDE CONTENT (SEO) ==================== -->
+  <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-10">
+    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <span class="w-1.5 h-6 bg-baam-500 rounded-full"></span>
+      美国签证和移民类别简介
+    </h2>
+    <div class="text-gray-600 leading-relaxed space-y-4 text-[15px]">
+      <p>
+        美国的签证和移民体系是世界上最复杂的法律体系之一，主要分为<strong>非移民签证（Non-immigrant Visa）</strong>和<strong>移民签证（Immigrant Visa）</strong>两大类。了解不同类别的基本要求，是规划移民路径的第一步。
+      </p>
+      <p>
+        <strong>非移民签证</strong>适用于临时赴美的申请人，包括：H-1B工作签证（适合有专业技能的工作者，需要雇主担保）、L-1跨国公司调派签证（适合跨国公司高管或核心员工）、O-1杰出人才签证（适合在科学、艺术、教育、商业或体育领域有杰出成就的人）、F-1学生签证（适合在美国高等院校就读的学生），以及B-1/B-2商务旅游签证等。每种签证都有不同的申请条件、有效期和限制。
+      </p>
+      <p>
+        <strong>移民签证（绿卡）</strong>则提供永久居留权，主要途径包括：EB类职业移民（EB-1杰出人才、EB-2高学历专业人才、EB-3技术工人、EB-5投资移民）和亲属移民（美国公民和永久居民可为符合条件的家庭成员申请）。对于中国大陆出生的申请人，大部分类别都存在排期等待，了解当前排期情况非常重要。
+      </p>
+      <p>
+        本评估工具通过AI分析你的个人情况（包括目标、学历、工作经验、家庭关系等），帮助你初步了解可能适合的签证类别，并提供下一步行动建议。请注意，这只是初步筛选，具体资格需要由专业移民律师根据你的详细情况来判断。
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== SECTION DIVIDER ==================== -->
+  <div class="flex items-center gap-3 mb-8">
+    <div class="flex-1 h-px bg-gray-200"></div>
+    <span class="text-sm font-semibold text-gray-400 tracking-wide">开始评估</span>
+    <div class="flex-1 h-px bg-gray-200"></div>
+  </div>
+
+  <!-- ==================== MULTI-STEP FORM ==================== -->
+  <div id="section-form">
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="flex items-center justify-center mb-10">
+      <div class="flex items-center gap-0">
+        <div class="step-circle w-10 h-10 rounded-full bg-baam-500 text-white flex items-center justify-center font-bold text-sm shadow-md">1</div>
+        <div class="step-line w-8 sm:w-12 h-0.5 bg-gray-200"></div>
+        <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm">2</div>
+        <div class="step-line w-8 sm:w-12 h-0.5 bg-gray-200"></div>
+        <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm">3</div>
+        <div class="step-line w-8 sm:w-12 h-0.5 bg-gray-200"></div>
+        <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm">4</div>
+        <div class="step-line w-8 sm:w-12 h-0.5 bg-gray-200"></div>
+        <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm">5</div>
+        <div class="step-line w-8 sm:w-12 h-0.5 bg-gray-200"></div>
+        <div class="step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm">6</div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 1: Goal (Active) ===== -->
+    <div id="step-1" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6">
+      <div class="mb-6">
+        <span class="text-xs font-semibold text-baam-500 uppercase tracking-wider">Step 1 / 6</span>
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">你的目标是什么？</h2>
+        <p class="text-gray-500 text-sm mt-1">选择最符合你当前需求的选项</p>
+      </div>
+
+      <div class="space-y-3">
+        <!-- Option 1 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="work" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#127919;</span>
+            <div>
+              <div class="font-semibold text-gray-900">在美国工作</div>
+              <div class="text-sm text-gray-500">Work in the US</div>
+            </div>
+          </div>
+        </label>
+        <!-- Option 2 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="study" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#127891;</span>
+            <div>
+              <div class="font-semibold text-gray-900">在美国学习</div>
+              <div class="text-sm text-gray-500">Study in the US</div>
+            </div>
+          </div>
+        </label>
+        <!-- Option 3 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="greencard" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#127968;</span>
+            <div>
+              <div class="font-semibold text-gray-900">获得绿卡 / 永久居留</div>
+              <div class="text-sm text-gray-500">Get green card / permanent residence</div>
+            </div>
+          </div>
+        </label>
+        <!-- Option 4 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="family" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#128104;&#8205;&#128105;&#8205;&#128103;&#8205;&#128102;</span>
+            <div>
+              <div class="font-semibold text-gray-900">与家人团聚</div>
+              <div class="text-sm text-gray-500">Family reunification</div>
+            </div>
+          </div>
+        </label>
+        <!-- Option 5 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="business" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#127970;</span>
+            <div>
+              <div class="font-semibold text-gray-900">在美国创业 / 投资</div>
+              <div class="text-sm text-gray-500">Start business / invest in the US</div>
+            </div>
+          </div>
+        </label>
+        <!-- Option 6 -->
+        <label class="radio-card block cursor-pointer">
+          <input type="radio" name="goal" value="asylum" class="hidden">
+          <div class="radio-label border-2 border-gray-200 rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-baam-300 transition">
+            <div class="radio-dot w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 relative"></div>
+            <span class="text-2xl flex-shrink-0">&#127384;</span>
+            <div>
+              <div class="font-semibold text-gray-900">寻求庇护 / 保护</div>
+              <div class="text-sm text-gray-500">Seek asylum / protection</div>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="flex justify-end mt-8">
+        <button onclick="showStep(2)" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">
+          下一步
+          <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== STEP 2: Nationality (Collapsed, showing sample answers) ===== -->
+    <div id="step-2" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6 opacity-60">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 2 / 6</span>
+          <h2 class="text-lg font-bold text-gray-700 mt-1">你的国籍和出生地</h2>
+        </div>
+        <div class="text-sm text-gray-400 hidden sm:flex items-center gap-4">
+          <span>国籍：中国</span>
+          <span>出生地：中国</span>
+          <span>当前位置：在美国</span>
+        </div>
+      </div>
+      <!-- Expanded content (hidden by default) -->
+      <div id="step-2-content" class="hidden mt-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">你的国籍 (Country of Citizenship)</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option selected>中国</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">出生国家 (Country of Birth)</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option selected>中国</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">你目前在哪里？</label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="location" value="us" class="hidden" checked>
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">在美国</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="location" value="china" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">在中国</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="location" value="other" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">其他</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="showStep(1)" class="text-gray-500 font-medium px-6 py-3 rounded-xl hover:bg-gray-100 transition">上一步</button>
+          <button onclick="showStep(3)" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">下一步 <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 3: Current Status (Collapsed) ===== -->
+    <div id="step-3" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6 opacity-60">
+      <div>
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 3 / 6</span>
+        <h2 class="text-lg font-bold text-gray-700 mt-1">你目前的身份</h2>
+      </div>
+      <div id="step-3-content" class="hidden mt-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">当前移民身份 (Current Immigration Status)</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option value="">请选择...</option>
+            <option>无签证 / 没有在美身份</option>
+            <option>B1/B2 旅游/商务签证</option>
+            <option>F1 学生签证</option>
+            <option>H1B 工作签证</option>
+            <option>L1 跨国公司签证</option>
+            <option>O1 杰出人才签证</option>
+            <option>已有绿卡</option>
+            <option>OPT / CPT</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="showStep(2)" class="text-gray-500 font-medium px-6 py-3 rounded-xl hover:bg-gray-100 transition">上一步</button>
+          <button onclick="showStep(4)" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">下一步 <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 4: Work Info (Collapsed) ===== -->
+    <div id="step-4" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6 opacity-60">
+      <div>
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 4 / 6</span>
+        <h2 class="text-lg font-bold text-gray-700 mt-1">工作和职业信息</h2>
+      </div>
+      <div id="step-4-content" class="hidden mt-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">当前职业 / 行业</label>
+          <input type="text" placeholder="例如：软件工程师、会计、护士..." class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">工作年限</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option value="">请选择...</option>
+            <option>应届毕业 / 无经验</option>
+            <option>1-3 年</option>
+            <option>3-5 年</option>
+            <option>5-10 年</option>
+            <option>10 年以上</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">是否有美国雇主愿意担保？</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="sponsor" value="yes" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">是</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="sponsor" value="no" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">否 / 不确定</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">年薪范围 (USD)</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option value="">请选择...</option>
+            <option>$30,000 以下</option>
+            <option>$30,000 - $60,000</option>
+            <option>$60,000 - $100,000</option>
+            <option>$100,000 - $150,000</option>
+            <option>$150,000 以上</option>
+            <option>不适用</option>
+          </select>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="showStep(3)" class="text-gray-500 font-medium px-6 py-3 rounded-xl hover:bg-gray-100 transition">上一步</button>
+          <button onclick="showStep(5)" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">下一步 <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 5: Family (Collapsed) ===== -->
+    <div id="step-5" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6 opacity-60">
+      <div>
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 5 / 6</span>
+        <h2 class="text-lg font-bold text-gray-700 mt-1">家庭关系</h2>
+      </div>
+      <div id="step-5-content" class="hidden mt-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">你有直系亲属是美国公民吗？</label>
+          <p class="text-xs text-gray-400 mb-3">直系亲属包括：配偶、父母、21岁以上子女</p>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="citizen_family" value="yes" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">是</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="citizen_family" value="no" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">否</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">你有直系亲属是美国永久居民（绿卡持有者）吗？</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="pr_family" value="yes" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">是</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="pr_family" value="no" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">否</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="showStep(4)" class="text-gray-500 font-medium px-6 py-3 rounded-xl hover:bg-gray-100 transition">上一步</button>
+          <button onclick="showStep(6)" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">下一步 <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STEP 6: Education (Collapsed) ===== -->
+    <div id="step-6" class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6 opacity-60">
+      <div>
+        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Step 6 / 6</span>
+        <h2 class="text-lg font-bold text-gray-700 mt-1">教育背景</h2>
+      </div>
+      <div id="step-6-content" class="hidden mt-6 space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">最高学历</label>
+          <select class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+            <option value="">请选择...</option>
+            <option>高中 / 中专</option>
+            <option>本科 (Bachelor's)</option>
+            <option>硕士 (Master's)</option>
+            <option>博士 (Ph.D.)</option>
+            <option>其他</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">专业领域</label>
+          <input type="text" placeholder="例如：计算机科学、工商管理、电气工程..." class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">是否有突出成就？</label>
+          <p class="text-xs text-gray-400 mb-3">包括：学术论文发表、专利、行业奖项、媒体报道等</p>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="achievements" value="yes" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">是</div>
+              </div>
+            </label>
+            <label class="radio-card block cursor-pointer">
+              <input type="radio" name="achievements" value="no" class="hidden">
+              <div class="radio-label border-2 border-gray-200 rounded-xl p-3 text-center hover:border-baam-300 transition">
+                <div class="font-medium text-sm text-gray-900">否</div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-between mt-6">
+          <button onclick="showStep(5)" class="text-gray-500 font-medium px-6 py-3 rounded-xl hover:bg-gray-100 transition">上一步</button>
+          <button onclick="showLoading()" class="bg-baam-500 text-white font-semibold px-8 py-3 rounded-xl hover:bg-baam-600 transition shadow-sm">
+            开始评估
+            <svg class="w-4 h-4 inline ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /section-form -->
+
+  <!-- ==================== LOADING STATE ==================== -->
+  <div id="section-loading" class="hidden">
+    <div class="bg-white border border-gray-200 rounded-2xl p-12 sm:p-16 text-center">
+      <div class="relative inline-block mb-8">
+        <div class="w-20 h-20 rounded-full border-4 border-baam-100 flex items-center justify-center">
+          <div class="w-20 h-20 rounded-full border-4 border-transparent border-t-baam-500 absolute inset-0 spin-slow"></div>
+          <svg class="w-8 h-8 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+      </div>
+      <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3">AI正在分析你的情况...</h2>
+      <p class="text-gray-500 text-sm max-w-md mx-auto mb-6">基于你提供的信息，我们的AI助手正在评估可能适合你的签证类别</p>
+      <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
+        <div class="w-2 h-2 bg-baam-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+        <div class="w-2 h-2 bg-baam-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
+        <div class="w-2 h-2 bg-baam-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== RESULTS PAGE ==================== -->
+  <div id="section-results" class="hidden">
+
+    <!-- Results Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-green-50 rounded-full mb-4">
+        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">你的签证资格评估结果</h2>
+      <p class="text-gray-500">基于你的个人情况，以下是可能适合你的签证类别</p>
+    </div>
+
+    <!-- Result Card 1: High Match -->
+    <div class="bg-white border-2 border-green-200 rounded-2xl p-6 sm:p-8 mb-4 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-50 to-transparent rounded-bl-full"></div>
+      <div class="flex items-start gap-3 mb-4">
+        <span class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-bold px-3 py-1.5 rounded-full border border-green-200">
+          <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+          高度匹配
+        </span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">EB-2 职业移民第二类</h3>
+      <p class="text-gray-600 leading-relaxed mb-5">
+        适合持有高等学位（硕士及以上）的专业人才。需要雇主担保和PERM劳工认证。如果你目前持有H-1B签证并有雇主支持，这是最常见的绿卡路径之一。
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mb-5">
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">处理时间</div>
+          <div class="text-sm font-semibold text-gray-900">约2-4年（中国出生）</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">雇主要求</div>
+          <div class="text-sm font-semibold text-gray-900">需要雇主支持</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">身份转换</div>
+          <div class="text-sm font-semibold text-gray-900">可以从H-1B转换</div>
+        </div>
+      </div>
+      <a href="#" class="text-baam-500 font-semibold text-sm hover:text-baam-600 transition inline-flex items-center gap-1">
+        了解更多
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Result Card 2: Medium Match -->
+    <div class="bg-white border-2 border-amber-200 rounded-2xl p-6 sm:p-8 mb-4 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-amber-50 to-transparent rounded-bl-full"></div>
+      <div class="flex items-start gap-3 mb-4">
+        <span class="inline-flex items-center gap-1.5 bg-amber-50 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full border border-amber-200">
+          <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+          可能匹配
+        </span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">EB-3 职业移民第三类</h3>
+      <p class="text-gray-600 leading-relaxed mb-5">
+        适合有技能的工人和专业人员。同样需要雇主担保，学历和经验要求较EB-2低，但处理时间可能较长。
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mb-5">
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">处理时间</div>
+          <div class="text-sm font-semibold text-gray-900">约3-5年</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">申请难度</div>
+          <div class="text-sm font-semibold text-gray-900">要求较低</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">竞争程度</div>
+          <div class="text-sm font-semibold text-gray-900">竞争激烈</div>
+        </div>
+      </div>
+      <a href="#" class="text-baam-500 font-semibold text-sm hover:text-baam-600 transition inline-flex items-center gap-1">
+        了解更多
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Result Card 3: Worth Exploring -->
+    <div class="bg-white border-2 border-blue-200 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-50 to-transparent rounded-bl-full"></div>
+      <div class="flex items-start gap-3 mb-4">
+        <span class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full border border-blue-200">
+          <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+          值得探索
+        </span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">EB-1A 杰出人才</h3>
+      <p class="text-gray-600 leading-relaxed mb-5">
+        如果你在所在领域有突出成就（发表论文、专利、获奖等），可能无需雇主担保直接申请绿卡。审批速度最快，但要求非常高。
+      </p>
+      <div class="grid sm:grid-cols-3 gap-3 mb-5">
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">处理时间</div>
+          <div class="text-sm font-semibold text-gray-900">最快（可加急）</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">雇主要求</div>
+          <div class="text-sm font-semibold text-gray-900">不需要雇主</div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="text-xs text-gray-400 mb-1">申请难度</div>
+          <div class="text-sm font-semibold text-gray-900">要求高</div>
+        </div>
+      </div>
+      <a href="#" class="text-baam-500 font-semibold text-sm hover:text-baam-600 transition inline-flex items-center gap-1">
+        了解更多
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <!-- Important Notes -->
+    <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-6">
+      <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <span class="w-1.5 h-6 bg-baam-500 rounded-full"></span>
+        重要提示
+      </h3>
+      <div class="space-y-4">
+        <div class="flex gap-3">
+          <span class="text-lg flex-shrink-0">&#9888;&#65039;</span>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            <strong>中国出生申请人面临较长排期</strong>，建议尽早启动申请流程。EB-2和EB-3类别目前排期约为2-5年不等，排期会随每月签证公告变化。
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-lg flex-shrink-0">&#128161;</span>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            <strong>配偶可以通过你的申请一起获得绿卡</strong>（作为附属申请人），21岁以下未婚子女也可以一起申请。
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <span class="text-lg flex-shrink-0">&#128203;</span>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            <strong>下一步建议：</strong>联系持牌移民律师，根据你的具体情况制定详细的移民方案。律师可以帮你评估最佳时机和策略。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultation CTA -->
+    <div class="bg-gradient-to-br from-baam-500 to-baam-700 rounded-2xl p-8 sm:p-10 text-center text-white mb-10">
+      <h3 class="text-xl sm:text-2xl font-bold mb-3">想了解哪个方案最适合你？</h3>
+      <p class="text-orange-100 mb-6 max-w-lg mx-auto">免费咨询移民律师 -- 30分钟一对一评估，帮你制定最佳移民策略</p>
+      <button class="bg-white text-baam-600 font-bold px-8 py-4 rounded-xl hover:bg-orange-50 transition shadow-lg text-lg">
+        预约免费咨询
+      </button>
+      <p class="text-orange-200 text-xs mt-4">已有 500+ 华人通过Baam找到合适的移民律师</p>
+    </div>
+
+    <!-- Restart -->
+    <div class="text-center mb-10">
+      <button onclick="restart()" class="text-baam-500 font-semibold text-sm hover:text-baam-600 transition inline-flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        重新评估
+      </button>
+    </div>
+
+  </div><!-- /section-results -->
+
+  <!-- ==================== RELATED CONTENT ==================== -->
+  <div class="grid sm:grid-cols-2 gap-6 mb-10">
+    <!-- Related Guides -->
+    <div>
+      <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        相关指南
+      </h3>
+      <div class="space-y-2">
+        <a href="#" class="block bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-200 hover:shadow-sm transition group">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">&#128218;</span>
+            <div>
+              <h4 class="text-sm font-semibold text-gray-900 group-hover:text-baam-500">H1B转绿卡完全攻略</h4>
+              <p class="text-xs text-gray-500">从H1B到绿卡的每一步详解</p>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="block bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-200 hover:shadow-sm transition group">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">&#128197;</span>
+            <div>
+              <h4 class="text-sm font-semibold text-gray-900 group-hover:text-baam-500">中国公民EB类绿卡排期解读</h4>
+              <p class="text-xs text-gray-500">最新排期表中文解析和预测</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <!-- Related Tools & AI -->
+    <div>
+      <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+        <svg class="w-4 h-4 text-baam-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        相关工具
+      </h3>
+      <div class="space-y-2">
+        <a href="services-property-tax.html" class="block bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-200 hover:shadow-sm transition group">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">&#127968;</span>
+            <div>
+              <h4 class="text-sm font-semibold text-gray-900 group-hover:text-baam-500">房产税查询</h4>
+              <p class="text-xs text-gray-500">查询NYC房产税和评估价值</p>
+            </div>
+          </div>
+        </a>
+        <a href="services-restaurant-search.html" class="block bg-white border border-gray-200 rounded-xl p-4 hover:border-baam-200 hover:shadow-sm transition group">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">&#127869;</span>
+            <div>
+              <h4 class="text-sm font-semibold text-gray-900 group-hover:text-baam-500">餐厅卫生评分</h4>
+              <p class="text-xs text-gray-500">查看餐厅卫生检查等级和违规记录</p>
+            </div>
+          </div>
+        </a>
+        <!-- Ask AI -->
+        <div class="bg-gradient-to-r from-baam-50 to-orange-50 border border-baam-200 rounded-xl p-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-baam-500 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0">AI</div>
+            <div>
+              <h4 class="text-sm font-semibold text-gray-900">问AI小邻</h4>
+              <p class="text-xs text-gray-500 italic">"我的H1B还有6个月到期，来得及申请绿卡吗？"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EMAIL CAPTURE ==================== -->
+  <div class="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div class="flex-1">
+        <h3 class="text-lg font-bold text-gray-900 mb-1">订阅移民政策更新</h3>
+        <p class="text-sm text-gray-500">每月签证排期、政策变化中文解读，直接发送到你的邮箱</p>
+      </div>
+      <div class="flex w-full sm:w-auto gap-2">
+        <input type="email" placeholder="你的邮箱地址" class="flex-1 sm:w-64 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-baam-500 focus:border-transparent">
+        <button class="bg-baam-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-baam-600 transition flex-shrink-0">订阅</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="bg-gray-900 text-gray-400 mt-4">
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <span class="text-xl font-bold text-white">Baam</span>
+        </div>
+        <p class="text-sm">AI驱动的纽约华人本地生活平台</p>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">实用工具</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="services-violations.html" class="hover:text-white transition">停车罚单查询</a></li>
+          <li><a href="services-restaurant-search.html" class="hover:text-white transition">餐厅卫生评分</a></li>
+          <li><a href="services-property-tax.html" class="hover:text-white transition">房产税查询</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">快速导航</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">新闻</a></li>
+          <li><a href="#" class="hover:text-white transition">生活资讯</a></li>
+          <li><a href="#" class="hover:text-white transition">商家</a></li>
+          <li><a href="#" class="hover:text-white transition">论坛</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-semibold text-sm mb-3">关于我们</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="#" class="hover:text-white transition">关于 Baam</a></li>
+          <li><a href="#" class="hover:text-white transition">联系我们</a></li>
+          <li><a href="#" class="hover:text-white transition">使用条款</a></li>
+          <li><a href="#" class="hover:text-white transition">隐私政策</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 mt-8 pt-6 text-xs">&copy; 2026 Baam. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="../assets/js/prototype.js"></script>
+<script>
+  // Step navigation
+  let currentStep = 1;
+
+  function showStep(step) {
+    currentStep = step;
+
+    // Update progress dots
+    for (let i = 1; i <= 6; i++) {
+      const dots = document.querySelectorAll('.flex.items-center.justify-center.mb-10 .rounded-full');
+      // Each step has a circle at index (i-1)*2 (circles are at 0,2,4,6,8,10; lines at 1,3,5,7,9)
+    }
+
+    // Update step cards
+    for (let i = 1; i <= 6; i++) {
+      const stepEl = document.getElementById('step-' + i);
+      const contentEl = document.getElementById('step-' + i + '-content');
+
+      if (i === step) {
+        stepEl.classList.remove('opacity-60');
+        stepEl.classList.add('border-baam-200');
+        if (contentEl) contentEl.classList.remove('hidden');
+        // Update header styles
+        const header = stepEl.querySelector('h2');
+        if (header) {
+          header.classList.remove('text-gray-700');
+          header.classList.add('text-gray-900');
+        }
+        const label = stepEl.querySelector('span');
+        if (label) {
+          label.classList.remove('text-gray-400');
+          label.classList.add('text-baam-500');
+        }
+      } else {
+        stepEl.classList.add('opacity-60');
+        stepEl.classList.remove('border-baam-200');
+        if (contentEl) contentEl.classList.add('hidden');
+        const header = stepEl.querySelector('h2');
+        if (header) {
+          header.classList.add('text-gray-700');
+          header.classList.remove('text-gray-900');
+        }
+        const label = stepEl.querySelector('span');
+        if (label) {
+          label.classList.add('text-gray-400');
+          label.classList.remove('text-baam-500');
+        }
+      }
+    }
+
+    // Update progress bar circles
+    updateProgressBar(step);
+
+    // Scroll to step
+    const stepEl = document.getElementById('step-' + step);
+    if (stepEl) {
+      stepEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function updateProgressBar(activeStep) {
+    const progressContainer = document.getElementById('progress-bar');
+    if (!progressContainer) return;
+    const circles = progressContainer.querySelectorAll('.step-circle');
+    const lines = progressContainer.querySelectorAll('.step-line');
+
+    circles.forEach((circle, idx) => {
+      const stepNum = idx + 1;
+      if (stepNum < activeStep) {
+        // Completed
+        circle.className = 'step-circle w-10 h-10 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm';
+        circle.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+      } else if (stepNum === activeStep) {
+        // Active
+        circle.className = 'step-circle w-10 h-10 rounded-full bg-baam-500 text-white flex items-center justify-center font-bold text-sm shadow-md';
+        circle.textContent = stepNum;
+      } else {
+        // Future
+        circle.className = 'step-circle w-10 h-10 rounded-full bg-gray-200 text-gray-400 flex items-center justify-center font-bold text-sm';
+        circle.textContent = stepNum;
+      }
+    });
+
+    lines.forEach((line, idx) => {
+      if (idx < activeStep - 1) {
+        line.className = 'step-line w-8 sm:w-12 h-0.5 bg-green-500';
+      } else {
+        line.className = 'step-line w-8 sm:w-12 h-0.5 bg-gray-200';
+      }
+    });
+  }
+
+  function showLoading() {
+    document.getElementById('section-form').classList.add('hidden');
+    document.getElementById('section-loading').classList.remove('hidden');
+    document.getElementById('section-loading').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Simulate AI processing
+    setTimeout(function() {
+      document.getElementById('section-loading').classList.add('hidden');
+      document.getElementById('section-results').classList.remove('hidden');
+      document.getElementById('section-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 3000);
+  }
+
+  function restart() {
+    document.getElementById('section-results').classList.add('hidden');
+    document.getElementById('section-form').classList.remove('hidden');
+    showStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Demo: Click "查看结果示例" to skip to results
+  // (Add via URL param ?demo=results or ?demo=loading)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('demo') === 'results') {
+    document.getElementById('section-form').classList.add('hidden');
+    document.getElementById('section-results').classList.remove('hidden');
+  } else if (urlParams.get('demo') === 'loading') {
+    document.getElementById('section-form').classList.add('hidden');
+    document.getElementById('section-loading').classList.remove('hidden');
+    setTimeout(function() {
+      document.getElementById('section-loading').classList.add('hidden');
+      document.getElementById('section-results').classList.remove('hidden');
+    }, 3000);
+  }
+</script>
+</body>
+</html>
