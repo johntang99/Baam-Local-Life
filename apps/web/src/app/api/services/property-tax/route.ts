@@ -134,6 +134,12 @@ export async function GET(request: Request) {
   const region = searchParams.get('region')?.trim().toLowerCase() || searchParams.get('boro')?.trim().toLowerCase();
   const bbl = searchParams.get('bbl')?.trim();
 
+  // If address has city/state/zip but no region selected, use geocoder to auto-detect
+  if (!bbl && address && !region) {
+    // Full address mode — use NYS GIS geocoder to find property directly
+    return handleFullAddressLookup(address, request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown');
+  }
+
   if (!bbl && (!address || !region)) {
     return NextResponse.json({ error: 'address+region or bbl required' }, { status: 400 });
   }
@@ -681,6 +687,175 @@ async function handleNYSDetail(parcelId: string, county: string, fetchHeaders: R
     const response = NextResponse.json({ property, history, sales: [], source: 'nys' });
     response.headers.set('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=7200');
     return response;
+  } catch {
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// ─── Full Address Lookup (no county required) ──────────────────────────
+
+async function handleFullAddressLookup(address: string, ip: string) {
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+  }
+
+  const fetchHeaders: Record<string, string> = { Accept: 'application/json' };
+  const appToken = process.env.NYC_OPEN_DATA_APP_TOKEN;
+  if (appToken) fetchHeaders['X-App-Token'] = appToken;
+
+  try {
+    // Parse address parts: "23 Rivervale Road, Middletown, NY 10940"
+    const parts = address.split(',').map((s: string) => s.trim());
+    const streetAddress = parts[0] || '';
+    const city = parts[1] || '';
+    // State and zip might be in parts[2] like "NY 10940"
+    const stateZipPart = parts[2] || '';
+    const stateMatch = stateZipPart.match(/([A-Z]{2})/);
+    const zipMatch = stateZipPart.match(/(\d{5})/);
+    const state = stateMatch ? stateMatch[1] : 'NY';
+    const zip = zipMatch ? zipMatch[1] : '';
+
+    // Check if this is an NYC address — map neighborhood/city to borough
+    const nycNeighborhoodMap: Record<string, string> = {
+      'MANHATTAN': 'manhattan', 'NEW YORK': 'manhattan', 'CHINATOWN': 'manhattan',
+      'BROOKLYN': 'brooklyn', 'SUNSET PARK': 'brooklyn', 'BENSONHURST': 'brooklyn',
+      'QUEENS': 'queens', 'FLUSHING': 'queens', 'ASTORIA': 'queens', 'JAMAICA': 'queens',
+      'BAYSIDE': 'queens', 'ELMHURST': 'queens', 'FOREST HILLS': 'queens', 'CORONA': 'queens',
+      'BRONX': 'bronx',
+      'STATEN ISLAND': 'staten island',
+    };
+    const cityUpper = city.toUpperCase();
+    let nycBoro: string | null = null;
+    for (const [key, val] of Object.entries(nycNeighborhoodMap)) {
+      if (cityUpper.includes(key)) { nycBoro = val; break; }
+    }
+    // Also check by zip code for NYC
+    if (!nycBoro && zip) {
+      const zipNum = parseInt(zip);
+      if (zipNum >= 10001 && zipNum <= 10282) nycBoro = 'manhattan';
+      else if (zipNum >= 10301 && zipNum <= 10314) nycBoro = 'staten island';
+      else if (zipNum >= 10451 && zipNum <= 10475) nycBoro = 'bronx';
+      else if (zipNum >= 11201 && zipNum <= 11256) nycBoro = 'brooklyn';
+      else if (zipNum >= 11101 && zipNum <= 11697) nycBoro = 'queens';
+    }
+
+    if (nycBoro) {
+      // NYC address — use NYC datasets
+      const boroCode = BORO_MAP[nycBoro] || '4';
+      const normalizedAddr = normalizeAddress(streetAddress);
+      const addrMatch = normalizedAddr.match(/^(\d[\d-]*)\s+(.+)$/);
+      const houseNumFull = addrMatch ? addrMatch[1] : '';
+      const cleanStreet = (addrMatch ? addrMatch[2] : normalizedAddr).replace(/,.*$/, '').trim();
+
+      // Try NYC assessment dataset
+      const tryNYC = async (hn: string, st: string) => {
+        const p = new URLSearchParams({ housenum_lo: hn, street_name: st, boro: boroCode, $order: 'year DESC', $limit: '20' });
+        const r = await fetch(`${NYC_ASSESSMENT_URL}?${p}`, { headers: fetchHeaders });
+        return r.ok ? await r.json() : [];
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let raw: any[] = await tryNYC(houseNumFull, cleanStreet);
+      if (raw.length === 0 && houseNumFull.includes('-')) {
+        raw = await tryNYC(houseNumFull.split('-')[0], cleanStreet);
+      }
+
+      if (raw.length > 0) {
+        const r = raw[0];
+        const tc = r.curtaxclass || r.taxclass || '1';
+        const assessed = parseFloat(r.curacttot || r.avtot || '0');
+        const lo = r.housenum_lo || '';
+        const hi = r.housenum_hi || '';
+        const hn = lo && hi && lo !== hi ? `${lo}-${hi}` : lo || hi || '';
+        const addrStr = r.staddr || (hn ? `${hn} ${r.street_name || ''}` : r.street_name || '');
+
+        const properties = [{
+          bbl: `${r.boro}${String(r.block).padStart(5, '0')}${String(r.lot).padStart(4, '0')}`,
+          address: addrStr.trim(),
+          boro: BORO_NAMES[r.boro] || '',
+          owner: r.owner || '',
+          taxClass: tc,
+          buildingClass: r.bldg_class || r.bldgcl || '',
+          stories: r.bld_story || r.stories || '',
+          assessedTotal: assessed,
+          marketValue: parseFloat(r.curmkttot || r.fullval || '0'),
+          estimatedTax: Math.round(assessed * (TAX_RATES[tc] || TAX_RATES['1'])),
+          year: r.year ? `FY${r.year}` : (r.year || ''),
+        }];
+        return NextResponse.json({ properties, total: 1 });
+      }
+      // NYC not found in assessment data — fall through to geocoder
+    }
+
+    // Use NYS GIS Geocoder for all addresses (NYC and NYS)
+    const parcel = await geocodeToParcel(streetAddress, city, state, zip);
+
+    if (!parcel) {
+      return NextResponse.json({ properties: [], total: 0, message: '未找到该地址的房产信息。请检查地址拼写或尝试选择具体的区域/郡。' });
+    }
+
+    // Found parcel — now get assessment data
+    const printKey = parcel.printKey;
+    const county = parcel.county;
+
+    // Try NYS assessment data first
+    const nysParams = new URLSearchParams({
+      print_key_code: printKey,
+      county_name: county,
+      $order: 'roll_year DESC',
+      $limit: '5',
+    });
+    const nysRes = await fetch(`${NYS_ASSESSMENT_URL}?${nysParams}`, { headers: fetchHeaders });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nysData: any[] = nysRes.ok ? await nysRes.json() : [];
+
+    if (nysData.length > 0) {
+      // Build property result from NYS data + GIS parcel data
+      const r = nysData[0];
+      const addr = [r.parcel_address_number, r.parcel_address_street, r.parcel_address_suff].filter(Boolean).join(' ');
+      const assessed = parseFloat(r.assessment_total || '0');
+      const market = parseFloat(r.full_market_value || '0');
+      const ownerName = [r.primary_owner_first_name, r.primary_owner_last_name].filter(Boolean).join(' ');
+
+      const properties = [{
+        bbl: printKey,
+        address: addr.trim() || parcel.parcelAddr,
+        boro: `${parcel.municipality}, ${county} County`,
+        owner: ownerName,
+        taxClass: r.property_class_description || r.property_class || '',
+        buildingClass: r.property_class || '',
+        stories: '',
+        assessedTotal: assessed,
+        marketValue: market,
+        estimatedTax: 0,
+        year: r.roll_year || '',
+        municipality: parcel.municipality,
+        county: county,
+        source: 'nys',
+      }];
+
+      return NextResponse.json({ properties, total: 1, source: 'nys' });
+    }
+
+    // Fallback: return GIS parcel data directly
+    const properties = [{
+      bbl: printKey,
+      address: parcel.parcelAddr,
+      boro: `${parcel.municipality}, ${county} County`,
+      owner: '',
+      taxClass: parcel.propClass,
+      buildingClass: parcel.propClass,
+      stories: '',
+      assessedTotal: parcel.assessedTotal,
+      marketValue: parcel.marketValue,
+      estimatedTax: 0,
+      year: '',
+      municipality: parcel.municipality,
+      county: county,
+      source: 'nys',
+    }];
+
+    return NextResponse.json({ properties, total: 1, source: 'nys' });
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

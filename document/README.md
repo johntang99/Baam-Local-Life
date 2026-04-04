@@ -1,6 +1,7 @@
 # Baam Local Portal — Documentation
 
-
+Email: admin@baamplatform.com
+Password: Baam2026!
 
 lsof -ti:5001 | xargs kill -9
 rm -rf .next

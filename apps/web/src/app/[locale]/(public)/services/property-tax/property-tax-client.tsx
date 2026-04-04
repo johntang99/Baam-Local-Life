@@ -96,7 +96,10 @@ export function PropertyTaxClient() {
     setError('');
     setResults(null);
     try {
-      const params = new URLSearchParams({ address: addr.trim(), region: b });
+      // If address contains comma (has city/state/zip), send as full address without requiring region
+      const hasFullAddress = addr.includes(',');
+      const params = new URLSearchParams({ address: addr.trim() });
+      if (!hasFullAddress && b) params.set('region', b);
       const res = await fetch(`/api/services/property-tax?${params}`);
       if (res.status === 429) { setError('查询过于频繁，请稍后再试'); return; }
       if (!res.ok) { setError('查询失败，请稍后重试'); return; }

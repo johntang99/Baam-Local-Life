@@ -196,10 +196,31 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
   const supabase = createAdminClient();
   const keywords = await extractKeywordsWithAI(query);
 
+  // Common/generic Chinese words that match too broadly for business search
+  const genericWords = new Set(['申请', '怎么', '如何', '哪里', '什么', '可以', '需要', '办理', '服务', '咨询', '推荐', '好的', '最好', '附近', '价格', '费用', '多少']);
+
   // Build OR conditions for each keyword across multiple columns
+  // For content search (articles, guides, forum) — use all keywords with OR
   function buildOr(columns: string[]): string {
     const conditions: string[] = [];
     for (const kw of keywords) {
+      const pattern = `%${kw}%`;
+      for (const col of columns) {
+        conditions.push(`${col}.ilike.${pattern}`);
+      }
+    }
+    return conditions.join(',');
+  }
+
+  // Build OR conditions but skip generic words — for business search only
+  function buildBusinessOr(columns: string[]): string {
+    const specificKeywords = keywords.filter((kw: string) => !genericWords.has(kw) && kw.length > 1);
+    if (specificKeywords.length === 0) {
+      // All keywords are generic — use the original keywords but require longer match
+      return buildOr(columns);
+    }
+    const conditions: string[] = [];
+    for (const kw of specificKeywords) {
       const pattern = `%${kw}%`;
       for (const col of columns) {
         conditions.push(`${col}.ilike.${pattern}`);
@@ -263,7 +284,7 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
       //   e.g. "饺子" → food-noodles (面馆, 2 biz) → all 2 noodle shops ✓
       // - Terms-only match + large category (> 10 businesses) → skip
       //   e.g. "饺子" → food-chinese (中餐, 27 biz) → too broad, rely on text search ✗
-      const MAX_TERMS_ONLY_SIZE = 20;
+      const MAX_TERMS_ONLY_SIZE = 50;
 
       // Get all category IDs including parent→children expansion
       const catIdsByMatch = new Map<string, 'name' | 'terms'>();
@@ -308,16 +329,16 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
       if (includedBizIds.size > 0) {
         const { data } = await (supabase as any)
           .from('businesses').select(bizFields)
-          .eq('is_active', true).in('id', [...includedBizIds].slice(0, 50))
+          .eq('is_active', true).in('id', [...includedBizIds].slice(0, 100))
           .order('is_featured', { ascending: false })
-          .order('avg_rating', { ascending: false }).limit(15);
+          .order('avg_rating', { ascending: false }).limit(30);
         addResults(data);
       }
     }
 
     // Strategy 2: Search ai_tags array
     for (const kw of keywords) {
-      if (kw.length < 2 || results.length >= 15) continue;
+      if (kw.length < 2 || results.length >= 30) continue;
       const { data } = await (supabase as any)
         .from('businesses').select(bizFields)
         .eq('is_active', true)
@@ -332,7 +353,7 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
       const { data } = await (supabase as any)
         .from('businesses').select(bizFields)
         .eq('is_active', true)
-        .or(buildOr(['display_name', 'display_name_zh', 'short_desc_zh', 'ai_summary_zh']))
+        .or(buildBusinessOr(['display_name', 'display_name_zh', 'short_desc_zh', 'ai_summary_zh']))
         .order('avg_rating', { ascending: false }).limit(10);
       addResults(data);
     }
@@ -361,7 +382,7 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
       // Then by rating
       return (b.avg_rating || 0) - (a.avg_rating || 0);
     });
-    return results.slice(0, 15);
+    return results.slice(0, 30);
   }
 
   const [bizData, newsResult, guideResult, forumResult, voiceResult, eventResult] = await Promise.all([
@@ -514,11 +535,14 @@ Reply with exactly one word: FOLLOWUP or SEARCH or NEW`,
 【回答格式】
 - 用简体中文回答
 - 简洁明了，重点突出
-- 如果有推荐商家，给出名字和联系方式
+- 如果有推荐商家，给出名字和联系方式（电话、地址）
 - 如果有相关指南，提到可以查看
 - 语气像朋友聊天，不要太正式
+- 当搜索结果中有相关商家时，尽量在回答中推荐和列出它们，包括评分、电话和地址
 - 当用户问"有多少"或"列出来"时，必须列出搜索结果中的所有商家，不要省略
-- 用markdown表格展示列表数据（商家排名等），确保表格完整`;
+- 用markdown表格展示列表数据（商家排名等），确保表格完整
+- 如果搜索到的商家与问题高度相关（如问驾照推荐驾校、问律师推荐律师），主动在回答中推荐前3-5家评分最高的商家
+- 回答要完整：既回答用户的问题，也推荐相关的本地资源和商家`;
 
     const userPrompt = totalResults > 0
       ? `用户问：${query}\n\n以下是从我们社区平台搜索到的相关信息：\n\n${contextParts.join('\n\n')}\n\n请基于以上信息回答用户的问题。如果信息不够，也可以补充你的通用知识。`

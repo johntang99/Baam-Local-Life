@@ -71,74 +71,116 @@ export default async function BusinessListPage({ searchParams }: Props) {
     ? allCategories.filter(c => c.parent_id === activeParent.id)
     : [];
 
-  // If category/subcategory filter active, get business IDs from join table
-  let filteredBizIds: string[] | null = null;
+  // If category/subcategory filter active, get category IDs for filtering
+  let filterCatIds: string[] | null = null;
   const filterSlug = activeSub || activeCat;
   if (filterSlug) {
     const matchedCat = allCategories.find(c => c.slug === filterSlug);
     if (matchedCat) {
-      // If filtering by parent, include all its subcategory IDs too
-      const catIds = [matchedCat.id];
+      filterCatIds = [matchedCat.id];
       if (!matchedCat.parent_id) {
         const childIds = allCategories.filter(c => c.parent_id === matchedCat.id).map(c => c.id);
-        catIds.push(...childIds);
+        filterCatIds.push(...childIds);
       }
-      const { data: bizCats } = await supabase
-        .from('business_categories')
-        .select('business_id')
-        .in('category_id', catIds);
-      filteredBizIds = (bizCats || []).map((bc: AnyRow) => bc.business_id);
     }
   }
 
-  // Build count query
-  let countQuery = supabase
-    .from('businesses')
-    .select('id', { count: 'exact', head: true })
-    .eq('is_active', true)
-    .eq('status', 'active');
+  // For category filtering: use inner join via business_categories instead of .in() with 1000+ IDs
+  // This avoids the "Bad Request" error when too many IDs are passed
+  let count = 0;
+  let businesses: AnyRow[] = [];
+  const pageFrom = (currentPage - 1) * PAGE_SIZE;
 
-  if (filteredBizIds !== null) {
-    if (filteredBizIds.length === 0) {
-      // No businesses in this category
-      countQuery = countQuery.in('id', ['00000000-0000-0000-0000-000000000000']);
-    } else {
-      countQuery = countQuery.in('id', filteredBizIds);
+  if (filterCatIds && filterCatIds.length > 0) {
+    // Strategy: query via business_categories inner join to avoid .in() with 1000+ IDs
+    // Use business_categories as the base table, join businesses, then sort and paginate
+
+    // Step 1: Get all business IDs for this category (deduplicated)
+    const { data: bizIdData } = await supabase
+      .from('business_categories')
+      .select('business_id')
+      .in('category_id', filterCatIds)
+      .range(0, 999);
+    const bizIds = [...new Set((bizIdData || []).map((bc: AnyRow) => bc.business_id))];
+    count = bizIds.length;
+
+    if (bizIds.length > 0) {
+      // Step 2: Fetch ALL businesses for sorting (but only minimal fields for sort)
+      // Break into chunks of 200 to avoid Bad Request
+      const CHUNK_SIZE = 200;
+      const allBizSorted: AnyRow[] = [];
+
+      for (let i = 0; i < bizIds.length; i += CHUNK_SIZE) {
+        const chunk = bizIds.slice(i, i + CHUNK_SIZE);
+        const { data: chunkData } = await supabase
+          .from('businesses')
+          .select('id, is_featured, avg_rating, updated_at')
+          .eq('is_active', true)
+          .eq('status', 'active')
+          .in('id', chunk);
+        if (chunkData) allBizSorted.push(...chunkData);
+      }
+
+      // Step 3: Sort all businesses
+      allBizSorted.sort((a, b) => {
+        if (sortBy === 'rating') {
+          return (b.avg_rating || 0) - (a.avg_rating || 0);
+        } else if (sortBy === 'recent') {
+          return new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime();
+        } else {
+          // Recommended: featured first, then by rating
+          if (a.is_featured !== b.is_featured) return b.is_featured ? 1 : -1;
+          return (b.avg_rating || 0) - (a.avg_rating || 0);
+        }
+      });
+
+      // Step 4: Get the page slice of IDs (now properly sorted)
+      const pageIds = allBizSorted.slice(pageFrom, pageFrom + PAGE_SIZE).map(b => b.id);
+
+      if (pageIds.length > 0) {
+        // Step 5: Fetch full data for this page only
+        const { data: rawBiz, error: bizError } = await supabase
+          .from('businesses')
+          .select('*, business_categories(categories(name_zh, slug))')
+          .in('id', pageIds);
+        if (bizError) console.error('[businesses] Category query error:', JSON.stringify(bizError));
+
+        // Re-sort the fetched page to match our sorted order
+        const idOrder = new Map(pageIds.map((id, idx) => [id, idx]));
+        businesses = ((rawBiz || []) as AnyRow[]).sort((a, b) =>
+          (idOrder.get(a.id) || 0) - (idOrder.get(b.id) || 0)
+        );
+      }
     }
-  }
-
-  const { count } = await countQuery;
-  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
-
-  // Build data query
-  const from = (currentPage - 1) * PAGE_SIZE;
-  let dataQuery = supabase
-    .from('businesses')
-    .select('*, business_locations(address_line1, city, state, zip_code), business_categories(categories(name_zh, slug))')
-    .eq('is_active', true)
-    .eq('status', 'active');
-
-  if (filteredBizIds !== null) {
-    if (filteredBizIds.length === 0) {
-      dataQuery = dataQuery.in('id', ['00000000-0000-0000-0000-000000000000']);
-    } else {
-      dataQuery = dataQuery.in('id', filteredBizIds);
-    }
-  }
-
-  // Sort
-  if (sortBy === 'rating') {
-    dataQuery = dataQuery.order('avg_rating', { ascending: false });
-  } else if (sortBy === 'recent') {
-    dataQuery = dataQuery.order('updated_at', { ascending: false });
   } else {
-    dataQuery = dataQuery
-      .order('is_featured', { ascending: false })
-      .order('avg_rating', { ascending: false });
+    // No category filter — query all businesses directly
+    const { count: totalCount } = await supabase
+      .from('businesses')
+      .select('id', { count: 'exact', head: true })
+      .eq('is_active', true)
+      .eq('status', 'active');
+    count = totalCount || 0;
+
+    let dataQuery = supabase
+      .from('businesses')
+      .select('*, business_categories(categories(name_zh, slug))')
+      .eq('is_active', true)
+      .eq('status', 'active');
+
+    if (sortBy === 'rating') {
+      dataQuery = dataQuery.order('avg_rating', { ascending: false });
+    } else if (sortBy === 'recent') {
+      dataQuery = dataQuery.order('updated_at', { ascending: false });
+    } else {
+      dataQuery = dataQuery.order('is_featured', { ascending: false }).order('avg_rating', { ascending: false });
+    }
+
+    const { data: rawBiz, error: bizError } = await dataQuery.range(pageFrom, pageFrom + PAGE_SIZE - 1);
+    if (bizError) console.error('[businesses] Query error:', JSON.stringify(bizError));
+    businesses = (rawBiz || []) as AnyRow[];
   }
 
-  const { data: rawBusinesses, error } = await dataQuery.range(from, from + PAGE_SIZE - 1);
-  const businesses = (rawBusinesses || []) as AnyRow[];
+  const totalPages = Math.ceil(count / PAGE_SIZE);
 
   const featured = businesses.filter((b) => b.is_featured);
   const standard = businesses.filter((b) => !b.is_featured);
@@ -263,9 +305,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
 
       {/* Results */}
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {error ? (
-          <p className="text-text-secondary py-8 text-center">加载商家时出错，请稍后重试。</p>
-        ) : businesses.length === 0 ? (
+        {businesses.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-4xl mb-4">🏪</p>
             <p className="text-text-secondary">暂无商家信息</p>
