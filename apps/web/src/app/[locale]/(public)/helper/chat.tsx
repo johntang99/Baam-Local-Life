@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { askHelper2 } from './actions';
+import { askHelper } from './actions';
 import {
   readQuickReplyModeFromStorage,
   writeQuickReplyModeToStorage,
@@ -24,9 +24,8 @@ interface Message {
     isExternal?: boolean;
   }[];
   usedWebFallback?: boolean;
+  qualityLevel?: string;
 }
-
-type SourceSectionKey = 'business' | 'guide' | 'forum' | 'discover';
 
 const sourceTypeMeta: Record<string, { icon: string; badgeClass: string }> = {
   '商家': { icon: '🏪', badgeClass: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -39,19 +38,12 @@ const sourceTypeMeta: Record<string, { icon: string; badgeClass: string }> = {
   '网页': { icon: '🌐', badgeClass: 'bg-slate-50 text-slate-700 border-slate-200' },
 };
 
-const SOURCE_SECTIONS: Array<{ key: SourceSectionKey; title: string; icon: string; matchTypes: string[] }> = [
-  { key: 'business', title: '相关商家', icon: '🏪', matchTypes: ['商家', 'Business'] },
-  { key: 'guide', title: '相关指南', icon: '📘', matchTypes: ['指南', 'Guide'] },
-  { key: 'forum', title: '论坛讨论', icon: '💬', matchTypes: ['论坛', 'Forum'] },
-  { key: 'discover', title: '发现内容', icon: '🧭', matchTypes: ['发现', '笔记', '达人', 'Discover'] },
-];
-
 const SUGGESTED_QUESTIONS = [
   '帮我推荐法拉盛适合家庭聚餐的火锅店',
   '最近纽约 DMV 有什么变化？',
   '新移民来纽约第一个月先做什么？',
-  '最近法拉盛有没有适合孩子的周末活动？',
-  '如果站内没有，你也可以帮我查网页最新信息吗？',
+  '法拉盛有哪些中文家庭医生？',
+  '报税季有什么需要注意的？',
 ];
 
 const LOADING_MESSAGES = [
@@ -111,14 +103,7 @@ function getLinkClassName(href: string): string {
   if (href.startsWith('tel:') || href.includes('google.com/maps') || href.startsWith('/zh/businesses/')) {
     return 'underline underline-offset-2';
   }
-  if (
-    href.startsWith('/zh/guides/') ||
-    href.startsWith('/zh/news/') ||
-    href.startsWith('/zh/forum/') ||
-    href.startsWith('/zh/discover/') ||
-    href.startsWith('/zh/services/')
-  ) {
-    // Match "相关来源" card title tone: stronger and cleaner.
+  if (/^\/zh\/(guides|news|forum|discover|services)\//.test(href)) {
     return 'text-text-primary font-semibold hover:text-primary transition-colors';
   }
   return 'underline underline-offset-2';
@@ -177,17 +162,15 @@ function useVoiceInput(onResult: (text: string) => void) {
 
 const markdownComponents: Components = {
   table: ({ children }) => (
-    <div className="my-7 w-full overflow-hidden rounded-lg border border-border bg-white/60">
-      <table className="w-full table-fixed border-collapse text-[13px] leading-6 [&_th]:bg-bg-page [&_th]:px-2 [&_th]:py-2 [&_th]:text-left [&_th]:text-xs [&_th]:font-semibold [&_th]:text-text-primary [&_th]:border [&_th]:border-border [&_th:nth-child(1)]:w-[6%] [&_td]:px-2 [&_td]:py-2 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border [&_td]:border-border [&_td]:break-words [&_td:nth-child(1)]:w-[6%] [&_td:nth-child(2)]:w-[24%] [&_td:nth-child(2)]:font-semibold [&_td:nth-child(3)]:w-[18%] [&_td:nth-child(4)]:w-[16%] [&_td:nth-child(4)]:whitespace-nowrap [&_td:nth-child(5)]:w-[24%] [&_td:nth-child(5)]:whitespace-normal [&_td:nth-child(6)]:w-[22%] [&_td:nth-child(6)]:whitespace-normal [&_td_p]:my-0">
+    <div className="my-7 overflow-x-auto rounded-lg border border-border bg-white/60">
+      <table className="w-full min-w-[860px] border-collapse text-[13px] leading-6 [&_th]:whitespace-nowrap [&_th]:bg-bg-page [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:text-xs [&_th]:font-semibold [&_th]:text-text-primary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border [&_td]:border-border [&_td:nth-child(2)]:min-w-[160px] [&_td:nth-child(2)]:font-semibold [&_td:nth-child(3)]:whitespace-nowrap [&_td:nth-child(4)]:whitespace-nowrap [&_td:nth-child(5)]:whitespace-nowrap [&_td:nth-child(6)]:min-w-[170px] [&_td:nth-child(6)]:whitespace-normal [&_td:nth-child(7)]:min-w-[220px] [&_td:nth-child(7)]:whitespace-normal [&_td_p]:my-0">
         {children}
       </table>
     </div>
   ),
   hr: () => <hr className="mt-5 mb-7 border-border" />,
   a: ({ href, children, ...props }) => {
-    if (!href) {
-      return <span>{children}</span>;
-    }
+    if (!href) return <span>{children}</span>;
     if (href.startsWith('tel:')) {
       return (
         <a href={href} {...props} className={`${getLinkClassName(href)} whitespace-nowrap`}>
@@ -196,21 +179,13 @@ const markdownComponents: Components = {
       );
     }
     return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        {...props}
-        className={getLinkClassName(href)}
-      >
+      <a href={href} target="_blank" rel="noopener noreferrer" {...props} className={getLinkClassName(href)}>
         {children}
       </a>
     );
   },
   td: ({ children, ...props }) => {
-    if (nodeContainsAnchor(children)) {
-      return <td {...props}>{children}</td>;
-    }
+    if (nodeContainsAnchor(children)) return <td {...props}>{children}</td>;
     const text = nodeToText(children).replace(/\s+/g, ' ').trim();
     const phone = extractPhone(text);
     if (phone) {
@@ -218,59 +193,32 @@ const markdownComponents: Components = {
       if (normalized) {
         return (
           <td {...props}>
-            <a
-              href={`tel:${normalized}`}
-              className={`${getLinkClassName(`tel:${normalized}`)} whitespace-nowrap`}
-              title={`拨打 ${phone}`}
-            >
+            <a href={`tel:${normalized}`} className={`${getLinkClassName(`tel:${normalized}`)} whitespace-nowrap`} title={`拨打 ${phone}`}>
               {children}
             </a>
           </td>
         );
       }
     }
-
     if (looksLikeAddress(text)) {
       const mapUrl = buildGoogleMapsUrl(text);
       return (
         <td {...props}>
-          <a
-            href={mapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={getLinkClassName(mapUrl)}
-            title="在 Google 地图中打开"
-          >
+          <a href={mapUrl} target="_blank" rel="noopener noreferrer" className={getLinkClassName(mapUrl)} title="在 Google 地图中打开">
             {children}
           </a>
         </td>
       );
     }
-
-    if (/<br\s*\/?>/i.test(text)) {
-      const parts = text.split(/<br\s*\/?>/i).map((part) => part.trim()).filter(Boolean);
-      if (parts.length > 1) {
-        return (
-          <td {...props}>
-            {parts.map((part, idx) => (
-              <span key={`${part}-${idx}`} className="block leading-5">
-                {part}
-              </span>
-            ))}
-          </td>
-        );
-      }
-    }
-
     return <td {...props}>{children}</td>;
   },
 };
 
-interface Helper2ChatProps {
+interface HelperChatProps {
   initialQuery?: string;
 }
 
-export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
+export function HelperChat({ initialQuery }: HelperChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState(initialQuery || '');
   const [loading, setLoading] = useState(false);
@@ -310,10 +258,11 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
       setAutoAsked(true);
       void handleAsk(initialQuery);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQuery, autoAsked]);
 
   const progressivelyRenderAnswer = useCallback(
-    async (messageId: string, fullContent: string, meta: Pick<Message, 'sources' | 'usedWebFallback'>) => {
+    async (messageId: string, fullContent: string, meta: Pick<Message, 'sources' | 'usedWebFallback' | 'qualityLevel'>) => {
       setRenderingAnswer(true);
       const total = fullContent.length;
       const targetMs = Math.min(12000, Math.max(4200, total * 12));
@@ -321,6 +270,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
       const estimatedTicks = Math.max(1, Math.floor(targetMs / tickMs));
       const step = Math.max(2, Math.ceil(total / estimatedTicks));
       let index = 0;
+
       while (index < total) {
         const currentChar = fullContent[index] || '';
         const extraPause = /[，。！？；：\n]/.test(currentChar) ? 26 : 0;
@@ -328,20 +278,14 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
         index = Math.min(index + step, total);
         const chunk = fullContent.slice(0, index);
         setMessages((prev) =>
-          prev.map((message) => (message.id === messageId ? { ...message, content: chunk } : message)),
+          prev.map((msg) => (msg.id === messageId ? { ...msg, content: chunk } : msg)),
         );
       }
       setMessages((prev) =>
-        prev.map((message) =>
-          message.id === messageId
-            ? {
-                ...message,
-                content: fullContent,
-                fullContent: undefined,
-                sources: meta.sources,
-                usedWebFallback: meta.usedWebFallback,
-              }
-            : message,
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, content: fullContent, fullContent: undefined, sources: meta.sources, usedWebFallback: meta.usedWebFallback, qualityLevel: meta.qualityLevel }
+            : msg,
         ),
       );
       setRenderingAnswer(false);
@@ -354,24 +298,20 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
     const query = rawQuery.trim();
     if (!query || loading) return;
 
-    const nextHistory = messages.map((message) => ({
-      role: message.role,
-      content: message.fullContent ?? message.content,
+    const nextHistory = messages.map((msg) => ({
+      role: msg.role,
+      content: msg.fullContent ?? msg.content,
     })) as { role: 'user' | 'assistant'; content: string }[];
 
     setInput('');
     setMessages((prev) => [...prev, { id: `u-${Date.now()}`, role: 'user', content: query }]);
     setLoading(true);
 
-    const result = await askHelper2(query, nextHistory);
+    const result = await askHelper(query, nextHistory);
     if (result.error || !result.data) {
       setMessages((prev) => [
         ...prev,
-        {
-          id: `a-err-${Date.now()}`,
-          role: 'assistant',
-          content: result.error || '小帮手-2 暂时无法回答',
-        },
+        { id: `a-err-${Date.now()}`, role: 'assistant', content: result.error || '小邻暂时无法回答' },
       ]);
       setLoading(false);
       inputRef.current?.focus();
@@ -382,17 +322,13 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
     const assistantId = `a-${Date.now()}`;
     setMessages((prev) => [
       ...prev,
-      {
-        id: assistantId,
-        role: 'assistant',
-        content: '',
-        fullContent: data.answer,
-      },
+      { id: assistantId, role: 'assistant', content: '', fullContent: data.answer },
     ]);
     setLoading(false);
     await progressivelyRenderAnswer(assistantId, data.answer, {
       sources: data.sources,
       usedWebFallback: data.usedWebFallback,
+      qualityLevel: data.qualityLevel,
     });
   }
 
@@ -402,7 +338,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
         {messages.length === 0 && !loading && !renderingAnswer && (
           <div className="text-center py-8">
             <p className="text-text-muted text-sm mb-6">
-              这是一个新的中文聊天式本地助手。它会优先结合 Baam 站内内容回答，必要时再补充网页信息。
+              问我任何纽约华人社区的问题 — 找商家、查攻略、问办事、看活动，我都能帮你。
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               {SUGGESTED_QUESTIONS.map((question) => (
@@ -423,9 +359,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
         {messages.map((message) => (
           <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`${
-                message.role === 'user' ? 'max-w-[90%]' : 'max-w-[96%]'
-              } ${
+              className={`max-w-[92%] ${
                 message.role === 'user'
                   ? 'bg-primary text-white rounded-2xl rounded-br-md px-4 py-3'
                   : 'bg-bg-card border border-border rounded-2xl rounded-bl-md px-5 py-4'
@@ -433,8 +367,8 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
             >
               {message.role === 'assistant' && (
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-sm">🧭</span>
-                  <span className="text-xs font-medium text-primary">小帮手-2</span>
+                  <span className="text-sm">🤖</span>
+                  <span className="text-xs font-medium text-primary">小邻</span>
                   {message.usedWebFallback && (
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">网页补充</span>
                   )}
@@ -446,6 +380,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                   {message.content}
                 </ReactMarkdown>
               </div>
+
               {message.role === 'assistant' && (() => {
                 const quickReplyChips = extractQuickReplyChips(message.content);
                 if (quickReplyChips.length === 0) return null;
@@ -476,53 +411,29 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
               {message.sources && message.sources.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-border">
                   <p className="text-xs text-text-muted mb-2">相关来源</p>
-                  <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-                    {SOURCE_SECTIONS.map((section) => {
-                      const sectionSources = message.sources!
-                        .filter((source) => section.matchTypes.includes(source.type))
-                        .slice(0, 3);
+                  <div className="space-y-2">
+                    {message.sources.slice(0, 8).map((source, sourceIndex) => {
+                      const href = source.isExternal ? source.url : `/zh${source.url}`;
+                      const meta = sourceTypeMeta[source.type] || { icon: '📎', badgeClass: 'bg-border-light text-text-secondary border-border' };
                       return (
-                        <div key={section.key} className="rounded-xl border border-border bg-bg-page/50 p-3">
-                          <div className="mb-2 flex items-center gap-2">
-                            <span>{section.icon}</span>
-                            <span className="text-xs font-semibold text-text-primary">{section.title}</span>
+                        <a
+                          key={`${source.title}-${sourceIndex}`}
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block rounded-xl border border-border px-3.5 py-3 hover:bg-bg-page transition"
+                        >
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${meta.badgeClass}`}>
+                              <span>{meta.icon}</span>
+                              <span>{source.type}</span>
+                            </span>
+                            <span className="text-sm font-semibold text-text-primary line-clamp-1">{source.title}</span>
                           </div>
-                          {sectionSources.length === 0 ? (
-                            <p className="text-xs text-text-muted">
-                              {section.key === 'forum' ? '暂无相关论坛内容' : '暂无相关内容'}
-                            </p>
-                          ) : (
-                            <div className="space-y-2">
-                              {sectionSources.map((source, sourceIndex) => {
-                                const href = source.isExternal ? source.url : `/zh${source.url}`;
-                                const meta = sourceTypeMeta[source.type] || {
-                                  icon: '📎',
-                                  badgeClass: 'bg-border-light text-text-secondary border-border',
-                                };
-                                return (
-                                  <a
-                                    key={`${section.key}-${source.title}-${sourceIndex}`}
-                                    href={href}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block rounded-lg border border-border bg-white px-3 py-2 hover:bg-bg-page transition"
-                                  >
-                                    <div className="flex items-center gap-1.5 mb-1">
-                                      <span className={`inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full border ${meta.badgeClass}`}>
-                                        <span>{meta.icon}</span>
-                                        <span>{source.type}</span>
-                                      </span>
-                                      <span className="text-xs font-semibold text-text-primary line-clamp-1">{source.title}</span>
-                                    </div>
-                                    {source.snippet && (
-                                      <p className="text-[11px] leading-4 text-text-secondary line-clamp-2">{source.snippet}</p>
-                                    )}
-                                  </a>
-                                );
-                              })}
-                            </div>
+                          {source.snippet && (
+                            <p className="text-xs leading-5 text-text-secondary line-clamp-2">{source.snippet}</p>
                           )}
-                        </div>
+                        </a>
                       );
                     })}
                   </div>
@@ -536,7 +447,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
           <div className="flex justify-start">
             <div className="bg-bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
               <div className="flex items-center gap-2">
-                <span className="text-sm">🧭</span>
+                <span className="text-sm">🤖</span>
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -581,7 +492,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
             value={input}
             onChange={(event) => setInput(event.target.value)}
             disabled={loading || renderingAnswer}
-            placeholder={voice.isListening ? '正在听你说...' : '和小帮手-2 聊聊本地生活、推荐、办事、最新信息...'}
+            placeholder={voice.isListening ? '正在听你说...' : '问小邻：找商家、查攻略、问办事、看活动...'}
             className="flex-1 h-10 px-3 text-sm outline-none bg-transparent"
           />
           {voice.isSupported && (

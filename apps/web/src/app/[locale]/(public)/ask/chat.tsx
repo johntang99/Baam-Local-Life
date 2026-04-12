@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { askXiaoLin } from './actions';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useParams } from 'next/navigation';
 
 interface DebugPrompt {
   keywords: string[];
@@ -11,6 +12,26 @@ interface DebugPrompt {
   userPrompt: string;
   model: string;
   totalResults: number;
+  qualityLevel?: 'high' | 'medium' | 'low';
+  strictEvidenceMode?: boolean;
+  rankingConsistency?: number;
+  rankingFallbackApplied?: boolean;
+  contextCounts?: {
+    businesses: number;
+    guides: number;
+    news: number;
+    threads: number;
+    voices: number;
+    events: number;
+  };
+  relevanceCounts?: {
+    businesses: { before: number; after: number };
+    guides: { before: number; after: number };
+    news: { before: number; after: number };
+    threads: { before: number; after: number };
+    voices: { before: number; after: number };
+    events: { before: number; after: number };
+  };
 }
 
 interface Message {
@@ -75,6 +96,8 @@ interface AskChatProps {
 }
 
 export function AskChat({ initialQuery }: AskChatProps) {
+  const params = useParams<{ locale?: string }>();
+  const localePrefix = `/${params?.locale || 'zh'}`;
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -137,6 +160,12 @@ export function AskChat({ initialQuery }: AskChatProps) {
   };
 
   const [showPrompt, setShowPrompt] = useState<DebugPrompt | null>(null);
+  const qualityStyle = (level?: 'high' | 'medium' | 'low') => {
+    if (level === 'high') return 'bg-green-100 text-green-700';
+    if (level === 'medium') return 'bg-amber-100 text-amber-700';
+    if (level === 'low') return 'bg-red-100 text-red-700';
+    return 'bg-gray-100 text-gray-700';
+  };
 
   const sourceTypeColors: Record<string, string> = {
     '商家': 'bg-blue-100 text-blue-700',
@@ -204,6 +233,63 @@ export function AskChat({ initialQuery }: AskChatProps) {
               <div>
                 <p className="font-medium text-text-muted mb-1">搜索到 {showPrompt.totalResults} 条结果</p>
               </div>
+              {(showPrompt.qualityLevel || typeof showPrompt.rankingConsistency === 'number') && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {showPrompt.qualityLevel && (
+                    <div className="bg-bg-page rounded px-3 py-2">
+                      <p className="text-[11px] text-text-muted mb-1">质量等级</p>
+                      <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium uppercase ${qualityStyle(showPrompt.qualityLevel)}`}>
+                        {showPrompt.qualityLevel}
+                      </span>
+                    </div>
+                  )}
+                  {typeof showPrompt.rankingConsistency === 'number' && (
+                    <div className="bg-bg-page rounded px-3 py-2">
+                      <p className="text-[11px] text-text-muted mb-1">排序一致性</p>
+                      <p className="font-mono text-xs">
+                        {showPrompt.rankingConsistency}
+                        {showPrompt.rankingFallbackApplied ? ' (fallback)' : ''}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+              {typeof showPrompt.strictEvidenceMode === 'boolean' && (
+                <div>
+                  <p className="font-medium text-text-muted mb-1">证据模式</p>
+                  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
+                    showPrompt.strictEvidenceMode ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    {showPrompt.strictEvidenceMode ? 'STRICT' : 'NORMAL'}
+                  </span>
+                </div>
+              )}
+              {showPrompt.contextCounts && (
+                <div>
+                  <p className="font-medium text-text-muted mb-1">上下文注入量</p>
+                  <div className="bg-bg-page rounded px-3 py-2 text-xs grid grid-cols-2 sm:grid-cols-3 gap-1">
+                    <span>商家: {showPrompt.contextCounts.businesses}</span>
+                    <span>指南: {showPrompt.contextCounts.guides}</span>
+                    <span>新闻: {showPrompt.contextCounts.news}</span>
+                    <span>论坛: {showPrompt.contextCounts.threads}</span>
+                    <span>笔记: {showPrompt.contextCounts.voices}</span>
+                    <span>活动: {showPrompt.contextCounts.events}</span>
+                  </div>
+                </div>
+              )}
+              {showPrompt.relevanceCounts && (
+                <div>
+                  <p className="font-medium text-text-muted mb-1">相关性过滤（before → after）</p>
+                  <div className="bg-bg-page rounded px-3 py-2 text-xs space-y-1">
+                    <p>商家: {showPrompt.relevanceCounts.businesses.before} → {showPrompt.relevanceCounts.businesses.after}</p>
+                    <p>指南: {showPrompt.relevanceCounts.guides.before} → {showPrompt.relevanceCounts.guides.after}</p>
+                    <p>新闻: {showPrompt.relevanceCounts.news.before} → {showPrompt.relevanceCounts.news.after}</p>
+                    <p>论坛: {showPrompt.relevanceCounts.threads.before} → {showPrompt.relevanceCounts.threads.after}</p>
+                    <p>笔记: {showPrompt.relevanceCounts.voices.before} → {showPrompt.relevanceCounts.voices.after}</p>
+                    <p>活动: {showPrompt.relevanceCounts.events.before} → {showPrompt.relevanceCounts.events.after}</p>
+                  </div>
+                </div>
+              )}
               <div>
                 <p className="font-medium text-text-muted mb-1">System Prompt</p>
                 <pre className="bg-bg-page rounded px-3 py-2 text-xs whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">{showPrompt.systemPrompt}</pre>
@@ -320,7 +406,7 @@ export function AskChat({ initialQuery }: AskChatProps) {
                     {msg.sources.slice(0, 8).map((source, j) => (
                       <a
                         key={j}
-                        href={`/zh${source.url}`}
+                        href={`${localePrefix}${source.url}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-xs hover:bg-bg-page rounded px-2 py-1 -mx-2 transition-colors"

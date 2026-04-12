@@ -41,6 +41,7 @@ function extractBusinessFields(formData: FormData) {
     verification_status: (formData.get('verification_status') as string) || 'unverified',
     current_plan: (formData.get('current_plan') as string) || 'free',
     is_featured: formData.get('is_featured') === 'true',
+    p_score: parseFloat(formData.get('p_score') as string) || 0,
   };
 }
 
@@ -62,11 +63,12 @@ async function syncBusinessCategories(supabase: ReturnType<typeof db>, businessI
     .delete()
     .eq('business_id', businessId);
 
-  // Insert new ones
+  // Insert new ones — first category is marked as primary
   if (categoryIds.length > 0) {
-    const rows = categoryIds.map((catId) => ({
+    const rows = categoryIds.map((catId, index) => ({
       business_id: businessId,
       category_id: catId,
+      is_primary: index === 0,
     }));
     await supabase.from('business_categories').insert(rows);
   }

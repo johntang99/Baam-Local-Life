@@ -69,6 +69,25 @@ export default async function AdminDashboard({ searchParams }: Props) {
     .limit(5);
   const recentLeads = (rawLeads || []) as AnyRow[];
 
+  // Resolve region IDs to readable names for display in dashboard header
+  const regionNames = ctx.regionIds.length > 0
+    ? await supabase
+      .from('regions')
+      .select('id, slug, name_zh, name_en, name')
+      .in('id', ctx.regionIds)
+      .then(({ data }) => {
+        const rows = (data || []) as AnyRow[];
+        const byId = new Map<string, string>();
+        for (const r of rows) {
+          const label = ctx.locale === 'en'
+            ? (r.name_en || r.name || r.name_zh || r.slug || r.id)
+            : (r.name_zh || r.name || r.name_en || r.slug || r.id);
+          byId.set(String(r.id), String(label));
+        }
+        return ctx.regionIds.map((id) => byId.get(String(id)) || String(id));
+      })
+    : [];
+
   const stats = [
     { label: '文章', value: articleCount || 0, icon: '📝', color: 'text-blue-600' },
     { label: '商家', value: businessCount || 0, icon: '🏪', color: 'text-primary' },
@@ -89,7 +108,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
           <p className="text-lg font-bold">{currentSiteName}</p>
         </div>
         <div className="flex items-center gap-4 text-sm text-gray-500">
-          <span>地区：{ctx.regionIds.join(', ')}</span>
+          <span>地区：{regionNames.join(', ') || '—'}</span>
           <span>语言：{ctx.locale === 'zh' ? '中文' : 'English'}</span>
         </div>
       </div>

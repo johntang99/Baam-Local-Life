@@ -1,0 +1,15 @@
+{
+  "name": "@baam/helper-core-2",
+  "version": "0.2.0-helper2.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts",
+    "./ranking/*": "./src/ranking/*.ts",
+    "./answer/*": "./src/answer/*.ts",
+    "./providers": "./src/providers.ts",
+    "./telemetry": "./src/telemetry/logger.ts"
+  }
+}

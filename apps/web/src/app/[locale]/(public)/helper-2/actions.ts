@@ -1,7 +1,8 @@
 'use server';
 
-import { runHelper2, type HelperMessage } from '@baam/helper-core';
+import { runHelper2, type HelperMessage } from '@baam/helper-core-2';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { getCurrentSite } from '@/lib/sites';
 
 interface Helper2ActionResult {
   answer: string;
@@ -28,6 +29,7 @@ export async function askHelper2(
 
   try {
     const supabaseAdmin = createAdminClient();
+    const site = await getCurrentSite();
 
     const result = await runHelper2({
       query,
@@ -35,6 +37,7 @@ export async function askHelper2(
       supabaseAdmin,
       config: {
         siteName: 'Baam',
+        siteId: site.id,
         assistantName: 'Helper-2',
         assistantNameZh: '小帮手-2',
         locale: 'zh',

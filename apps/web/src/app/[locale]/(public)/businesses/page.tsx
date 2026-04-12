@@ -9,7 +9,9 @@ import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { pickBusinessDisplayName } from '@/lib/business-name';
+import BusinessMapWrapper from '@/components/businesses/BusinessMapWrapper';
 import type { Metadata } from 'next';
+import type { MapBusiness } from '@/components/businesses/BusinessMapView';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -51,7 +53,7 @@ function renderStars(rating: number): string {
 }
 
 interface Props {
-  searchParams: Promise<{ page?: string; cat?: string; sub?: string }>;
+  searchParams: Promise<{ page?: string; cat?: string; sub?: string; view?: string }>;
 }
 
 export default async function BusinessListPage({ searchParams }: Props) {
@@ -59,6 +61,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
   const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
   const activeCat = sp.cat || '';
   const activeSub = sp.sub || '';
+  const viewMode = sp.view === 'map' ? 'map' : 'list';
 
   const supabase = await createClient();
   const site = await getCurrentSite();
@@ -181,7 +184,65 @@ export default async function BusinessListPage({ searchParams }: Props) {
 
   const totalPages = Math.ceil(count / PAGE_SIZE);
 
-  // Preserved params for pagination
+  // Fetch map businesses (all with lat/lng, no pagination) when map view is active
+  let mapBusinesses: MapBusiness[] = [];
+  if (viewMode === 'map') {
+    const MAP_SELECT = 'id, slug, display_name, display_name_zh, phone, avg_rating, review_count, business_locations(latitude, longitude, address_line1, city), business_categories(categories(name_zh))';
+    let rawMapData: AnyRow[] = [];
+
+    if (filterCatIds && filterCatIds.length > 0) {
+      // Category-filtered: get matching business IDs, then fetch in chunks
+      const { data: catBizIds } = await supabase
+        .from('business_categories')
+        .select('business_id')
+        .in('category_id', filterCatIds)
+        .range(0, 999);
+      const bizIds = [...new Set((catBizIds || []).map((r: AnyRow) => r.business_id))];
+      const CHUNK = 200;
+      for (let i = 0; i < bizIds.length; i += CHUNK) {
+        const { data } = await supabase
+          .from('businesses')
+          .select(MAP_SELECT)
+          .eq('is_active', true).eq('status', 'active').eq('site_id', site.id)
+          .in('id', bizIds.slice(i, i + CHUNK));
+        if (data) rawMapData.push(...data);
+      }
+    } else {
+      // No filter: fetch all businesses up to 1000
+      const { data, error } = await supabase
+        .from('businesses')
+        .select(MAP_SELECT)
+        .eq('is_active', true).eq('status', 'active').eq('site_id', site.id)
+        .limit(1000);
+      if (error) console.error('[businesses/map] Query error:', JSON.stringify(error));
+      rawMapData = (data || []) as AnyRow[];
+    }
+
+    mapBusinesses = rawMapData
+      .map((biz) => {
+        const loc = Array.isArray(biz.business_locations) ? biz.business_locations[0] : null;
+        if (!loc?.latitude || !loc?.longitude) return null;
+        const cats = Array.isArray(biz.business_categories)
+          ? biz.business_categories.map((bc: AnyRow) => bc.categories?.name_zh).filter(Boolean)
+          : [];
+        return {
+          id: biz.id,
+          slug: biz.slug,
+          name: pickBusinessDisplayName(biz, ''),
+          latitude: loc.latitude,
+          longitude: loc.longitude,
+          address: [loc.address_line1, loc.city].filter(Boolean).join(', '),
+          phone: biz.phone || undefined,
+          category: cats[0] || undefined,
+          avg_rating: biz.avg_rating || undefined,
+          review_count: biz.review_count || undefined,
+        };
+      })
+      .filter(Boolean) as MapBusiness[];
+  }
+
+  // Preserved params for pagination and view mode
+  const viewParam = viewMode === 'map' ? '&view=map' : '';
   const preservedParams: Record<string, string> = {};
   if (activeCat) preservedParams.cat = activeCat;
   if (activeSub) preservedParams.sub = activeSub;
@@ -198,34 +259,78 @@ export default async function BusinessListPage({ searchParams }: Props) {
                 共 {count || 0} 家商家 · 本地华人商家信息
               </p>
             </div>
+            {/* List / Map toggle */}
+            <div className="flex rounded-lg border border-border overflow-hidden">
+              <Link
+                href={`/businesses${activeCat ? `?cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors',
+                  viewMode === 'list' ? 'bg-primary text-text-inverse' : 'bg-bg-card text-text-secondary hover:text-primary'
+                )}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+                列表
+              </Link>
+              <Link
+                href={`/businesses?view=map${activeCat ? `&cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-l border-border',
+                  viewMode === 'map' ? 'bg-primary text-text-inverse' : 'bg-bg-card text-text-secondary hover:text-primary'
+                )}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                地图
+              </Link>
+            </div>
           </div>
         </PageContainer>
       </section>
 
-      {/* Category Filter — Tier 1: Parent Categories */}
+      {/* Search + Category Filter */}
       <section className="bg-bg-card border-b border-border sticky top-16 z-40">
-        <PageContainer className="pt-4 pb-0">
-          <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide -mx-4 px-4">
-            <Link
-              href="/businesses"
-              className={cn('flex-shrink-0 rounded-full', buttonVariants({ size: 'sm' }), `${
-                !activeCat ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
-              }`)}
-            >
-              全部
-            </Link>
-            {parentCategories.map((cat) => (
+        <PageContainer className="pt-3 pb-0">
+          <div className="flex items-center gap-2 pb-3 -mx-4 px-4">
+            {/* Search + Near Me grouped together */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               <Link
-                key={cat.id}
-                href={`/businesses?cat=${cat.slug}`}
-                className={cn('flex-shrink-0 whitespace-nowrap rounded-full', buttonVariants({ size: 'sm' }), `${
-                  activeCat === cat.slug ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
+                href="/search"
+                className="relative flex items-center w-40 sm:w-56 pl-9 pr-3 py-1.5 text-sm rounded-full border border-border bg-bg-page text-text-muted hover:border-primary/50 transition-colors"
+              >
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                搜索商家...
+              </Link>
+              <Link
+                href={`/businesses?view=map&nearby=1${activeCat ? `&cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
+                className={cn('flex-shrink-0 flex items-center gap-1 rounded-full', buttonVariants({ size: 'sm' }), 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary')}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                附近
+              </Link>
+            </div>
+
+            {/* Category pills */}
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+              <Link
+                href={`/businesses${viewMode === 'map' ? '?view=map' : ''}`}
+                className={cn('flex-shrink-0 rounded-full', buttonVariants({ size: 'sm' }), `${
+                  !activeCat ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
                 }`)}
               >
-                {cat.icon && <span className="mr-1">{cat.icon}</span>}
-                {cat.name_zh}
+                全部
               </Link>
-            ))}
+              {parentCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/businesses?cat=${cat.slug}${viewParam}`}
+                  className={cn('flex-shrink-0 whitespace-nowrap rounded-full', buttonVariants({ size: 'sm' }), `${
+                    activeCat === cat.slug ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
+                  }`)}
+                >
+                  {cat.icon && <span className="mr-1">{cat.icon}</span>}
+                  {cat.name_zh}
+                </Link>
+              ))}
+            </div>
           </div>
         </PageContainer>
 
@@ -235,7 +340,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
             <PageContainer className="py-2.5">
               <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
                 <Link
-                  href={`/businesses?cat=${activeCat}`}
+                  href={`/businesses?cat=${activeCat}${viewParam}`}
                   className={cn('flex-shrink-0 rounded-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
                     !activeSub ? 'bg-primary/15 text-primary border border-primary/30' : 'text-text-secondary hover:text-primary hover:bg-primary/5'
                   }`)}
@@ -245,7 +350,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
                 {subcategories.map((sub) => (
                   <Link
                     key={sub.id}
-                    href={`/businesses?cat=${activeCat}&sub=${sub.slug}`}
+                    href={`/businesses?cat=${activeCat}&sub=${sub.slug}${viewParam}`}
                     className={cn('flex-shrink-0 whitespace-nowrap rounded-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
                       activeSub === sub.slug ? 'bg-primary/15 text-primary border border-primary/30' : 'text-text-secondary hover:text-primary hover:bg-primary/5'
                     }`)}
@@ -274,29 +379,40 @@ export default async function BusinessListPage({ searchParams }: Props) {
 
       {/* Results */}
       <PageContainer className="py-6">
-        {businesses.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-4xl mb-4">🏪</p>
-            <p className="text-text-secondary">暂无商家信息</p>
-            <p className="text-text-muted text-sm mt-1">商家将在这里显示</p>
-          </div>
+        {viewMode === 'map' ? (
+          mapBusinesses.length === 0 ? (
+            <div className="py-12 text-center">
+              <p className="text-4xl mb-4">📍</p>
+              <p className="text-text-secondary">暂无地图数据</p>
+              <p className="text-text-muted text-sm mt-1">没有找到有位置信息的商家</p>
+            </div>
+          ) : (
+            <BusinessMapWrapper businesses={mapBusinesses} />
+          )
         ) : (
           <>
-            {/* Business Cards (strictly sorted by total_score) */}
-            <div className="grid lg:grid-cols-2 gap-5">
-              {businesses.map((biz) => (
-                <BusinessCard key={biz.id} biz={biz} />
-              ))}
-            </div>
+            {businesses.length === 0 ? (
+              <div className="py-12 text-center">
+                <p className="text-4xl mb-4">🏪</p>
+                <p className="text-text-secondary">暂无商家信息</p>
+                <p className="text-text-muted text-sm mt-1">商家将在这里显示</p>
+              </div>
+            ) : (
+              <div className="grid lg:grid-cols-2 gap-5">
+                {businesses.map((biz) => (
+                  <BusinessCard key={biz.id} biz={biz} />
+                ))}
+              </div>
+            )}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath="/businesses"
+              searchParams={preservedParams}
+            />
           </>
         )}
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          basePath="/businesses"
-          searchParams={preservedParams}
-        />
       </PageContainer>
 
       {/* Business CTA Banner */}

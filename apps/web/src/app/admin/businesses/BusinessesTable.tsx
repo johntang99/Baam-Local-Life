@@ -65,7 +65,8 @@ export default function BusinessesTable({ businesses, siteId, siteParams = '' }:
             <th>套餐</th>
             <th>评分</th>
             <th>评论数</th>
-            <th>线索数</th>
+            <th>P-Score</th>
+            <th>总分</th>
             <th>Featured</th>
             <th>操作</th>
           </tr>
@@ -96,7 +97,8 @@ export default function BusinessesTable({ businesses, siteId, siteParams = '' }:
                   {biz.avg_rating ? Number(biz.avg_rating).toFixed(1) : '--'}
                 </td>
                 <td className="text-sm">{biz.review_count ?? 0}</td>
-                <td className="text-sm">{biz.lead_count ?? 0}</td>
+                <td className="text-sm">{biz.p_score ? Number(biz.p_score).toFixed(1) : '0'}</td>
+                <td className="text-sm font-medium">{biz.total_score ? Number(biz.total_score).toFixed(1) : '--'}</td>
                 <td>
                   <button
                     onClick={() => handleToggleFeatured(biz.id, !!biz.is_featured)}

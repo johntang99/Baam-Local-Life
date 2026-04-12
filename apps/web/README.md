@@ -93,6 +93,9 @@ Copy `.env.local.example` to `.env.local` and fill in the values. Key variables:
 - `NEXT_PUBLIC_DEFAULT_SITE=ny-zh`
 - `NEXT_PUBLIC_SITE_PLATFORM=chinese`
 - `NEXT_PUBLIC_DEFAULT_LOCALE=zh`
+- `HELPER_STRICT_EVIDENCE_MODE` — Helper evidence mode switch:
+  - `0` / `false` (default): normal mode
+  - `1` / `true`: strict evidence mode (no unsupported factual details)
 
 ## Related
 
@@ -100,5 +103,6 @@ Copy `.env.local.example` to `.env.local` and fill in the values. Key variables:
 - [Shared packages](../../packages/) — Shared types and utilities
 - [Database schema](../../document/Baam_Supabase_Schema.sql) — Full Supabase schema
 - [Business data pipeline](../../document/business-data-pipeline.md) — Import/enrichment scripts
+- [Helper production env checklist](../../document/helper-production-env-checklist.md) — Vercel env checklist and rollout guidance
 
 try to do it.
