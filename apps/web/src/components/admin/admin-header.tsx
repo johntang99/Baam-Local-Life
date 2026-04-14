@@ -1,6 +1,7 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 import { useAdminSite } from './AdminSiteContext';
 
 const LOCALES = [
@@ -28,7 +29,27 @@ const pageTitles: Record<string, string> = {
 
 export function AdminHeader() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { currentSite, sites, setSite, setLocale, loading } = useAdminSite();
+
+  function pushAdminContext(nextSiteSlug: string, nextLocale: string) {
+    const p = new URLSearchParams(searchParams?.toString() || '');
+    p.set('region', nextSiteSlug);
+    p.set('locale', nextLocale);
+    const q = p.toString();
+    router.replace(q ? `${pathname}?${q}` : pathname);
+    router.refresh();
+  }
+
+  useEffect(() => {
+    if (loading) return;
+    const qRegion = searchParams?.get('region') || '';
+    const qLocale = searchParams?.get('locale') || '';
+    if (qRegion === currentSite.slug && qLocale === currentSite.locale) return;
+    pushAdminContext(currentSite.slug, currentSite.locale);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, currentSite.slug, currentSite.locale]);
 
   // Find best matching page title (longest prefix match)
   const pageTitle = Object.entries(pageTitles)
@@ -49,7 +70,13 @@ export function AdminHeader() {
             <label className="text-xs text-gray-500 hidden sm:inline">站点</label>
             <select
               value={currentSite.slug}
-              onChange={(e) => setSite(e.target.value)}
+              onChange={(e) => {
+                const nextSlug = e.target.value;
+                const nextSite = sites.find((s) => s.slug === nextSlug);
+                const nextLocale = nextSite?.locale || currentSite.locale || 'zh';
+                setSite(nextSlug);
+                pushAdminContext(nextSlug, nextLocale);
+              }}
               disabled={loading}
               className="h-9 px-3 pr-8 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer"
             >
@@ -64,7 +91,11 @@ export function AdminHeader() {
             <label className="text-xs text-gray-500 hidden sm:inline">语言</label>
             <select
               value={currentSite.locale}
-              onChange={(e) => setLocale(e.target.value)}
+              onChange={(e) => {
+                const nextLocale = e.target.value;
+                setLocale(nextLocale);
+                pushAdminContext(currentSite.slug, nextLocale);
+              }}
               className="h-9 px-3 pr-8 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-primary outline-none cursor-pointer"
             >
               {LOCALES.map(loc => (

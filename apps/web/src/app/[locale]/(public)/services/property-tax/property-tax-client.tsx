@@ -17,6 +17,8 @@ interface PropertyResult {
   marketValue: number;
   estimatedTax: number;
   year: string;
+  county?: string;
+  municipality?: string;
 }
 
 const REGIONS = [
@@ -84,6 +86,7 @@ export function PropertyTaxClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [results, setResults] = useState<PropertyResult[] | null>(null);
+  const [suggestion, setSuggestion] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [history, setHistory] = useState<{ address: string; region: string }[]>([]);
 
@@ -95,16 +98,18 @@ export function PropertyTaxClient() {
     setLoading(true);
     setError('');
     setResults(null);
+    setSuggestion('');
     try {
-      // If address contains comma (has city/state/zip), send as full address without requiring region
-      const hasFullAddress = addr.includes(',');
+      // Always send region when selected — even if address has city/state/zip,
+      // the region helps route to the correct NYS county-based search
       const params = new URLSearchParams({ address: addr.trim() });
-      if (!hasFullAddress && b) params.set('region', b);
+      if (b) params.set('region', b);
       const res = await fetch(`/api/services/property-tax?${params}`);
       if (res.status === 429) { setError('查询过于频繁，请稍后再试'); return; }
       if (!res.ok) { setError('查询失败，请稍后重试'); return; }
       const data = await res.json();
       setResults(data.properties || []);
+      if (data.suggestion) setSuggestion(data.suggestion);
     } catch { setError('网络错误，请检查网络连接'); }
     finally { setLoading(false); }
   }, []);
@@ -195,15 +200,32 @@ export function PropertyTaxClient() {
             <div className="bg-gray-50 rounded-2xl p-8 text-center">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🏠</div>
               <h3 className="text-base font-bold text-gray-700 mb-1">{convert('未找到房产')}</h3>
-              <p className="text-sm text-gray-500 mb-2">{convert('请检查地址拼写，确保使用英文地址（如 123 Main Street）')}</p>
-              <p className="text-xs text-gray-400">{convert('提示：某些房产可能以不同地址格式登记（如联合地址"86-92"），或登记在不同的城镇名下。尝试只输入门牌号不加城市名，或使用相邻地址搜索。')}</p>
+              {suggestion ? (
+                <div className="mt-3">
+                  <p className="text-sm text-gray-500 mb-2">{convert('您是不是要查找：')}</p>
+                  <button type="button" onClick={() => { setAddress(suggestion); doSearch(suggestion, region); }}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition font-medium text-sm">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    {suggestion}
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-500 mb-2">{convert('请检查地址拼写，确保使用英文地址（如 123 Main Street）')}</p>
+                  <p className="text-xs text-gray-400">{convert('提示：某些房产可能以不同地址格式登记（如联合地址"86-92"），或登记在不同的城镇名下。尝试只输入门牌号不加城市名，或使用相邻地址搜索。')}</p>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-3">
               {results.map((r, i) => {
                 // All results link to detail page
+                const qp = new URLSearchParams();
+                if (r.county) qp.set('county', r.county);
+                if (r.municipality) qp.set('municipality', r.municipality);
+                const detailParams = qp.toString() ? `?${qp}` : '';
                 const detailHref = r.bbl
-                  ? `/zh/services/property-tax/${encodeURIComponent(r.bbl)}`
+                  ? `/zh/services/property-tax/${encodeURIComponent(r.bbl)}${detailParams}`
                   : undefined;
                 const Wrapper = detailHref ? 'a' : 'div';
                 const wrapperProps = detailHref ? { href: detailHref } : {};

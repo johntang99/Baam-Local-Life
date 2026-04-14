@@ -123,24 +123,24 @@ export default async function AdminBusinessesPage({ searchParams }: Props) {
       claims = [];
     }
   } else {
-    // Build businesses query — filter by site_id directly
-    let query = supabase
-      .from('businesses')
-      .select('*', { count: 'exact' })
-      .eq('site_id', ctx.siteId)
-      .order('created_at', { ascending: false });
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
 
-    if (tab === 'featured') query = query.eq('is_featured', true);
-    if (statusFilter) query = query.eq('status', statusFilter);
-    if (verificationFilter) query = query.eq('verification_status', verificationFilter);
-    if (planFilter) query = query.eq('current_plan', planFilter);
+    const applyBusinessFilters = (q: AnyRow) => {
+      let query = q.eq('site_id', ctx.siteId);
+      if (tab === 'featured') query = query.eq('is_featured', true);
+      if (statusFilter) query = query.eq('status', statusFilter);
+      if (verificationFilter) query = query.eq('verification_status', verificationFilter);
+      if (planFilter) query = query.eq('current_plan', planFilter);
+      return query;
+    };
 
     // Category filter
     const filterCatSlug = subFilter || catFilter;
     if (filterCatSlug) {
       const matchedCat = allCats.find((c: AnyRow) => c.slug === filterCatSlug);
       if (matchedCat) {
-        const filterCatIds = [matchedCat.id];
+        const filterCatIds: string[] = [matchedCat.id];
         if (!matchedCat.parent_id) {
           filterCatIds.push(...allCats.filter((c: AnyRow) => c.parent_id === matchedCat.id).map((c: AnyRow) => c.id));
         }
@@ -149,21 +149,60 @@ export default async function AdminBusinessesPage({ searchParams }: Props) {
           .select('business_id')
           .in('category_id', filterCatIds)
           .limit(10000);
-        const bizIds = (bizCatRows || []).map((r: AnyRow) => r.business_id);
-        if (bizIds.length > 0) {
-          query = query.in('id', bizIds);
+
+        const bizIds = Array.from(new Set((bizCatRows || []).map((r: AnyRow) => String(r.business_id || '')).filter(Boolean)));
+        if (bizIds.length === 0) {
+          businesses = [];
+          totalCount = 0;
         } else {
-          query = query.in('id', ['00000000-0000-0000-0000-000000000000']);
+          // Avoid oversized `in (...)` queries by splitting IDs into chunks.
+          const chunkSize = 200;
+          const merged: AnyRow[] = [];
+          for (let i = 0; i < bizIds.length; i += chunkSize) {
+            const chunk = bizIds.slice(i, i + chunkSize);
+            const chunkQuery = applyBusinessFilters(
+              supabase
+                .from('businesses')
+                .select('*')
+                .in('id', chunk),
+            );
+            const { data: rawChunkRows } = await chunkQuery;
+            if (rawChunkRows?.length) merged.push(...(rawChunkRows as AnyRow[]));
+          }
+
+          merged.sort((a, b) => {
+            const ta = Date.parse(String(a.created_at || '1970-01-01T00:00:00Z'));
+            const tb = Date.parse(String(b.created_at || '1970-01-01T00:00:00Z'));
+            return tb - ta;
+          });
+
+          totalCount = merged.length;
+          businesses = merged.slice(from, to + 1);
         }
+      } else {
+        let query = applyBusinessFilters(
+          supabase
+            .from('businesses')
+            .select('*', { count: 'exact' })
+            .order('created_at', { ascending: false }),
+        );
+        query = query.range(from, to);
+        const { data: rawBusinesses, count } = await query;
+        businesses = (rawBusinesses || []) as AnyRow[];
+        totalCount = count ?? businesses.length;
       }
+    } else {
+      let query = applyBusinessFilters(
+        supabase
+          .from('businesses')
+          .select('*', { count: 'exact' })
+          .order('created_at', { ascending: false }),
+      );
+      query = query.range(from, to);
+      const { data: rawBusinesses, count } = await query;
+      businesses = (rawBusinesses || []) as AnyRow[];
+      totalCount = count ?? businesses.length;
     }
-
-    const from = (page - 1) * pageSize;
-    query = query.range(from, from + pageSize - 1);
-
-    const { data: rawBusinesses, count } = await query;
-    businesses = (rawBusinesses || []) as AnyRow[];
-    totalCount = count ?? businesses.length;
   }
 
   const from = (page - 1) * pageSize;
