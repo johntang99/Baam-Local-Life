@@ -134,7 +134,7 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
           <div className="flex-1">
             {/* Board Header */}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold flex items-center gap-2">
+              <h1 className="text-2xl fw-bold flex items-center gap-2">
                 <span>{boardData.emoji || boardData.icon || '📋'}</span>
                 {boardData.name_zh || boardData.name || boardData.name_en}
               </h1>
@@ -149,10 +149,10 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
                 <Link
                   key={opt.key}
                   href={opt.key === 'latest_reply' ? `/forum/${board}` : `/forum/${board}?sort=${opt.key}`}
-                  className={cn(buttonVariants({ size: 'sm' }), 'rounded-full', `${
+                  className={cn(buttonVariants({ size: 'sm' }), 'r-full', `${
                     sortBy === opt.key
                       ? 'bg-primary text-text-inverse'
-                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                      : 'bg-border-light text-text-secondary hover:bg-border-light'
                   }`)}
                 >
                   {opt.label}
@@ -183,9 +183,9 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               {thread.is_pinned && (
-                                <Badge className="text-xs bg-red-100 text-red-700">置顶</Badge>
+                                <Badge className="text-xs bg-accent-red-light text-accent-red">置顶</Badge>
                               )}
-                              <h3 className="font-semibold text-sm line-clamp-1">
+                              <h3 className="fw-semibold text-sm line-clamp-1">
                                 {thread.title_zh || thread.title}
                               </h3>
                             </div>
@@ -218,7 +218,7 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
           {/* Sidebar */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">📜 版规</h3>
+              <h3 className="fw-semibold text-sm mb-3">📜 版规</h3>
               <ul className="text-xs text-text-secondary space-y-2">
                 <li>1. 请遵守社区规范，文明发言</li>
                 <li>2. 禁止发布广告和垃圾信息</li>
@@ -227,7 +227,7 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
               </ul>
             </Card>
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">🏪 相关商家</h3>
+              <h3 className="fw-semibold text-sm mb-3">🏪 相关商家</h3>
               <p className="text-xs text-text-muted">商家推荐将在这里显示</p>
             </Card>
           </aside>
@@ -237,8 +237,8 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
       {/* Floating New Post Button */}
       <Link
         href="/forum/new"
-        className={cn(buttonVariants({ size: 'icon' }), 'fab fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow text-2xl z-50')}
-        style={{ backgroundColor: 'var(--color-accent-orange, #f97316)' }}
+        className={cn(buttonVariants({ size: 'icon' }), 'fab fixed bottom-6 right-6 w-14 h-14 r-full elev-lg hover:elev-lg transition-shadow text-2xl z-50')}
+        style={{ backgroundColor: 'var(--primary)' }}
       >
         ✏️
       </Link>

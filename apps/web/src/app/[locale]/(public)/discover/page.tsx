@@ -19,18 +19,18 @@ const PAGE_SIZE = 20;
 
 const creatorGradients = [
   'from-pink-200 to-rose-300',
-  'from-blue-200 to-indigo-300',
-  'from-amber-200 to-orange-300',
+  'from-secondary-light to-secondary-light',
+  'from-amber-200 to-primary-light',
   'from-emerald-200 to-teal-300',
-  'from-violet-200 to-purple-300',
+  'from-violet-200 to-accent-purple-light',
 ];
 
 const creatorTextColors = [
   'text-rose-600',
-  'text-indigo-600',
-  'text-orange-600',
+  'text-secondary-dark',
+  'text-primary-dark',
   'text-teal-600',
-  'text-purple-600',
+  'text-accent-purple',
 ];
 
 export const metadata: Metadata = {
@@ -145,15 +145,15 @@ export default async function DiscoverPage({ searchParams }: Props) {
   const gridPosts = posts;
 
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main className="bg-bg-page min-h-screen">
       {/* ===== Sticky Search + Trending Bar ===== */}
-      <div className="bg-white border-b border-gray-100 sticky top-16 z-40">
+      <div className="bg-bg-card border-b border-border-light sticky top-16 z-40">
         <PageContainer className="py-3">
           <div className="relative max-w-xl mb-3">
-            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <Link href="/ask" className="flex items-center w-full h-11 pl-11 pr-4 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-400 hover:bg-white hover:border-gray-300 transition">
+            <Link href="/ask" className="flex items-center w-full h-11 pl-11 pr-4 bg-bg-page border border-border r-full text-sm text-text-muted hover:bg-bg-card hover:border-border transition">
               搜索笔记、视频、话题...
             </Link>
           </div>
@@ -162,7 +162,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
       </div>
 
       {/* ===== Tabs ===== */}
-      <div className="bg-white border-b border-gray-100">
+      <div className="bg-bg-card border-b border-border-light">
         <PageContainer>
           <div className="py-2">
             <DiscoverTabs />
@@ -173,15 +173,15 @@ export default async function DiscoverPage({ searchParams }: Props) {
       <PageContainer className="py-6">
         {/* Active Topic Banner */}
         {activeTopic && (
-          <Card className="mb-6 p-4 bg-orange-50 flex items-center justify-between">
+          <Card className="mb-6 p-4 bg-primary-50 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xl">{activeTopic.icon_emoji}</span>
               <div>
-                <h2 className="font-semibold text-sm">{activeTopic.name_zh}</h2>
-                <p className="text-xs text-gray-500">{activeTopic.post_count || 0} 篇内容</p>
+                <h2 className="fw-semibold text-sm">{activeTopic.name_zh}</h2>
+                <p className="text-xs text-text-muted">{activeTopic.post_count || 0} 篇内容</p>
               </div>
             </div>
-            <Link href="/discover" className="text-xs text-gray-500 hover:text-primary">
+            <Link href="/discover" className="text-xs text-text-muted hover:text-primary">
               清除筛选 ×
             </Link>
           </Card>
@@ -193,9 +193,9 @@ export default async function DiscoverPage({ searchParams }: Props) {
             {posts.length === 0 ? (
               <div className="py-16 text-center">
                 <p className="text-4xl mb-4">📝</p>
-                <p className="text-gray-500">暂无内容</p>
-                <p className="text-sm text-gray-400 mt-1">成为第一个发布内容的人吧！</p>
-                <Link href="/discover/new-post" className="inline-block mt-4 px-5 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors">
+                <p className="text-text-muted">暂无内容</p>
+                <p className="text-sm text-text-muted mt-1">成为第一个发布内容的人吧！</p>
+                <Link href="/discover/new-post" className="inline-block mt-4 px-5 py-2 bg-primary text-text-inverse text-sm fw-medium r-lg hover:bg-primary-dark transition-colors">
                   发布笔记
                 </Link>
               </div>
@@ -231,8 +231,8 @@ export default async function DiscoverPage({ searchParams }: Props) {
 
             {/* Recommended Creators */}
             {creators.length > 0 && (
-              <Card className="p-5 rounded-[14px]">
-                <h3 className="font-bold text-base mb-4 flex items-center gap-2">
+              <Card className="p-5 r-lg">
+                <h3 className="fw-bold text-base mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -241,20 +241,20 @@ export default async function DiscoverPage({ searchParams }: Props) {
                 <div className="space-y-4">
                   {creators.map((c, i) => (
                     <Link key={c.id} href={`/discover/voices/${c.username}`} className="flex items-center gap-3 group">
-                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${creatorGradients[i % creatorGradients.length]} flex items-center justify-center text-sm font-bold ${creatorTextColors[i % creatorTextColors.length]} flex-shrink-0`}>
+                      <div className={`w-10 h-10 r-full bg-gradient-to-br ${creatorGradients[i % creatorGradients.length]} flex items-center justify-center text-sm fw-bold ${creatorTextColors[i % creatorTextColors.length]} flex-shrink-0`}>
                         {c.display_name?.[0] || '?'}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 group-hover:text-primary transition">{c.display_name}</p>
-                        <p className="text-xs text-gray-400">{c.headline || `${formatFollowers(c.follower_count || 0)}粉丝`}</p>
+                        <p className="text-sm fw-semibold text-text-primary group-hover:text-primary transition">{c.display_name}</p>
+                        <p className="text-xs text-text-muted">{c.headline || `${formatFollowers(c.follower_count || 0)}粉丝`}</p>
                       </div>
-                      <button className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'rounded-full flex-shrink-0')}>
+                      <button className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'r-full flex-shrink-0')}>
                         关注
                       </button>
                     </Link>
                   ))}
                 </div>
-                <Link href="/discover/voices" className="block text-center text-sm text-primary font-medium mt-4 hover:underline">
+                <Link href="/discover/voices" className="block text-center text-sm text-primary fw-medium mt-4 hover:underline">
                   查看更多创作者 &rarr;
                 </Link>
               </Card>
@@ -269,8 +269,8 @@ export default async function DiscoverPage({ searchParams }: Props) {
       {/* ===== FAB: Create Post ===== */}
       <Link
         href="/discover/new-post"
-        className={cn(buttonVariants({ size: 'icon' }), 'fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl flex items-center justify-center transition-all hover:scale-105 z-40 text-white')}
-        style={{ background: 'linear-gradient(135deg, #F97316, #EA580C)' }}
+        className={cn(buttonVariants({ size: 'icon' }), 'fixed bottom-6 right-6 w-14 h-14 r-full elev-lg hover:elev-lg flex items-center justify-center transition-all hover:scale-105 z-40 text-text-inverse')}
+        style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))' }}
         title="发布笔记"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

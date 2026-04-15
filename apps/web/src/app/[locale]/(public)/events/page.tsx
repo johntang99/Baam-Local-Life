@@ -97,7 +97,7 @@ export default async function EventsListPage({ searchParams }: Props) {
     <main>
       <PageContainer className="py-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">本地活动</h1>
+          <h1 className="text-2xl fw-bold">本地活动</h1>
         </div>
 
         {/* Filter Tabs */}
@@ -113,10 +113,10 @@ export default async function EventsListPage({ searchParams }: Props) {
                 <Link
                   key={tab.key}
                   href={href}
-                  className={cn(buttonVariants({ size: 'sm' }), 'rounded-full', `${
+                  className={cn(buttonVariants({ size: 'sm' }), 'r-full', `${
                     period === tab.key
                       ? 'bg-primary text-text-inverse'
-                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                      : 'bg-border-light text-text-secondary hover:bg-border-light'
                   }`)}
                 >
                   {tab.label}
@@ -139,10 +139,10 @@ export default async function EventsListPage({ searchParams }: Props) {
                 <Link
                   key={opt.key}
                   href={href}
-                  className={cn(buttonVariants({ size: 'sm', variant: 'secondary' }), 'h-auto py-1.5 rounded-full', `${
+                  className={cn(buttonVariants({ size: 'sm', variant: 'secondary' }), 'h-auto py-1.5 r-full', `${
                     priceFilter === opt.key
                       ? 'bg-primary/10 text-primary'
-                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                      : 'bg-border-light text-text-secondary hover:bg-border-light'
                   }`)}
                 >
                   {opt.label}
@@ -172,20 +172,20 @@ export default async function EventsListPage({ searchParams }: Props) {
 
               return (
                 <Link key={event.id} href={`/events/${event.slug}`} className="block">
-                  <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
+                  <Card className="overflow-hidden h-full hover:elev-md transition-shadow">
                     <div className="h-32 bg-gradient-to-br from-primary/30 to-primary/5 relative">
-                      <div className="absolute top-3 left-3 bg-white rounded-lg shadow-sm px-2 py-1 text-center">
+                      <div className="absolute top-3 left-3 bg-bg-card r-lg elev-sm px-2 py-1 text-center">
                         <p className="text-xs text-text-muted leading-tight">{month}</p>
-                        <p className="text-lg font-bold leading-tight">{day}</p>
+                        <p className="text-lg fw-bold leading-tight">{day}</p>
                       </div>
                       <div className="absolute top-3 right-3">
-                        <Badge className={cn('text-xs', isFree ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700')}>
+                        <Badge className={cn('text-xs', isFree ? 'bg-accent-green-light text-accent-green' : 'bg-accent-purple-light text-accent-purple')}>
                           {isFree ? '免费' : '付费'}
                         </Badge>
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="font-semibold text-sm line-clamp-2 mb-2">{event.title_zh || event.title_en || event.title}</h3>
+                      <h3 className="fw-semibold text-sm line-clamp-2 mb-2">{event.title_zh || event.title_en || event.title}</h3>
                       <div className="space-y-1 text-xs text-text-muted">
                         {timeStr && <p>{timeStr}</p>}
                         {(event.venue_name || event.venue) && <p>{event.venue_name || event.venue}</p>}

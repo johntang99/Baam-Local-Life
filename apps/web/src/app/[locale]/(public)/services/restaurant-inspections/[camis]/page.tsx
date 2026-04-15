@@ -27,11 +27,11 @@ type AnyRow = Record<string, any>;
 const SOCRATA_URL = 'https://data.cityofnewyork.us/resource/43nn-pn8j.json';
 
 const GRADE_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  'A': { bg: 'bg-green-500', text: 'text-green-600', label: '优秀' },
-  'B': { bg: 'bg-yellow-500', text: 'text-yellow-600', label: '良好' },
-  'C': { bg: 'bg-orange-500', text: 'text-orange-600', label: '需改进' },
-  'Z': { bg: 'bg-red-500', text: 'text-red-600', label: '待评级' },
-  'P': { bg: 'bg-gray-400', text: 'text-gray-500', label: '待评级' },
+  'A': { bg: 'bg-accent-green', text: 'text-accent-green', label: '优秀' },
+  'B': { bg: 'bg-accent-yellow', text: 'text-accent-yellow', label: '良好' },
+  'C': { bg: 'bg-primary', text: 'text-primary-dark', label: '需改进' },
+  'Z': { bg: 'bg-accent-red', text: 'text-accent-red', label: '待评级' },
+  'P': { bg: 'bg-border', text: 'text-text-muted', label: '待评级' },
 };
 
 interface Inspection {
@@ -189,55 +189,55 @@ export default async function RestaurantDetailPage({ params }: Props) {
     <main>
       <PageContainer className="max-w-4xl py-8">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-400 mb-6">
+      <nav className="text-sm text-text-muted mb-6">
         <Link href="/" className="hover:text-primary">首页</Link>
         <span className="mx-2">/</span>
         <Link href="/services" className="hover:text-primary">实用工具</Link>
         <span className="mx-2">/</span>
         <Link href="/services/restaurant-inspections" className="hover:text-primary">餐厅卫生评分</Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-600">{restaurant.dba}</span>
+        <span className="text-text-secondary">{restaurant.dba}</span>
       </nav>
 
       {/* Restaurant Header */}
-      <Card className="rounded-2xl p-6 mb-6">
+      <Card className="r-xl p-6 mb-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           {/* Grade Badge */}
           <div className="flex flex-col items-center flex-shrink-0">
-            <div className={cn('w-24 h-24 rounded-2xl flex items-center justify-center text-white text-4xl font-bold', gradeStyle.bg)}>
+            <div className={cn('w-24 h-24 r-xl flex items-center justify-center text-text-inverse text-4xl fw-bold', gradeStyle.bg)}>
               {latest?.grade || '?'}
             </div>
-            <div className={cn('text-sm font-semibold mt-2', gradeStyle.text)}>
+            <div className={cn('text-sm fw-semibold mt-2', gradeStyle.text)}>
               评分: {latest?.score ?? '?'}
             </div>
-            <div className="text-xs text-gray-400 mt-0.5">
+            <div className="text-xs text-text-muted mt-0.5">
               {latest ? formatDate(latest.date) : ''}
             </div>
           </div>
 
           {/* Info */}
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
+            <h1 className="text-xl sm:text-2xl fw-bold text-text-primary mb-1">
               {chineseName || restaurant.dba}
             </h1>
             {chineseName && (
-              <p className="text-sm text-gray-500 mb-2">{restaurant.dba}</p>
+              <p className="text-sm text-text-muted mb-2">{restaurant.dba}</p>
             )}
-            <p className="text-sm text-gray-500 mb-1">{address}</p>
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-gray-500">
-              {restaurant.cuisine && <span className="text-primary font-medium">{restaurant.cuisine}</span>}
+            <p className="text-sm text-text-muted mb-1">{address}</p>
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 text-sm text-text-muted">
+              {restaurant.cuisine && <span className="text-primary fw-medium">{restaurant.cuisine}</span>}
               {restaurant.phone && (
                 <a href={`tel:${restaurant.phone}`} className="hover:text-primary">{formatPhone(restaurant.phone)}</a>
               )}
             </div>
             {restaurant.latitude && (
               <div className="mt-3 flex flex-wrap gap-2 justify-center sm:justify-start">
-                <a href={`https://maps.google.com/?q=${restaurant.latitude},${restaurant.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                <a href={`https://maps.google.com/?q=${restaurant.latitude},${restaurant.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs px-3 py-1.5 border border-border r-lg hover:bg-bg-page transition">
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
                   导航
                 </a>
                 {restaurant.phone && (
-                  <a href={`tel:${restaurant.phone}`} className="inline-flex items-center gap-1 text-xs px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                  <a href={`tel:${restaurant.phone}`} className="inline-flex items-center gap-1 text-xs px-3 py-1.5 border border-border r-lg hover:bg-bg-page transition">
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                     拨打电话
                   </a>
@@ -250,46 +250,46 @@ export default async function RestaurantDetailPage({ params }: Props) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <Card className="rounded-xl p-4 text-center">
-          <div className="text-xl font-bold text-gray-900">{totalInspections}</div>
-          <div className="text-xs text-gray-500">总检查次数</div>
+        <Card className="r-xl p-4 text-center">
+          <div className="text-xl fw-bold text-text-primary">{totalInspections}</div>
+          <div className="text-xs text-text-muted">总检查次数</div>
         </Card>
-        <Card className="rounded-xl p-4 text-center">
-          <div className={cn('text-xl font-bold', gradeStyle.text)}>{latest?.score ?? '?'} ({latest?.grade || '?'}级)</div>
-          <div className="text-xs text-gray-500">最近评分</div>
+        <Card className="r-xl p-4 text-center">
+          <div className={cn('text-xl fw-bold', gradeStyle.text)}>{latest?.score ?? '?'} ({latest?.grade || '?'}级)</div>
+          <div className="text-xs text-text-muted">最近评分</div>
         </Card>
-        <Card className="rounded-xl p-4 text-center">
-          <div className={cn('text-xl font-bold', criticalCount > 0 ? 'text-red-600' : 'text-green-600')}>{criticalCount}</div>
-          <div className="text-xs text-gray-500">关键违规</div>
+        <Card className="r-xl p-4 text-center">
+          <div className={cn('text-xl fw-bold', criticalCount > 0 ? 'text-accent-red' : 'text-accent-green')}>{criticalCount}</div>
+          <div className="text-xs text-text-muted">关键违规</div>
         </Card>
-        <Card className="rounded-xl p-4 text-center">
-          <div className={cn('text-xl font-bold', nonCriticalCount > 0 ? 'text-yellow-600' : 'text-green-600')}>{nonCriticalCount}</div>
-          <div className="text-xs text-gray-500">非关键违规</div>
+        <Card className="r-xl p-4 text-center">
+          <div className={cn('text-xl fw-bold', nonCriticalCount > 0 ? 'text-accent-yellow' : 'text-accent-green')}>{nonCriticalCount}</div>
+          <div className="text-xs text-text-muted">非关键违规</div>
         </Card>
       </div>
 
       {/* Inspection Timeline */}
-      <Card className="rounded-2xl p-6 mb-6">
+      <Card className="r-xl p-6 mb-6">
         <section>
-        <h2 className="text-lg font-bold text-gray-900 mb-5">检查历史记录</h2>
+        <h2 className="text-lg fw-bold text-text-primary mb-5">检查历史记录</h2>
         <div className="space-y-4">
           {inspections.map((inspection, i) => {
             const iStyle = GRADE_STYLES[inspection.grade] || GRADE_STYLES['P'];
             return (
-              <div key={i} className="relative pl-8 border-l-2 border-gray-100 pb-4 last:pb-0">
+              <div key={i} className="relative pl-8 border-l-2 border-border-light pb-4 last:pb-0">
                 {/* Timeline dot */}
-                <div className={cn('absolute left-[-9px] top-0 w-4 h-4 rounded-full border-2 border-white', iStyle.bg)} />
+                <div className={cn('absolute left-[-9px] top-0 w-4 h-4 r-full border-2 border-border-light', iStyle.bg)} />
 
                 <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-semibold text-gray-900">{formatDate(inspection.date)}</span>
-                  <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full text-white', iStyle.bg)}>
+                  <span className="text-sm fw-semibold text-text-primary">{formatDate(inspection.date)}</span>
+                  <span className={cn('text-xs fw-bold px-2 py-0.5 r-full text-text-inverse', iStyle.bg)}>
                     {inspection.grade || '?'}级 ({inspection.score}分)
                   </span>
-                  <span className="text-xs text-gray-400">{inspection.type}</span>
+                  <span className="text-xs text-text-muted">{inspection.type}</span>
                 </div>
 
                 {inspection.violations.length === 0 ? (
-                  <div className="text-sm text-green-600 flex items-center gap-1">
+                  <div className="text-sm text-accent-green flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                     无违规项
                   </div>
@@ -298,12 +298,12 @@ export default async function RestaurantDetailPage({ params }: Props) {
                     {inspection.violations.map((v, vi) => (
                       <div key={vi} className="flex items-start gap-2 text-sm">
                         <span className={cn(
-                          'text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0 mt-0.5',
-                          v.critical ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'
+                          'text-[10px] fw-bold px-1.5 py-0.5 r-base flex-shrink-0 mt-0.5',
+                          v.critical ? 'bg-accent-red-light text-accent-red' : 'bg-accent-yellow/20 text-accent-yellow'
                         )}>
                           {v.critical ? '关键' : '一般'}
                         </span>
-                        <span className="text-gray-600">{v.description}</span>
+                        <span className="text-text-secondary">{v.description}</span>
                       </div>
                     ))}
                   </div>
@@ -317,36 +317,36 @@ export default async function RestaurantDetailPage({ params }: Props) {
 
       {/* Baam Business Cross-link */}
       {baamBusiness && (
-        <Card className="rounded-2xl p-6 mb-6">
+        <Card className="r-xl p-6 mb-6">
           <section>
-          <h2 className="text-base font-bold text-gray-900 mb-3">在 Baam 上查看这家餐厅</h2>
-          <Link href={`/businesses/${baamBusiness.slug}`} className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl hover:border-primary/30 hover:shadow-sm transition group">
-            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-xl flex-shrink-0">
+          <h2 className="text-base fw-bold text-text-primary mb-3">在 Baam 上查看这家餐厅</h2>
+          <Link href={`/businesses/${baamBusiness.slug}`} className="flex items-center gap-3 p-3 border border-border r-xl hover:border-primary/30 hover:elev-sm transition group">
+            <div className="w-12 h-12 r-xl bg-primary/10 flex items-center justify-center text-xl flex-shrink-0">
               {(baamBusiness.display_name_zh || baamBusiness.display_name)?.[0] || '🍽️'}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-gray-900 group-hover:text-primary transition">
+                <span className="text-sm fw-bold text-text-primary group-hover:text-primary transition">
                   {baamBusiness.display_name_zh || baamBusiness.display_name}
                 </span>
-                <span className="text-[10px] text-primary bg-orange-50 px-1.5 py-0.5 rounded">Baam认证</span>
+                <span className="text-[10px] text-primary bg-primary-50 px-1.5 py-0.5 r-base">Baam认证</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+              <div className="flex items-center gap-2 text-xs text-text-muted mt-0.5">
                 {baamBusiness.avg_rating && <span>★ {baamBusiness.avg_rating}</span>}
                 {baamBusiness.address_full && <span className="truncate">{baamBusiness.address_full}</span>}
               </div>
             </div>
-            <svg className="w-5 h-5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            <svg className="w-5 h-5 text-text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
           </Link>
           </section>
         </Card>
       )}
 
       {/* Write Post CTA */}
-      <Card className="bg-orange-50 border-orange-200 rounded-2xl p-5 mb-6 flex items-center justify-between">
+      <Card className="bg-primary-50 border-primary-200 r-xl p-5 mb-6 flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold text-gray-900">去过这家餐厅？分享你的体验</p>
-          <p className="text-xs text-gray-500 mt-0.5">写一篇笔记帮助更多华人朋友</p>
+          <p className="text-sm fw-semibold text-text-primary">去过这家餐厅？分享你的体验</p>
+          <p className="text-xs text-text-muted mt-0.5">写一篇笔记帮助更多华人朋友</p>
         </div>
         <Link
           href={baamBusiness ? `/discover/new-post?business=${baamBusiness.slug}` : '/discover/new-post'}
@@ -357,7 +357,7 @@ export default async function RestaurantDetailPage({ params }: Props) {
       </Card>
 
       {/* Disclaimer */}
-      <div className="text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-6">
+      <div className="text-xs text-text-muted leading-relaxed border-t border-border-light pt-6">
         <p>数据来源：NYC Department of Health and Mental Hygiene (DOHMH)。评分标准：A级（0-13分）、B级（14-27分）、C级（28分以上）。分数越低越好。</p>
       </div>
 

@@ -36,7 +36,7 @@ export default async function BusinessDashboardPage() {
       <main>
         <div className="max-w-3xl mx-auto px-4 py-12">
           <div className="text-center">
-            <div className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center text-4xl mx-auto mb-6">🏪</div>
+            <div className="w-20 h-20 bg-primary/10 r-xl flex items-center justify-center text-4xl mx-auto mb-6">🏪</div>
             <h1 className="text-2xl font-bold mb-3">欢迎来到商家后台</h1>
             <p className="text-text-secondary mb-8">你还没有注册商家。注册后可以管理商家信息、查看线索、回复评价。</p>
             <Link href="/businesses/claim" className="btn btn-primary h-11 px-8 text-sm inline-block">
@@ -140,7 +140,7 @@ export default async function BusinessDashboardPage() {
               ) : (
                 <div className="space-y-3">
                   {leads.map((lead) => (
-                    <div key={lead.id} className="p-3 bg-bg-page rounded-lg">
+                    <div key={lead.id} className="p-3 bg-bg-page r-lg">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-medium text-sm">{lead.contact_name || '匿名'}</span>
                         <span className={`text-xs ${lead.status === 'new' ? 'text-red-500 font-medium' : 'text-text-muted'}`}>
@@ -170,13 +170,13 @@ export default async function BusinessDashboardPage() {
             <div className="card p-5">
               <h3 className="font-bold text-sm mb-3">快捷操作</h3>
               <div className="space-y-2">
-                <Link href={`/businesses/${biz.slug}`} className="block p-3 bg-bg-page rounded-lg text-sm hover:bg-border-light transition-colors">
+                <Link href={`/businesses/${biz.slug}`} className="block p-3 bg-bg-page r-lg text-sm hover:bg-border-light transition-colors">
                   👀 查看商家主页
                 </Link>
-                <Link href="/admin/businesses" className="block p-3 bg-bg-page rounded-lg text-sm hover:bg-border-light transition-colors">
+                <Link href="/admin/businesses" className="block p-3 bg-bg-page r-lg text-sm hover:bg-border-light transition-colors">
                   ✏️ 编辑商家信息
                 </Link>
-                <Link href="/admin/leads" className="block p-3 bg-bg-page rounded-lg text-sm hover:bg-border-light transition-colors">
+                <Link href="/admin/leads" className="block p-3 bg-bg-page r-lg text-sm hover:bg-border-light transition-colors">
                   📥 管理全部线索
                 </Link>
               </div>

@@ -18,7 +18,7 @@ export function ForumReplyForm({ threadId, isLoggedIn }: ForumReplyFormProps) {
 
   if (!isLoggedIn) {
     return (
-      <div className="bg-bg-card rounded-xl border border-border p-5 text-center">
+      <div className="bg-bg-card r-xl border border-border p-5 text-center">
         <p className="text-sm text-text-secondary">登录后即可回复</p>
       </div>
     );
@@ -49,7 +49,7 @@ export function ForumReplyForm({ threadId, isLoggedIn }: ForumReplyFormProps) {
   };
 
   return (
-    <form ref={formRef} action={handleSubmit} className="bg-bg-card rounded-xl border border-border p-5">
+    <form ref={formRef} action={handleSubmit} className="bg-bg-card r-xl border border-border p-5">
       <h3 className="text-sm font-semibold mb-3">发表回复</h3>
       {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
       {success && <p className="text-xs text-green-600 mb-2">回复成功！</p>}
@@ -57,7 +57,7 @@ export function ForumReplyForm({ threadId, isLoggedIn }: ForumReplyFormProps) {
         name="body"
         placeholder="写下你的回复..."
         required
-        className="w-full h-24 px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y mb-3"
+        className="w-full h-24 px-3 py-2 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y mb-3"
       />
       <button type="submit" disabled={loading} className="btn btn-primary px-6 disabled:opacity-50">
         {loading ? '提交中...' : '提交回复'}

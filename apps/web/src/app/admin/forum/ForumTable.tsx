@@ -39,14 +39,14 @@ export function PendingQueue({ threads }: PendingQueueProps) {
 
   if (threads.length === 0) {
     return (
-      <div className="bg-bg-card border border-border rounded-xl p-12 text-center">
+      <div className="bg-bg-card border border-border r-xl p-12 text-center">
         <p className="text-text-muted">暂无待审核帖子</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl p-5">
+    <div className="bg-bg-card border border-border r-xl p-5">
       <div className="space-y-3">
         {threads.map((thread) => (
           <div
@@ -73,14 +73,14 @@ export function PendingQueue({ threads }: PendingQueueProps) {
               <button
                 onClick={() => handleApprove(thread.id)}
                 disabled={isPending}
-                className="h-7 px-3 text-xs font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                className="h-7 px-3 text-xs font-medium r-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
               >
                 通过
               </button>
               <button
                 onClick={() => handleDelete(thread.id)}
                 disabled={isPending}
-                className="h-7 px-3 text-xs font-medium rounded-lg border border-red-300 text-red-600 hover:bg-red-50 disabled:opacity-50"
+                className="h-7 px-3 text-xs font-medium r-lg border border-red-300 text-red-600 hover:bg-red-50 disabled:opacity-50"
               >
                 删除
               </button>
@@ -131,7 +131,7 @@ export function ThreadsTable({ threads, boardNameMap }: ThreadsTableProps) {
   };
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-bg-card border border-border r-xl overflow-hidden">
       <table className="data-table">
         <thead>
           <tr>

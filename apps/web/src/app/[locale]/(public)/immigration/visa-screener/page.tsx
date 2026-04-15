@@ -40,32 +40,32 @@ export default function VisaScreenerPage() {
     <main>
       <PageContainer className="max-w-3xl py-8">
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-400 mb-6">
+      <nav className="text-sm text-text-muted mb-6">
         <Link href="/" className="hover:text-primary">首页</Link>
         <span className="mx-2">/</span>
         <Link href="/services" className="hover:text-primary">实用工具</Link>
         <span className="mx-2">/</span>
-        <span className="text-gray-600">签证资格评估</span>
+        <span className="text-text-secondary">签证资格评估</span>
       </nav>
 
       {/* Header */}
       <div className="text-center mb-6">
         <div className="text-4xl mb-3">🛂</div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">签证资格智能评估</h1>
-        <p className="text-gray-500 text-sm">AI Visa Eligibility Screener</p>
-        <p className="text-gray-400 text-sm mt-1">回答几个简单问题，AI帮你分析可能适合的签证类别</p>
+        <h1 className="text-2xl sm:text-3xl fw-bold text-text-primary mb-2">签证资格智能评估</h1>
+        <p className="text-text-muted text-sm">AI Visa Eligibility Screener</p>
+        <p className="text-text-muted text-sm mt-1">回答几个简单问题，AI帮你分析可能适合的签证类别</p>
       </div>
 
       {/* Legal Disclaimer */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800 flex items-start gap-2">
+      <div className="bg-accent-yellow/20 border border-accent-yellow r-xl p-4 mb-6 text-sm text-accent-yellow flex items-start gap-2">
         <span className="text-base flex-shrink-0">⚠️</span>
         <p><strong>免责声明：</strong>本工具仅提供一般性信息参考，不构成法律建议。移民法律复杂且因人而异，请务必咨询持牌移民律师后再做决定。</p>
       </div>
 
       {/* Guide Content (SEO) */}
-      <Card className="p-6 mb-8 rounded-2xl">
-        <article className="prose prose-sm max-w-none text-gray-700">
-        <h2 className="text-lg font-bold text-gray-900 mt-0">美国签证和移民类别简介</h2>
+      <Card className="p-6 mb-8 r-xl">
+        <article className="prose prose-sm max-w-none text-text-secondary">
+        <h2 className="text-lg fw-bold text-text-primary mt-0">美国签证和移民类别简介</h2>
         <p>美国的签证和移民体系主要分为<strong>非移民签证</strong>（H-1B工作签证、L-1跨国调派、O-1杰出人才、F-1学生签证等）和<strong>移民签证/绿卡</strong>（EB类职业移民、家庭移民等）。对于中国大陆出生的申请人，大部分类别都存在排期等待。</p>
         <p>本评估工具通过AI分析你的个人情况（目标、学历、工作经验、家庭关系等），帮助你初步了解可能适合的签证类别，并提供下一步行动建议。</p>
         </article>
@@ -81,34 +81,34 @@ export default function VisaScreenerPage() {
 
       {/* Related */}
       <section className="mb-8">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">相关资源</h2>
+        <h2 className="text-lg fw-bold text-text-primary mb-4">相关资源</h2>
         <div className="grid sm:grid-cols-3 gap-3">
           <Link href="/ask" className="block">
-            <Card className="rounded-xl p-4 hover:border-primary/30 hover:shadow-sm transition group text-center">
+            <Card className="r-xl p-4 hover:border-primary/30 hover:elev-sm transition group text-center">
             <div className="text-2xl mb-2">🤖</div>
-            <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary mb-1">问AI小邻</h3>
-            <p className="text-xs text-gray-500">&ldquo;H1B转绿卡需要多久？&rdquo;</p>
+            <h3 className="text-sm fw-bold text-text-primary group-hover:text-primary mb-1">问AI小邻</h3>
+            <p className="text-xs text-text-muted">&ldquo;H1B转绿卡需要多久？&rdquo;</p>
             </Card>
           </Link>
           <Link href="/services/property-tax" className="block">
-            <Card className="rounded-xl p-4 hover:border-primary/30 hover:shadow-sm transition group text-center">
+            <Card className="r-xl p-4 hover:border-primary/30 hover:elev-sm transition group text-center">
             <div className="text-2xl mb-2">🏠</div>
-            <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary mb-1">房产税查询</h3>
-            <p className="text-xs text-gray-500">纽约州房产评估值和税额</p>
+            <h3 className="text-sm fw-bold text-text-primary group-hover:text-primary mb-1">房产税查询</h3>
+            <p className="text-xs text-text-muted">纽约州房产评估值和税额</p>
             </Card>
           </Link>
           <Link href="/businesses" className="block">
-            <Card className="rounded-xl p-4 hover:border-primary/30 hover:shadow-sm transition group text-center">
+            <Card className="r-xl p-4 hover:border-primary/30 hover:elev-sm transition group text-center">
             <div className="text-2xl mb-2">⚖️</div>
-            <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary mb-1">找移民律师</h3>
-            <p className="text-xs text-gray-500">Baam认证移民律师目录</p>
+            <h3 className="text-sm fw-bold text-text-primary group-hover:text-primary mb-1">找移民律师</h3>
+            <p className="text-xs text-text-muted">Baam认证移民律师目录</p>
             </Card>
           </Link>
         </div>
       </section>
 
       {/* Disclaimer */}
-      <div className="text-xs text-gray-400 leading-relaxed border-t border-gray-100 pt-6">
+      <div className="text-xs text-text-muted leading-relaxed border-t border-border-light pt-6">
         <p>本工具由AI驱动，评估结果仅供参考。移民法律复杂且经常变化，具体资格和申请策略需要由持牌移民律师根据您的详细情况来判断。Baam不对评估结果的准确性承担责任。</p>
       </div>
       </PageContainer>

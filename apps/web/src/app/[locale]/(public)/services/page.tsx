@@ -53,8 +53,8 @@ export default function ServicesIndexPage() {
     <main>
       <PageContainer className="max-w-4xl py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">实用工具</h1>
-        <p className="text-gray-500">纽约华人常用查询工具，免费使用</p>
+        <h1 className="text-2xl fw-bold text-text-primary mb-2">实用工具</h1>
+        <p className="text-text-muted">纽约华人常用查询工具，免费使用</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -64,21 +64,21 @@ export default function ServicesIndexPage() {
             href={service.href}
             className="group block"
           >
-            <Card className="p-6 rounded-2xl hover:border-primary/30 hover:shadow-md transition">
+            <Card className="p-6 r-xl hover:border-primary/30 hover:elev-md transition">
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary flex-shrink-0 group-hover:bg-primary/20 transition">
+                <div className="w-14 h-14 bg-primary/10 r-xl flex items-center justify-center text-primary flex-shrink-0 group-hover:bg-primary/20 transition">
                   {service.icon}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-base font-bold text-gray-900 group-hover:text-primary transition">{service.title}</h2>
+                    <h2 className="text-base fw-bold text-text-primary group-hover:text-primary transition">{service.title}</h2>
                     {service.badge && (
-                      <Badge className="text-[10px] font-semibold text-green-700 bg-green-100">{service.badge}</Badge>
+                      <Badge className="text-[10px] fw-semibold text-accent-green bg-accent-green-light">{service.badge}</Badge>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500 leading-relaxed">{service.description}</p>
+                  <p className="text-sm text-text-muted leading-relaxed">{service.description}</p>
                 </div>
-                <svg className="w-5 h-5 text-gray-300 group-hover:text-primary transition flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                <svg className="w-5 h-5 text-text-muted group-hover:text-primary transition flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
               </div>
             </Card>
           </Link>

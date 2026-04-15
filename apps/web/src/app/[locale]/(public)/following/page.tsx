@@ -38,10 +38,10 @@ export default async function FollowingFeedPage() {
     return (
       <main>
         <PageContainer className="max-w-3xl py-8">
-          <h1 className="text-2xl font-bold mb-6">关注动态</h1>
+          <h1 className="text-2xl fw-bold mb-6">关注动态</h1>
           <Card className="p-12 text-center">
             <p className="text-4xl mb-4">👥</p>
-            <h2 className="text-lg font-semibold mb-2">还没有关注任何人</h2>
+            <h2 className="text-lg fw-semibold mb-2">还没有关注任何人</h2>
             <p className="text-sm text-text-muted mb-6">关注达人和创作者，这里会显示他们的最新内容</p>
             <Link href="/voices" className={cn(buttonVariants({ size: 'sm' }), 'h-10 px-6 text-sm inline-block')}>
               发现达人
@@ -69,7 +69,7 @@ export default async function FollowingFeedPage() {
     <main>
       <PageContainer className="max-w-3xl py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">关注动态</h1>
+          <h1 className="text-2xl fw-bold">关注动态</h1>
           <Link href="/voices" className="text-sm text-primary hover:underline">发现更多达人</Link>
         </div>
 
@@ -88,16 +88,16 @@ export default async function FollowingFeedPage() {
                   {/* Author info */}
                   <div className="flex items-center gap-3 mb-3">
                     <Link href={`/voices/${author.username || ''}`}>
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                      <div className="w-10 h-10 r-full bg-primary/10 flex items-center justify-center text-lg">
                         {(author.display_name || '?')[0]}
                       </div>
                     </Link>
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <Link href={`/voices/${author.username || ''}`} className="font-medium text-sm hover:text-primary">
+                        <Link href={`/voices/${author.username || ''}`} className="fw-medium text-sm hover:text-primary">
                           {author.display_name || '匿名'}
                         </Link>
-                        {author.is_verified && <span className="text-blue-500 text-xs">✓</span>}
+                        {author.is_verified && <span className="text-secondary text-xs">✓</span>}
                       </div>
                       <p className="text-xs text-text-muted">{timeAgo}</p>
                     </div>
@@ -106,7 +106,7 @@ export default async function FollowingFeedPage() {
                   {/* Post content */}
                   <Link href={`/voices/${author.username || ''}/posts/${post.slug}`}>
                     {post.title && (
-                      <h3 className="font-semibold text-base mb-2 hover:text-primary transition-colors">{post.title}</h3>
+                      <h3 className="fw-semibold text-base mb-2 hover:text-primary transition-colors">{post.title}</h3>
                     )}
                     <p className="text-sm text-text-secondary line-clamp-3 mb-3">
                       {post.excerpt || post.content?.slice(0, 200)}

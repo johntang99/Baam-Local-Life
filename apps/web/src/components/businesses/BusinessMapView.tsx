@@ -129,12 +129,12 @@ export default function BusinessMapView({ businesses, height = '400px' }: Props)
         .leaflet-control-zoom a { width: 34px !important; height: 34px !important; line-height: 34px !important; font-size: 18px !important; border-radius: 8px !important; }
         .leaflet-control-zoom { border-radius: 10px !important; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
       `}</style>
-      <div ref={mapRef} style={{ height, width: '100%' }} className="rounded-xl overflow-hidden" />
+      <div ref={mapRef} style={{ height, width: '100%' }} className="r-xl overflow-hidden" />
 
       {/* Selected business card overlay */}
       {selectedBiz && (
         <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-80 z-[1000]">
-          <div className="bg-bg-card border border-border rounded-xl shadow-lg p-4">
+          <div className="bg-bg-card border border-border r-xl shadow-lg p-4">
             <button
               onClick={() => setSelectedBiz(null)}
               className="absolute top-2 right-2 text-text-muted hover:text-text-primary text-lg leading-none"

@@ -32,7 +32,7 @@ export function RelatedDiscoverPosts({ posts, title = '相关笔记' }: RelatedP
               href={`/discover/${post.slug || post.id}`}
               className="flex-shrink-0 w-40 group"
             >
-              <div className="rounded-xl overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow">
+              <div className="r-xl overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="aspect-[3/4] overflow-hidden">
                   {coverImage ? (
                     <img src={coverImage} alt={post.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
@@ -82,7 +82,7 @@ export function DiscoverPostsSection({ posts, title = '社区笔记' }: RelatedP
               href={`/discover/${post.slug || post.id}`}
               className="group"
             >
-              <div className="rounded-xl overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow">
+              <div className="r-xl overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow">
                 <div className="aspect-[4/3] overflow-hidden">
                   {coverImage ? (
                     <img src={coverImage} alt={post.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />

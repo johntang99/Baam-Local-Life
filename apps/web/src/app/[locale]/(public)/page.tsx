@@ -15,26 +15,26 @@ type AnyRow = Record<string, any>;
 
 // Badge config for news verticals
 const verticalBadge: Record<string, { label: string; cls: string }> = {
-  news_alert: { label: '快报', cls: 'bg-red-100 text-red-700' },
-  news_brief: { label: '政策', cls: 'bg-blue-100 text-blue-700' },
-  news_explainer: { label: '解读', cls: 'bg-purple-100 text-purple-700' },
+  news_alert: { label: '快报', cls: 'bg-accent-red-light text-accent-red' },
+  news_brief: { label: '政策', cls: 'bg-accent-blue-light text-secondary-dark' },
+  news_explainer: { label: '解读', cls: 'bg-accent-purple-light text-accent-purple' },
   news_roundup: { label: '汇总', cls: 'bg-primary-100 text-primary-700' },
-  news_community: { label: '社区', cls: 'bg-green-100 text-green-700' },
+  news_community: { label: '社区', cls: 'bg-accent-green-light text-accent-green' },
 };
 
 // Guide type badges
 const guideBadge: Record<string, { label: string; cls: string }> = {
-  guide_howto: { label: 'How-To', cls: 'bg-blue-100 text-blue-700' },
-  guide_checklist: { label: 'Checklist', cls: 'bg-green-100 text-green-700' },
-  guide_bestof: { label: 'Best-of', cls: 'bg-yellow-100 text-yellow-700' },
-  guide_comparison: { label: '对比', cls: 'bg-purple-100 text-purple-700' },
+  guide_howto: { label: 'How-To', cls: 'bg-accent-blue-light text-secondary-dark' },
+  guide_checklist: { label: 'Checklist', cls: 'bg-accent-green-light text-accent-green' },
+  guide_bestof: { label: 'Best-of', cls: 'bg-accent-yellow/20 text-accent-yellow' },
+  guide_comparison: { label: '对比', cls: 'bg-accent-purple-light text-accent-purple' },
   guide_scenario: { label: '场景', cls: 'bg-primary-100 text-primary-700' },
 };
 
 // Guide cover gradient colors
 const guideGradients = [
-  'from-blue-100 to-blue-200', 'from-green-100 to-green-200',
-  'from-purple-100 to-purple-200', 'from-orange-100 to-orange-200',
+  'from-secondary-light to-secondary-light', 'from-accent-green-light to-accent-green-light',
+  'from-accent-purple-light to-accent-purple-light', 'from-primary-100 to-primary-200',
 ];
 const guideEmojis: Record<string, string> = {
   guide_howto: '📝', guide_checklist: '✅', guide_bestof: '🏆',
@@ -51,22 +51,22 @@ const guideCategoryNames: Record<string, string> = {
 // Forum board badge colors
 const boardBadge: Record<string, { cls: string }> = {
   'forum-food': { cls: 'bg-primary-100 text-primary-700' },
-  'forum-housing': { cls: 'bg-blue-100 text-blue-700' },
-  'forum-medical': { cls: 'bg-green-100 text-green-700' },
-  'forum-education': { cls: 'bg-purple-100 text-purple-700' },
-  'forum-legal': { cls: 'bg-red-100 text-red-700' },
-  'forum-finance': { cls: 'bg-yellow-100 text-yellow-700' },
+  'forum-housing': { cls: 'bg-accent-blue-light text-secondary-dark' },
+  'forum-medical': { cls: 'bg-accent-green-light text-accent-green' },
+  'forum-education': { cls: 'bg-accent-purple-light text-accent-purple' },
+  'forum-legal': { cls: 'bg-accent-red-light text-accent-red' },
+  'forum-finance': { cls: 'bg-accent-yellow/20 text-accent-yellow' },
   'forum-dmv': { cls: 'bg-cyan-100 text-cyan-700' },
-  'forum-secondhand': { cls: 'bg-gray-100 text-gray-600' },
-  'forum-expose': { cls: 'bg-red-100 text-red-700' },
+  'forum-secondhand': { cls: 'bg-bg-page text-text-secondary' },
+  'forum-expose': { cls: 'bg-accent-red-light text-accent-red' },
   'forum-events': { cls: 'bg-primary-100 text-primary-700' },
 };
 
 // Voice avatar gradient colors
 const voiceGradients = [
-  'from-pink-200 to-pink-300', 'from-blue-200 to-blue-300',
-  'from-yellow-200 to-yellow-300', 'from-green-200 to-green-300',
-  'from-purple-200 to-purple-300', 'from-cyan-200 to-cyan-300',
+  'from-pink-200 to-pink-300', 'from-secondary-light to-secondary-light',
+  'from-accent-yellow/20 to-accent-yellow/30', 'from-accent-green-light to-accent-green-light',
+  'from-accent-purple-light to-accent-purple-light', 'from-cyan-200 to-cyan-300',
 ];
 const voiceEmojis: Record<string, string> = {
   expert: '👩‍⚕️', professional: '🏠', creator: '🍜', user: '👤',
@@ -179,27 +179,27 @@ export default async function HomePage({ params }: Props) {
     <main>
       {/* Alert Banner */}
       {alerts.length > 0 && (
-        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2.5 text-sm flex items-center gap-2">
+        <div className="bg-gradient-to-r from-accent-red to-accent-red text-text-inverse px-4 py-2.5 text-sm flex items-center gap-2">
           <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span className="flex-1"><strong>紧急提醒：</strong>{isEnglishSite ? (alerts[0].title_en || alerts[0].title_zh) : (alerts[0].title_zh || alerts[0].title_en)}</span>
-          <Link href={`/news/${alerts[0].slug}`} className="text-white/80 hover:text-white underline text-xs ml-2">详情 →</Link>
+          <Link href={`/news/${alerts[0].slug}`} className="text-text-inverse/80 hover:text-text-inverse underline text-xs ml-2">详情 →</Link>
         </div>
       )}
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-primary to-orange-600 text-white py-8 sm:py-10">
+      <section className="bg-gradient-to-br from-primary to-primary-dark text-text-inverse py-8 sm:py-10">
         <PageContainer className="max-w-3xl text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">{t('home.heroTitle')}</h1>
-          <p className="text-orange-100 mb-5 text-sm sm:text-base">{t('home.heroSubtitle')}</p>
+          <h1 className="text-2xl sm:text-3xl fw-bold mb-2">{t('home.heroTitle')}</h1>
+          <p className="text-primary-100 mb-5 text-sm sm:text-base">{t('home.heroSubtitle')}</p>
           <form action="/zh/ask" className="relative max-w-2xl mx-auto">
-            <input type="text" name="q" placeholder="问我任何本地问题... 例如「法拉盛中文牙医推荐」" className="w-full h-12 pl-5 pr-14 rounded-xl bg-white text-gray-900 text-sm shadow-lg border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-gray-400" />
+            <input type="text" name="q" placeholder="问我任何本地问题... 例如「法拉盛中文牙医推荐」" className="w-full h-12 pl-5 pr-14 r-xl bg-bg-card text-text-primary text-sm elev-lg border-0 focus:ring-2 focus:ring-orange-300 placeholder:text-text-muted" />
             <button type="submit" className={cn(buttonVariants(), 'absolute right-1 top-1 w-10 h-10 px-0')}>
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
           </form>
           <div className="flex flex-wrap justify-center gap-2 mt-5">
             {['中文家庭医生', '报税服务', '驾照路考', '周末活动', '租房'].map(tag => (
-              <Link key={tag} href={`/ask?q=${encodeURIComponent(tag)}`} className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'bg-white/20 text-white/90 hover:bg-white/30 hover:text-white rounded-full')}>
+              <Link key={tag} href={`/ask?q=${encodeURIComponent(tag)}`} className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'bg-bg-card/20 text-text-inverse/90 hover:bg-bg-card/30 hover:text-text-inverse r-full')}>
                 {tag}
               </Link>
             ))}
@@ -214,23 +214,23 @@ export default async function HomePage({ params }: Props) {
           <SectionBlock>
             <SectionHeader
               title={<><span>📰</span> {t('home.todayNews')}</>}
-              right={<Link href="/news" className="text-sm text-primary font-medium hover:underline">{t('home.viewAll')} →</Link>}
+              right={<Link href="/news" className="text-sm text-primary fw-medium hover:underline">{t('home.viewAll')} →</Link>}
             />
             <div className="grid md:grid-cols-3 gap-5">
               {news.map((a) => {
-                const badge = verticalBadge[a.content_vertical] || { label: '新闻', cls: 'bg-gray-100 text-gray-600' };
+                const badge = verticalBadge[a.content_vertical] || { label: '新闻', cls: 'bg-bg-page text-text-secondary' };
                 const newsTitle = isEnglishSite ? (a.title_en || a.title_zh) : (a.title_zh || a.title_en);
                 const newsSummary = isEnglishSite
                   ? (a.ai_summary_en || a.summary_en || a.ai_summary_zh || a.summary_zh)
                   : (a.ai_summary_zh || a.summary_zh || a.ai_summary_en || a.summary_en);
                 return (
                   <Link key={a.id} href={`/news/${a.slug}`} className="block">
-                    <Card className="p-5 h-full hover:shadow-md transition-shadow">
+                    <Card className="p-5 h-full hover:elev-md transition-shadow">
                     <div className="flex items-center gap-2 mb-3">
                       <Badge className={cn('text-xs', badge.cls)}>{badge.label}</Badge>
                       <span className="text-xs text-text-muted">{timeAgo(a.published_at)}</span>
                     </div>
-                    <h3 className="font-semibold text-base mb-2 line-clamp-2">{newsTitle}</h3>
+                    <h3 className="fw-semibold text-base mb-2 line-clamp-2">{newsTitle}</h3>
                     <p className="text-sm text-text-secondary line-clamp-2">{newsSummary}</p>
                     {a.source_name && (
                       <div className="flex items-center gap-2 mt-3">
@@ -251,11 +251,11 @@ export default async function HomePage({ params }: Props) {
           <SectionBlock>
             <SectionHeader
               title={<><span>📚</span> {t('home.hotGuides')}</>}
-              right={<Link href="/guides" className="text-sm text-primary font-medium hover:underline">{t('home.viewAll')} →</Link>}
+              right={<Link href="/guides" className="text-sm text-primary fw-medium hover:underline">{t('home.viewAll')} →</Link>}
             />
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {guides.map((g, i) => {
-                const gBadge = guideBadge[g.content_vertical] || { label: '指南', cls: 'bg-gray-100 text-gray-600' };
+                const gBadge = guideBadge[g.content_vertical] || { label: '指南', cls: 'bg-bg-page text-text-secondary' };
                 const catName = g.category_id ? (catNameMap[g.category_id] || '') : '';
                 const gradient = guideGradients[i % guideGradients.length];
                 const emoji = guideEmojis[g.content_vertical] || '📚';
@@ -263,7 +263,7 @@ export default async function HomePage({ params }: Props) {
                 const guideBody = isEnglishSite ? (g.body_en || g.body_zh || '') : (g.body_zh || g.body_en || '');
                 return (
                   <Link key={g.id} href={`/guides/${g.slug}`} className="block cursor-pointer">
-                    <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
+                    <Card className="overflow-hidden h-full hover:elev-md transition-shadow">
                       {g.cover_image_url ? (
                         <div className="h-40 overflow-hidden">
                           <img
@@ -281,7 +281,7 @@ export default async function HomePage({ params }: Props) {
                           <Badge className={cn('text-xs', gBadge.cls)}>{gBadge.label}</Badge>
                           {catName && <Badge variant="muted" className="text-xs">{catName}</Badge>}
                         </div>
-                        <h3 className="font-semibold text-sm line-clamp-2 mb-1">{guideTitle}</h3>
+                        <h3 className="fw-semibold text-sm line-clamp-2 mb-1">{guideTitle}</h3>
                         <p className="text-xs text-text-muted">适合：{(g.audience_types || ['所有人']).join(' · ')} · {Math.ceil((guideBody.length || 500) / 400)}分钟阅读</p>
                       </div>
                     </Card>
@@ -296,29 +296,29 @@ export default async function HomePage({ params }: Props) {
         {discoverPosts.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold flex items-center gap-2">📝 社区发现</h2>
-              <Link href="/discover" className="text-sm text-primary font-medium hover:underline">{t('home.viewMore')} →</Link>
+              <h2 className="text-xl fw-bold flex items-center gap-2">📝 社区发现</h2>
+              <Link href="/discover" className="text-sm text-primary fw-medium hover:underline">{t('home.viewMore')} →</Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {discoverPosts.map((post, i) => {
                 const coverImage = post.cover_images?.[0] || post.cover_image_url;
                 const authorName = post.profiles?.display_name || '匿名';
-                const gradients = ['from-rose-200 to-pink-100', 'from-emerald-200 to-teal-100', 'from-violet-200 to-purple-100', 'from-sky-200 to-blue-100', 'from-amber-200 to-orange-100', 'from-fuchsia-200 to-pink-100'];
+                const gradients = ['from-rose-200 to-pink-100', 'from-emerald-200 to-teal-100', 'from-violet-200 to-accent-purple-light', 'from-sky-200 to-secondary-light', 'from-amber-200 to-primary-100', 'from-fuchsia-200 to-pink-100'];
                 return (
                   <Link key={post.id} href={`/discover/${post.slug || post.id}`} className="group">
-                    <div className="rounded-xl overflow-hidden bg-white border border-gray-200 hover:shadow-md transition-shadow">
+                    <div className="r-xl overflow-hidden bg-bg-card border border-border hover:elev-md transition-shadow">
                       <div className="aspect-[3/4] overflow-hidden">
                         {coverImage ? (
                           <img src={coverImage} alt={post.title || ''} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                         ) : (
                           <div className={`w-full h-full bg-gradient-to-br ${gradients[i % gradients.length]} flex items-center justify-center`}>
-                            <span className="text-white/50 text-2xl font-bold">{post.title?.[0] || '📝'}</span>
+                            <span className="text-text-inverse/50 text-2xl fw-bold">{post.title?.[0] || '📝'}</span>
                           </div>
                         )}
                       </div>
                       <div className="p-2.5">
-                        <h3 className="text-xs font-semibold text-gray-900 line-clamp-2 leading-snug">{post.title}</h3>
-                        <p className="text-[10px] text-gray-400 mt-1">{authorName}</p>
+                        <h3 className="text-xs fw-semibold text-text-primary line-clamp-2 leading-snug">{post.title}</h3>
+                        <p className="text-[10px] text-text-muted mt-1">{authorName}</p>
                       </div>
                     </div>
                   </Link>
@@ -332,21 +332,21 @@ export default async function HomePage({ params }: Props) {
         {events.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold flex items-center gap-2">🎪 周末活动精选</h2>
-              <Link href="/events" className="text-sm text-primary font-medium hover:underline">{t('home.viewAll')} →</Link>
+              <h2 className="text-xl fw-bold flex items-center gap-2">🎪 周末活动精选</h2>
+              <Link href="/events" className="text-sm text-primary fw-medium hover:underline">{t('home.viewAll')} →</Link>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {events.map((e, i) => {
-                const gradient = ['from-red-100 to-pink-200', 'from-blue-100 to-cyan-200', 'from-green-100 to-emerald-200', 'from-purple-100 to-violet-200'][i % 4];
+                const gradient = ['from-accent-red-light to-pink-200', 'from-secondary-light to-cyan-200', 'from-accent-green-light to-emerald-200', 'from-accent-purple-light to-violet-200'][i % 4];
                 const emoji = ['🎆', '📚', '🎨', '🏃'][i % 4];
                 const startDate = e.start_at ? new Date(e.start_at) : null;
                 return (
                   <Link key={e.id} href={`/events/${e.slug}`} className="block cursor-pointer">
-                    <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
+                    <Card className="overflow-hidden h-full hover:elev-md transition-shadow">
                       <div className={`h-36 bg-gradient-to-br ${gradient} flex items-center justify-center text-3xl`}>{emoji}</div>
                       <div className="p-4">
                         {startDate && (
-                          <p className="text-xs text-primary font-medium mb-1">
+                          <p className="text-xs text-primary fw-medium mb-1">
                             {startDate.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' })}
                             {' '}
                             {['周日','周一','周二','周三','周四','周五','周六'][startDate.getDay()]}
@@ -354,7 +354,7 @@ export default async function HomePage({ params }: Props) {
                             {startDate.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: true })}
                           </p>
                         )}
-                        <h3 className="font-semibold text-sm mb-1 line-clamp-2">{e.title_zh}</h3>
+                        <h3 className="fw-semibold text-sm mb-1 line-clamp-2">{e.title_zh}</h3>
                         <p className="text-xs text-text-muted">{e.venue_name} · {e.is_free ? '免费' : e.ticket_price || '付费'}</p>
                       </div>
                     </Card>
@@ -369,39 +369,39 @@ export default async function HomePage({ params }: Props) {
         {businesses.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold flex items-center gap-2">🏪 {t('home.recommendedBusinesses')}</h2>
-              <Link href="/businesses" className="text-sm text-primary font-medium hover:underline">{t('home.browseDirectory')} →</Link>
+              <h2 className="text-xl fw-bold flex items-center gap-2">🏪 {t('home.recommendedBusinesses')}</h2>
+              <Link href="/businesses" className="text-sm text-primary fw-medium hover:underline">{t('home.browseDirectory')} →</Link>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {businesses.map((biz) => {
                 const bizName = pickBusinessDisplayName(biz, '商家');
                 return (
                 <Link key={biz.id} href={`/businesses/${biz.slug}`} className="block">
-                  <Card className={cn('p-5 h-full hover:shadow-md transition-shadow', biz.is_featured ? 'border-2 border-primary relative' : '')}>
+                  <Card className={cn('p-5 h-full hover:elev-md transition-shadow', biz.is_featured ? 'border-2 border-primary relative' : '')}>
                   {biz.is_featured && (
-                    <span className="absolute top-3 right-0 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-l-md">推荐</span>
+                    <span className="absolute top-3 right-0 bg-primary text-text-inverse text-xs fw-semibold px-3 py-1 r-base">推荐</span>
                   )}
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-blue-200 to-blue-300 flex-shrink-0 flex items-center justify-center text-xl">
+                    <div className="w-14 h-14 r-lg bg-gradient-to-br from-secondary-light to-secondary-light flex-shrink-0 flex items-center justify-center text-xl">
                       {bizName.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-sm truncate">{bizName}</h3>
+                        <h3 className="fw-semibold text-sm truncate">{bizName}</h3>
                         {biz.verification_status === 'verified' && (
-                          <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
+                          <svg className="w-4 h-4 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/></svg>
                         )}
                       </div>
                       {biz.avg_rating && (
                         <div className="flex items-center gap-1 mt-1">
-                          <span className="text-yellow-500 text-xs">{'★'.repeat(Math.round(Number(biz.avg_rating)))}</span>
+                          <span className="text-accent-yellow text-xs">{'★'.repeat(Math.round(Number(biz.avg_rating)))}</span>
                           <span className="text-xs text-text-muted">{Number(biz.avg_rating).toFixed(1)} ({biz.review_count}评价)</span>
                         </div>
                       )}
                       {biz.ai_tags && (biz.ai_tags as string[]).length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mt-2">
                           {(biz.ai_tags as string[]).slice(0, 3).map((tag: string) => (
-                            <Badge key={tag} className="text-xs bg-blue-50 text-blue-600">{tag}</Badge>
+                            <Badge key={tag} className="text-xs bg-secondary-50 text-secondary-dark">{tag}</Badge>
                           ))}
                         </div>
                       )}
@@ -420,30 +420,30 @@ export default async function HomePage({ params }: Props) {
         {threads.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-xl font-bold flex items-center gap-2">💬 {t('home.forumHotThreads')}</h2>
-              <Link href="/forum" className="text-sm text-primary font-medium hover:underline">{t('home.enterForum')} →</Link>
+              <h2 className="text-xl fw-bold flex items-center gap-2">💬 {t('home.forumHotThreads')}</h2>
+              <Link href="/forum" className="text-sm text-primary fw-medium hover:underline">{t('home.enterForum')} →</Link>
             </div>
             <Card className="bg-bg-card divide-y divide-border-light">
               {threads.map((thread) => {
                 const board = boardMap[thread.board_id];
                 const bSlug = board?.slug || '';
                 const bName = board?.name_zh || '';
-                const bCls = boardBadge[bSlug]?.cls || 'bg-gray-100 text-gray-600';
+                const bCls = boardBadge[bSlug]?.cls || 'bg-bg-page text-text-secondary';
                 const isHot = (thread.reply_count || 0) >= 50;
                 return (
-                  <Link key={thread.id} href={`/forum/${bSlug}/${thread.slug}`} className="flex items-center gap-4 p-4 hover:bg-gray-50 transition block">
+                  <Link key={thread.id} href={`/forum/${bSlug}/${thread.slug}`} className="flex items-center gap-4 p-4 hover:bg-bg-page transition block">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         {bName && <Badge className={cn('text-xs', bCls)}>{bName}</Badge>}
-                        {isHot && <span className="text-xs text-red-500 font-medium">🔥 热帖</span>}
+                        {isHot && <span className="text-xs text-accent-red fw-medium">🔥 热帖</span>}
                       </div>
-                      <h3 className="text-sm font-medium truncate">{thread.title}</h3>
+                      <h3 className="text-sm fw-medium truncate">{thread.title}</h3>
                       {thread.ai_summary_zh && (
                         <p className="text-xs text-text-muted mt-1 line-clamp-1">AI摘要：{thread.ai_summary_zh}</p>
                       )}
                     </div>
                     <div className="text-center flex-shrink-0">
-                      <p className="text-sm font-bold text-primary">{thread.reply_count || 0}</p>
+                      <p className="text-sm fw-bold text-primary">{thread.reply_count || 0}</p>
                       <p className="text-xs text-text-muted">回复</p>
                     </div>
                   </Link>
@@ -455,7 +455,7 @@ export default async function HomePage({ params }: Props) {
 
         {/* ===== NEWSLETTER ===== */}
         <Card className="bg-bg-card p-8 text-center">
-          <h2 className="text-xl font-bold mb-2">📬 {t('home.newsletter.title')}</h2>
+          <h2 className="text-xl fw-bold mb-2">📬 {t('home.newsletter.title')}</h2>
           <p className="text-sm text-text-secondary mb-5">{t('home.newsletter.subtitle')}</p>
           <NewsletterForm source="homepage" className="max-w-md mx-auto" />
           <p className="text-xs text-text-muted mt-3">{t('home.newsletter.subscriberCount', { count: '1,200' })}</p>

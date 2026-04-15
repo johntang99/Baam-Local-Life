@@ -1,7 +1,9 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { CategoryTree } from './CategoryTree';
 import { ContentCategoryTable } from './ContentCategoryTable';
+import { ThemeEditor } from './ThemeEditor';
 import Link from 'next/link';
+import { baamTheme } from '@/lib/theme';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -17,6 +19,7 @@ const TABS = [
   { key: 'news', label: 'News 分类' },
   { key: 'forum', label: 'Forum 分类' },
   { key: 'discover', label: 'Discover 分类' },
+  { key: 'theme', label: '主题配置' },
 ] as const;
 
 function toSiteScopeRows(rows: AnyRow[], siteScope: 'zh' | 'en') {
@@ -65,6 +68,7 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
   const forumEnCategories = toSiteScopeRows(forumRows, 'en');
   const discoverZhCategories = toSiteScopeRows(discoverRows, 'zh');
   const discoverEnCategories = toSiteScopeRows(discoverRows, 'en');
+  const initialThemeJson = JSON.stringify(baamTheme, null, 2);
 
   return (
     <div>
@@ -82,7 +86,7 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
             <Link
               key={tab.key}
               href={`/admin/settings?tab=${tab.key}`}
-              className={`px-3 py-1.5 text-sm rounded-md border transition-colors ${
+              className={`px-3 py-1.5 text-sm r-base border transition-colors ${
                 activeTab === tab.key
                   ? 'border-primary text-primary bg-primary/5'
                   : 'border-border text-text-muted hover:text-text-primary'
@@ -220,6 +224,13 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
               categories={discoverEnCategories}
             />
           </section>
+        )}
+
+        {activeTab === 'theme' && (
+          <ThemeEditor
+            initialThemeJson={initialThemeJson}
+            targetFile="apps/web/src/lib/theme.ts"
+          />
         )}
 
       </div>

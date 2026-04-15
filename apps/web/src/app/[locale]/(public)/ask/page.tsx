@@ -20,11 +20,11 @@ export default async function AskPage({ searchParams }: Props) {
     <main>
       <PageContainer className="max-w-3xl py-8">
         {/* Header */}
-        <Card className="text-center mb-8 p-6 sm:p-8 bg-gradient-to-br from-primary/5 to-orange-50 border-primary/20">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+        <Card className="text-center mb-8 p-6 sm:p-8 bg-gradient-to-br from-primary/5 to-primary-50 border-primary/20">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary r-xl flex items-center justify-center text-3xl mx-auto mb-4">
             🤖
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">小邻 AI 助手</h1>
+          <h1 className="text-2xl sm:text-3xl fw-bold mb-2">小邻 AI 助手</h1>
           <p className="text-text-secondary text-sm">
             问我任何纽约本地生活问题 — 找医生、租房、报税、美食、活动
           </p>

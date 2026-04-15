@@ -92,17 +92,17 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
     <main>
       <PageContainer className="py-6">
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-400 mb-4">
+        <nav className="text-sm text-text-muted mb-4">
           <Link href="/discover" className="hover:text-primary">发现</Link>
           <span className="mx-2">›</span>
-          <span className="text-gray-600">创作者</span>
+          <span className="text-text-secondary">创作者</span>
         </nav>
 
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">认识你身边有价值的人</h1>
-            <p className="text-gray-500 text-sm mt-1">发现本地达人、专家和创作者</p>
+            <h1 className="text-2xl fw-bold">认识你身边有价值的人</h1>
+            <p className="text-text-muted text-sm mt-1">发现本地达人、专家和创作者</p>
           </div>
           <Link href="/discover/voices/apply" className={cn(buttonVariants({ size: 'sm' }), 'h-9 px-4 text-sm')}>
             申请成为达人
@@ -115,10 +115,10 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
             <Link
               key={tag.key}
               href={tag.key === 'all' ? '/discover/voices' : `/discover/voices?tag=${tag.key}`}
-              className={cn(buttonVariants({ size: 'sm' }), 'rounded-full', `${
+              className={cn(buttonVariants({ size: 'sm' }), 'r-full', `${
                 activeTag === tag.key
-                  ? 'bg-primary text-white'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                  ? 'bg-primary text-text-inverse'
+                  : 'bg-bg-page text-text-muted hover:bg-border-light'
               }`)}
             >
               {tag.label}
@@ -129,22 +129,22 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
         {/* Featured Voices */}
         {featured.length > 0 && currentPage === 1 && (
           <section className="mb-10">
-            <h2 className="text-lg font-bold mb-4">精选达人</h2>
+            <h2 className="text-lg fw-bold mb-4">精选达人</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {featured.map((voice) => (
                 <Link key={voice.id} href={`/discover/voices/${voice.username}`} className="block">
                   <Card className="p-6 h-full">
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">
+                    <div className="w-16 h-16 r-full bg-primary/10 flex items-center justify-center text-2xl flex-shrink-0">
                       {voice.display_name?.[0] || '?'}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-base truncate">{voice.display_name || voice.username}</h3>
-                        {voice.is_verified && <Badge className="text-xs bg-blue-100 text-blue-700">已认证</Badge>}
+                        <h3 className="fw-semibold text-base truncate">{voice.display_name || voice.username}</h3>
+                        {voice.is_verified && <Badge className="text-xs bg-accent-blue-light text-secondary-dark">已认证</Badge>}
                       </div>
-                      {voice.headline && <p className="text-sm text-gray-500 line-clamp-2 mb-2">{voice.headline}</p>}
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                      {voice.headline && <p className="text-sm text-text-muted line-clamp-2 mb-2">{voice.headline}</p>}
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
                         <span>{voice.follower_count || 0} 关注者</span>
                       </div>
                     </div>
@@ -159,14 +159,14 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
 
         {/* All Voices Grid */}
         <section>
-          <h2 className="text-lg font-bold mb-4">全部达人</h2>
+          <h2 className="text-lg fw-bold mb-4">全部达人</h2>
           {error ? (
-            <p className="text-gray-500 py-8 text-center">加载达人时出错，请稍后重试。</p>
+            <p className="text-text-muted py-8 text-center">加载达人时出错，请稍后重试。</p>
           ) : voices.length === 0 ? (
             <div className="py-12 text-center">
               <p className="text-4xl mb-4">👤</p>
-              <p className="text-gray-500">暂无达人内容</p>
-              <p className="text-gray-400 text-sm mt-1">达人将在这里显示</p>
+              <p className="text-text-muted">暂无达人内容</p>
+              <p className="text-text-muted text-sm mt-1">达人将在这里显示</p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -174,12 +174,12 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
                 <Link key={voice.id} href={`/discover/voices/${voice.username}`} className="block">
                   <Card className="p-4 h-full">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">
+                    <div className="w-10 h-10 r-full bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">
                       {voice.display_name?.[0] || '?'}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-medium text-sm truncate">{voice.display_name || voice.username}</h3>
-                      {voice.region && <span className="text-xs text-gray-400">{voice.region}</span>}
+                      <h3 className="fw-medium text-sm truncate">{voice.display_name || voice.username}</h3>
+                      {voice.region && <span className="text-xs text-text-muted">{voice.region}</span>}
                     </div>
                   </div>
                   {voice.tags && (
@@ -189,7 +189,7 @@ export default async function DiscoverVoicesPage({ searchParams }: Props) {
                       ))}
                     </div>
                   )}
-                  <div className="flex items-center justify-between text-xs text-gray-400">
+                  <div className="flex items-center justify-between text-xs text-text-muted">
                     <span>{voice.follower_count || 0} 关注者</span>
                     <span className={cn(buttonVariants({ size: 'sm' }), 'h-7 px-3 text-xs')}>关注</span>
                   </div>

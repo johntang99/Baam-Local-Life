@@ -62,6 +62,23 @@ Runs on **http://localhost:5001**
 - **Chinese Script**: Simplified Chinese by default; Traditional Chinese via `opencc-js` runtime conversion (not a separate locale)
 - **AI**: Claude API for search, moderation, content generation
 
+## Radius Token Standard
+
+Control all radius values in `src/lib/theme.ts` under `shape.*`. Use semantic classes from `src/app/globals.css` instead of hardcoded `rounded-*`.
+
+| UI Element | Token in `theme.ts` | Class |
+|------|-------|-------|
+| Card / Panel | `shape.radiusCard` | `r-card` |
+| Button (default) | `shape.radiusButton` | `r-button` |
+| Chip / Badge / Pill / Tab | `shape.radiusChip` | `r-chip` |
+| Input / Select / Textarea | `shape.radiusInput` | `r-input` |
+| Generic small corners | `shape.radius` | `r-base` |
+| Generic medium corners | `shape.radiusLg` | `r-lg` |
+| Generic large corners | `shape.radiusXl` | `r-xl` |
+| Fully rounded | `shape.radiusFull` | `r-full` |
+
+For one-sided corners, use tokenized arbitrary values like `rounded-r-[var(--radius-lg)]`.
+
 ## Directory Structure
 
 ```

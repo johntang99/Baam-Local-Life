@@ -182,7 +182,7 @@ export default async function SearchPage({ searchParams }: Props) {
       <PageContainer className="py-6">
         {/* Search Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-4">搜索</h1>
+          <h1 className="text-2xl fw-bold mb-4">搜索</h1>
           <form className="max-w-2xl">
             <input type="hidden" name="tab" value={activeTab} />
             <div className="flex gap-2">
@@ -191,7 +191,7 @@ export default async function SearchPage({ searchParams }: Props) {
                 name="q"
                 defaultValue={query}
                 placeholder="搜索商家、新闻、指南、达人..."
-                className="flex-1 h-11 px-4 border border-border rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                className="flex-1 h-11 px-4 border border-border r-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
               />
               <button type="submit" className={cn(buttonVariants(), 'h-11 px-6 text-sm')}>搜索</button>
             </div>
@@ -209,10 +209,10 @@ export default async function SearchPage({ searchParams }: Props) {
                 <Link
                   key={tab.key}
                   href={href}
-                  className={cn(buttonVariants({ size: 'sm' }), 'rounded-full whitespace-nowrap', `${
+                  className={cn(buttonVariants({ size: 'sm' }), 'r-full whitespace-nowrap', `${
                     activeTab === tab.key
                       ? 'bg-primary text-text-inverse'
-                      : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                      : 'bg-border-light text-text-secondary hover:bg-border-light'
                   }`)}
                 >
                   {tab.label}
@@ -237,7 +237,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   <Link
                     key={term}
                     href={`/search?q=${encodeURIComponent(term)}`}
-                    className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'h-auto py-1.5 rounded-full')}
+                    className={cn(buttonVariants({ variant: 'secondary', size: 'sm' }), 'h-auto py-1.5 r-full')}
                   >
                     {term}
                   </Link>
@@ -256,9 +256,9 @@ export default async function SearchPage({ searchParams }: Props) {
             {/* AI Summary */}
             {/* AI Summary */}
             {aiSummary && (
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-r-lg px-5 py-4">
-                <p className="text-xs font-semibold text-blue-600 mb-1">🤖 AI 搜索摘要</p>
-                <p className="text-sm text-gray-700 leading-relaxed">{aiSummary}</p>
+              <div className="bg-gradient-to-r from-secondary-50 to-secondary-50 border-l-4 border-secondary r-lg px-5 py-4">
+                <p className="text-xs fw-semibold text-secondary-dark mb-1">🤖 AI 搜索摘要</p>
+                <p className="text-sm text-text-secondary leading-relaxed">{aiSummary}</p>
               </div>
             )}
 
@@ -266,7 +266,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {businesses.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">🏪 商家 ({businesses.length})</h2>
+                  <h2 className="text-lg fw-bold">🏪 商家 ({businesses.length})</h2>
                   {activeTab === 'all' && businesses.length >= 6 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=biz`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -276,15 +276,15 @@ export default async function SearchPage({ searchParams }: Props) {
                     <Link key={biz.id} href={`/businesses/${biz.slug}`} className="block">
                       <Card className="p-4 h-full">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">🏢</div>
+                        <div className="w-10 h-10 r-lg bg-primary/10 flex items-center justify-center text-lg flex-shrink-0">🏢</div>
                         <div className="min-w-0">
-                          <h3 className="font-semibold text-sm truncate">{biz.display_name || biz.name_zh}</h3>
+                          <h3 className="fw-semibold text-sm truncate">{biz.display_name || biz.name_zh}</h3>
                           {biz.category_name && <span className="text-xs text-text-muted">{biz.category_name}</span>}
                         </div>
                       </div>
                       {biz.avg_rating > 0 && (
                         <div className="flex items-center gap-1 text-xs mb-1">
-                          <span className="text-yellow-500">{'★'.repeat(Math.round(biz.avg_rating))}</span>
+                          <span className="text-accent-yellow">{'★'.repeat(Math.round(biz.avg_rating))}</span>
                           <span className="text-text-muted">{biz.avg_rating?.toFixed(1)} ({biz.review_count || 0})</span>
                         </div>
                       )}
@@ -300,7 +300,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {news.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">📰 新闻 ({news.length})</h2>
+                  <h2 className="text-lg fw-bold">📰 新闻 ({news.length})</h2>
                   {activeTab === 'all' && news.length >= 5 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=news`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -309,7 +309,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   {news.map((article) => (
                     <Link key={article.id} href={`/news/${article.slug}`} className="block">
                       <Card className="p-4">
-                      <h3 className="font-semibold text-sm mb-1 line-clamp-2">{article.title_zh || article.title_en}</h3>
+                      <h3 className="fw-semibold text-sm mb-1 line-clamp-2">{article.title_zh || article.title_en}</h3>
                       {(article.ai_summary_zh || article.summary_zh) && (
                         <p className="text-xs text-text-secondary line-clamp-2">{article.ai_summary_zh || article.summary_zh}</p>
                       )}
@@ -325,7 +325,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {guides.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">📚 指南 ({guides.length})</h2>
+                  <h2 className="text-lg fw-bold">📚 指南 ({guides.length})</h2>
                   {activeTab === 'all' && guides.length >= 5 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=guides`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -334,14 +334,14 @@ export default async function SearchPage({ searchParams }: Props) {
                   {guides.map((guide) => (
                     <Link key={guide.id} href={`/guides/${guide.slug}`} className="block">
                       <Card className="p-4">
-                      <h3 className="font-semibold text-sm mb-1 line-clamp-2">{guide.title_zh || guide.title_en}</h3>
+                      <h3 className="fw-semibold text-sm mb-1 line-clamp-2">{guide.title_zh || guide.title_en}</h3>
                       {(guide.ai_summary_zh || guide.summary_zh) && (
                         <p className="text-xs text-text-secondary line-clamp-2">{guide.ai_summary_zh || guide.summary_zh}</p>
                       )}
                       {guide.audience_tags && Array.isArray(guide.audience_tags) && (
                         <div className="flex gap-1 mt-1">
                           {guide.audience_tags.slice(0, 3).map((tag: string) => (
-                            <Badge key={tag} className="text-xs bg-green-50 text-green-700">{tag}</Badge>
+                            <Badge key={tag} className="text-xs bg-accent-green-light text-accent-green">{tag}</Badge>
                           ))}
                         </div>
                       )}
@@ -356,7 +356,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {threads.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">💬 论坛 ({threads.length})</h2>
+                  <h2 className="text-lg fw-bold">💬 论坛 ({threads.length})</h2>
                   {activeTab === 'all' && threads.length >= 5 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=forum`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -365,7 +365,7 @@ export default async function SearchPage({ searchParams }: Props) {
                   {threads.map((thread) => (
                     <Link key={thread.id} href={`/forum/${thread.board_slug || 'general'}/${thread.slug}`} className="block">
                       <Card className="p-4">
-                      <h3 className="font-semibold text-sm mb-1 line-clamp-1">{thread.title_zh || thread.title}</h3>
+                      <h3 className="fw-semibold text-sm mb-1 line-clamp-1">{thread.title_zh || thread.title}</h3>
                       <div className="flex items-center gap-3 text-xs text-text-muted">
                         <span>{thread.author_name || '匿名'}</span>
                         <span>💬 {thread.reply_count || 0}</span>
@@ -382,7 +382,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {voices.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">🎙️ 达人 ({voices.length})</h2>
+                  <h2 className="text-lg fw-bold">🎙️ 达人 ({voices.length})</h2>
                   {activeTab === 'all' && voices.length >= 4 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=voices`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -392,12 +392,12 @@ export default async function SearchPage({ searchParams }: Props) {
                     <Link key={voice.id} href={`/voices/${voice.username}`} className="block">
                       <Card className="p-4 h-full">
                       <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-lg">
+                        <div className="w-10 h-10 r-full bg-primary/10 flex items-center justify-center text-lg">
                           {voice.display_name?.[0] || '?'}
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-medium text-sm truncate">{voice.display_name || voice.username}</h3>
-                          {voice.is_verified && <span className="text-xs text-blue-600">已认证</span>}
+                          <h3 className="fw-medium text-sm truncate">{voice.display_name || voice.username}</h3>
+                          {voice.is_verified && <span className="text-xs text-secondary-dark">已认证</span>}
                         </div>
                       </div>
                       {voice.headline && <p className="text-xs text-text-secondary line-clamp-2">{voice.headline}</p>}
@@ -413,7 +413,7 @@ export default async function SearchPage({ searchParams }: Props) {
             {events.length > 0 && (
               <section>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold">🎉 活动 ({events.length})</h2>
+                  <h2 className="text-lg fw-bold">🎉 活动 ({events.length})</h2>
                   {activeTab === 'all' && events.length >= 4 && (
                     <Link href={`/search?q=${encodeURIComponent(query)}&tab=events`} className="text-sm text-primary hover:underline">查看全部 →</Link>
                   )}
@@ -425,11 +425,11 @@ export default async function SearchPage({ searchParams }: Props) {
                     return (
                       <Link key={event.id} href={`/events/${event.slug}`} className="block">
                         <Card className="p-4">
-                        <h3 className="font-semibold text-sm mb-1 line-clamp-2">{event.title_zh || event.title_en || event.title}</h3>
+                        <h3 className="fw-semibold text-sm mb-1 line-clamp-2">{event.title_zh || event.title_en || event.title}</h3>
                         <div className="flex items-center gap-2 text-xs text-text-muted">
                           {dateStr && <span>📅 {dateStr}</span>}
                           {event.venue_name && <span>📍 {event.venue_name}</span>}
-                          {event.is_free && <Badge className="text-xs bg-green-100 text-green-700">免费</Badge>}
+                          {event.is_free && <Badge className="text-xs bg-accent-green-light text-accent-green">免费</Badge>}
                         </div>
                         </Card>
                       </Link>

@@ -34,7 +34,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams = {
       {currentPage > 1 ? (
         <Link
           href={buildHref(currentPage - 1)}
-          className="px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-orange-50 rounded-lg transition-colors"
+          className="px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-orange-50 r-lg transition-colors"
         >
           上一页
         </Link>
@@ -45,7 +45,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams = {
       {/* Page numbers */}
       {start > 1 && (
         <>
-          <Link href={buildHref(1)} className="w-9 h-9 flex items-center justify-center text-sm rounded-lg text-gray-600 hover:text-primary hover:bg-orange-50 transition-colors">1</Link>
+          <Link href={buildHref(1)} className="w-9 h-9 flex items-center justify-center text-sm r-lg text-gray-600 hover:text-primary hover:bg-orange-50 transition-colors">1</Link>
           {start > 2 && <span className="px-1 text-gray-400">...</span>}
         </>
       )}
@@ -54,7 +54,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams = {
         <Link
           key={page}
           href={buildHref(page)}
-          className={`w-9 h-9 flex items-center justify-center text-sm rounded-lg transition-colors ${
+          className={`w-9 h-9 flex items-center justify-center text-sm r-lg transition-colors ${
             page === currentPage
               ? 'bg-primary text-white font-medium'
               : 'text-gray-600 hover:text-primary hover:bg-orange-50'
@@ -67,7 +67,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams = {
       {end < totalPages && (
         <>
           {end < totalPages - 1 && <span className="px-1 text-gray-400">...</span>}
-          <Link href={buildHref(totalPages)} className="w-9 h-9 flex items-center justify-center text-sm rounded-lg text-gray-600 hover:text-primary hover:bg-orange-50 transition-colors">{totalPages}</Link>
+          <Link href={buildHref(totalPages)} className="w-9 h-9 flex items-center justify-center text-sm r-lg text-gray-600 hover:text-primary hover:bg-orange-50 transition-colors">{totalPages}</Link>
         </>
       )}
 
@@ -75,7 +75,7 @@ export function Pagination({ currentPage, totalPages, basePath, searchParams = {
       {currentPage < totalPages ? (
         <Link
           href={buildHref(currentPage + 1)}
-          className="px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-orange-50 rounded-lg transition-colors"
+          className="px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-orange-50 r-lg transition-colors"
         >
           下一页
         </Link>

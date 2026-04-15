@@ -93,7 +93,7 @@ export default async function AdminSitesPage() {
           <h2 className="text-lg font-bold">地区列表</h2>
           <AddRegionForm parentRegions={regions} />
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-200 r-xl overflow-hidden">
           <table className="data-table">
             <thead>
               <tr>

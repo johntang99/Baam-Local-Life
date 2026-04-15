@@ -17,7 +17,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-baam-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              <div className="w-8 h-8 bg-baam-500 r-lg flex items-center justify-center text-white font-bold text-sm">
                 B
               </div>
               <span className="text-xl font-bold text-white">Baam</span>

@@ -131,7 +131,7 @@ export default async function ForumThreadPage({ params }: Props) {
               <div className="ai-summary-card mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm">🤖</span>
-                  <span className="text-xs font-semibold text-text-secondary">AI 讨论摘要</span>
+                  <span className="text-xs fw-semibold text-text-secondary">AI 讨论摘要</span>
                 </div>
                 <p className="text-sm text-secondary-dark leading-relaxed">{threadData.ai_summary_zh}</p>
               </div>
@@ -139,15 +139,15 @@ export default async function ForumThreadPage({ params }: Props) {
 
             {/* Thread Header */}
             <header className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-3">{title}</h1>
+              <h1 className="text-2xl sm:text-3xl fw-bold leading-tight mb-3">{title}</h1>
 
               {/* Author Info */}
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-border-light flex items-center justify-center text-text-muted">
+                <div className="w-10 h-10 r-full bg-border-light flex items-center justify-center text-text-muted">
                   👤
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{threadData.author_name || '匿名用户'}</p>
+                  <p className="text-sm fw-medium">{threadData.author_name || '匿名用户'}</p>
                   <div className="flex items-center gap-3 text-xs text-text-muted">
                     {threadData.created_at && (
                       <time>{new Date(threadData.created_at).toLocaleDateString('zh-CN', {
@@ -163,17 +163,17 @@ export default async function ForumThreadPage({ params }: Props) {
 
             {/* Thread Body */}
             {body && (
-              <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-text-secondary">
+              <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:fw-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:fw-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-text-secondary">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
               </div>
             )}
 
             {/* AI Merchant Injection */}
             {hasAiMerchant && (
-              <div className="bg-accent-orange-light/20 border border-accent-orange/20 rounded-lg p-4 mb-8">
+              <div className="bg-accent-orange-light/20 border border-accent-orange/20 r-lg p-4 mb-8">
                 <div className="flex items-center gap-2 mb-3">
                   <span>🤖</span>
-                  <span className="text-sm font-semibold">AI 推荐商家</span>
+                  <span className="text-sm fw-semibold">AI 推荐商家</span>
                 </div>
                 <p className="text-xs text-text-muted">根据帖子内容，AI 为您匹配了以下商家（加载中...）</p>
                 {/* TODO: Render business cards from ai_merchant_ids */}
@@ -182,7 +182,7 @@ export default async function ForumThreadPage({ params }: Props) {
 
             {/* Replies Section */}
             <section className="border-t border-border pt-6">
-              <h2 className="text-lg font-bold mb-4">
+              <h2 className="text-lg fw-bold mb-4">
                 回复 ({replies.length})
               </h2>
 
@@ -193,12 +193,12 @@ export default async function ForumThreadPage({ params }: Props) {
                   {replies.map((reply, index) => (
                     <Card key={reply.id} className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-border-light flex items-center justify-center text-text-muted text-sm flex-shrink-0">
+                        <div className="w-8 h-8 r-full bg-border-light flex items-center justify-center text-text-muted text-sm flex-shrink-0">
                           👤
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-sm font-medium">{reply.author_name || '匿名用户'}</span>
+                            <span className="text-sm fw-medium">{reply.author_name || '匿名用户'}</span>
                             <span className="text-xs text-text-muted">#{index + 1}</span>
                             {reply.created_at && (
                               <span className="text-xs text-text-muted">
@@ -230,12 +230,12 @@ export default async function ForumThreadPage({ params }: Props) {
             {/* Related Threads */}
             {relatedThreads.length > 0 && (
               <section className="mt-8">
-                <h2 className="text-lg font-bold mb-4">📌 相关帖子</h2>
+                <h2 className="text-lg fw-bold mb-4">📌 相关帖子</h2>
                 <div className="grid sm:grid-cols-3 gap-4">
                   {relatedThreads.map((related) => (
                     <Link key={related.id} href={`/forum/${board}/${related.slug}`} className="block">
-                      <Card className="p-4 h-full hover:shadow-md transition-shadow">
-                        <h3 className="font-medium text-sm line-clamp-2">{related.title_zh || related.title}</h3>
+                      <Card className="p-4 h-full hover:elev-md transition-shadow">
+                        <h3 className="fw-medium text-sm line-clamp-2">{related.title_zh || related.title}</h3>
                         <span className="text-xs text-text-muted mt-1 block">💬 {related.reply_count || 0}</span>
                       </Card>
                     </Link>
@@ -249,20 +249,20 @@ export default async function ForumThreadPage({ params }: Props) {
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             {/* Thread Stats */}
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">帖子信息</h3>
+              <h3 className="fw-semibold text-sm mb-3">帖子信息</h3>
               <div className="space-y-2 text-xs text-text-secondary">
                 <div className="flex justify-between">
                   <span>浏览</span>
-                  <span className="font-medium">{threadData.view_count || 0}</span>
+                  <span className="fw-medium">{threadData.view_count || 0}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>回复</span>
-                  <span className="font-medium">{threadData.reply_count || 0}</span>
+                  <span className="fw-medium">{threadData.reply_count || 0}</span>
                 </div>
                 {threadData.created_at && (
                   <div className="flex justify-between">
                     <span>发布时间</span>
-                    <span className="font-medium">
+                    <span className="fw-medium">
                       {new Date(threadData.created_at).toLocaleDateString('zh-CN')}
                     </span>
                   </div>

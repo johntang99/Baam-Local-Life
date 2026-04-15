@@ -57,19 +57,19 @@ export function ForumNewPostForm({ boards, isLoggedIn }: ForumNewPostFormProps) 
     <Card className="p-6">
       <form action={handleSubmit} className="space-y-5">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>
+        <div className="p-3 bg-accent-red-light border border-accent-red text-accent-red text-sm r-lg">{error}</div>
       )}
 
       {/* Board Selector */}
       <div>
-        <label htmlFor="board-select" className="block text-sm font-medium mb-1">
+        <label htmlFor="board-select" className="block text-sm fw-medium mb-1">
           选择版块 <span className="text-accent-red">*</span>
         </label>
         <select
           id="board-select"
           name="board_id"
           required
-          className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
+          className="w-full h-10 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none bg-bg-card"
         >
           <option value="">请选择版块</option>
           {boards.map((b) => (
@@ -82,7 +82,7 @@ export function ForumNewPostForm({ boards, isLoggedIn }: ForumNewPostFormProps) 
 
       {/* Title Input */}
       <div>
-        <label htmlFor="post-title" className="block text-sm font-medium mb-1">
+        <label htmlFor="post-title" className="block text-sm fw-medium mb-1">
           标题 <span className="text-accent-red">*</span>
         </label>
         <input
@@ -92,13 +92,13 @@ export function ForumNewPostForm({ boards, isLoggedIn }: ForumNewPostFormProps) 
           placeholder="请输入帖子标题"
           maxLength={120}
           required
-          className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="w-full h-10 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
       </div>
 
       {/* Rich Text Area */}
       <div>
-        <label htmlFor="post-body" className="block text-sm font-medium mb-1">
+        <label htmlFor="post-body" className="block text-sm fw-medium mb-1">
           内容 <span className="text-accent-red">*</span>
         </label>
         <textarea
@@ -106,20 +106,20 @@ export function ForumNewPostForm({ boards, isLoggedIn }: ForumNewPostFormProps) 
           name="body"
           placeholder={'写下你想分享的内容...\n\n支持 Markdown 格式：**加粗** *斜体* [链接](url) - 列表'}
           required
-          className="w-full h-48 px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y"
+          className="w-full h-48 px-3 py-2 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y"
         />
         <p className="text-xs text-text-muted mt-1">支持 Markdown 格式</p>
       </div>
 
       {/* Tag Input */}
       <div>
-        <label htmlFor="post-tags" className="block text-sm font-medium mb-1">标签</label>
+        <label htmlFor="post-tags" className="block text-sm fw-medium mb-1">标签</label>
         <input
           id="post-tags"
           name="tags"
           type="text"
           placeholder="输入标签，用逗号分隔（如：租房, 法拉盛, 求推荐）"
-          className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="w-full h-10 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
         <p className="text-xs text-text-muted mt-1">最多 5 个标签</p>
       </div>

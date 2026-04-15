@@ -105,28 +105,28 @@ export default async function TopicPage({ params, searchParams }: Props) {
   const relatedTopics = (rawRelatedTopics || []) as AnyRow[];
 
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main className="bg-bg-page min-h-screen">
       {/* Topic Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-bg-card border-b border-border">
         <PageContainer className="py-8">
-          <nav className="text-sm text-gray-400 mb-4">
+          <nav className="text-sm text-text-muted mb-4">
             <Link href="/discover" className="hover:text-primary">发现</Link>
             <span className="mx-2">›</span>
-            <span className="text-gray-600">话题</span>
+            <span className="text-text-secondary">话题</span>
           </nav>
 
           <div className="flex items-center gap-4">
             {topic.icon_emoji && (
-              <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-3xl">
+              <div className="w-16 h-16 r-xl bg-primary-50 flex items-center justify-center text-3xl">
                 {topic.icon_emoji}
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold">#{topic.name_zh}</h1>
+              <h1 className="text-2xl fw-bold">#{topic.name_zh}</h1>
               {topic.name_en && (
-                <p className="text-sm text-gray-400 mt-0.5">{topic.name_en}</p>
+                <p className="text-sm text-text-muted mt-0.5">{topic.name_en}</p>
               )}
-              <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+              <div className="flex items-center gap-4 mt-2 text-sm text-text-muted">
                 <span>{topic.post_count || count || 0} 篇笔记</span>
                 {topic.follower_count > 0 && (
                   <span>{topic.follower_count} 人关注</span>
@@ -136,7 +136,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
           </div>
 
           {topic.description && (
-            <p className="text-sm text-gray-500 mt-4 max-w-2xl">{topic.description}</p>
+            <p className="text-sm text-text-muted mt-4 max-w-2xl">{topic.description}</p>
           )}
         </PageContainer>
       </div>
@@ -149,7 +149,7 @@ export default async function TopicPage({ params, searchParams }: Props) {
               <Link
                 key={t.id}
                 href={`/discover/tag/${t.slug}`}
-                className={cn(buttonVariants({ size: 'sm', variant: 'secondary' }), 'inline-flex items-center gap-1 rounded-full text-[13px] whitespace-nowrap hover:bg-orange-50 hover:text-orange-600')}
+                className={cn(buttonVariants({ size: 'sm', variant: 'secondary' }), 'inline-flex items-center gap-1 r-full text-[13px] whitespace-nowrap hover:bg-primary-50 hover:text-primary-dark')}
               >
                 {t.icon_emoji && <span>{t.icon_emoji}</span>}
                 {t.name_zh}
@@ -162,8 +162,8 @@ export default async function TopicPage({ params, searchParams }: Props) {
         {posts.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-4xl mb-4">{topic.icon_emoji || '📝'}</p>
-            <p className="text-gray-500">暂无关于 #{topic.name_zh} 的内容</p>
-            <p className="text-sm text-gray-400 mt-1">成为第一个发布的人吧！</p>
+            <p className="text-text-muted">暂无关于 #{topic.name_zh} 的内容</p>
+            <p className="text-sm text-text-muted mt-1">成为第一个发布的人吧！</p>
             <Link href="/discover/new-post" className={cn(buttonVariants({ size: 'sm' }), 'inline-block mt-4 px-5')}>
               发布笔记
             </Link>

@@ -28,13 +28,13 @@ interface Message {
 }
 
 const sourceTypeMeta: Record<string, { icon: string; badgeClass: string }> = {
-  '商家': { icon: '🏪', badgeClass: 'bg-blue-50 text-blue-700 border-blue-200' },
-  '指南': { icon: '📘', badgeClass: 'bg-green-50 text-green-700 border-green-200' },
-  '论坛': { icon: '💬', badgeClass: 'bg-purple-50 text-purple-700 border-purple-200' },
+  '商家': { icon: '🏪', badgeClass: 'bg-secondary-50 text-secondary-dark border-secondary-light' },
+  '指南': { icon: '📘', badgeClass: 'bg-accent-green-light text-accent-green border-accent-green' },
+  '论坛': { icon: '💬', badgeClass: 'bg-accent-purple-light text-accent-purple border-accent-purple' },
   '笔记': { icon: '📝', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200' },
-  '达人': { icon: '⭐', badgeClass: 'bg-amber-50 text-amber-700 border-amber-200' },
-  '新闻': { icon: '📰', badgeClass: 'bg-red-50 text-red-700 border-red-200' },
-  '活动': { icon: '🎪', badgeClass: 'bg-orange-50 text-orange-700 border-orange-200' },
+  '达人': { icon: '⭐', badgeClass: 'bg-accent-yellow/20 text-accent-yellow border-accent-yellow' },
+  '新闻': { icon: '📰', badgeClass: 'bg-accent-red-light text-accent-red border-accent-red' },
+  '活动': { icon: '🎪', badgeClass: 'bg-primary-50 text-primary-dark border-primary-200' },
   '网页': { icon: '🌐', badgeClass: 'bg-slate-50 text-slate-700 border-slate-200' },
 };
 
@@ -104,7 +104,7 @@ function getLinkClassName(href: string): string {
     return 'underline underline-offset-2';
   }
   if (/^\/zh\/(guides|news|forum|discover|services)\//.test(href)) {
-    return 'text-text-primary font-semibold hover:text-primary transition-colors';
+    return 'text-text-primary fw-semibold hover:text-primary transition-colors';
   }
   return 'underline underline-offset-2';
 }
@@ -162,8 +162,8 @@ function useVoiceInput(onResult: (text: string) => void) {
 
 const markdownComponents: Components = {
   table: ({ children }) => (
-    <div className="my-7 overflow-x-auto rounded-lg border border-border bg-white/60">
-      <table className="w-full min-w-[860px] border-collapse text-[13px] leading-6 [&_th]:whitespace-nowrap [&_th]:bg-bg-page [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:text-xs [&_th]:font-semibold [&_th]:text-text-primary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border [&_td]:border-border [&_td:nth-child(2)]:min-w-[160px] [&_td:nth-child(2)]:font-semibold [&_td:nth-child(3)]:whitespace-nowrap [&_td:nth-child(4)]:whitespace-nowrap [&_td:nth-child(5)]:whitespace-nowrap [&_td:nth-child(6)]:min-w-[170px] [&_td:nth-child(6)]:whitespace-normal [&_td:nth-child(7)]:min-w-[220px] [&_td:nth-child(7)]:whitespace-normal [&_td_p]:my-0">
+    <div className="my-7 overflow-x-auto r-lg border border-border bg-bg-card/60">
+      <table className="w-full min-w-[860px] border-collapse text-[13px] leading-6 [&_th]:whitespace-nowrap [&_th]:bg-bg-page [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:text-xs [&_th]:fw-semibold [&_th]:text-text-primary [&_th]:border [&_th]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border [&_td]:border-border [&_td:nth-child(2)]:min-w-[160px] [&_td:nth-child(2)]:fw-semibold [&_td:nth-child(3)]:whitespace-nowrap [&_td:nth-child(4)]:whitespace-nowrap [&_td:nth-child(5)]:whitespace-nowrap [&_td:nth-child(6)]:min-w-[170px] [&_td:nth-child(6)]:whitespace-normal [&_td:nth-child(7)]:min-w-[220px] [&_td:nth-child(7)]:whitespace-normal [&_td_p]:my-0">
         {children}
       </table>
     </div>
@@ -347,7 +347,7 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
                   type="button"
                   onClick={() => void handleAsk(question)}
                   disabled={loading}
-                  className="text-xs bg-border-light text-text-secondary px-3 py-1.5 rounded-full hover:bg-primary/10 hover:text-primary transition disabled:opacity-50"
+                  className="text-xs bg-border-light text-text-secondary px-3 py-1.5 r-full hover:bg-primary/10 hover:text-primary transition disabled:opacity-50"
                 >
                   {question}
                 </button>
@@ -361,21 +361,21 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
             <div
               className={`max-w-[92%] ${
                 message.role === 'user'
-                  ? 'bg-primary text-white rounded-2xl rounded-br-md px-4 py-3'
-                  : 'bg-bg-card border border-border rounded-2xl rounded-bl-md px-5 py-4'
+                  ? 'bg-primary text-text-inverse r-xl r-base px-4 py-3'
+                  : 'bg-bg-card border border-border r-xl r-base px-5 py-4'
               }`}
             >
               {message.role === 'assistant' && (
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm">🤖</span>
-                  <span className="text-xs font-medium text-primary">小邻</span>
+                  <span className="text-xs fw-medium text-primary">小邻</span>
                   {message.usedWebFallback && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">网页补充</span>
+                    <span className="text-[10px] px-1.5 py-0.5 r-base bg-accent-blue-light text-secondary-dark">网页补充</span>
                   )}
                 </div>
               )}
 
-              <div className="text-[15px] leading-7 prose prose-sm max-w-none prose-headings:mb-4 prose-headings:mt-7 prose-p:my-4 prose-li:my-2.5 prose-ul:my-4 prose-ol:my-4 prose-hr:my-5 [&_h1]:text-lg [&_h1]:font-bold [&_h2]:text-base [&_h2]:font-bold [&_h3]:text-[15px] [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:leading-7 [&_li_p]:my-1.5 [&_strong]:font-semibold">
+              <div className="text-[15px] leading-7 prose prose-sm max-w-none prose-headings:mb-4 prose-headings:mt-7 prose-p:my-4 prose-li:my-2.5 prose-ul:my-4 prose-ol:my-4 prose-hr:my-5 [&_h1]:text-lg [&_h1]:fw-bold [&_h2]:text-base [&_h2]:fw-bold [&_h3]:text-[15px] [&_h3]:fw-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:leading-7 [&_li_p]:my-1.5 [&_strong]:fw-semibold">
                 <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                   {message.content}
                 </ReactMarkdown>
@@ -399,7 +399,7 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
                           inputRef.current?.focus();
                         }}
                         disabled={loading || renderingAnswer}
-                        className="text-xs px-2.5 py-1 rounded-full border border-border bg-bg-page text-text-secondary hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition disabled:opacity-50"
+                        className="text-xs px-2.5 py-1 r-full border border-border bg-bg-page text-text-secondary hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition disabled:opacity-50"
                       >
                         {chip}
                       </button>
@@ -421,14 +421,14 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
                           href={href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="block rounded-xl border border-border px-3.5 py-3 hover:bg-bg-page transition"
+                          className="block r-xl border border-border px-3.5 py-3 hover:bg-bg-page transition"
                         >
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${meta.badgeClass}`}>
+                            <span className={`inline-flex items-center gap-1 text-[11px] fw-semibold px-2 py-0.5 r-full border ${meta.badgeClass}`}>
                               <span>{meta.icon}</span>
                               <span>{source.type}</span>
                             </span>
-                            <span className="text-sm font-semibold text-text-primary line-clamp-1">{source.title}</span>
+                            <span className="text-sm fw-semibold text-text-primary line-clamp-1">{source.title}</span>
                           </div>
                           {source.snippet && (
                             <p className="text-xs leading-5 text-text-secondary line-clamp-2">{source.snippet}</p>
@@ -445,13 +445,13 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
 
         {(loading || renderingAnswer) && (
           <div className="flex justify-start">
-            <div className="bg-bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-bg-card border border-border r-xl r-base px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🤖</span>
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
                 <span className="text-xs text-text-muted">
                   {loading ? LOADING_MESSAGES[loadingStep] : '正在逐步展示完整答案...'}
@@ -485,7 +485,7 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
             快捷下一问：{quickReplyMode === 'send' ? '点击即发送' : '点击仅填充'}
           </button>
         </div>
-        <div className="flex gap-2 bg-bg-card border border-border rounded-xl p-2 shadow-lg">
+        <div className="flex gap-2 bg-bg-card border border-border r-xl p-2 elev-lg">
           <input
             ref={inputRef}
             type="text"
@@ -500,9 +500,9 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
               type="button"
               onClick={voice.toggle}
               disabled={loading || renderingAnswer}
-              className={`h-10 w-10 flex items-center justify-center rounded-lg transition-colors flex-shrink-0 ${
+              className={`h-10 w-10 flex items-center justify-center r-lg transition-colors flex-shrink-0 ${
                 voice.isListening
-                  ? 'bg-red-500 text-white animate-pulse'
+                  ? 'bg-accent-red text-text-inverse animate-pulse'
                   : 'bg-bg-page text-text-secondary hover:bg-primary/10 hover:text-primary'
               } disabled:opacity-50`}
               title={voice.isListening ? '停止语音' : '语音输入'}
@@ -519,7 +519,7 @@ export function HelperChat({ initialQuery }: HelperChatProps) {
           <button
             type="submit"
             disabled={loading || renderingAnswer || !input.trim()}
-            className="h-10 px-5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors flex-shrink-0"
+            className="h-10 px-5 bg-primary text-text-inverse text-sm fw-medium r-lg hover:bg-primary-dark disabled:opacity-50 transition-colors flex-shrink-0"
           >
             发送
           </button>

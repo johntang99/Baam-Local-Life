@@ -147,23 +147,23 @@ export default async function AdminAiJobsPage({ searchParams }: Props) {
             </div>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-            <div className="rounded-lg border border-border p-3">
+            <div className="r-lg border border-border p-3">
               <p className="text-xs text-text-muted">请求量</p>
               <p className="text-xl font-bold">{helperTotal}</p>
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="r-lg border border-border p-3">
               <p className="text-xs text-text-muted">平均响应</p>
               <p className="text-xl font-bold">{avgResponseMs}ms</p>
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="r-lg border border-border p-3">
               <p className="text-xs text-text-muted">平均结果数</p>
               <p className="text-xl font-bold">{avgResults}</p>
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="r-lg border border-border p-3">
               <p className="text-xs text-text-muted">严格模式占比</p>
               <p className="text-xl font-bold">{strictRate.toFixed(1)}%</p>
             </div>
-            <div className="rounded-lg border border-border p-3">
+            <div className="r-lg border border-border p-3">
               <p className="text-xs text-text-muted">质量分布</p>
               <p className="text-sm font-medium">
                 <span className="text-green-600">H {qualityDist.high}</span>{' '}

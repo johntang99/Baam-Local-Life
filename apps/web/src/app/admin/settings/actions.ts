@@ -1,6 +1,9 @@
 'use server';
 
+import { access, readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin } from '@/lib/admin-auth';
 import { revalidatePath } from 'next/cache';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -179,4 +182,219 @@ export async function deleteCategoryBasic(categoryId: string, formData: FormData
   if (error) return { error: error.message };
   reval();
   return { success: true };
+}
+
+// ============================================================
+// THEME EDITOR (theme.ts -> baamTheme)
+// ============================================================
+
+const THEME_DECLARATION = 'export const baamTheme: BaamTheme =';
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function validateThemeShape(theme: unknown): { ok: boolean; error?: string } {
+  if (!isRecord(theme)) return { ok: false, error: 'Theme must be a JSON object.' };
+  const requiredTopLevel = ['colors', 'typography', 'shape', 'layout'];
+  for (const key of requiredTopLevel) {
+    if (!isRecord(theme[key])) {
+      return { ok: false, error: `Missing required object: ${key}` };
+    }
+  }
+  return { ok: true };
+}
+
+function normalizeThemeForSave(theme: unknown): unknown {
+  if (!isRecord(theme)) return theme;
+
+  const next = JSON.parse(JSON.stringify(theme)) as Record<string, unknown>;
+  if (!isRecord(next.typography)) next.typography = {};
+  const typography = next.typography as Record<string, unknown>;
+  const existingWeights = isRecord(typography.weights) ? (typography.weights as Record<string, unknown>) : {};
+
+  typography.weights = {
+    regular: String(existingWeights.regular ?? '400'),
+    medium: String(existingWeights.medium ?? '500'),
+    semibold: String(existingWeights.semibold ?? '600'),
+    bold: String(existingWeights.bold ?? '700'),
+  };
+  if (!isRecord(next.shape)) next.shape = {};
+  const shape = next.shape as Record<string, unknown>;
+  shape.radiusCard = String(shape.radiusCard ?? shape.radiusXl ?? '16px');
+  shape.radiusButton = String(shape.radiusButton ?? shape.radiusLg ?? '12px');
+  shape.radiusChip = String(shape.radiusChip ?? shape.radiusFull ?? '9999px');
+  shape.radiusInput = String(shape.radiusInput ?? shape.radiusLg ?? '12px');
+
+  return next;
+}
+
+function formatTsKey(key: string): string {
+  return /^[$A-Z_][0-9A-Z_$]*$/i.test(key) ? key : JSON.stringify(key);
+}
+
+function renderTsValue(value: unknown, indentLevel = 0): string {
+  const indent = '  '.repeat(indentLevel);
+  const nextIndent = '  '.repeat(indentLevel + 1);
+
+  if (Array.isArray(value)) {
+    if (value.length === 0) return '[]';
+    const rendered = value.map((item) => `${nextIndent}${renderTsValue(item, indentLevel + 1)}`).join(',\n');
+    return `[\n${rendered}\n${indent}]`;
+  }
+
+  if (isRecord(value)) {
+    const entries = Object.entries(value);
+    if (entries.length === 0) return '{}';
+    const rendered = entries
+      .map(([key, val]) => `${nextIndent}${formatTsKey(key)}: ${renderTsValue(val, indentLevel + 1)}`)
+      .join(',\n');
+    return `{\n${rendered}\n${indent}}`;
+  }
+
+  return JSON.stringify(value);
+}
+
+function findThemeObjectRange(source: string): { declarationStart: number; objectStart: number; objectEnd: number; statementEnd: number } {
+  const declarationStart = source.indexOf(THEME_DECLARATION);
+  if (declarationStart < 0) throw new Error('Could not find baamTheme declaration in theme.ts');
+
+  const objectStart = source.indexOf('{', declarationStart);
+  if (objectStart < 0) throw new Error('Could not find opening brace for baamTheme');
+
+  let depth = 0;
+  let inSingle = false;
+  let inDouble = false;
+  let inTemplate = false;
+  let inLineComment = false;
+  let inBlockComment = false;
+  let escaped = false;
+  let objectEnd = -1;
+
+  for (let i = objectStart; i < source.length; i += 1) {
+    const ch = source[i];
+    const next = source[i + 1];
+
+    if (inLineComment) {
+      if (ch === '\n') inLineComment = false;
+      continue;
+    }
+    if (inBlockComment) {
+      if (ch === '*' && next === '/') {
+        inBlockComment = false;
+        i += 1;
+      }
+      continue;
+    }
+    if (inSingle) {
+      if (ch === "'" && !escaped) inSingle = false;
+      escaped = ch === '\\' && !escaped;
+      continue;
+    }
+    if (inDouble) {
+      if (ch === '"' && !escaped) inDouble = false;
+      escaped = ch === '\\' && !escaped;
+      continue;
+    }
+    if (inTemplate) {
+      if (ch === '`' && !escaped) inTemplate = false;
+      escaped = ch === '\\' && !escaped;
+      continue;
+    }
+
+    if (ch === '/' && next === '/') {
+      inLineComment = true;
+      i += 1;
+      continue;
+    }
+    if (ch === '/' && next === '*') {
+      inBlockComment = true;
+      i += 1;
+      continue;
+    }
+    if (ch === "'") {
+      inSingle = true;
+      escaped = false;
+      continue;
+    }
+    if (ch === '"') {
+      inDouble = true;
+      escaped = false;
+      continue;
+    }
+    if (ch === '`') {
+      inTemplate = true;
+      escaped = false;
+      continue;
+    }
+    if (ch === '{') {
+      depth += 1;
+      continue;
+    }
+    if (ch === '}') {
+      depth -= 1;
+      if (depth === 0) {
+        objectEnd = i;
+        break;
+      }
+      continue;
+    }
+  }
+
+  if (objectEnd < 0) throw new Error('Could not locate closing brace for baamTheme object');
+
+  const statementEnd = source.indexOf(';', objectEnd);
+  if (statementEnd < 0) throw new Error('Could not locate statement terminator for baamTheme');
+
+  return { declarationStart, objectStart, objectEnd, statementEnd };
+}
+
+export async function saveThemeConfig(formData: FormData) {
+  await requireAdmin();
+
+  const themeJsonText = String(formData.get('theme_json') || '').trim();
+  if (!themeJsonText) return { error: 'Theme JSON is required.' };
+
+  let parsedTheme: unknown;
+  try {
+    parsedTheme = JSON.parse(themeJsonText);
+  } catch {
+    return { error: 'Invalid JSON. Please fix JSON syntax and try again.' };
+  }
+
+  const shapeCheck = validateThemeShape(parsedTheme);
+  if (!shapeCheck.ok) return { error: shapeCheck.error || 'Invalid theme schema.' };
+  parsedTheme = normalizeThemeForSave(parsedTheme);
+
+  const candidatePaths = [
+    path.join(process.cwd(), 'src/lib/theme.ts'),
+    path.join(process.cwd(), 'apps/web/src/lib/theme.ts'),
+  ];
+  let filePath = '';
+  for (const p of candidatePaths) {
+    try {
+      await access(p);
+      filePath = p;
+      break;
+    } catch {
+      // try next path
+    }
+  }
+  if (!filePath) {
+    return { error: 'Cannot locate theme.ts file. Checked src/lib/theme.ts and apps/web/src/lib/theme.ts.' };
+  }
+
+  const source = await readFile(filePath, 'utf-8');
+  const range = findThemeObjectRange(source);
+  const renderedTheme = renderTsValue(parsedTheme, 0);
+  const replacement = `${THEME_DECLARATION} ${renderedTheme};`;
+  const nextSource = `${source.slice(0, range.declarationStart)}${replacement}${source.slice(range.statementEnd + 1)}`;
+
+  await writeFile(filePath, nextSource, 'utf-8');
+
+  revalidatePath('/admin/settings');
+  revalidatePath('/zh');
+  revalidatePath('/en');
+
+  return { success: true, message: 'Theme saved to src/lib/theme.ts' };
 }

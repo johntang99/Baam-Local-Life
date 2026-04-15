@@ -16,7 +16,7 @@ export function ServiceFAQ({ items }: { items: FAQItem[] }) {
       <h2 className="text-lg font-bold text-gray-900 mb-4">常见问题</h2>
       <div className="space-y-2">
         {items.map((item, i) => (
-          <div key={i} className="border border-gray-200 rounded-xl overflow-hidden">
+          <div key={i} className="border border-gray-200 r-xl overflow-hidden">
             <button
               onClick={() => setOpen(open === i ? null : i)}
               className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-gray-50 transition"

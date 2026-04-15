@@ -34,12 +34,12 @@ interface Message {
 }
 
 const sourceTypeMeta: Record<string, { icon: string; badgeClass: string }> = {
-  '商家': { icon: '🏪', badgeClass: 'bg-blue-50 text-blue-700 border-blue-200' },
-  '指南': { icon: '📘', badgeClass: 'bg-green-50 text-green-700 border-green-200' },
-  '论坛': { icon: '💬', badgeClass: 'bg-purple-50 text-purple-700 border-purple-200' },
+  '商家': { icon: '🏪', badgeClass: 'bg-secondary-50 text-secondary-dark border-secondary-light' },
+  '指南': { icon: '📘', badgeClass: 'bg-accent-green-light text-accent-green border-accent-green' },
+  '论坛': { icon: '💬', badgeClass: 'bg-accent-purple-light text-accent-purple border-accent-purple' },
   '发现': { icon: '📝', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200' },
-  '新闻': { icon: '📰', badgeClass: 'bg-red-50 text-red-700 border-red-200' },
-  '活动': { icon: '🎪', badgeClass: 'bg-orange-50 text-orange-700 border-orange-200' },
+  '新闻': { icon: '📰', badgeClass: 'bg-accent-red-light text-accent-red border-accent-red' },
+  '活动': { icon: '🎪', badgeClass: 'bg-primary-50 text-primary-dark border-primary-200' },
   '网页': { icon: '🌐', badgeClass: 'bg-slate-50 text-slate-700 border-slate-200' },
 };
 
@@ -209,7 +209,7 @@ function getLinkClassName(href: string): string {
     href.startsWith('/zh/services/')
   ) {
     // Match "相关来源" card title tone: stronger and cleaner.
-    return 'text-text-primary font-semibold hover:text-primary transition-colors';
+    return 'text-text-primary fw-semibold hover:text-primary transition-colors';
   }
   return 'underline underline-offset-2';
 }
@@ -267,8 +267,8 @@ function useVoiceInput(onResult: (text: string) => void) {
 
 const markdownComponents: Components = {
   table: ({ children }) => (
-    <div className="my-5 w-full overflow-x-auto rounded-xl border border-border">
-      <table className="w-full border-collapse text-[13px] leading-6 [&_th]:bg-primary/5 [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-left [&_th]:text-xs [&_th]:font-bold [&_th]:text-text-primary [&_th]:border-b [&_th]:border-border [&_td]:px-3 [&_td]:py-2.5 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border-b [&_td]:border-border/50 [&_td]:break-words [&_td_p]:my-0 [&_tr:last-child_td]:border-b-0 [&_tr:last-child_td]:font-semibold [&_tr:last-child_td]:bg-primary/5">
+    <div className="my-5 w-full overflow-x-auto r-xl border border-border">
+      <table className="w-full border-collapse text-[13px] leading-6 [&_th]:bg-primary/5 [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-left [&_th]:text-xs [&_th]:fw-bold [&_th]:text-text-primary [&_th]:border-b [&_th]:border-border [&_td]:px-3 [&_td]:py-2.5 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border-b [&_td]:border-border/50 [&_td]:break-words [&_td_p]:my-0 [&_tr:last-child_td]:border-b-0 [&_tr:last-child_td]:fw-semibold [&_tr:last-child_td]:bg-primary/5">
         {children}
       </table>
     </div>
@@ -381,8 +381,15 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   const voice = useVoiceInput(handleVoiceResult);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0) {
+      endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages, loading]);
+
+  // Scroll to top on initial page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     setQuickReplyMode(readQuickReplyModeFromStorage());
@@ -535,7 +542,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
       {messages.length > 0 && !loading && !renderingAnswer && (
         <div className="max-w-3xl mx-auto flex justify-end mb-3">
           <button type="button" onClick={handleNewChat}
-            className="flex items-center gap-1.5 text-xs font-medium text-text-muted hover:text-primary px-3 py-1.5 rounded-lg border border-border hover:border-primary/30 transition-colors">
+            className="flex items-center gap-1.5 text-xs fw-medium text-text-muted hover:text-primary px-3 py-1.5 r-lg border border-border hover:border-primary/30 transition-colors">
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
             新对话
           </button>
@@ -554,12 +561,12 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 <div key={cat.label}>
                   <div className="flex items-center gap-1.5 px-1 mb-2">
                     <span className="text-base">{cat.icon}</span>
-                    <span className="text-xs font-semibold text-primary">{cat.label}</span>
+                    <span className="text-xs fw-semibold text-primary">{cat.label}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
                     {cat.questions.map((q) => (
                       <button key={q} type="button" onClick={() => void handleAsk(q)} disabled={loading}
-                        className="text-left text-[13px] leading-snug text-text-primary bg-bg-card border border-border rounded-xl px-3 py-2.5 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors disabled:opacity-50">
+                        className="text-left text-[13px] leading-snug text-text-primary bg-bg-card border border-border r-xl px-3 py-2.5 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors disabled:opacity-50">
                         {q}
                       </button>
                     ))}
@@ -573,11 +580,11 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 <div key={cat.label} className="space-y-1.5">
                   <div className="flex items-center gap-1.5 px-1 mb-2">
                     <span className="text-base">{cat.icon}</span>
-                    <span className="text-xs font-semibold text-primary">{cat.label}</span>
+                    <span className="text-xs fw-semibold text-primary">{cat.label}</span>
                   </div>
                   {cat.questions.map((q) => (
                     <button key={q} type="button" onClick={() => void handleAsk(q)} disabled={loading}
-                      className="w-full text-left text-[13px] leading-snug text-text-primary bg-bg-card border border-border rounded-xl px-3 py-2.5 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors disabled:opacity-50">
+                      className="w-full text-left text-[13px] leading-snug text-text-primary bg-bg-card border border-border r-xl px-3 py-2.5 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-colors disabled:opacity-50">
                       {q}
                     </button>
                   ))}
@@ -598,16 +605,16 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 message.role === 'user' ? 'max-w-[90%]' : 'max-w-[96%]'
               } ${
                 message.role === 'user'
-                  ? 'bg-primary text-white rounded-2xl rounded-br-md px-4 py-3'
-                  : 'bg-bg-card border border-border rounded-2xl rounded-bl-md px-5 py-4'
+                  ? 'bg-primary text-text-inverse r-xl r-base px-4 py-3'
+                  : 'bg-bg-card border border-border r-xl r-base px-5 py-4'
               }`}
             >
               {message.role === 'assistant' && (
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm">🧭</span>
-                  <span className="text-xs font-medium text-primary">小帮手-2</span>
+                  <span className="text-xs fw-medium text-primary">小帮手-2</span>
                   {message.usedWebFallback && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-100 text-blue-700">网页补充</span>
+                    <span className="text-[10px] px-1.5 py-0.5 r-base bg-accent-blue-light text-secondary-dark">网页补充</span>
                   )}
                 </div>
               )}
@@ -625,11 +632,11 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                   <>
                     {/* Fullscreen expanded view */}
                     {mapExpandedId === message.id && (
-                      <div className="fixed inset-0 z-[9999] bg-white flex flex-col">
+                      <div className="fixed inset-0 z-[9999] bg-bg-card flex flex-col">
                         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border flex-shrink-0">
-                          <span className="text-sm font-semibold">{message.mapBusinesses!.length} 个结果</span>
+                          <span className="text-sm fw-semibold">{message.mapBusinesses!.length} 个结果</span>
                           <button type="button" onClick={() => { setMapExpandedId(null); window.history.back(); }}
-                            className="text-sm font-semibold text-primary hover:text-primary/80">← 返回</button>
+                            className="text-sm fw-semibold text-primary hover:text-primary/80">← 返回</button>
                         </div>
                         <div className="flex flex-1 overflow-hidden">
                           <div className="w-[360px] border-r border-border flex-shrink-0 overflow-y-auto hidden md:block">
@@ -637,9 +644,9 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                               <a key={b.id as string} href={`/zh/businesses/${b.slug as string}`}
                                 className="block px-4 py-3 border-b border-border-light hover:bg-primary/5">
                                 <div className="flex items-start gap-2">
-                                  <div className={`w-6 h-6 ${i < 3 ? 'bg-red-600' : 'bg-primary'} rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0`}>{i + 1}</div>
+                                  <div className={`w-6 h-6 ${i < 3 ? 'bg-accent-red' : 'bg-primary'} r-full flex items-center justify-center text-text-inverse text-[10px] fw-bold flex-shrink-0`}>{i + 1}</div>
                                   <div>
-                                    <div className="text-sm font-bold">{(b.display_name as string) || ''}</div>
+                                    <div className="text-sm fw-bold">{(b.display_name as string) || ''}</div>
                                     <div className="text-xs text-text-secondary">{(b.avg_rating as number) || '—'}⭐ ({(b.review_count as number) || 0})</div>
                                     {b.phone ? <div className="text-xs text-text-secondary mt-0.5">📞 {String(b.phone)}</div> : null}
                                   </div>
@@ -653,10 +660,10 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                     )}
                     {/* Inline map — hidden when fullscreen is active */}
                     <div className="mb-4" style={{ display: mapExpandedId === message.id ? 'none' : undefined }}>
-                      <div className="relative rounded-xl overflow-hidden border border-border">
+                      <div className="relative r-xl overflow-hidden border border-border">
                         <BusinessMapView key="inline" businesses={mapBiz} height="400px" />
                         <button type="button" onClick={() => setMapExpandedId(message.id)}
-                          className="absolute top-3 left-3 z-[500] bg-white border border-border rounded-lg px-2.5 py-1.5 text-xs font-semibold text-text-secondary hover:text-primary hover:border-primary shadow-sm transition-colors">
+                          className="absolute top-3 left-3 z-[500] bg-bg-card border border-border r-lg px-2.5 py-1.5 text-xs fw-semibold text-text-secondary hover:text-primary hover:border-primary elev-sm transition-colors">
                           ⛶ 展开
                         </button>
                       </div>
@@ -670,17 +677,17 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                           const website = b.website_url as string | null;
                           const addr = (b.address_full as string || '').split(',').slice(0, 2).join(',');
                           const desc = (b.short_desc_zh as string) || (b.short_desc_en as string) || '';
-                          const rankBg = i < 3 ? 'bg-red-600' : 'bg-primary';
+                          const rankBg = i < 3 ? 'bg-accent-red' : 'bg-primary';
                           return (
                             <a key={b.id as string} href={`/zh/businesses/${b.slug as string}`}
-                              className="flex items-start gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition-colors border border-transparent hover:border-primary/20">
-                              <div className={`w-7 h-7 ${rankBg} rounded-full flex items-center justify-center text-white text-xs font-extrabold flex-shrink-0 mt-0.5`}>{i + 1}</div>
+                              className="flex items-start gap-3 px-3 py-3 r-xl hover:bg-primary/5 transition-colors border border-transparent hover:border-primary/20">
+                              <div className={`w-7 h-7 ${rankBg} r-full flex items-center justify-center text-text-inverse text-xs fw-bold flex-shrink-0 mt-0.5`}>{i + 1}</div>
                               <div className="flex-1 min-w-0 flex gap-4 items-center">
                                 <div className="flex-1 min-w-0">
-                                  <div className="text-sm font-bold mb-0.5 truncate">{name}</div>
+                                  <div className="text-sm fw-bold mb-0.5 truncate">{name}</div>
                                   <div className="flex items-center gap-1.5 text-xs text-text-primary flex-wrap">
-                                    <span className="text-amber-500">{'★'.repeat(Math.round(rating || 0))}</span>
-                                    <span className="font-semibold">{rating}</span>
+                                    <span className="text-accent-yellow">{'★'.repeat(Math.round(rating || 0))}</span>
+                                    <span className="fw-semibold">{rating}</span>
                                     <span className="text-border">·</span>
                                     <span>{(reviews || 0).toLocaleString()} 条评价</span>
                                   </div>
@@ -697,7 +704,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                         })}
                         {message.mapBusinesses!.length > 5 && expandedListId !== message.id && (
                           <button type="button" onClick={() => setExpandedListId(message.id)}
-                            className="w-full text-center text-xs text-primary font-semibold py-2 hover:bg-primary/5 rounded-lg transition">
+                            className="w-full text-center text-xs text-primary fw-semibold py-2 hover:bg-primary/5 r-lg transition">
                             查看全部 {message.mapBusinesses!.length} 个结果 ↓
                           </button>
                         )}
@@ -720,7 +727,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 // Don't render if content is empty after stripping
                 if (!content || content.length < 5) return null;
                 return (
-                  <div className="text-[15px] leading-7 prose prose-sm max-w-none prose-headings:mb-4 prose-headings:mt-7 prose-p:my-4 prose-li:my-2.5 prose-ul:my-4 prose-ol:my-4 prose-hr:my-5 [&_h1]:text-lg [&_h1]:font-bold [&_h2]:text-base [&_h2]:font-bold [&_h3]:text-[15px] [&_h3]:font-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:leading-7 [&_li_p]:my-1.5 [&_strong]:font-semibold">
+                  <div className="text-[15px] leading-7 prose prose-sm max-w-none prose-headings:mb-4 prose-headings:mt-7 prose-p:my-4 prose-li:my-2.5 prose-ul:my-4 prose-ol:my-4 prose-hr:my-5 [&_h1]:text-lg [&_h1]:fw-bold [&_h2]:text-base [&_h2]:fw-bold [&_h3]:text-[15px] [&_h3]:fw-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6 [&_li]:leading-7 [&_li_p]:my-1.5 [&_strong]:fw-semibold">
                     <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
                       {content}
                     </ReactMarkdown>
@@ -747,7 +754,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                           inputRef.current?.focus();
                         }}
                         disabled={loading || renderingAnswer}
-                        className="text-xs px-2.5 py-1 rounded-full border border-border bg-bg-page text-text-secondary hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition disabled:opacity-50"
+                        className="text-xs px-2.5 py-1 r-full border border-border bg-bg-page text-text-secondary hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition disabled:opacity-50"
                       >
                         {chip}
                       </button>
@@ -765,13 +772,13 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                       const meta = sourceTypeMeta[source.type] || { icon: '📎', badgeClass: 'bg-border-light text-text-secondary border-border' };
                       return (
                         <a key={`${source.title}-${i}`} href={href} target="_blank" rel="noopener noreferrer"
-                          className="block rounded-xl border border-border px-3.5 py-3 hover:bg-bg-page transition">
+                          className="block r-xl border border-border px-3.5 py-3 hover:bg-bg-page transition">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${meta.badgeClass}`}>
+                            <span className={`inline-flex items-center gap-1 text-[11px] fw-semibold px-2 py-0.5 r-full border ${meta.badgeClass}`}>
                               <span>{meta.icon}</span>
                               <span>{source.type}</span>
                             </span>
-                            <span className="text-sm font-semibold text-text-primary line-clamp-1">{source.title}</span>
+                            <span className="text-sm fw-semibold text-text-primary line-clamp-1">{source.title}</span>
                           </div>
                           {source.snippet && <p className="text-xs leading-5 text-text-secondary line-clamp-2">{source.snippet}</p>}
                         </a>
@@ -795,13 +802,13 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
 
         {(loading || renderingAnswer) && (
           <div className="flex justify-start">
-            <div className="bg-bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-bg-card border border-border r-xl r-base px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🧭</span>
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
                 <span className="text-xs text-text-muted">
                   {loading ? LOADING_MESSAGES[loadingStep] : '正在逐步展示完整答案...'}
@@ -817,7 +824,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); void handleAsk(input); }} className="sticky bottom-8 max-w-3xl mx-auto">
-        <div className="bg-bg-card border-2 border-primary/20 rounded-2xl shadow-[0_4px_24px_rgba(249,115,22,0.12)] overflow-visible">
+        <div className="bg-bg-card border-2 border-primary/20 r-xl elev-lg overflow-visible">
           {/* Row 1: Text input */}
           <div className="px-5 pt-4 pb-2">
             <input ref={inputRef} type="text" value={input}
@@ -833,14 +840,14 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
               {/* "+" location button */}
               <div className="relative" ref={locationMenuRef}>
                 <button type="button" onClick={() => setLocationMenuOpen(!locationMenuOpen)}
-                  className={`h-8 w-8 flex items-center justify-center rounded-full border-2 transition-all ${
-                    locationContext ? 'border-primary text-white bg-primary hover:bg-primary/90' : 'border-primary/40 text-primary hover:border-primary hover:bg-primary/10'
+                  className={`h-8 w-8 flex items-center justify-center r-full border-2 transition-all ${
+                    locationContext ? 'border-primary text-text-inverse bg-primary hover:bg-primary/90' : 'border-primary/40 text-primary hover:border-primary hover:bg-primary/10'
                   }`} title="设置位置">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                 </button>
                 {locationMenuOpen && (
-                  <div className="absolute bottom-10 left-0 bg-bg-card border border-border rounded-xl shadow-xl p-2 w-[280px] z-50">
-                    <p className="text-[10px] text-text-muted px-2 pt-0.5 pb-2 font-medium uppercase tracking-wide">设置位置</p>
+                  <div className="absolute bottom-10 left-0 bg-bg-card border border-border r-xl elev-lg p-2 w-[280px] z-50">
+                    <p className="text-[10px] text-text-muted px-2 pt-0.5 pb-2 fw-medium uppercase tracking-wide">设置位置</p>
                     <div className="grid grid-cols-2 gap-1">
                       {[
                         { label: '法拉盛', value: '法拉盛' }, { label: '日落公园', value: '日落公园' },
@@ -850,8 +857,8 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                       ].map(t => (
                         <button key={t.value} type="button"
                           onClick={() => { setLocationContext(t.value); setLocationMenuOpen(false); }}
-                          className={`text-left text-sm px-3 py-2 rounded-lg transition-colors ${
-                            locationContext === t.value ? 'bg-primary/10 text-primary font-medium' : 'text-text-primary hover:bg-bg-page'
+                          className={`text-left text-sm px-3 py-2 r-lg transition-colors ${
+                            locationContext === t.value ? 'bg-primary/10 text-primary fw-medium' : 'text-text-primary hover:bg-bg-page'
                           }`}>📍 {t.label}</button>
                       ))}
                     </div>
@@ -859,24 +866,24 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                       <>
                         <div className="border-t border-border mt-1.5 mb-1" />
                         <button type="button" onClick={() => { setLocationContext(''); setLocationMenuOpen(false); }}
-                          className="w-full text-left text-sm px-3 py-2 rounded-lg text-red-500 hover:bg-red-50">✕ 清除位置</button>
+                          className="w-full text-left text-sm px-3 py-2 r-lg text-accent-red hover:bg-accent-red-light">✕ 清除位置</button>
                       </>
                     )}
                   </div>
                 )}
               </div>
               {locationContext && (
-                <span className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/5 border border-primary/15 rounded-full px-2 py-0.5">
+                <span className="inline-flex items-center gap-1 text-xs fw-medium text-primary bg-primary/5 border border-primary/15 r-full px-2 py-0.5">
                   📍 {locationContext}
-                  <button type="button" onClick={() => setLocationContext('')} className="hover:text-red-500 text-[10px]">✕</button>
+                  <button type="button" onClick={() => setLocationContext('')} className="hover:text-accent-red text-[10px]">✕</button>
                 </span>
               )}
             </div>
             <div className="flex items-center gap-1.5">
               {voice.isSupported && (
                 <button type="button" onClick={voice.toggle} disabled={loading || renderingAnswer}
-                  className={`h-9 w-9 flex items-center justify-center rounded-full transition-all ${
-                    voice.isListening ? 'bg-red-500 text-white animate-pulse shadow-md' : 'text-primary/70 hover:text-primary hover:bg-primary/10'
+                  className={`h-9 w-9 flex items-center justify-center r-full transition-all ${
+                    voice.isListening ? 'bg-accent-red text-text-inverse animate-pulse elev-md' : 'text-primary/70 hover:text-primary hover:bg-primary/10'
                   } disabled:opacity-50`} title={voice.isListening ? '停止' : '语音输入'}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
                     {voice.isListening
@@ -887,8 +894,8 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 </button>
               )}
               <button type="submit" disabled={loading || renderingAnswer || !input.trim()}
-                className={`h-9 w-9 flex items-center justify-center rounded-full transition-all ${
-                  input.trim() ? 'bg-primary text-white shadow-md hover:bg-primary/90' : 'bg-primary/10 text-primary/40'
+                className={`h-9 w-9 flex items-center justify-center r-full transition-all ${
+                  input.trim() ? 'bg-primary text-text-inverse elev-md hover:bg-primary/90' : 'bg-primary/10 text-primary/40'
                 } disabled:opacity-40`} title="发送">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />

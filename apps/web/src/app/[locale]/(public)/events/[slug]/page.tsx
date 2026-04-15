@@ -109,11 +109,11 @@ export default async function EventDetailPage({ params }: Props) {
             {/* Header */}
             <header className="mb-6">
               <div className="flex items-center gap-2 mb-3">
-                <Badge className={cn('text-xs', isFree ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700')}>
+                <Badge className={cn('text-xs', isFree ? 'bg-accent-green-light text-accent-green' : 'bg-accent-purple-light text-accent-purple')}>
                   {isFree ? '免费' : '付费'}
                 </Badge>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-4">{event.title_zh || event.title_en || event.title}</h1>
+              <h1 className="text-2xl sm:text-3xl fw-bold leading-tight mb-4">{event.title_zh || event.title_en || event.title}</h1>
 
               {/* Event Meta */}
               <div className="space-y-2 text-sm text-text-secondary">
@@ -158,7 +158,7 @@ export default async function EventDetailPage({ params }: Props) {
             )}
 
             {/* Map Placeholder */}
-            <div className="bg-border-light rounded-xl h-48 flex items-center justify-center text-text-muted text-sm mb-8">
+            <div className="bg-border-light r-xl h-48 flex items-center justify-center text-text-muted text-sm mb-8">
               地图加载中...
             </div>
 
@@ -175,7 +175,7 @@ export default async function EventDetailPage({ params }: Props) {
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             {/* RSVP card placeholder */}
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">参加活动</h3>
+              <h3 className="fw-semibold text-sm mb-3">参加活动</h3>
               <p className="text-xs text-text-secondary mb-3">
                 {isFree ? '免费活动，欢迎参加' : `票价：$${event.price || '--'}`}
               </p>
@@ -187,7 +187,7 @@ export default async function EventDetailPage({ params }: Props) {
         {/* Related Events */}
         {relatedEvents.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-lg font-bold mb-4">更多活动</h2>
+            <h2 className="text-lg fw-bold mb-4">更多活动</h2>
             <div className="grid sm:grid-cols-3 gap-4">
               {relatedEvents.map((evt) => {
                 const evtDate = evt.start_at ? new Date(evt.start_at) : null;
@@ -199,20 +199,20 @@ export default async function EventDetailPage({ params }: Props) {
 
                 return (
                   <Link key={evt.id} href={`/events/${evt.slug}`} className="block">
-                    <Card className="overflow-hidden h-full hover:shadow-md transition-shadow">
+                    <Card className="overflow-hidden h-full hover:elev-md transition-shadow">
                       <div className="h-24 bg-gradient-to-br from-primary/20 to-primary/5 relative">
-                        <div className="absolute top-2 left-2 bg-white rounded-lg shadow-sm px-2 py-1 text-center">
+                        <div className="absolute top-2 left-2 bg-bg-card r-lg elev-sm px-2 py-1 text-center">
                           <p className="text-xs text-text-muted leading-tight">{evtMonth}</p>
-                          <p className="text-base font-bold leading-tight">{evtDay}</p>
+                          <p className="text-base fw-bold leading-tight">{evtDay}</p>
                         </div>
                         <div className="absolute top-2 right-2">
-                          <Badge className={cn('text-xs', evtFree ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700')}>
+                          <Badge className={cn('text-xs', evtFree ? 'bg-accent-green-light text-accent-green' : 'bg-accent-purple-light text-accent-purple')}>
                             {evtFree ? '免费' : '付费'}
                           </Badge>
                         </div>
                       </div>
                       <div className="p-3">
-                        <h3 className="font-medium text-sm line-clamp-2">{evt.title}</h3>
+                        <h3 className="fw-medium text-sm line-clamp-2">{evt.title}</h3>
                       </div>
                     </Card>
                   </Link>

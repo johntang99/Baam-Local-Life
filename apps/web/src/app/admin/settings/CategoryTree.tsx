@@ -105,7 +105,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold">商家分类管理</h2>
-        <button onClick={() => openAddModal()} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50">
+        <button onClick={() => openAddModal()} className="h-9 px-4 border border-gray-300 text-sm font-medium r-lg hover:bg-gray-50">
           + 添加分类
         </button>
       </div>
@@ -169,10 +169,10 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
       {/* Modal for Add/Edit */}
       {modalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={() => setModalOpen(false)}>
-          <div className="bg-white rounded-xl p-6 w-[520px] max-w-[90vw]" onClick={e => e.stopPropagation()}>
+          <div className="bg-white r-xl p-6 w-[520px] max-w-[90vw]" onClick={e => e.stopPropagation()}>
             <h3 className="text-lg font-bold mb-4">{editingId ? '编辑分类' : '添加分类'}</h3>
 
-            {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
+            {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm r-lg">{error}</div>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -183,7 +183,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     onChange={e => updateField('slug', e.target.value)}
                     required
                     placeholder="e.g. restaurant"
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div>
@@ -192,7 +192,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     value={formData.icon}
                     onChange={e => updateField('icon', e.target.value)}
                     placeholder="e.g. 🍜"
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -205,7 +205,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     onChange={e => updateField('name_en', e.target.value)}
                     required
                     placeholder="e.g. Restaurant"
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div>
@@ -214,7 +214,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     value={formData.name_zh}
                     onChange={e => updateField('name_zh', e.target.value)}
                     placeholder="e.g. 餐厅"
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -225,7 +225,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                   <select
                     value={formData.parent_id}
                     onChange={e => updateField('parent_id', e.target.value)}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="">无（顶级分类）</option>
                     {parents.filter(p => p.id !== editingId).map(p => (
@@ -239,7 +239,7 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                     type="number"
                     value={formData.sort_order}
                     onChange={e => updateField('sort_order', e.target.value)}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
@@ -249,10 +249,10 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   搜索关键词 <span className="text-xs text-gray-400 font-normal">（AI搜索匹配用，越多越好）</span>
                 </label>
-                <div className="min-h-[80px] p-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-primary">
+                <div className="min-h-[80px] p-2 border border-gray-300 r-lg focus-within:ring-2 focus-within:ring-primary">
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {formData.search_terms.map((term, i) => (
-                      <span key={i} className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary pl-2 pr-1 py-1 rounded-md">
+                      <span key={i} className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary pl-2 pr-1 py-1 r-base">
                         {term}
                         <button
                           type="button"
@@ -294,10 +294,10 @@ export function CategoryTree({ categories }: CategoryTreeProps) {
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setModalOpen(false)} className="h-9 px-4 border border-gray-300 text-sm rounded-lg hover:bg-gray-50">
+                <button type="button" onClick={() => setModalOpen(false)} className="h-9 px-4 border border-gray-300 text-sm r-lg hover:bg-gray-50">
                   取消
                 </button>
-                <button type="submit" disabled={loading} className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark disabled:opacity-50">
+                <button type="submit" disabled={loading} className="h-9 px-4 bg-primary text-white text-sm font-medium r-lg hover:bg-primary-dark disabled:opacity-50">
                   {loading ? '保存中...' : editingId ? '保存修改' : '添加分类'}
                 </button>
               </div>

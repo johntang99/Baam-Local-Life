@@ -35,7 +35,7 @@ export function DiscoverTabs() {
         <button
           key={tab.key}
           onClick={() => handleTabClick(tab.key)}
-          className={`px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors ${
+          className={`px-4 py-2 text-sm font-medium r-full whitespace-nowrap transition-colors ${
             activeTab === tab.key
               ? 'bg-gray-900 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

@@ -64,7 +64,7 @@ export default async function ForumHomePage({ params }: Props) {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
+            <h1 className="text-2xl fw-bold flex items-center gap-2">
               <span>💬</span> 社区论坛
             </h1>
             <p className="text-sm text-text-secondary mt-1">
@@ -75,7 +75,7 @@ export default async function ForumHomePage({ params }: Props) {
 
         {/* Board Card Grid */}
         <section className="mb-10">
-          <h2 className="text-lg font-bold mb-4">版块</h2>
+          <h2 className="text-lg fw-bold mb-4">版块</h2>
           {boards.length === 0 ? (
             <div className="py-12 text-center">
               <p className="text-4xl mb-4">💬</p>
@@ -89,11 +89,11 @@ export default async function ForumHomePage({ params }: Props) {
                   href={`/forum/${board.slug}`}
                   className="block cursor-pointer"
                 >
-                  <Card className="p-5 h-full hover:shadow-md transition-shadow">
+                  <Card className="p-5 h-full hover:elev-md transition-shadow">
                     <div className="flex items-start gap-3">
                       <span className="text-3xl">{board.emoji || board.icon || '📋'}</span>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base mb-1">{board.name_zh || board.name || board.name_en}</h3>
+                        <h3 className="fw-semibold text-base mb-1">{board.name_zh || board.name || board.name_en}</h3>
                         {board.description && (
                           <p className="text-xs text-text-secondary line-clamp-2">{board.description}</p>
                         )}
@@ -111,7 +111,7 @@ export default async function ForumHomePage({ params }: Props) {
 
         {/* Hot Threads */}
         <section>
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <h2 className="text-lg fw-bold mb-4 flex items-center gap-2">
             <span>🔥</span> 热门讨论
           </h2>
           {hotThreads.length === 0 ? (
@@ -131,11 +131,11 @@ export default async function ForumHomePage({ params }: Props) {
                     <Card className="p-4">
                       <div className="flex items-center gap-2 mb-2">
                         {thread.board_name && (
-                          <Badge className="text-xs bg-blue-100 text-blue-700">{thread.board_name}</Badge>
+                          <Badge className="text-xs bg-accent-blue-light text-secondary-dark">{thread.board_name}</Badge>
                         )}
                         <span className="text-xs text-text-muted">{timeAgo}</span>
                       </div>
-                      <h3 className="font-semibold text-sm mb-1 line-clamp-1">
+                      <h3 className="fw-semibold text-sm mb-1 line-clamp-1">
                         {thread.title_zh || thread.title}
                       </h3>
                       {thread.ai_summary_zh && (
@@ -159,8 +159,8 @@ export default async function ForumHomePage({ params }: Props) {
       {/* Floating New Post Button */}
       <Link
         href="/forum/new"
-        className={cn(buttonVariants({ size: 'icon' }), 'fab fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-shadow text-2xl z-50')}
-        style={{ backgroundColor: 'var(--color-accent-orange, #f97316)' }}
+        className={cn(buttonVariants({ size: 'icon' }), 'fab fixed bottom-6 right-6 w-14 h-14 r-full elev-lg hover:elev-lg transition-shadow text-2xl z-50')}
+        style={{ backgroundColor: 'var(--primary)' }}
       >
         ✏️
       </Link>

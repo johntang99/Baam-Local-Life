@@ -98,11 +98,11 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
     }
   };
 
-  const inputClass = 'w-full h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card';
-  const selectClass = 'w-full h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card cursor-pointer';
+  const inputClass = 'w-full h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card';
+  const selectClass = 'w-full h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card cursor-pointer';
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl overflow-hidden mb-6">
+    <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 r-xl overflow-hidden mb-6">
       {/* Header - always visible */}
       <div className="flex items-center justify-between px-5 py-4">
         <button
@@ -112,7 +112,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
         >
           <span className="text-lg">🤖</span>
           <span className="font-semibold text-sm">AI 内容生成</span>
-          <span className="text-xs text-text-muted bg-blue-100 px-2 py-0.5 rounded-full">输入主题，一键生成完整文章</span>
+          <span className="text-xs text-text-muted bg-blue-100 px-2 py-0.5 r-full">输入主题，一键生成完整文章</span>
         </button>
         <div className="flex items-center gap-3">
           {lastPrompt && (
@@ -141,7 +141,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
             <button
               type="button"
               onClick={() => setMode('generate')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`flex-1 py-2 text-sm font-medium r-lg transition-colors ${
                 mode === 'generate'
                   ? 'bg-blue-600 text-white'
                   : 'bg-white border border-border text-text-secondary hover:bg-gray-50'
@@ -152,7 +152,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
             <button
               type="button"
               onClick={() => setMode('rewrite')}
-              className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={`flex-1 py-2 text-sm font-medium r-lg transition-colors ${
                 mode === 'rewrite'
                   ? 'bg-blue-600 text-white'
                   : 'bg-white border border-border text-text-secondary hover:bg-gray-50'
@@ -163,7 +163,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
           </div>
 
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm r-lg">{error}</div>
           )}
 
           {mode === 'generate' ? (
@@ -273,7 +273,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
                   onChange={(e) => setSourceContent(e.target.value)}
                   placeholder="粘贴要改写的原文内容..."
                   rows={6}
-                  className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card resize-y"
+                  className="w-full px-3 py-2 border border-border r-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-bg-card resize-y"
                 />
               </div>
 
@@ -323,7 +323,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
               type="button"
               onClick={handleGenerate}
               disabled={loading || (mode === 'generate' ? !topic.trim() : !sourceContent.trim())}
-              className="h-10 px-6 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 transition-colors"
+              className="h-10 px-6 text-sm font-medium r-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 transition-colors"
             >
               {loading ? (
                 <>
@@ -352,7 +352,7 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
       {/* Prompt Modal */}
       {showPromptModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={() => setShowPromptModal(false)}>
-          <div className="bg-white rounded-xl max-w-3xl w-[90%] max-h-[80vh] shadow-xl flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-white r-xl max-w-3xl w-[90%] max-h-[80vh] shadow-xl flex flex-col" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <div>
                 <h3 className="font-semibold text-base">AI Prompt</h3>
@@ -361,13 +361,13 @@ export function AIContentGenerator({ onGenerated }: AIContentGeneratorProps) {
               <button onClick={() => setShowPromptModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
             </div>
             <div className="overflow-auto p-6">
-              <pre className="text-sm text-text-secondary whitespace-pre-wrap font-mono bg-bg-page rounded-lg p-4 border border-border">{lastPrompt}</pre>
+              <pre className="text-sm text-text-secondary whitespace-pre-wrap font-mono bg-bg-page r-lg p-4 border border-border">{lastPrompt}</pre>
             </div>
             <div className="px-6 py-3 border-t border-border flex justify-end">
               <button
                 type="button"
                 onClick={() => { navigator.clipboard.writeText(lastPrompt); }}
-                className="h-8 px-4 text-xs font-medium rounded-lg border border-border hover:bg-bg-page"
+                className="h-8 px-4 text-xs font-medium r-lg border border-border hover:bg-bg-page"
               >
                 复制 Prompt
               </button>

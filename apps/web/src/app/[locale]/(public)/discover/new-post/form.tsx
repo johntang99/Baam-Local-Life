@@ -50,8 +50,8 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
     return (
       <Card className="p-8 text-center">
         <p className="text-4xl mb-4">🔒</p>
-        <p className="text-gray-500 mb-2">请先登录后再发布内容</p>
-        <p className="text-sm text-gray-400">点击右上角「登录/注册」按钮</p>
+        <p className="text-text-muted mb-2">请先登录后再发布内容</p>
+        <p className="text-sm text-text-muted">点击右上角「登录/注册」按钮</p>
       </Card>
     );
   }
@@ -107,26 +107,26 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
   return (
     <div className="space-y-6">
       {moderationNotice && (
-        <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-lg flex items-center gap-2">
+        <div className="p-3 bg-accent-yellow/20 border border-accent-yellow text-accent-yellow text-sm r-lg flex items-center gap-2">
           <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
           你的笔记已发布，正在审核中。审核通过后将在发现页展示。
         </div>
       )}
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>
+        <div className="p-3 bg-accent-red-light border border-accent-red text-accent-red text-sm r-lg">{error}</div>
       )}
 
       {/* Post Type Selector */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-1.5 flex gap-1">
+      <div className="bg-bg-card r-xl border border-border p-1.5 flex gap-1">
         {postTypes.map((type) => (
           <button
             key={type.key}
             type="button"
             onClick={() => setPostType(type.key)}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-sm font-medium rounded-xl transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 text-sm fw-medium r-xl transition-colors ${
               postType === type.key
-                ? 'bg-gray-900 text-white'
-                : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                ? 'bg-bg-sidebar text-text-inverse'
+                : 'text-text-muted hover:bg-bg-page hover:text-text-secondary'
             }`}
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -157,8 +157,8 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
       )}
 
       {/* Title */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
-        <label className="text-sm font-semibold text-gray-900 mb-3 block">
+      <div className="bg-bg-card r-xl border border-border p-5 sm:p-6">
+        <label className="text-sm fw-semibold text-text-primary mb-3 block">
           标题 <span className="text-red-400">*</span>
         </label>
         <input
@@ -167,21 +167,21 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
           onChange={(e) => setTitle(e.target.value)}
           placeholder="写一个吸引人的标题..."
           maxLength={50}
-          className="w-full h-12 px-4 border border-gray-200 rounded-xl text-base font-medium focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+          className="w-full h-12 px-4 border border-border r-xl text-base fw-medium focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
         />
-        <p className="text-xs text-gray-400 mt-2 text-right">{title.length} / 50</p>
+        <p className="text-xs text-text-muted mt-2 text-right">{title.length} / 50</p>
       </div>
 
       {/* Content — 小红书 style plain text editor */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
-        <label className="text-sm font-semibold text-gray-900 mb-3 block">正文内容</label>
+      <div className="bg-bg-card r-xl border border-border p-5 sm:p-6">
+        <label className="text-sm fw-semibold text-text-primary mb-3 block">正文内容</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder={'分享你的故事、经验或推荐...\n\n可以用 # 添加话题标签\n可以用 @ 提及其他用户'}
-          className="w-full min-h-[240px] px-4 py-3 border border-gray-200 rounded-xl text-[15px] leading-[1.8] focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y transition"
+          className="w-full min-h-[240px] px-4 py-3 border border-border r-xl text-[15px] leading-[1.8] focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y transition"
         />
-        <p className="text-xs text-gray-400 mt-2 text-right">已输入 {content.length} 字</p>
+        <p className="text-xs text-text-muted mt-2 text-right">已输入 {content.length} 字</p>
       </div>
 
       {/* Tags */}
@@ -195,10 +195,10 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
       />
 
       {/* Location */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
-        <label className="text-sm font-semibold text-gray-900 mb-3 block">位置</label>
+      <div className="bg-bg-card r-xl border border-border p-5 sm:p-6">
+        <label className="text-sm fw-semibold text-text-primary mb-3 block">位置</label>
         <div className="relative">
-          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -207,13 +207,13 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="输入位置..."
-            className="w-full h-10 pl-10 pr-10 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+            className="w-full h-10 pl-10 pr-10 border border-border r-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
           />
           {location && (
             <button
               type="button"
               onClick={() => setLocation('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -227,7 +227,7 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
               key={loc}
               type="button"
               onClick={() => setLocation(loc)}
-              className="px-3 py-1 bg-gray-50 text-gray-500 text-xs rounded-full hover:bg-orange-50 hover:text-primary transition border border-gray-200"
+              className="px-3 py-1 bg-bg-page text-text-muted text-xs r-full hover:bg-primary-50 hover:text-primary transition border border-border"
             >
               {loc}
             </button>
@@ -236,8 +236,8 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
       </div>
 
       {/* Settings */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
-        <label className="text-sm font-semibold text-gray-900 mb-4 block">发布设置</label>
+      <div className="bg-bg-card r-xl border border-border p-5 sm:p-6">
+        <label className="text-sm fw-semibold text-text-primary mb-4 block">发布设置</label>
         <div className="space-y-4">
           <ToggleSetting
             label="允许评论"
@@ -258,7 +258,7 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
       <div className="flex items-center gap-3 pb-8">
         <button
           type="button"
-          className={cn(buttonVariants({ variant: 'outline' }), 'flex-1 py-3 text-sm font-medium rounded-xl')}
+          className={cn(buttonVariants({ variant: 'outline' }), 'flex-1 py-3 text-sm fw-medium r-xl')}
         >
           存为草稿
         </button>
@@ -266,7 +266,7 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className={cn(buttonVariants(), 'flex-1 py-3 text-sm font-semibold rounded-xl disabled:opacity-50')}
+          className={cn(buttonVariants(), 'flex-1 py-3 text-sm fw-semibold r-xl disabled:opacity-50')}
         >
           {loading ? (
             '发布中...'
@@ -294,17 +294,17 @@ function ToggleSetting({ label, description, checked, onChange }: {
   return (
     <div className="flex items-center justify-between">
       <div>
-        <p className="text-sm text-gray-700">{label}</p>
-        <p className="text-xs text-gray-400">{description}</p>
+        <p className="text-sm text-text-secondary">{label}</p>
+        <p className="text-xs text-text-muted">{description}</p>
       </div>
       <button
         type="button"
         onClick={() => onChange(!checked)}
-        className={`w-11 h-6 rounded-full relative transition-colors ${
-          checked ? 'bg-primary' : 'bg-gray-300'
+        className={`w-11 h-6 r-full relative transition-colors ${
+          checked ? 'bg-primary' : 'bg-border'
         }`}
       >
-        <div className={`w-5 h-5 bg-white rounded-full shadow absolute top-0.5 transition-all ${
+        <div className={`w-5 h-5 bg-bg-card r-full elev-sm absolute top-0.5 transition-all ${
           checked ? 'right-0.5' : 'left-0.5'
         }`} />
       </button>

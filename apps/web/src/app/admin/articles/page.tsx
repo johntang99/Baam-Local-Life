@@ -142,7 +142,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
         <div className="flex justify-end">
           <Link
             href={`/admin/articles/new?${baseParams.toString()}`}
-            className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 inline-flex items-center"
+            className="h-9 px-4 bg-primary text-white text-sm font-medium r-lg hover:bg-primary/90 inline-flex items-center"
           >
             + 新建文章
           </Link>
@@ -150,12 +150,12 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
         {/* Filter bar */}
         <div className="flex flex-wrap items-center gap-4">
           {/* Status tabs */}
-          <div className="flex items-center gap-1 bg-bg-page border border-border rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-bg-page border border-border r-lg p-1">
             {statusTabs.map((tab) => (
               <Link
                 key={tab.key}
                 href={filterUrl({ status: tab.key, page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base transition-colors ${
                   statusFilter === tab.key
                     ? 'bg-bg-card text-text shadow-sm'
                     : 'text-text-muted hover:text-text'
@@ -172,7 +172,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
               <Link
                 key={opt.key}
                 href={filterUrl({ type: opt.key, page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base border transition-colors ${
                   typeFilter === opt.key
                     ? 'border-primary text-primary bg-primary/5'
                     : 'border-border text-text-muted hover:text-text'
@@ -188,7 +188,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
             <div className="flex items-center gap-1">
               <Link
                 href={filterUrl({ filter_region: '', page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base border transition-colors ${
                   !regionFilter
                     ? 'border-primary text-primary bg-primary/5'
                     : 'border-border text-text-muted hover:text-text'
@@ -200,7 +200,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
                 <Link
                   key={id}
                   href={filterUrl({ filter_region: id, page: '' })}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                  className={`px-3 py-1.5 text-xs font-medium r-base border transition-colors ${
                     regionFilter === id
                       ? 'border-primary text-primary bg-primary/5'
                       : 'border-border text-text-muted hover:text-text'
@@ -218,7 +218,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
           <div className="flex flex-wrap items-center gap-1">
             <Link
               href={filterUrl({ cat: '', page: '' })}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium r-base border transition-colors ${
                 !categoryFilter
                   ? 'border-primary text-primary bg-primary/5'
                   : 'border-border text-text-muted hover:text-text'
@@ -230,7 +230,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
               <Link
                 key={cat.id}
                 href={filterUrl({ cat: String(cat.id), page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base border transition-colors ${
                   categoryFilter === String(cat.id)
                     ? 'border-primary text-primary bg-primary/5'
                     : 'border-border text-text-muted hover:text-text'
@@ -244,7 +244,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
 
         {/* Articles table (client component for bulk actions) */}
         {articles.length === 0 ? (
-          <div className="bg-bg-card border border-border rounded-xl p-12 text-center">
+          <div className="bg-bg-card border border-border r-xl p-12 text-center">
             <p className="text-4xl mb-4">&#128221;</p>
             <p className="text-text-muted">该站点暂无文章</p>
             <p className="text-sm text-text-muted mt-1">切换站点或创建新文章</p>
@@ -262,7 +262,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
             {page > 1 && (
               <Link
                 href={filterUrl({ page: String(page - 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 上一页
               </Link>
@@ -270,7 +270,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
             {from + pageSize < totalCount && (
               <Link
                 href={filterUrl({ page: String(page + 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 下一页
               </Link>

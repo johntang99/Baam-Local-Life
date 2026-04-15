@@ -23,14 +23,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Badge color mapping for guide content verticals
 const verticalConfig: Record<string, { label: string; className: string }> = {
-  guide_howto: { label: 'How-To', className: 'bg-blue-100 text-blue-700' },
-  guide_checklist: { label: 'Checklist', className: 'bg-green-100 text-green-700' },
-  guide_bestof: { label: 'Best-of', className: 'bg-green-100 text-green-700' },
-  guide_comparison: { label: '对比', className: 'bg-purple-100 text-purple-700' },
+  guide_howto: { label: 'How-To', className: 'bg-accent-blue-light text-secondary-dark' },
+  guide_checklist: { label: 'Checklist', className: 'bg-accent-green-light text-accent-green' },
+  guide_bestof: { label: 'Best-of', className: 'bg-accent-green-light text-accent-green' },
+  guide_comparison: { label: '对比', className: 'bg-accent-purple-light text-accent-purple' },
   guide_neighborhood: { label: '社区', className: 'bg-primary-100 text-primary-700' },
-  guide_seasonal: { label: '时令', className: 'bg-red-100 text-red-700' },
-  guide_resource: { label: '资源', className: 'bg-blue-100 text-blue-700' },
-  guide_scenario: { label: '场景', className: 'bg-purple-100 text-purple-700' },
+  guide_seasonal: { label: '时令', className: 'bg-accent-red-light text-accent-red' },
+  guide_resource: { label: '资源', className: 'bg-accent-blue-light text-secondary-dark' },
+  guide_scenario: { label: '场景', className: 'bg-accent-purple-light text-accent-purple' },
 };
 
 const GUIDE_VERTICALS = [
@@ -108,7 +108,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
     for (const cat of visibleCategories) {
       const catGuides = articles.filter((a) => String(a.category_id) === String(cat.id));
       if (catGuides.length > 0) {
-        categoryGroups.push({ category: cat, guides: catGuides.slice(0, 4) });
+        categoryGroups.push({ category: cat, guides: catGuides.slice(0, 6) });
       }
     }
   }
@@ -118,7 +118,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
       {/* Page Header */}
       <section className="bg-bg-card border-b border-border">
         <PageContainer className="py-6">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+          <h1 className="text-2xl sm:text-3xl fw-bold mb-2">
             {t('nav.guides', { defaultValue: '生活资讯' })}
           </h1>
           <p className="text-sm text-text-secondary">纽约华人必备实用指南，AI整理，编辑审核，持续更新</p>
@@ -131,7 +131,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
           <div className="flex gap-1 overflow-x-auto py-3" style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}>
             <Link
               href="/guides"
-              className={`flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full ${
+              className={`flex-shrink-0 px-4 py-2 text-sm fw-medium r-full ${
                 !activeCategoryId
                   ? 'bg-primary text-text-inverse'
                   : 'text-text-secondary bg-border-light hover:bg-primary-50 hover:text-primary transition'
@@ -143,7 +143,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
               <Link
                 key={cat.id}
                 href={`/guides?cat=${cat.slug}`}
-                className={`flex-shrink-0 px-4 py-2 text-sm font-medium rounded-full ${
+                className={`flex-shrink-0 px-4 py-2 text-sm fw-medium r-full ${
                   activeCategoryId === String(cat.id)
                     ? 'bg-primary text-text-inverse'
                     : 'text-text-secondary bg-border-light hover:bg-primary-50 hover:text-primary transition'
@@ -187,21 +187,21 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                           <div className="relative p-5 sm:p-6 w-full">
                             <div className="flex items-center gap-2 mb-2">
                               {verticalConfig[featuredGuide.content_vertical] && (
-                                <Badge className="bg-green-500 text-white hover:bg-green-500">
+                                <Badge className="bg-accent-green text-text-inverse hover:bg-accent-green">
                                   {verticalConfig[featuredGuide.content_vertical].label}
                                 </Badge>
                               )}
-                              <Badge className="bg-white/20 text-white backdrop-blur-sm hover:bg-white/20">编辑精选</Badge>
+                              <Badge className="bg-bg-card/20 text-text-inverse backdrop-blur-sm hover:bg-bg-card/20">编辑精选</Badge>
                             </div>
-                            <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight group-hover:underline decoration-2 underline-offset-4">
+                            <h2 className="text-xl sm:text-2xl fw-bold text-text-inverse leading-tight group-hover:underline decoration-2 underline-offset-4">
                               {featuredGuide.title_zh || featuredGuide.title_en}
                             </h2>
                           </div>
                         </div>
                         <div className="p-5">
                           {(featuredGuide.ai_summary_zh || featuredGuide.summary_zh) && (
-                            <div className="bg-blue-50 border border-blue-100 rounded-lg p-3">
-                              <p className="text-xs text-blue-800 leading-relaxed line-clamp-2">
+                            <div className="bg-secondary-50 border border-secondary-light r-lg p-3">
+                              <p className="text-xs text-secondary-dark leading-relaxed line-clamp-2">
                                 {featuredGuide.ai_summary_zh || featuredGuide.summary_zh}
                               </p>
                             </div>
@@ -211,14 +211,14 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                     </Link>
 
                     <div className="lg:col-span-2 space-y-4">
-                      <h3 className="text-sm font-bold text-text-secondary uppercase tracking-wide">最近发布</h3>
+                      <h3 className="text-sm fw-bold text-text-secondary uppercase tracking-wide">最近发布</h3>
                       {recentGuides.map((guide, idx) => {
-                        const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-gray-100 text-gray-700' };
+                        const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-bg-page text-text-secondary' };
                         return (
                           <Link key={guide.id} href={`/guides/${guide.slug}`} className="group block">
-                            <Card className="p-4 flex gap-4 cursor-pointer hover:shadow-md transition-shadow">
+                            <Card className="p-4 flex gap-4 cursor-pointer hover:elev-md transition-shadow">
                               {guide.cover_image_url ? (
-                                <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+                                <div className="w-20 h-20 flex-shrink-0 r-lg overflow-hidden">
                                   <img
                                     src={guide.cover_image_url}
                                     alt={guide.title_zh || guide.title_en || 'Guide cover'}
@@ -227,7 +227,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                                   />
                                 </div>
                               ) : (
-                                <div className={`w-20 h-20 flex-shrink-0 rounded-lg bg-gradient-to-br ${getGradient(idx + 1)} flex items-center justify-center text-2xl`}>
+                                <div className={`w-20 h-20 flex-shrink-0 r-lg bg-gradient-to-br ${getGradient(idx + 1)} flex items-center justify-center text-2xl`}>
                                   {getEmoji(guide.title_zh || guide.title_en || '', idx)}
                                 </div>
                               )}
@@ -236,7 +236,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                                   <Badge variant="secondary">{vertical.label}</Badge>
                                   <span className="text-xs text-text-muted">{formatTimeAgo(guide.published_at)}</span>
                                 </div>
-                                <h4 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition">
+                                <h4 className="text-sm fw-semibold line-clamp-2 group-hover:text-primary transition">
                                   {guide.title_zh || guide.title_en}
                                 </h4>
                               </div>
@@ -256,16 +256,16 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                     <span className="mx-2">&gt;</span>
                     <Link href="/guides" className="hover:text-primary">生活资讯</Link>
                     <span className="mx-2">&gt;</span>
-                    <span className="text-text-primary font-medium">
+                    <span className="text-text-primary fw-medium">
                       {categoriesBySlug.get(activeCategorySlug)?.name_zh || categoriesBySlug.get(activeCategorySlug)?.name_en || '分类'}
                     </span>
                   </nav>
 
-                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl p-6">
+                  <div className="bg-gradient-to-r from-secondary-50 to-cyan-50 r-xl p-6">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-4xl">{categoriesBySlug.get(activeCategorySlug)?.icon || '📚'}</span>
                       <div>
-                        <h2 className="text-2xl font-bold">
+                        <h2 className="text-2xl fw-bold">
                           {categoriesBySlug.get(activeCategorySlug)?.name_zh || categoriesBySlug.get(activeCategorySlug)?.name_en}
                         </h2>
                         <p className="text-sm text-text-secondary mt-1">
@@ -277,7 +277,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
 
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className="text-sm text-text-secondary">类型：</span>
-                    <Badge className="px-3 py-1.5 text-sm bg-primary text-white">全部</Badge>
+                    <Badge className="px-3 py-1.5 text-sm bg-primary text-text-inverse">全部</Badge>
                     {Object.values(verticalConfig).slice(0, 4).map((v) => (
                       <Badge key={v.label} variant="muted" className="px-3 py-1.5 text-sm">
                         {v.label}
@@ -285,13 +285,13 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                     ))}
                   </div>
 
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {articles.map((guide, idx) => {
-                      const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-gray-100 text-gray-700' };
+                      const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-bg-page text-text-secondary' };
                       const category = categories.find((cat) => String(cat.id) === String(guide.category_id));
                       return (
                         <Link key={guide.id} href={`/guides/${guide.slug}`} className="group block">
-                          <Card className="cursor-pointer hover:shadow-md transition-shadow overflow-hidden">
+                          <Card className="cursor-pointer hover:elev-md transition-shadow overflow-hidden">
                             {guide.cover_image_url ? (
                               <div className="h-40 overflow-hidden">
                                 <img
@@ -311,7 +311,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                                 <Badge variant="secondary">{vertical.label}</Badge>
                                 {category && <Badge variant="outline">{category.name_zh || category.name_en}</Badge>}
                               </div>
-                              <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-primary transition">
+                              <h3 className="fw-semibold text-sm line-clamp-2 mb-1 group-hover:text-primary transition">
                                 {guide.title_zh || guide.title_en}
                               </h3>
                               <p className="text-xs text-text-muted">{formatTimeAgo(guide.published_at)}</p>
@@ -326,17 +326,23 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                 categoryGroups.map((group, groupIdx) => (
                   <section key={group.category.id || groupIdx}>
                     <div className="flex items-center justify-between mb-5">
-                      <h2 className="text-xl font-bold flex items-center gap-2">
+                      <h2 className="text-xl fw-bold flex items-center gap-2">
                         {group.category.icon && <span className="text-2xl">{group.category.icon}</span>}
                         {group.category.name_zh || group.category.name_en}
                       </h2>
+                      <Link
+                        href={`/guides?cat=${group.category.slug}`}
+                        className="text-sm text-primary hover:text-primary/80 transition"
+                      >
+                        ... 更多
+                      </Link>
                     </div>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                       {group.guides.map((guide, idx) => {
-                        const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-gray-100 text-gray-700' };
+                        const vertical = verticalConfig[guide.content_vertical] || { label: '指南', className: 'bg-bg-page text-text-secondary' };
                         return (
                           <Link key={guide.id} href={`/guides/${guide.slug}`} className="group block">
-                            <Card className="cursor-pointer hover:shadow-md transition-shadow overflow-hidden">
+                            <Card className="cursor-pointer hover:elev-md transition-shadow overflow-hidden">
                               {guide.cover_image_url ? (
                                 <div className="h-40 overflow-hidden">
                                   <img
@@ -356,7 +362,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                                   <Badge variant="secondary">{vertical.label}</Badge>
                                   <Badge variant="outline">{group.category.name_zh || group.category.name_en}</Badge>
                                 </div>
-                                <h3 className="font-semibold text-sm line-clamp-2 mb-1 group-hover:text-primary transition">
+                                <h3 className="fw-semibold text-sm line-clamp-2 mb-1 group-hover:text-primary transition">
                                   {guide.title_zh || guide.title_en}
                                 </h3>
                                 <p className="text-xs text-text-muted">{formatTimeAgo(guide.published_at)}</p>
@@ -371,7 +377,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
               )}
 
               <Card className="bg-bg-card p-8 text-center">
-                <h2 className="text-xl font-bold mb-2">订阅纽约本地周报</h2>
+                <h2 className="text-xl fw-bold mb-2">订阅纽约本地周报</h2>
                 <p className="text-sm text-text-secondary mb-5">每周一封，精选本地新闻、实用指南、活动推荐和社区精华</p>
                 <NewsletterForm source="guides_cta" className="max-w-md mx-auto" />
               </Card>
@@ -380,7 +386,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
             <aside className="hidden lg:block w-72 flex-shrink-0">
               <div className="sticky top-36 space-y-6">
                 <Card className="bg-bg-card p-5">
-                  <h3 className="text-sm font-bold text-text-primary mb-3">热门搜索</h3>
+                  <h3 className="text-sm fw-bold text-text-primary mb-3">热门搜索</h3>
                   <div className="flex flex-wrap gap-2">
                     {['中文家庭医生', '报税服务', '驾照路考', '学区排名', '白卡申请', '租房攻略'].map((term) => (
                       <Link
@@ -396,13 +402,13 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
 
                 <Card className="bg-bg-card p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-bold text-text-primary">推荐商家</h3>
+                    <h3 className="text-sm fw-bold text-text-primary">推荐商家</h3>
                     <span className="text-xs text-text-muted">赞助</span>
                   </div>
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-200 to-green-300 flex-shrink-0 flex items-center justify-center text-lg">💼</div>
+                    <div className="w-12 h-12 r-lg bg-gradient-to-br from-accent-green-light to-accent-green-light flex-shrink-0 flex items-center justify-center text-lg">💼</div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm truncate">华信会计师事务所</h4>
+                      <h4 className="fw-semibold text-sm truncate">华信会计师事务所</h4>
                       <p className="text-xs text-text-muted mt-1">报税季特惠，新客户可享优惠</p>
                     </div>
                   </div>
@@ -419,10 +425,10 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
 
 const coverGradients = [
   'from-emerald-400 via-teal-500 to-cyan-600',
-  'from-blue-400 via-indigo-500 to-purple-600',
-  'from-orange-400 via-red-500 to-pink-600',
-  'from-green-400 via-emerald-500 to-teal-600',
-  'from-purple-400 via-violet-500 to-indigo-600',
+  'from-secondary via-secondary to-accent-purple',
+  'from-primary-light via-red-500 to-pink-600',
+  'from-accent-green via-emerald-500 to-teal-600',
+  'from-accent-purple via-violet-500 to-indigo-600',
   'from-amber-400 via-orange-500 to-red-500',
 ];
 

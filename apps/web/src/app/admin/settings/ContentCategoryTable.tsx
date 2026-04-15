@@ -114,7 +114,7 @@ export function ContentCategoryTable({
           <button
             type="button"
             onClick={openCreate}
-            className="h-8 px-3 border border-gray-300 text-xs font-medium rounded-lg hover:bg-gray-50"
+            className="h-8 px-3 border border-gray-300 text-xs font-medium r-lg hover:bg-gray-50"
           >
             + Add New
           </button>
@@ -167,10 +167,10 @@ export function ContentCategoryTable({
 
       {(editing || isCreating) && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]" onClick={closeEdit}>
-          <div className="bg-white rounded-xl p-6 w-[520px] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white r-xl p-6 w-[520px] max-w-[90vw]" onClick={(e) => e.stopPropagation()}>
             <h4 className="text-lg font-bold mb-4">{isCreating ? '新增分类' : '编辑分类'}</h4>
 
-            {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
+            {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm r-lg">{error}</div>}
 
             <form onSubmit={submit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
@@ -179,7 +179,7 @@ export function ContentCategoryTable({
                   <input
                     value={form.slug}
                     onChange={(e) => setForm((prev) => ({ ...prev, slug: e.target.value }))}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm"
                     required
                   />
                 </div>
@@ -188,7 +188,7 @@ export function ContentCategoryTable({
                   <input
                     value={form.icon}
                     onChange={(e) => setForm((prev) => ({ ...prev, icon: e.target.value }))}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ export function ContentCategoryTable({
                   <input
                     value={form.name_zh}
                     onChange={(e) => setForm((prev) => ({ ...prev, name_zh: e.target.value }))}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm"
                   />
                 </div>
                 <div>
@@ -207,7 +207,7 @@ export function ContentCategoryTable({
                   <input
                     value={form.name_en}
                     onChange={(e) => setForm((prev) => ({ ...prev, name_en: e.target.value }))}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm"
                     required
                   />
                 </div>
@@ -220,7 +220,7 @@ export function ContentCategoryTable({
                     type="number"
                     value={form.sort_order}
                     onChange={(e) => setForm((prev) => ({ ...prev, sort_order: e.target.value }))}
-                    className="w-full h-10 px-3 border border-gray-300 rounded-lg text-sm"
+                    className="w-full h-10 px-3 border border-gray-300 r-lg text-sm"
                   />
                 </div>
                 <label className="flex items-center gap-2 text-sm mt-7">
@@ -234,10 +234,10 @@ export function ContentCategoryTable({
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
-                <button type="button" onClick={closeEdit} className="h-9 px-4 border border-gray-300 text-sm rounded-lg">
+                <button type="button" onClick={closeEdit} className="h-9 px-4 border border-gray-300 text-sm r-lg">
                   取消
                 </button>
-                <button type="submit" disabled={loading} className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg disabled:opacity-50">
+                <button type="submit" disabled={loading} className="h-9 px-4 bg-primary text-white text-sm font-medium r-lg disabled:opacity-50">
                   {loading ? '保存中...' : isCreating ? '创建' : '保存'}
                 </button>
               </div>

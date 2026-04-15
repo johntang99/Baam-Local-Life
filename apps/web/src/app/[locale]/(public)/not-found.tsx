@@ -8,7 +8,7 @@ export default function NotFound() {
     <main>
       <PageContainer className="max-w-2xl py-20 text-center">
         <p className="text-6xl mb-6">🔍</p>
-        <h1 className="text-3xl font-bold mb-3">页面未找到</h1>
+        <h1 className="text-3xl fw-bold mb-3">页面未找到</h1>
         <p className="text-text-secondary mb-8">
           抱歉，你访问的页面不存在或已被移除。
         </p>

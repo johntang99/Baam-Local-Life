@@ -64,9 +64,9 @@ export default async function ClassifiedDetailPage({ params }: Props) {
           {/* Header */}
           <div className="flex items-center gap-2 mb-3">
             <Badge variant="muted">{catLabel}</Badge>
-            {item.is_featured && <Badge className="bg-red-100 text-red-700">置顶</Badge>}
+            {item.is_featured && <Badge className="bg-accent-red-light text-accent-red">置顶</Badge>}
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-4">{item.title}</h1>
+          <h1 className="text-xl sm:text-2xl fw-bold mb-4">{item.title}</h1>
 
           {/* Meta */}
           <div className="flex flex-wrap gap-4 text-sm text-text-muted mb-6 pb-6 border-b border-border">
@@ -77,9 +77,9 @@ export default async function ClassifiedDetailPage({ params }: Props) {
 
           {/* Price */}
           {item.price_text && (
-            <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-6">
+            <div className="bg-primary/5 border border-primary/20 r-lg p-4 mb-6">
               <span className="text-sm text-text-muted">价格：</span>
-              <span className="text-lg font-bold text-primary ml-1">{item.price_text}</span>
+              <span className="text-lg fw-bold text-primary ml-1">{item.price_text}</span>
             </div>
           )}
 
@@ -91,8 +91,8 @@ export default async function ClassifiedDetailPage({ params }: Props) {
           )}
 
           {/* Contact Info */}
-          <div className="bg-bg-page rounded-xl p-5">
-            <h3 className="font-semibold text-sm mb-3">联系方式</h3>
+          <div className="bg-bg-page r-xl p-5">
+            <h3 className="fw-semibold text-sm mb-3">联系方式</h3>
             <div className="space-y-2 text-sm">
               {item.contact_name && <p><span className="text-text-muted">联系人：</span>{item.contact_name}</p>}
               {item.contact_phone && (

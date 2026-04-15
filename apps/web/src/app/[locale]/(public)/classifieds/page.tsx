@@ -81,7 +81,7 @@ export default async function ClassifiedsListPage({ searchParams }: Props) {
     <main>
       <PageContainer className="py-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">分类信息</h1>
+          <h1 className="text-2xl fw-bold">分类信息</h1>
           <Link href="/classifieds/new" className={cn(buttonVariants({ size: 'sm' }), 'h-9 px-4 text-sm')}>发布信息</Link>
         </div>
 
@@ -91,10 +91,10 @@ export default async function ClassifiedsListPage({ searchParams }: Props) {
             <Link
               key={tab.key}
               href={tab.key ? `/classifieds?cat=${tab.key}` : '/classifieds'}
-              className={cn(buttonVariants({ size: 'sm' }), 'rounded-full whitespace-nowrap', `${
+              className={cn(buttonVariants({ size: 'sm' }), 'r-full whitespace-nowrap', `${
                 activeCat === tab.key
                   ? 'bg-primary text-text-inverse'
-                  : 'bg-border-light text-text-secondary hover:bg-gray-200'
+                  : 'bg-border-light text-text-secondary hover:bg-border-light'
               }`)}
             >
               {tab.label}
@@ -120,17 +120,17 @@ export default async function ClassifiedsListPage({ searchParams }: Props) {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        {item.is_featured && <Badge className="text-xs bg-red-100 text-red-700">置顶</Badge>}
+                        {item.is_featured && <Badge className="text-xs bg-accent-red-light text-accent-red">置顶</Badge>}
                         <Badge variant="muted" className="text-xs">{catLabel}</Badge>
                         <span className="text-xs text-text-muted">{timeAgo}</span>
                       </div>
-                      <h3 className="font-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
+                      <h3 className="fw-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
                       {item.body && (
                         <p className="text-xs text-text-secondary line-clamp-2">{item.body}</p>
                       )}
                     </div>
                     {item.price_text && (
-                      <span className="text-sm font-bold text-primary flex-shrink-0">{item.price_text}</span>
+                      <span className="text-sm fw-bold text-primary flex-shrink-0">{item.price_text}</span>
                     )}
                   </div>
                   </Card>

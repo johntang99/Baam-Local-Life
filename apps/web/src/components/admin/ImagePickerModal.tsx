@@ -210,7 +210,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {providerItems.map((item) => (
-          <div key={item.id} className="border border-gray-200 rounded-lg overflow-hidden">
+          <div key={item.id} className="border border-gray-200 r-lg overflow-hidden">
             <div className="aspect-[4/3] bg-gray-100">
               <img
                 src={item.previewUrl}
@@ -228,7 +228,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
                 type="button"
                 onClick={() => handleImportProviderImage(item)}
                 disabled={Boolean(importingId)}
-                className="px-2 py-1 rounded-md border border-gray-200 text-xs text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                className="px-2 py-1 r-base border border-gray-200 text-xs text-gray-700 hover:bg-gray-50 disabled:opacity-60"
               >
                 {importingId === item.id ? '导入中...' : '使用此图'}
               </button>
@@ -247,7 +247,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
             type="button"
             disabled={providerPage <= 1 || loading}
             onClick={() => loadProvider(sourceTab as 'unsplash' | 'pexels', providerPage - 1)}
-            className="px-2 py-1 rounded-md border border-gray-200 text-xs disabled:opacity-60"
+            className="px-2 py-1 r-base border border-gray-200 text-xs disabled:opacity-60"
           >
             上一页
           </button>
@@ -258,7 +258,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
             type="button"
             disabled={providerPage >= providerTotalPages || loading}
             onClick={() => loadProvider(sourceTab as 'unsplash' | 'pexels', providerPage + 1)}
-            className="px-2 py-1 rounded-md border border-gray-200 text-xs disabled:opacity-60"
+            className="px-2 py-1 r-base border border-gray-200 text-xs disabled:opacity-60"
           >
             下一页
           </button>
@@ -272,14 +272,14 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
       <div className="text-xs text-gray-500">
         使用 GPT 生成封面图。建议描述包含：场景、地点、风格、光线、构图。
       </div>
-      <div className="rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600 leading-relaxed">
+      <div className="r-base border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600 leading-relaxed">
         示例：纽约法拉盛社区街道，白天自然光，纪实摄影风格，画面干净，适合作为生活指南文章封面，不含文字或水印。
       </div>
       <button
         type="button"
         onClick={() => void handleGenerateAiImage()}
         disabled={generating}
-        className="px-3 py-2 rounded-md border border-gray-200 text-xs text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+        className="px-3 py-2 r-base border border-gray-200 text-xs text-gray-700 hover:bg-gray-50 disabled:opacity-60"
       >
         {generating ? '生成中...' : '生成并使用'}
       </button>
@@ -290,7 +290,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-6">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[80vh] flex flex-col">
+      <div className="bg-white r-xl shadow-xl w-full max-w-5xl max-h-[80vh] flex flex-col">
         <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold">图片选择</h2>
@@ -310,14 +310,14 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
                   event.currentTarget.value = '';
                 }}
               />
-              <span className="px-3 py-1.5 rounded-md border border-gray-200 hover:bg-gray-50 cursor-pointer">
+              <span className="px-3 py-1.5 r-base border border-gray-200 hover:bg-gray-50 cursor-pointer">
                 {uploading ? '上传中...' : '上传'}
               </span>
             </label>
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-1.5 rounded-md border border-gray-200 text-xs"
+              className="px-3 py-1.5 r-base border border-gray-200 text-xs"
             >
               关闭
             </button>
@@ -341,7 +341,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
                     setProviderTotalPages(0);
                   }
                 }}
-                className={`px-2.5 py-1.5 rounded-md text-xs border ${
+                className={`px-2.5 py-1.5 r-base text-xs border ${
                   sourceTab === tab
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-gray-200 text-gray-600 hover:bg-gray-50'
@@ -363,7 +363,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
             onSubmit={onProviderSearchSubmit}
           >
             <input
-              className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm"
+              className="w-full r-base border border-gray-200 px-3 py-2 text-sm"
               placeholder={
                 sourceTab === 'library'
                   ? '按文件名搜索'
@@ -378,7 +378,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
               <button
                 type="submit"
                 disabled={generating}
-                className="px-3 py-2 rounded-md border border-gray-200 text-xs text-gray-700 hover:bg-gray-50"
+                className="px-3 py-2 r-base border border-gray-200 text-xs text-gray-700 hover:bg-gray-50"
               >
                 {sourceTab === 'ai' ? (generating ? '生成中...' : '生成') : '搜索'}
               </button>
@@ -388,7 +388,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
 
         <div className="p-5 overflow-y-auto">
           {status && (
-            <div className="mb-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700">
+            <div className="mb-3 r-base border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-700">
               {status}
             </div>
           )}
@@ -409,7 +409,7 @@ export function ImagePickerModal({ open, folder, onClose, onSelect }: ImagePicke
                       onSelect(item.url);
                       onClose();
                     }}
-                    className="border border-gray-200 rounded-lg overflow-hidden text-left hover:shadow-sm"
+                    className="border border-gray-200 r-lg overflow-hidden text-left hover:shadow-sm"
                   >
                     <div className="aspect-[4/3] bg-gray-100">
                       <img

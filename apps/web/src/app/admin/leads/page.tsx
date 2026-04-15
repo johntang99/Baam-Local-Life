@@ -92,7 +92,7 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
       <div className="p-6 space-y-4">
         {/* Export button */}
         <div className="flex justify-end">
-          <button className="h-9 px-4 text-sm font-medium rounded-lg border border-border bg-bg-card hover:bg-bg-page inline-flex items-center">
+          <button className="h-9 px-4 text-sm font-medium r-lg border border-border bg-bg-card hover:bg-bg-page inline-flex items-center">
             导出CSV
           </button>
         </div>
@@ -100,7 +100,7 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
         {/* Stats cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat) => (
-            <div key={stat.label} className="bg-bg-card border border-border rounded-xl p-4">
+            <div key={stat.label} className="bg-bg-card border border-border r-xl p-4">
               <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
               <p className="text-xs text-text-muted mt-1">{stat.label}</p>
             </div>
@@ -109,12 +109,12 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
 
         {/* Status filter tabs */}
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-1 bg-bg-page border border-border rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-bg-page border border-border r-lg p-1">
             {statusTabs.map((tab) => (
               <Link
                 key={tab.key}
                 href={filterUrl({ status: tab.key, page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base transition-colors ${
                   statusFilter === tab.key
                     ? 'bg-bg-card text-text shadow-sm'
                     : 'text-text-muted hover:text-text'
@@ -138,7 +138,7 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
             {page > 1 && (
               <Link
                 href={filterUrl({ page: String(page - 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 上一页
               </Link>
@@ -146,7 +146,7 @@ export default async function AdminLeadsPage({ searchParams }: Props) {
             {from + pageSize < leadsTotal && (
               <Link
                 href={filterUrl({ page: String(page + 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 下一页
               </Link>

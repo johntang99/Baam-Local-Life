@@ -112,14 +112,14 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="h-9 px-4 text-sm font-medium rounded-lg border border-border bg-bg-card hover:bg-bg-page disabled:opacity-50"
+              className="h-9 px-4 text-sm font-medium r-lg border border-border bg-bg-card hover:bg-bg-page disabled:opacity-50"
             >
               保存草稿
             </button>
             <button
               onClick={handlePublish}
               disabled={isPending}
-              className="h-9 px-4 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
+              className="h-9 px-4 text-sm font-medium r-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
             >
               发布
             </button>
@@ -135,55 +135,55 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
         {/* Left column 70% */}
         <div className="flex-1 min-w-0 space-y-6" style={{ flex: '7' }}>
           {/* Title ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">活动标题（中文）</label>
             <input
               type="text"
               value={titleZh}
               onChange={(e) => setTitleZh(e.target.value)}
               placeholder="输入活动中文标题"
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
           {/* Title EN */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">活动标题（英文）</label>
             <input
               type="text"
               value={titleEn}
               onChange={(e) => setTitleEn(e.target.value)}
               placeholder="Enter event title in English"
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
           {/* Summary */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">活动简介</label>
             <textarea
               value={summaryZh}
               onChange={(e) => setSummaryZh(e.target.value)}
               placeholder="简要介绍活动内容"
               rows={3}
-              className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
+              className="w-full px-3 py-2 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
             />
           </div>
 
           {/* Description */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">活动详情</label>
             <textarea
               value={descriptionZh}
               onChange={(e) => setDescriptionZh(e.target.value)}
               placeholder="输入活动详细描述（支持Markdown）"
               rows={8}
-              className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
+              className="w-full px-3 py-2 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
             />
           </div>
 
           {/* Venue & Address */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">场地信息</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">场馆名称</label>
@@ -192,7 +192,7 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
                 value={venueName}
                 onChange={(e) => setVenueName(e.target.value)}
                 placeholder="例如：社区活动中心"
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
             <div>
@@ -202,7 +202,7 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="输入活动地址"
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
           </div>
@@ -211,12 +211,12 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
         {/* Right column 30% */}
         <div className="space-y-6" style={{ flex: '3' }}>
           {/* Status */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">发布状态</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               {statusOptions.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -225,7 +225,7 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
           </div>
 
           {/* Dates */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">活动时间</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">开始时间</label>
@@ -233,7 +233,7 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
                 type="datetime-local"
                 value={startAt}
                 onChange={(e) => setStartAt(e.target.value)}
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
               />
             </div>
             <div>
@@ -242,13 +242,13 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
                 type="datetime-local"
                 value={endAt}
                 onChange={(e) => setEndAt(e.target.value)}
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
               />
             </div>
           </div>
 
           {/* Price */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">费用信息</label>
             <label className="flex items-center gap-2 text-sm">
               <input
@@ -267,31 +267,31 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
                   value={ticketPrice}
                   onChange={(e) => setTicketPrice(e.target.value)}
                   placeholder="例如：$20"
-                  className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 />
               </div>
             )}
           </div>
 
           {/* Organizer */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">主办方</label>
             <input
               type="text"
               value={organizerName}
               onChange={(e) => setOrganizerName(e.target.value)}
               placeholder="主办方名称"
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
           {/* Region */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">地区</label>
             <select
               value={regionId}
               onChange={(e) => setRegionId(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               <option value="">选择地区</option>
               {regions.map((r) => (
@@ -301,9 +301,9 @@ export default function EventForm({ event, regions, isNew, siteParams = '' }: Ev
           </div>
 
           {/* Cover Image placeholder */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">封面图片</label>
-            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+            <div className="border-2 border-dashed border-border r-lg p-8 text-center">
               <p className="text-sm text-text-muted">点击或拖拽上传封面图片</p>
               <p className="text-xs text-text-muted mt-1">建议尺寸 1200x630</p>
             </div>

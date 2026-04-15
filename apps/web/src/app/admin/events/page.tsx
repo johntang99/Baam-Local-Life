@@ -71,7 +71,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
         <div className="flex justify-end">
           <Link
             href={`/admin/events/new?${baseParams.toString()}`}
-            className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 inline-flex items-center"
+            className="h-9 px-4 bg-primary text-white text-sm font-medium r-lg hover:bg-primary/90 inline-flex items-center"
           >
             + 添加活动
           </Link>
@@ -80,12 +80,12 @@ export default async function AdminEventsPage({ searchParams }: Props) {
         {/* Filter bar */}
         <div className="flex flex-wrap items-center gap-4">
           {/* Status tabs */}
-          <div className="flex items-center gap-1 bg-bg-page border border-border rounded-lg p-1">
+          <div className="flex items-center gap-1 bg-bg-page border border-border r-lg p-1">
             {statusTabs.map((tab) => (
               <Link
                 key={tab.key}
                 href={filterUrl({ status: tab.key, page: '' })}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                className={`px-3 py-1.5 text-xs font-medium r-base transition-colors ${
                   statusFilter === tab.key
                     ? 'bg-bg-card text-text shadow-sm'
                     : 'text-text-muted hover:text-text'
@@ -99,7 +99,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
 
         {/* Events table */}
         {events.length === 0 ? (
-          <div className="bg-bg-card border border-border rounded-xl p-12 text-center">
+          <div className="bg-bg-card border border-border r-xl p-12 text-center">
             <p className="text-text-muted">该站点暂无活动</p>
             <p className="text-sm text-text-muted mt-1">点击上方按钮创建新活动</p>
           </div>
@@ -116,7 +116,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
             {page > 1 && (
               <Link
                 href={filterUrl({ page: String(page - 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 上一页
               </Link>
@@ -124,7 +124,7 @@ export default async function AdminEventsPage({ searchParams }: Props) {
             {from + pageSize < totalCount && (
               <Link
                 href={filterUrl({ page: String(page + 1) })}
-                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border hover:bg-bg-page"
+                className="px-3 py-1.5 text-xs font-medium r-base border border-border hover:bg-bg-page"
               >
                 下一页
               </Link>

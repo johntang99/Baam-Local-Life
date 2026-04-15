@@ -35,7 +35,7 @@ export function PostActions({ postId, postSlug }: PostActionsProps) {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition"
+        className="w-8 h-8 r-full flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
@@ -45,7 +45,7 @@ export function PostActions({ postId, postSlug }: PostActionsProps) {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => { setOpen(false); setConfirming(false); }} />
-          <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1">
+          <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 r-xl shadow-lg z-50 py-1">
             {!confirming ? (
               <>
                 <button
@@ -61,14 +61,14 @@ export function PostActions({ postId, postSlug }: PostActionsProps) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setConfirming(false)}
-                    className="flex-1 py-1.5 text-xs bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+                    className="flex-1 py-1.5 text-xs bg-gray-100 r-lg hover:bg-gray-200 transition"
                   >
                     取消
                   </button>
                   <button
                     onClick={handleDelete}
                     disabled={loading}
-                    className="flex-1 py-1.5 text-xs bg-red-500 text-white rounded-lg hover:bg-red-600 transition disabled:opacity-50"
+                    className="flex-1 py-1.5 text-xs bg-red-500 text-white r-lg hover:bg-red-600 transition disabled:opacity-50"
                   >
                     {loading ? '...' : '确定'}
                   </button>

@@ -98,7 +98,7 @@ export default function ImageUploader({ businessSlug, existingImages }: Props) {
       {images.length > 0 && (
         <div className="grid grid-cols-4 gap-3 mb-3">
           {images.map((url, i) => (
-            <div key={url} className={`relative group aspect-square rounded-lg overflow-hidden border-2 ${
+            <div key={url} className={`relative group aspect-square r-lg overflow-hidden border-2 ${
               i === coverIndex ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200'
             }`}>
               <img src={url} alt="" className="w-full h-full object-cover" />
@@ -131,7 +131,7 @@ export default function ImageUploader({ businessSlug, existingImages }: Props) {
         </div>
       )}
       <button type="button" onClick={() => setPickerOpen(true)}
-        className="h-9 px-4 text-sm rounded-lg border border-gray-300 hover:bg-gray-50 inline-flex items-center gap-2">
+        className="h-9 px-4 text-sm r-lg border border-gray-300 hover:bg-gray-50 inline-flex items-center gap-2">
         📷 选择图片
       </button>
       <span className="text-xs text-gray-400 ml-2">{images.length}/10</span>

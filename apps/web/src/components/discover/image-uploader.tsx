@@ -65,7 +65,7 @@ export function ImageUploader({ images, onChange, maxImages = 9 }: ImageUploader
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
+    <div className="bg-white r-xl border border-gray-200 p-5 sm:p-6">
       <label className="text-sm font-semibold text-gray-900 mb-3 block">
         添加图片 <span className="text-gray-400 font-normal">(最多{maxImages}张)</span>
       </label>
@@ -74,12 +74,12 @@ export function ImageUploader({ images, onChange, maxImages = 9 }: ImageUploader
       {(images.length > 0 || uploading) && (
         <div className="grid grid-cols-3 gap-2 mb-4">
           {images.map((url, i) => (
-            <div key={i} className="aspect-square rounded-xl overflow-hidden relative group">
+            <div key={i} className="aspect-square r-xl overflow-hidden relative group">
               <img src={url} alt={`图片 ${i + 1}`} className="w-full h-full object-cover" />
               <button
                 type="button"
                 onClick={() => removeImage(i)}
-                className="absolute top-1 right-1 w-5.5 h-5.5 bg-black/50 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-1 right-1 w-5.5 h-5.5 bg-black/50 text-white r-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 &times;
               </button>
@@ -96,7 +96,7 @@ export function ImageUploader({ images, onChange, maxImages = 9 }: ImageUploader
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-primary hover:text-primary hover:bg-orange-50 transition-colors"
+              className="aspect-square r-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-primary hover:text-primary hover:bg-orange-50 transition-colors"
             >
               <svg className="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
@@ -106,8 +106,8 @@ export function ImageUploader({ images, onChange, maxImages = 9 }: ImageUploader
           )}
 
           {uploading && (
-            <div className="aspect-square rounded-xl bg-gray-50 flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="aspect-square r-xl bg-gray-50 flex items-center justify-center">
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent r-full animate-spin" />
             </div>
           )}
         </div>
@@ -119,7 +119,7 @@ export function ImageUploader({ images, onChange, maxImages = 9 }: ImageUploader
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors ${
+        className={`border-2 border-dashed r-xl p-8 text-center cursor-pointer transition-colors ${
           dragOver
             ? 'border-primary bg-orange-50'
             : 'border-gray-300 hover:border-primary hover:bg-orange-50/50'

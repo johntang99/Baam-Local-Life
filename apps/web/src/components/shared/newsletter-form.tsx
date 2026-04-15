@@ -43,7 +43,7 @@ export function NewsletterForm({ source = 'footer', className = '', compact = fa
           name="email"
           placeholder="输入邮箱"
           required
-          className="flex-1 h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="flex-1 h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
         <button
           type="submit"

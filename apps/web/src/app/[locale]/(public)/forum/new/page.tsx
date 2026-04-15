@@ -58,7 +58,7 @@ export default async function ForumNewPostPage({ params }: Props) {
           <span className="text-text-secondary">发布新帖</span>
         </nav>
 
-        <h1 className="text-2xl font-bold mb-6">发布新帖</h1>
+        <h1 className="text-2xl fw-bold mb-6">发布新帖</h1>
 
         <ForumNewPostForm boards={boards} isLoggedIn={!!user} />
       </PageContainer>

@@ -45,9 +45,9 @@ interface BusinessFormProps {
   siteParams?: string;
 }
 
-const inputClass = 'w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
-const textareaClass = 'w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y';
-const selectClass = 'w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white';
+const inputClass = 'w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
+const textareaClass = 'w-full px-3 py-2 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y';
+const selectClass = 'w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white';
 
 interface CategoryPair {
   parentId: string;
@@ -249,14 +249,14 @@ export default function BusinessForm({
           <div className="flex items-center gap-3">
             <a
               href={`/admin/businesses${siteQuery}`}
-              className="h-9 px-4 text-sm font-medium rounded-lg border border-border bg-bg-card hover:bg-bg-page inline-flex items-center"
+              className="h-9 px-4 text-sm font-medium r-lg border border-border bg-bg-card hover:bg-bg-page inline-flex items-center"
             >
               取消
             </a>
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="h-9 px-4 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
+              className="h-9 px-4 text-sm font-medium r-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
             >
               {isPending ? '保存中...' : '保存'}
             </button>
@@ -272,7 +272,7 @@ export default function BusinessForm({
         {/* Left column 70% */}
         <div className="flex-1 min-w-0 space-y-6" style={{ flex: '7' }}>
           {/* Display Name ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">商家名称（中文）</label>
             <input
               type="text"
@@ -284,7 +284,7 @@ export default function BusinessForm({
           </div>
 
           {/* Display Name EN */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">商家名称（英文）</label>
             <input
               type="text"
@@ -296,7 +296,7 @@ export default function BusinessForm({
           </div>
 
           {/* Short Description ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">简短描述（中文）</label>
             <textarea
               value={shortDescZh}
@@ -308,7 +308,7 @@ export default function BusinessForm({
           </div>
 
           {/* Full Description ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">完整描述（中文）</label>
             <textarea
               value={fullDescZh}
@@ -321,7 +321,7 @@ export default function BusinessForm({
           </div>
 
           {/* NAP 信息 */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">NAP信息</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">地址</label>
@@ -368,7 +368,7 @@ export default function BusinessForm({
           </div>
 
           {/* 联系方式 */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">联系方式</label>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -406,7 +406,7 @@ export default function BusinessForm({
           </div>
 
           {/* 社交媒体 */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">社交媒体</label>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -463,7 +463,7 @@ export default function BusinessForm({
           </div>
 
           {/* 媒体 */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">媒体</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">视频链接</label>
@@ -485,13 +485,13 @@ export default function BusinessForm({
           </div>
 
           {/* AI Description Placeholder */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <label className="text-sm font-medium">AI 生成简介</label>
               <button
                 type="button"
                 disabled
-                className="h-8 px-3 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
+                className="h-8 px-3 text-xs font-medium r-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -506,7 +506,7 @@ export default function BusinessForm({
         {/* Right column 30% */}
         <div className="space-y-6" style={{ flex: '3' }}>
           {/* Status */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">状态</label>
             <select
               value={status}
@@ -520,7 +520,7 @@ export default function BusinessForm({
           </div>
 
           {/* Verification Status */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">认证状态</label>
             <select
               value={verificationStatus}
@@ -534,7 +534,7 @@ export default function BusinessForm({
           </div>
 
           {/* Plan */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">套餐</label>
             <select
               value={currentPlan}
@@ -548,7 +548,7 @@ export default function BusinessForm({
           </div>
 
           {/* Categories — multiple category pairs */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <div className="flex items-center justify-between">
               <label className="block text-sm font-medium">分类</label>
               <span className="text-xs text-text-muted">已分配 {categoryPairs.filter(p => p.parentId).length} 个</span>
@@ -557,7 +557,7 @@ export default function BusinessForm({
             {categoryPairs.map((pair, index) => {
               const children = getChildCategories(pair.parentId);
               return (
-                <div key={index} className="relative border border-border/60 rounded-lg p-3 space-y-2 bg-bg-page/50">
+                <div key={index} className="relative border border-border/60 r-lg p-3 space-y-2 bg-bg-page/50">
                   {categoryPairs.length > 1 && (
                     <button
                       type="button"
@@ -617,7 +617,7 @@ export default function BusinessForm({
           </div>
 
           {/* Is Featured */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -631,22 +631,22 @@ export default function BusinessForm({
 
           {/* Business Stats (edit mode only) */}
           {!isNew && business && (<>
-            <div className="bg-bg-card border border-border rounded-xl p-5 space-y-3">
+            <div className="bg-bg-card border border-border r-xl p-5 space-y-3">
               <label className="block text-sm font-medium">商家数据</label>
               <div className="grid grid-cols-2 gap-3">
-                <div className="bg-bg-page rounded-lg p-3 text-center">
+                <div className="bg-bg-page r-lg p-3 text-center">
                   <p className="text-lg font-bold">{business.avg_rating ? Number(business.avg_rating).toFixed(1) : '--'}</p>
                   <p className="text-xs text-text-muted">平均评分</p>
                 </div>
-                <div className="bg-bg-page rounded-lg p-3 text-center">
+                <div className="bg-bg-page r-lg p-3 text-center">
                   <p className="text-lg font-bold">{business.review_count ?? 0}</p>
                   <p className="text-xs text-text-muted">评论数</p>
                 </div>
-                <div className="bg-bg-page rounded-lg p-3 text-center">
+                <div className="bg-bg-page r-lg p-3 text-center">
                   <p className="text-lg font-bold">{business.lead_count ?? 0}</p>
                   <p className="text-xs text-text-muted">线索数</p>
                 </div>
-                <div className="bg-bg-page rounded-lg p-3 text-center">
+                <div className="bg-bg-page r-lg p-3 text-center">
                   <p className="text-lg font-bold">{isFeatured ? 'Yes' : 'No'}</p>
                   <p className="text-xs text-text-muted">推荐</p>
                 </div>
@@ -654,7 +654,7 @@ export default function BusinessForm({
             </div>
 
             {/* Platform Score & Total Score */}
-            <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+            <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
               <label className="block text-sm font-medium">排名分数</label>
 
               <div>
@@ -666,12 +666,12 @@ export default function BusinessForm({
                   max="50"
                   value={pScore}
                   onChange={(e) => setPScore(Number(e.target.value) || 0)}
-                  className="w-full h-10 px-3 text-sm border border-border rounded-lg bg-bg-page focus:border-primary focus:outline-none"
+                  className="w-full h-10 px-3 text-sm border border-border r-lg bg-bg-page focus:border-primary focus:outline-none"
                 />
                 <p className="text-xs text-text-muted mt-1">正数 = 提升排名，负数 = 降低排名，默认 0</p>
               </div>
 
-              <div className="bg-bg-page rounded-lg p-4 text-center">
+              <div className="bg-bg-page r-lg p-4 text-center">
                 <p className="text-2xl font-bold text-primary">{computedTotalScore.toFixed(1)}</p>
                 <p className="text-xs text-text-muted mt-1">总分</p>
                 <p className="text-[11px] text-text-muted mt-2">= 6×评分 + 3×log(评论数)×2 + 平台分</p>

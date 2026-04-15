@@ -27,16 +27,16 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
   return (
     <div>
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-gray-100 r-lg p-1 w-fit">
         <button
           onClick={() => setTab('pending')}
-          className={`px-4 py-2 text-sm font-medium rounded-md transition ${tab === 'pending' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+          className={`px-4 py-2 text-sm font-medium r-base transition ${tab === 'pending' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
         >
-          审核队列 {pendingPosts.length > 0 && <span className="ml-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] rounded-full">{pendingPosts.length}</span>}
+          审核队列 {pendingPosts.length > 0 && <span className="ml-1 px-1.5 py-0.5 bg-red-500 text-white text-[10px] r-full">{pendingPosts.length}</span>}
         </button>
         <button
           onClick={() => setTab('all')}
-          className={`px-4 py-2 text-sm font-medium rounded-md transition ${tab === 'all' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+          className={`px-4 py-2 text-sm font-medium r-base transition ${tab === 'all' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
         >
           全部笔记 ({allPosts.length})
         </button>
@@ -47,7 +47,7 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
           {tab === 'pending' ? '没有待审核的笔记' : '暂无笔记'}
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-gray-200 r-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -73,9 +73,9 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         {coverImg ? (
-                          <img src={coverImg} alt="" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                          <img src={coverImg} alt="" className="w-10 h-10 r-lg object-cover flex-shrink-0" />
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 flex-shrink-0 text-xs">📝</div>
+                          <div className="w-10 h-10 r-lg bg-gray-100 flex items-center justify-center text-gray-400 flex-shrink-0 text-xs">📝</div>
                         )}
                         <div className="min-w-0">
                           <a href={`/zh/discover/${post.slug}`} target="_blank" rel="noopener noreferrer" className="font-medium text-gray-900 hover:text-primary truncate block max-w-[200px]">
@@ -89,7 +89,7 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                     </td>
                     <td className="px-4 py-3 text-gray-600">{post.profiles?.display_name || '匿名'}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[post.status] || 'bg-gray-100 text-gray-600'}`}>
+                      <span className={`px-2 py-0.5 r-full text-xs font-medium ${statusColors[post.status] || 'bg-gray-100 text-gray-600'}`}>
                         {post.status === 'published' ? '已发布' : post.status === 'pending_review' ? '待审核' : post.status === 'rejected' ? '已拒绝' : post.status}
                       </span>
                     </td>
@@ -110,14 +110,14 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                             <button
                               onClick={() => handleAction(approvePost, post.id)}
                               disabled={isLoading}
-                              className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 disabled:opacity-50"
+                              className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 r-lg hover:bg-green-100 disabled:opacity-50"
                             >
                               通过
                             </button>
                             <button
                               onClick={() => handleAction(rejectPost, post.id)}
                               disabled={isLoading}
-                              className="px-2.5 py-1 text-xs font-medium text-red-700 bg-red-50 rounded-lg hover:bg-red-100 disabled:opacity-50"
+                              className="px-2.5 py-1 text-xs font-medium text-red-700 bg-red-50 r-lg hover:bg-red-100 disabled:opacity-50"
                             >
                               拒绝
                             </button>
@@ -127,7 +127,7 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                           <button
                             onClick={() => handleAction(approvePost, post.id)}
                             disabled={isLoading}
-                            className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 rounded-lg hover:bg-green-100 disabled:opacity-50"
+                            className="px-2.5 py-1 text-xs font-medium text-green-700 bg-green-50 r-lg hover:bg-green-100 disabled:opacity-50"
                           >
                             恢复
                           </button>
@@ -135,7 +135,7 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                         <button
                           onClick={() => { if (confirm('确定删除？')) handleAction(deletePost, post.id); }}
                           disabled={isLoading}
-                          className="px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg disabled:opacity-50"
+                          className="px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 r-lg disabled:opacity-50"
                         >
                           删除
                         </button>

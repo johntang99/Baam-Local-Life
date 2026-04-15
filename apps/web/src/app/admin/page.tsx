@@ -102,7 +102,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
   return (
     <div className="p-6 space-y-6">
       {/* Site indicator */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between">
+      <div className="bg-white border border-gray-200 r-xl p-4 flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-500">当前站点</p>
           <p className="text-lg font-bold">{currentSiteName}</p>
@@ -116,7 +116,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white border border-gray-200 rounded-xl p-4">
+          <div key={stat.label} className="bg-white border border-gray-200 r-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-2xl">{stat.icon}</span>
             </div>
@@ -128,7 +128,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Articles */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="bg-white border border-gray-200 r-xl p-5">
           <h2 className="font-semibold mb-4">最近文章（{currentSiteName}）</h2>
           {recentArticles.length === 0 ? (
             <p className="text-sm text-gray-400 py-4 text-center">该站点暂无文章</p>
@@ -148,7 +148,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
         </div>
 
         {/* Recent Leads */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5">
+        <div className="bg-white border border-gray-200 r-xl p-5">
           <h2 className="font-semibold mb-4">最新线索</h2>
           {recentLeads.length === 0 ? (
             <p className="text-sm text-gray-400 py-4 text-center">暂无线索</p>
@@ -160,7 +160,7 @@ export default async function AdminDashboard({ searchParams }: Props) {
                     <p className="text-sm font-medium">{lead.contact_name || '匿名'}</p>
                     <p className="text-xs text-gray-400">{lead.source_type} · {lead.ai_summary || lead.message?.slice(0, 50)}</p>
                   </div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${lead.status === 'new' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
+                  <span className={`text-xs px-2 py-0.5 r-full ${lead.status === 'new' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'}`}>
                     {lead.status}
                   </span>
                 </div>
@@ -171,13 +171,13 @@ export default async function AdminDashboard({ searchParams }: Props) {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
+      <div className="bg-white border border-gray-200 r-xl p-5">
         <h2 className="font-semibold mb-4">快捷操作</h2>
         <div className="flex flex-wrap gap-3">
-          <a href={`/admin/articles/new?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark inline-flex items-center">+ 新建文章</a>
-          <a href={`/admin/businesses?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核商家</a>
-          <a href={`/admin/forum?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">审核帖子</a>
-          <a href={`/admin/leads?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium rounded-lg hover:bg-gray-50 inline-flex items-center">处理线索</a>
+          <a href={`/admin/articles/new?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 bg-primary text-white text-sm font-medium r-lg hover:bg-primary-dark inline-flex items-center">+ 新建文章</a>
+          <a href={`/admin/businesses?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium r-lg hover:bg-gray-50 inline-flex items-center">审核商家</a>
+          <a href={`/admin/forum?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium r-lg hover:bg-gray-50 inline-flex items-center">审核帖子</a>
+          <a href={`/admin/leads?region=${ctx.siteSlug}&locale=${ctx.locale}`} className="h-9 px-4 border border-gray-300 text-sm font-medium r-lg hover:bg-gray-50 inline-flex items-center">处理线索</a>
         </div>
       </div>
     </div>

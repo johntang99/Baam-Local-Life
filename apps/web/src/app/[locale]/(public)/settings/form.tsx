@@ -58,25 +58,25 @@ export function SettingsForm({ profile, userEmail }: SettingsFormProps) {
     }
   };
 
-  const inputClass = 'w-full h-10 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none';
+  const inputClass = 'w-full h-10 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {error && <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg">{error}</div>}
-      {success && <div className="p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">{success}</div>}
+      {error && <div className="p-3 bg-accent-red-light border border-accent-red text-accent-red text-sm r-lg">{error}</div>}
+      {success && <div className="p-3 bg-accent-green-light border border-accent-green text-accent-green text-sm r-lg">{success}</div>}
 
       {/* Basic Info */}
       <Card className="p-6 space-y-4">
-        <h2 className="font-semibold text-base">基本信息</h2>
+        <h2 className="fw-semibold text-base">基本信息</h2>
 
         <div>
-          <label className="block text-sm font-medium mb-1">邮箱</label>
-          <input type="email" value={userEmail} disabled className={`${inputClass} bg-gray-50 text-text-muted`} />
+          <label className="block text-sm fw-medium mb-1">邮箱</label>
+          <input type="email" value={userEmail} disabled className={`${inputClass} bg-bg-page text-text-muted`} />
           <p className="text-xs text-text-muted mt-1">邮箱不可更改</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">显示名称 *</label>
+          <label className="block text-sm fw-medium mb-1">显示名称 *</label>
           <input
             type="text"
             value={displayName}
@@ -88,7 +88,7 @@ export function SettingsForm({ profile, userEmail }: SettingsFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">用户名</label>
+          <label className="block text-sm fw-medium mb-1">用户名</label>
           <div className="flex items-center">
             <span className="text-sm text-text-muted mr-1">@</span>
             <input
@@ -105,10 +105,10 @@ export function SettingsForm({ profile, userEmail }: SettingsFormProps) {
 
       {/* Profile Details */}
       <Card className="p-6 space-y-4">
-        <h2 className="font-semibold text-base">个人介绍</h2>
+        <h2 className="fw-semibold text-base">个人介绍</h2>
 
         <div>
-          <label className="block text-sm font-medium mb-1">一句话介绍</label>
+          <label className="block text-sm fw-medium mb-1">一句话介绍</label>
           <input
             type="text"
             value={headline}
@@ -120,21 +120,21 @@ export function SettingsForm({ profile, userEmail }: SettingsFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">个人简介</label>
+          <label className="block text-sm fw-medium mb-1">个人简介</label>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             placeholder="介绍一下自己..."
             rows={4}
             maxLength={500}
-            className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y"
+            className="w-full px-3 py-2 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-y"
           />
           <p className="text-xs text-text-muted mt-1">{bio.length}/500</p>
         </div>
       </Card>
 
       <Card className="p-6 space-y-4">
-        <h2 className="font-semibold text-base">小帮手-2 偏好</h2>
+        <h2 className="fw-semibold text-base">小帮手-2 偏好</h2>
         <p className="text-sm text-text-muted">快捷下一问的点击行为（仅当前浏览器生效）</p>
         <div className="space-y-2">
           <label className="flex items-center gap-2 text-sm">

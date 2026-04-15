@@ -42,13 +42,13 @@ export function TagInput({ tags, onChange, maxTags = 5 }: TagInputProps) {
   const availableSuggestions = suggestedTags.filter(s => !tags.includes(s));
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
+    <div className="bg-white r-xl border border-gray-200 p-5 sm:p-6">
       <label className="text-sm font-semibold text-gray-900 mb-3 block">话题标签</label>
 
       {/* Tag Input Area */}
-      <div className="flex flex-wrap gap-2 px-3.5 py-2.5 border border-gray-200 rounded-xl min-h-[44px] items-center focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition cursor-text">
+      <div className="flex flex-wrap gap-2 px-3.5 py-2.5 border border-gray-200 r-xl min-h-[44px] items-center focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition cursor-text">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 text-orange-600 rounded-full text-[13px] font-medium">
+          <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-50 text-orange-600 r-full text-[13px] font-medium">
             #{tag}
             <button
               type="button"
@@ -81,7 +81,7 @@ export function TagInput({ tags, onChange, maxTags = 5 }: TagInputProps) {
                 key={tag}
                 type="button"
                 onClick={() => addTag(tag)}
-                className="px-3 py-1 bg-gray-50 text-gray-500 text-xs rounded-full hover:bg-orange-50 hover:text-primary transition border border-gray-200"
+                className="px-3 py-1 bg-gray-50 text-gray-500 text-xs r-full hover:bg-orange-50 hover:text-primary transition border border-gray-200"
               >
                 #{tag}
               </button>

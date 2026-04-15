@@ -39,7 +39,7 @@ export default function EventsTable({ events, siteParams }: EventsTableProps) {
   };
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-bg-card border border-border r-xl overflow-hidden">
       <table className="data-table">
         <thead>
           <tr>

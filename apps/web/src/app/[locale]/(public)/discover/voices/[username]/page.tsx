@@ -118,7 +118,7 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
   return (
     <main>
       {/* Cover Banner — mt-0 since navbar is sticky and doesn't overlap */}
-      <div className="bg-gradient-to-r from-rose-400 via-pink-400 to-orange-300 h-36 sm:h-44 relative">
+      <div className="bg-gradient-to-r from-rose-400 via-pink-400 to-primary-light h-36 sm:h-44 relative">
         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23fff\' fill-opacity=\'0.3\'%3E%3Ccircle cx=\'1\' cy=\'1\' r=\'1\'/%3E%3C/g%3E%3C/svg%3E")' }} />
       </div>
 
@@ -126,53 +126,53 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
         {/* Profile Identity */}
         <div className="-mt-14 mb-6">
           <div className="flex items-end gap-4">
-            <div className="w-28 h-28 rounded-full bg-white border-4 border-white flex items-center justify-center text-4xl shadow-md">
+            <div className="w-28 h-28 r-full bg-bg-card border-4 border-border-light flex items-center justify-center text-4xl elev-md">
               {profile.display_name?.[0] || '?'}
             </div>
             <div className="pb-2">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold">
+                <h1 className="text-2xl fw-bold">
                   {profile.display_name || profile.username}
                 </h1>
                 {profile.is_verified && (
-                  <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-secondary" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                 )}
                 {profile.profile_type && profile.profile_type !== 'user' && (
-                  <Badge className="bg-orange-100 text-orange-700 text-xs font-medium">
+                  <Badge className="bg-primary-100 text-primary-dark text-xs fw-medium">
                     {profileTypeLabels[profile.profile_type] || profile.profile_type}
                   </Badge>
                 )}
               </div>
               {profile.headline && (
-                <p className="text-gray-500 text-sm mt-1">{profile.headline}</p>
+                <p className="text-text-muted text-sm mt-1">{profile.headline}</p>
               )}
             </div>
           </div>
 
           {/* Bio */}
           {profile.bio && (
-            <p className="text-gray-500 text-sm mt-4 max-w-2xl">{profile.bio}</p>
+            <p className="text-text-muted text-sm mt-4 max-w-2xl">{profile.bio}</p>
           )}
 
           {/* Stats Row */}
           <div className="flex items-center gap-6 mt-4">
             <div className="text-center">
-              <p className="text-lg font-bold">{posts.length}</p>
-              <p className="text-xs text-gray-400">笔记</p>
+              <p className="text-lg fw-bold">{posts.length}</p>
+              <p className="text-xs text-text-muted">笔记</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-bold">{profile.follower_count || 0}</p>
-              <p className="text-xs text-gray-400">关注者</p>
+              <p className="text-lg fw-bold">{profile.follower_count || 0}</p>
+              <p className="text-xs text-text-muted">关注者</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-bold">{profile.following_count || 0}</p>
-              <p className="text-xs text-gray-400">关注中</p>
+              <p className="text-lg fw-bold">{profile.following_count || 0}</p>
+              <p className="text-xs text-text-muted">关注中</p>
             </div>
             <div className="text-center">
-              <p className="text-lg font-bold">{posts.reduce((sum: number, p: AnyRow) => sum + (p.like_count || 0), 0)}</p>
-              <p className="text-xs text-gray-400">获赞</p>
+              <p className="text-lg fw-bold">{posts.reduce((sum: number, p: AnyRow) => sum + (p.like_count || 0), 0)}</p>
+              <p className="text-xs text-text-muted">获赞</p>
             </div>
           </div>
 
@@ -208,10 +208,10 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
             {/* Linked Business Card */}
             {linkedBusiness && (
               <section className="mb-8">
-                <h2 className="text-lg font-bold mb-3">关联商家</h2>
+                <h2 className="text-lg fw-bold mb-3">关联商家</h2>
                 <Link href={`/businesses/${linkedBusiness.slug}`} className="block">
                   <Card className="p-4">
-                  <h3 className="font-semibold text-sm">{linkedBusiness.display_name}</h3>
+                  <h3 className="fw-semibold text-sm">{linkedBusiness.display_name}</h3>
                   {linkedBusiness.category && (
                     <Badge variant="muted" className="text-xs mt-1">{linkedBusiness.category}</Badge>
                   )}
@@ -231,10 +231,10 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
                   <Link
                     key={tab.key}
                     href={tab.key === 'all' ? `/discover/voices/${username}` : `/discover/voices/${username}?tab=${tab.key}`}
-                    className={cn(buttonVariants({ size: 'sm' }), 'rounded-full', `${
+                    className={cn(buttonVariants({ size: 'sm' }), 'r-full', `${
                       activeTab === tab.key
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-bg-sidebar text-text-inverse'
+                        : 'bg-bg-page text-text-secondary hover:bg-border-light'
                     }`)}
                   >
                     {tab.label}
@@ -243,7 +243,7 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
               </div>
               {posts.length === 0 ? (
                 <div className="py-8 text-center">
-                  <p className="text-gray-500">暂无内容</p>
+                  <p className="text-text-muted">暂无内容</p>
                 </div>
               ) : (
                 <MasonryGrid>
@@ -259,17 +259,17 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             {/* Recommended Voices */}
             {recommended.length > 0 && (
-              <Card className="rounded-xl p-5">
-                <h3 className="font-semibold text-sm mb-3">推荐达人</h3>
+              <Card className="r-xl p-5">
+                <h3 className="fw-semibold text-sm mb-3">推荐达人</h3>
                 <div className="space-y-3">
                   {recommended.map((v) => (
                     <Link key={v.id} href={`/discover/voices/${v.username}`} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-sm flex-shrink-0">
+                      <div className="w-8 h-8 r-full bg-primary/10 flex items-center justify-center text-sm flex-shrink-0">
                         {v.display_name?.[0] || '?'}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{v.display_name}</p>
-                        <p className="text-xs text-gray-400 truncate">{v.headline}</p>
+                        <p className="text-sm fw-medium truncate">{v.display_name}</p>
+                        <p className="text-xs text-text-muted truncate">{v.headline}</p>
                       </div>
                     </Link>
                   ))}
@@ -278,9 +278,9 @@ export default async function DiscoverVoiceProfilePage({ params, searchParams }:
             )}
 
             {/* Related Guides placeholder */}
-            <Card className="rounded-xl p-5">
-              <h3 className="font-semibold text-sm mb-3">相关指南</h3>
-              <p className="text-xs text-gray-400">即将上线</p>
+            <Card className="r-xl p-5">
+              <h3 className="fw-semibold text-sm mb-3">相关指南</h3>
+              <p className="text-xs text-text-muted">即将上线</p>
             </Card>
           </aside>
         </div>

@@ -29,7 +29,7 @@ export default async function SettingsPage() {
   return (
     <main>
       <PageContainer className="max-w-2xl py-8">
-        <h1 className="text-2xl font-bold mb-6">个人设置</h1>
+        <h1 className="text-2xl fw-bold text-text-primary mb-6">个人设置</h1>
         <SettingsForm profile={profile} userEmail={user.email} />
       </PageContainer>
     </main>

@@ -12,14 +12,13 @@ import { AuthModal } from '@/components/shared/auth-modal';
 import type { User } from '@supabase/supabase-js';
 
 const navItems = [
+  { href: '/helper-2', key: 'helper2' },
+  { href: '/discover', key: 'discover' },
   { href: '/news', key: 'news' },
   { href: '/guides', key: 'guides' },
   { href: '/businesses', key: 'businesses' },
   { href: '/events', key: 'events' },
   { href: '/forum', key: 'forum' },
-  { href: '/discover', key: 'discover' },
-  { href: '/ask', key: 'ask' },
-  { href: '/helper-2', key: 'helper2' },
   { href: '/services', key: 'services' },
 ] as const;
 
@@ -59,7 +58,7 @@ export function Navbar() {
             {/* Logo + Nav */}
             <div className="flex items-center gap-8">
               <Link href="/" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+                <div className="w-8 h-8 bg-primary r-lg flex items-center justify-center text-white font-bold text-sm">B</div>
                 <span className="text-xl font-bold text-gray-900">Baam</span>
                 <span className="text-xs text-gray-400 hidden sm:inline">{convert('纽约')}</span>
               </Link>
@@ -67,7 +66,7 @@ export function Navbar() {
                 {navItems.map((item) => (
                   <Link
                     key={item.key} href={item.href}
-                    className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'h-auto py-2 rounded-md',
+                    className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'h-auto py-2 r-base',
                       pathname.startsWith(item.href) ? 'text-primary bg-orange-50' : 'text-gray-600 hover:text-primary hover:bg-orange-50'
                     )}
                   >
@@ -79,7 +78,7 @@ export function Navbar() {
 
             {/* Right side */}
             <div className="flex items-center gap-3">
-              <Link href="/search" className="p-2 text-gray-500 hover:text-primary hover:bg-orange-50 rounded-full">
+              <Link href="/search" className="p-2 text-gray-500 hover:text-primary hover:bg-orange-50 r-full">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               </Link>
 
@@ -95,8 +94,8 @@ export function Navbar() {
               {/* Auth */}
               {user ? (
                 <div className="relative">
-                  <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100">
-                    <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
+                  <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 px-3 py-1.5 r-lg hover:bg-gray-100">
+                    <div className="w-7 h-7 r-full bg-primary flex items-center justify-center text-white text-xs font-bold">
                       {displayName.charAt(0).toUpperCase()}
                     </div>
                     <span className="text-sm text-gray-700 hidden sm:inline">{displayName}</span>
@@ -105,7 +104,7 @@ export function Navbar() {
                   {userMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                      <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1">
+                      <div className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 r-lg shadow-lg z-50 py-1">
                         <div className="px-4 py-2 border-b border-gray-100">
                           <p className="text-sm font-medium">{displayName}</p>
                           <p className="text-xs text-gray-400 truncate">{user.email}</p>
@@ -141,7 +140,7 @@ export function Navbar() {
             <div className="px-4 pt-2 space-y-1">
               {navItems.map((item) => (
                 <Link key={item.key} href={item.href}
-                  className={cn('block px-3 py-2 text-base font-medium rounded-md',
+                  className={cn('block px-3 py-2 text-base font-medium r-base',
                     pathname.startsWith(item.href) ? 'text-primary bg-orange-50' : 'text-gray-600 hover:bg-orange-50')}
                   onClick={() => setMobileOpen(false)}
                 >

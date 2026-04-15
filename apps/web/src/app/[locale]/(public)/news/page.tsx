@@ -25,11 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const verticalConfig: Record<string, { label: string; className: string; key: string }> = {
-  news_alert: { label: '快报', className: 'bg-red-100 text-red-700', key: 'alert' },
-  news_brief: { label: '简报', className: 'bg-blue-100 text-blue-700', key: 'brief' },
-  news_explainer: { label: '政策解读', className: 'bg-purple-100 text-purple-700', key: 'explainer' },
+  news_alert: { label: '快报', className: 'bg-accent-red-light text-accent-red', key: 'alert' },
+  news_brief: { label: '简报', className: 'bg-accent-blue-light text-secondary-dark', key: 'brief' },
+  news_explainer: { label: '政策解读', className: 'bg-accent-purple-light text-accent-purple', key: 'explainer' },
   news_roundup: { label: '周度汇总', className: 'bg-primary-100 text-primary-700', key: 'roundup' },
-  news_community: { label: '社区新闻', className: 'bg-green-100 text-green-700', key: 'community' },
+  news_community: { label: '社区新闻', className: 'bg-accent-green-light text-accent-green', key: 'community' },
 };
 
 const filterTabs = [
@@ -107,7 +107,7 @@ export default async function NewsListPage({ searchParams }: Props) {
             <strong>紧急提醒：</strong>
             {alerts[0].title_zh}
           </span>
-          <Link href={`/news/${alerts[0].slug}`} className="text-white/90 underline hover:text-white ml-2 text-sm">
+          <Link href={`/news/${alerts[0].slug}`} className="text-text-inverse/90 underline hover:text-text-inverse ml-2 text-sm">
             查看详情 →
           </Link>
         </div>
@@ -115,7 +115,7 @@ export default async function NewsListPage({ searchParams }: Props) {
 
       <PageContainer className="py-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
+          <h1 className="text-2xl fw-bold flex items-center gap-2">
             <span>📰</span> {t('nav.news')}
           </h1>
         </div>
@@ -130,10 +130,10 @@ export default async function NewsListPage({ searchParams }: Props) {
                   href={tab.key === 'all' ? '/news' : `/news?type=${tab.key}`}
                   className={cn(
                     buttonVariants({ size: 'sm' }),
-                    'rounded-full',
+                    'r-full',
                     activeType === tab.key
                       ? 'bg-primary text-text-inverse'
-                      : 'bg-border-light text-text-secondary hover:bg-gray-200 hover:text-text-primary'
+                      : 'bg-border-light text-text-secondary hover:bg-border-light hover:text-text-primary'
                   )}
                 >
                   {tab.label}
@@ -155,7 +155,7 @@ export default async function NewsListPage({ searchParams }: Props) {
                 {articles.map((article) => {
                   const vertical = verticalConfig[article.content_vertical] || {
                     label: '新闻',
-                    className: 'bg-gray-100 text-gray-700',
+                    className: 'bg-bg-page text-text-secondary',
                   };
                   const summary = article.ai_summary_zh || article.summary_zh;
                   const timeAgo = formatTimeAgo(article.published_at);
@@ -168,7 +168,7 @@ export default async function NewsListPage({ searchParams }: Props) {
                     >
                       <Card
                         className={cn(
-                          'p-5 hover:shadow-md transition-shadow',
+                          'p-5 hover:elev-md transition-shadow',
                           article.content_vertical === 'news_alert'
                             ? 'border-l-4 border-l-accent-red bg-accent-red-light/30'
                             : ''
@@ -183,7 +183,7 @@ export default async function NewsListPage({ searchParams }: Props) {
                           </Badge>
                         )}
                       </div>
-                      <h3 className="font-semibold text-base mb-2 line-clamp-2">
+                      <h3 className="fw-semibold text-base mb-2 line-clamp-2">
                         {article.title_zh || article.title_en}
                       </h3>
                       {summary && (
@@ -208,7 +208,7 @@ export default async function NewsListPage({ searchParams }: Props) {
           {/* Sidebar */}
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">📬 订阅本地周报</h3>
+              <h3 className="fw-semibold text-sm mb-3">📬 订阅本地周报</h3>
               <p className="text-xs text-text-secondary mb-3">每周精选本地新闻、指南、活动</p>
               <NewsletterForm source="news_sidebar" />
             </Card>

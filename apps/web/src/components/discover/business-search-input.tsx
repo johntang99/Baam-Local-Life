@@ -70,7 +70,7 @@ export function BusinessSearchInput({ selectedBusinesses, onChange, maxBusinesse
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
+    <div className="bg-white r-xl border border-gray-200 p-5 sm:p-6">
       <label className="text-sm font-semibold text-gray-900 mb-1 block">关联商家</label>
       <p className="text-xs text-gray-400 mb-3">关联笔记中提到的商家，让读者更方便找到</p>
 
@@ -85,12 +85,12 @@ export function BusinessSearchInput({ selectedBusinesses, onChange, maxBusinesse
           onChange={(e) => handleInput(e.target.value)}
           onFocus={() => { if (results.length > 0) setShowResults(true); }}
           placeholder="搜索商家名称..."
-          className="w-full h-10 pl-10 pr-4 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+          className="w-full h-10 pl-10 pr-4 border border-gray-200 r-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
         />
 
         {/* Search Results Dropdown */}
         {showResults && (results.length > 0 || searching) && (
-          <div className="absolute top-full left-0 right-0 mt-1 border border-gray-200 rounded-xl overflow-hidden shadow-lg bg-white z-20">
+          <div className="absolute top-full left-0 right-0 mt-1 border border-gray-200 r-xl overflow-hidden shadow-lg bg-white z-20">
             <div className="px-3 py-2 bg-gray-50 border-b border-gray-100">
               <span className="text-xs text-gray-400">
                 {searching ? '搜索中...' : `${results.length} 个结果`}
@@ -104,7 +104,7 @@ export function BusinessSearchInput({ selectedBusinesses, onChange, maxBusinesse
                   onClick={() => addBusiness(biz)}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-orange-50 transition text-left"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-sm flex-shrink-0">
+                  <div className="w-8 h-8 r-lg bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-sm flex-shrink-0">
                     {(biz.display_name_zh || biz.display_name)?.[0] || '🏪'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -131,9 +131,9 @@ export function BusinessSearchInput({ selectedBusinesses, onChange, maxBusinesse
           {selectedBusinesses.map((biz) => (
             <div
               key={biz.id}
-              className="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-orange-50 hover:border-orange-200 transition"
+              className="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 r-xl hover:bg-orange-50 hover:border-orange-200 transition"
             >
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-lg flex-shrink-0">
+              <div className="w-10 h-10 r-lg bg-gradient-to-br from-orange-100 to-amber-50 flex items-center justify-center text-lg flex-shrink-0">
                 {(biz.display_name_zh || biz.display_name)?.[0] || '🏪'}
               </div>
               <div className="flex-1 min-w-0">

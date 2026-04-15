@@ -58,7 +58,7 @@ export default function LeadsTable({ leads }: LeadsTableProps) {
   };
 
   return (
-    <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-bg-card border border-border r-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="data-table w-full">
           <thead>

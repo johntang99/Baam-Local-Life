@@ -261,14 +261,14 @@ export default function ArticleForm({ article, categories, regions, businesses =
             <button
               onClick={handleSave}
               disabled={isPending}
-              className="h-9 px-4 text-sm font-medium rounded-lg border border-border bg-bg-card hover:bg-bg-page disabled:opacity-50"
+              className="h-9 px-4 text-sm font-medium r-lg border border-border bg-bg-card hover:bg-bg-page disabled:opacity-50"
             >
               保存草稿
             </button>
             <button
               onClick={handlePublish}
               disabled={isPending}
-              className="h-9 px-4 text-sm font-medium rounded-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
+              className="h-9 px-4 text-sm font-medium r-lg bg-primary text-white hover:bg-primary/90 disabled:opacity-50"
             >
               发布
             </button>
@@ -289,36 +289,36 @@ export default function ArticleForm({ article, categories, regions, businesses =
         {/* Left column 70% */}
         <div className="flex-1 min-w-0 space-y-6" style={{ flex: '7' }}>
           {/* Title ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">标题（中文）</label>
             <input
               type="text"
               value={titleZh}
               onChange={(e) => setTitleZh(e.target.value)}
               placeholder="输入文章中文标题"
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
           {/* Title EN */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">标题（英文）</label>
             <input
               type="text"
               value={titleEn}
               onChange={(e) => setTitleEn(e.target.value)}
               placeholder="Enter article title in English"
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
 
           {/* Content Vertical */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">内容类型</label>
             <select
               value={contentVertical}
               onChange={(e) => setContentVertical(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               {contentVerticals.map((cv) => (
                 <option key={cv.value} value={cv.value}>{cv.label}</option>
@@ -327,7 +327,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* Body ZH */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium">正文（中文）</label>
               {bodyZh && <button type="button" onClick={() => setPreviewLang('zh')} className="text-xs text-blue-600 hover:underline">预览</button>}
@@ -348,12 +348,12 @@ export default function ArticleForm({ article, categories, regions, businesses =
               onChange={(e) => setBodyZh(e.target.value)}
               placeholder="输入文章正文内容（支持Markdown）"
               rows={12}
-              className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
+              className="w-full px-3 py-2 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
             />
           </div>
 
           {/* Body EN */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <div className="flex items-center justify-between mb-2">
               <label className="text-sm font-medium">正文（英文）</label>
               {bodyEn && <button type="button" onClick={() => setPreviewLang('en')} className="text-xs text-blue-600 hover:underline">预览</button>}
@@ -374,19 +374,19 @@ export default function ArticleForm({ article, categories, regions, businesses =
               onChange={(e) => setBodyEn(e.target.value)}
               placeholder="Enter article body content (Markdown supported)"
               rows={12}
-              className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
+              className="w-full px-3 py-2 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-y"
             />
           </div>
 
           {/* AI Summary */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <label className="text-sm font-medium">AI 摘要</label>
               <button
                 type="button"
                 onClick={handleGenerateAISummary}
                 disabled={isPending || isNew || aiLoading}
-                className="h-8 px-3 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
+                className="h-8 px-3 text-xs font-medium r-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
               >
                 {aiLoading ? (
                   <>
@@ -407,18 +407,18 @@ export default function ArticleForm({ article, categories, regions, businesses =
               </button>
             </div>
             {aiError && (
-              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">{aiError}</div>
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs r-lg">{aiError}</div>
             )}
             {(aiSummaryZh || aiSummaryEn) ? (
               <div className="space-y-3">
                 {aiSummaryZh && (
-                  <div className="bg-bg-page border border-border rounded-lg p-3">
+                  <div className="bg-bg-page border border-border r-lg p-3">
                     <p className="text-xs text-text-muted mb-1 font-medium">中文摘要</p>
                     <p className="text-sm">{aiSummaryZh}</p>
                   </div>
                 )}
                 {aiSummaryEn && (
-                  <div className="bg-bg-page border border-border rounded-lg p-3">
+                  <div className="bg-bg-page border border-border r-lg p-3">
                     <p className="text-xs text-text-muted mb-1 font-medium">English Summary</p>
                     <p className="text-sm">{aiSummaryEn}</p>
                   </div>
@@ -430,14 +430,14 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* AI FAQ */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <label className="text-sm font-medium">AI FAQ</label>
               <button
                 type="button"
                 onClick={handleGenerateFAQ}
                 disabled={isPending || isNew || faqLoading}
-                className="h-8 px-3 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
+                className="h-8 px-3 text-xs font-medium r-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1"
               >
                 {faqLoading ? (
                   <>
@@ -458,12 +458,12 @@ export default function ArticleForm({ article, categories, regions, businesses =
               </button>
             </div>
             {faqError && (
-              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">{faqError}</div>
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 text-red-700 text-xs r-lg">{faqError}</div>
             )}
             {aiFaq.length > 0 ? (
               <div className="space-y-2">
                 {aiFaq.map((item, i) => (
-                  <div key={i} className="bg-bg-page border border-border rounded-lg p-3">
+                  <div key={i} className="bg-bg-page border border-border r-lg p-3">
                     <p className="text-sm font-medium">Q: {item.q}</p>
                     <p className="text-sm text-text-muted mt-1">A: {item.a}</p>
                   </div>
@@ -478,12 +478,12 @@ export default function ArticleForm({ article, categories, regions, businesses =
         {/* Right column 30% */}
         <div className="space-y-6" style={{ flex: '3' }}>
           {/* Editorial Status */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">发布状态</label>
             <select
               value={editorialStatus}
               onChange={(e) => setEditorialStatus(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               {editorialStatuses.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -492,12 +492,12 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* Category */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">分类</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               <option value="">选择分类</option>
               {categories.map((c) => (
@@ -507,12 +507,12 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* Region */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">地区</label>
             <select
               value={regionId}
               onChange={(e) => setRegionId(e.target.value)}
-              className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+              className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
             >
               <option value="">选择地区</option>
               {regions.map((r) => (
@@ -522,14 +522,14 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* Source Info */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">来源信息</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">来源类型</label>
               <select
                 value={sourceType}
                 onChange={(e) => setSourceType(e.target.value)}
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white"
               >
                 <option value="">选择来源类型</option>
                 {sourceTypes.map((s) => (
@@ -544,7 +544,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 value={sourceName}
                 onChange={(e) => setSourceName(e.target.value)}
                 placeholder="例如：纽约时报"
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
             <div>
@@ -554,16 +554,16 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 value={sourceUrl}
                 onChange={(e) => setSourceUrl(e.target.value)}
                 placeholder="https://..."
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
           </div>
 
           {/* Cover Image */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-2">封面图片</label>
             {coverImageUrl ? (
-              <div className="relative group rounded-lg overflow-hidden mb-2">
+              <div className="relative group r-lg overflow-hidden mb-2">
                 <img src={coverImageUrl} alt="封面" className="w-full aspect-[16/9] object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
                   <button
@@ -586,7 +586,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
               <button
                 type="button"
                 onClick={() => setCoverPickerOpen(true)}
-                className="w-full border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                className="w-full border-2 border-dashed border-border r-lg p-6 text-center hover:border-primary/50 hover:bg-primary/5 transition-colors"
               >
                 <p className="text-sm text-text-secondary">点击选择封面图片</p>
                 <p className="text-xs text-text-muted mt-1">建议尺寸 1200x630</p>
@@ -598,7 +598,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
               value={coverImageUrl}
               onChange={(e) => setCoverImageUrl(e.target.value)}
               placeholder="或直接粘贴图片 URL"
-              className="w-full h-8 px-3 mt-2 border border-border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full h-8 px-3 mt-2 border border-border r-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
             <ImagePickerModal
               open={coverPickerOpen}
@@ -609,7 +609,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
           </div>
 
           {/* Audience Types */}
-          <div className="bg-bg-card border border-border rounded-xl p-5">
+          <div className="bg-bg-card border border-border r-xl p-5">
             <label className="block text-sm font-medium mb-3">受众类型</label>
             <div className="space-y-2">
               {audienceOptions.map((opt) => (
@@ -628,7 +628,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
 
           {/* Linked Businesses */}
           {businesses.length > 0 && (
-            <div className="bg-bg-card border border-border rounded-xl p-5 space-y-3">
+            <div className="bg-bg-card border border-border r-xl p-5 space-y-3">
               <label className="block text-sm font-medium">关联商家</label>
               <p className="text-xs text-text-muted">选择与此文章相关的商家，文章将显示在商家详情页</p>
               <input
@@ -636,7 +636,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 value={bizSearchTerm}
                 onChange={(e) => setBizSearchTerm(e.target.value)}
                 placeholder="搜索商家名称..."
-                className="w-full h-9 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-9 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
               {/* Selected businesses */}
               {selectedBusinessIds.length > 0 && (
@@ -644,7 +644,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                   {selectedBusinessIds.map((bizId) => {
                     const biz = businesses.find((b) => b.id === bizId);
                     return (
-                      <span key={bizId} className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary pl-2 pr-1 py-1 rounded-md">
+                      <span key={bizId} className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary pl-2 pr-1 py-1 r-base">
                         {biz?.display_name_zh || biz?.display_name || bizId.slice(0, 8)}
                         <button
                           type="button"
@@ -689,7 +689,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
           )}
 
           {/* SEO */}
-          <div className="bg-bg-card border border-border rounded-xl p-5 space-y-4">
+          <div className="bg-bg-card border border-border r-xl p-5 space-y-4">
             <label className="block text-sm font-medium">SEO 设置</label>
             <div>
               <label className="block text-xs text-text-muted mb-1">SEO 标题（中文）</label>
@@ -698,7 +698,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 value={seoTitleZh}
                 onChange={(e) => setSeoTitleZh(e.target.value)}
                 placeholder="SEO标题，留空则使用文章标题"
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
             <div>
@@ -708,7 +708,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 value={seoDescZh}
                 onChange={(e) => setSeoDescZh(e.target.value)}
                 placeholder="SEO描述，留空则使用AI摘要"
-                className="w-full h-10 px-3 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                className="w-full h-10 px-3 border border-border r-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
               />
             </div>
           </div>
@@ -718,25 +718,25 @@ export default function ArticleForm({ article, categories, regions, businesses =
       {/* Preview Modal */}
       {previewLang && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]" onClick={() => setPreviewLang(null)}>
-          <div className="bg-white rounded-2xl max-w-3xl w-[90%] max-h-[90vh] shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+          <div className="bg-white r-xl max-w-3xl w-[90%] max-h-[90vh] shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
               <div className="flex items-center gap-4">
                 <h3 className="font-bold text-lg">文章预览</h3>
-                <div className="flex gap-1 bg-gray-100 rounded-lg p-0.5">
+                <div className="flex gap-1 bg-gray-100 r-lg p-0.5">
                   <button
                     type="button"
                     onClick={() => setPreviewLang('zh')}
-                    className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all ${previewLang === 'zh' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`px-4 py-1.5 text-xs font-medium r-base transition-all ${previewLang === 'zh' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                   >中文</button>
                   <button
                     type="button"
                     onClick={() => setPreviewLang('en')}
-                    className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all ${previewLang === 'en' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`px-4 py-1.5 text-xs font-medium r-base transition-all ${previewLang === 'en' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
                   >English</button>
                 </div>
               </div>
-              <button onClick={() => setPreviewLang(null)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">&times;</button>
+              <button onClick={() => setPreviewLang(null)} className="w-8 h-8 flex items-center justify-center r-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">&times;</button>
             </div>
 
             {/* Modal Body */}
@@ -758,7 +758,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
 
                 {/* AI Summary */}
                 {(previewLang === 'zh' ? aiSummaryZh : aiSummaryEn) && (
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-r-lg px-5 py-4 mb-8">
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 rounded-r-[var(--radius-lg)] px-5 py-4 mb-8">
                     <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-2">AI 摘要</p>
                     <p className="text-sm text-gray-700 leading-relaxed">{previewLang === 'zh' ? aiSummaryZh : aiSummaryEn}</p>
                   </div>
@@ -791,7 +791,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
                     <h3 className="text-lg font-bold text-gray-900 mb-5">常见问题</h3>
                     <div className="space-y-3">
                       {aiFaq.map((item, i) => (
-                        <details key={i} className="group border border-gray-200 rounded-xl overflow-hidden">
+                        <details key={i} className="group border border-gray-200 r-xl overflow-hidden">
                           <summary className="px-5 py-4 text-sm font-medium cursor-pointer flex items-center justify-between hover:bg-gray-50 transition-colors">
                             <span>{item.q}</span>
                             <svg className="w-4 h-4 text-gray-400 group-open:rotate-180 transition-transform flex-shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

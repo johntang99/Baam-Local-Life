@@ -20,13 +20,13 @@ export function LayoutToggle() {
   };
 
   return (
-    <div className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-white border border-gray-200 shadow-lg rounded-full px-3 py-2">
+    <div className="fixed top-20 right-4 z-50 flex items-center gap-2 bg-white border border-gray-200 shadow-lg r-full px-3 py-2">
       <span className={`text-xs font-medium ${!isClassic ? 'text-primary' : 'text-gray-400'}`}>新版</span>
       <button
         onClick={toggle}
-        className={`relative w-10 h-5 rounded-full transition-colors ${isClassic ? 'bg-gray-300' : 'bg-primary'}`}
+        className={`relative w-10 h-5 r-full transition-colors ${isClassic ? 'bg-gray-300' : 'bg-primary'}`}
       >
-        <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${isClassic ? 'left-0.5' : 'left-[22px]'}`} />
+        <span className={`absolute top-0.5 w-4 h-4 bg-white r-full shadow transition-transform ${isClassic ? 'left-0.5' : 'left-[22px]'}`} />
       </button>
       <span className={`text-xs font-medium ${isClassic ? 'text-primary' : 'text-gray-400'}`}>经典</span>
     </div>

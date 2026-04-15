@@ -161,18 +161,18 @@ export function AskChat({ initialQuery }: AskChatProps) {
 
   const [showPrompt, setShowPrompt] = useState<DebugPrompt | null>(null);
   const qualityStyle = (level?: 'high' | 'medium' | 'low') => {
-    if (level === 'high') return 'bg-green-100 text-green-700';
-    if (level === 'medium') return 'bg-amber-100 text-amber-700';
-    if (level === 'low') return 'bg-red-100 text-red-700';
-    return 'bg-gray-100 text-gray-700';
+    if (level === 'high') return 'bg-accent-green-light text-accent-green';
+    if (level === 'medium') return 'bg-accent-yellow/20 text-accent-yellow';
+    if (level === 'low') return 'bg-accent-red-light text-accent-red';
+    return 'bg-bg-page text-text-secondary';
   };
 
   const sourceTypeColors: Record<string, string> = {
-    '商家': 'bg-blue-100 text-blue-700',
-    '指南': 'bg-green-100 text-green-700',
-    '新闻': 'bg-red-100 text-red-700',
-    '论坛': 'bg-purple-100 text-purple-700',
-    '活动': 'bg-orange-100 text-orange-700',
+    '商家': 'bg-accent-blue-light text-secondary-dark',
+    '指南': 'bg-accent-green-light text-accent-green',
+    '新闻': 'bg-accent-red-light text-accent-red',
+    '论坛': 'bg-accent-purple-light text-accent-purple',
+    '活动': 'bg-primary-100 text-primary-dark',
     '达人': 'bg-pink-100 text-pink-700',
     '笔记': 'bg-rose-100 text-rose-700',
   };
@@ -212,39 +212,39 @@ export function AskChat({ initialQuery }: AskChatProps) {
       {/* Prompt Debug Modal */}
       {showPrompt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowPrompt(null)}>
-          <div className="bg-bg-card rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="bg-bg-card r-xl elev-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between p-4 border-b border-border">
-              <h3 className="font-semibold">AI Prompt 调试</h3>
+              <h3 className="fw-semibold">AI Prompt 调试</h3>
               <button onClick={() => setShowPrompt(null)} className="text-text-muted hover:text-text-primary text-lg">&times;</button>
             </div>
             <div className="p-4 space-y-4 text-sm">
               <div>
-                <p className="font-medium text-text-muted mb-1">模型</p>
-                <p className="bg-bg-page rounded px-3 py-1.5 font-mono text-xs">{showPrompt.model}</p>
+                <p className="fw-medium text-text-muted mb-1">模型</p>
+                <p className="bg-bg-page r-base px-3 py-1.5 font-mono text-xs">{showPrompt.model}</p>
               </div>
               <div>
-                <p className="font-medium text-text-muted mb-1">提取关键词</p>
+                <p className="fw-medium text-text-muted mb-1">提取关键词</p>
                 <div className="flex flex-wrap gap-1">
                   {showPrompt.keywords.map((kw, i) => (
-                    <span key={i} className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs">{kw}</span>
+                    <span key={i} className="bg-primary/10 text-primary px-2 py-0.5 r-base text-xs">{kw}</span>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="font-medium text-text-muted mb-1">搜索到 {showPrompt.totalResults} 条结果</p>
+                <p className="fw-medium text-text-muted mb-1">搜索到 {showPrompt.totalResults} 条结果</p>
               </div>
               {(showPrompt.qualityLevel || typeof showPrompt.rankingConsistency === 'number') && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {showPrompt.qualityLevel && (
-                    <div className="bg-bg-page rounded px-3 py-2">
+                    <div className="bg-bg-page r-base px-3 py-2">
                       <p className="text-[11px] text-text-muted mb-1">质量等级</p>
-                      <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium uppercase ${qualityStyle(showPrompt.qualityLevel)}`}>
+                      <span className={`inline-flex px-2 py-0.5 r-base text-xs fw-medium uppercase ${qualityStyle(showPrompt.qualityLevel)}`}>
                         {showPrompt.qualityLevel}
                       </span>
                     </div>
                   )}
                   {typeof showPrompt.rankingConsistency === 'number' && (
-                    <div className="bg-bg-page rounded px-3 py-2">
+                    <div className="bg-bg-page r-base px-3 py-2">
                       <p className="text-[11px] text-text-muted mb-1">排序一致性</p>
                       <p className="font-mono text-xs">
                         {showPrompt.rankingConsistency}
@@ -256,9 +256,9 @@ export function AskChat({ initialQuery }: AskChatProps) {
               )}
               {typeof showPrompt.strictEvidenceMode === 'boolean' && (
                 <div>
-                  <p className="font-medium text-text-muted mb-1">证据模式</p>
-                  <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
-                    showPrompt.strictEvidenceMode ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+                  <p className="fw-medium text-text-muted mb-1">证据模式</p>
+                  <span className={`inline-flex px-2 py-0.5 r-base text-xs fw-medium ${
+                    showPrompt.strictEvidenceMode ? 'bg-accent-blue-light text-secondary-dark' : 'bg-bg-page text-text-secondary'
                   }`}>
                     {showPrompt.strictEvidenceMode ? 'STRICT' : 'NORMAL'}
                   </span>
@@ -266,8 +266,8 @@ export function AskChat({ initialQuery }: AskChatProps) {
               )}
               {showPrompt.contextCounts && (
                 <div>
-                  <p className="font-medium text-text-muted mb-1">上下文注入量</p>
-                  <div className="bg-bg-page rounded px-3 py-2 text-xs grid grid-cols-2 sm:grid-cols-3 gap-1">
+                  <p className="fw-medium text-text-muted mb-1">上下文注入量</p>
+                  <div className="bg-bg-page r-base px-3 py-2 text-xs grid grid-cols-2 sm:grid-cols-3 gap-1">
                     <span>商家: {showPrompt.contextCounts.businesses}</span>
                     <span>指南: {showPrompt.contextCounts.guides}</span>
                     <span>新闻: {showPrompt.contextCounts.news}</span>
@@ -279,8 +279,8 @@ export function AskChat({ initialQuery }: AskChatProps) {
               )}
               {showPrompt.relevanceCounts && (
                 <div>
-                  <p className="font-medium text-text-muted mb-1">相关性过滤（before → after）</p>
-                  <div className="bg-bg-page rounded px-3 py-2 text-xs space-y-1">
+                  <p className="fw-medium text-text-muted mb-1">相关性过滤（before → after）</p>
+                  <div className="bg-bg-page r-base px-3 py-2 text-xs space-y-1">
                     <p>商家: {showPrompt.relevanceCounts.businesses.before} → {showPrompt.relevanceCounts.businesses.after}</p>
                     <p>指南: {showPrompt.relevanceCounts.guides.before} → {showPrompt.relevanceCounts.guides.after}</p>
                     <p>新闻: {showPrompt.relevanceCounts.news.before} → {showPrompt.relevanceCounts.news.after}</p>
@@ -291,12 +291,12 @@ export function AskChat({ initialQuery }: AskChatProps) {
                 </div>
               )}
               <div>
-                <p className="font-medium text-text-muted mb-1">System Prompt</p>
-                <pre className="bg-bg-page rounded px-3 py-2 text-xs whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">{showPrompt.systemPrompt}</pre>
+                <p className="fw-medium text-text-muted mb-1">System Prompt</p>
+                <pre className="bg-bg-page r-base px-3 py-2 text-xs whitespace-pre-wrap overflow-x-auto max-h-40 overflow-y-auto">{showPrompt.systemPrompt}</pre>
               </div>
               <div>
-                <p className="font-medium text-text-muted mb-1">User Prompt</p>
-                <pre className="bg-bg-page rounded px-3 py-2 text-xs whitespace-pre-wrap overflow-x-auto max-h-60 overflow-y-auto">{showPrompt.userPrompt}</pre>
+                <p className="fw-medium text-text-muted mb-1">User Prompt</p>
+                <pre className="bg-bg-page r-base px-3 py-2 text-xs whitespace-pre-wrap overflow-x-auto max-h-60 overflow-y-auto">{showPrompt.userPrompt}</pre>
               </div>
               <button
                 onClick={() => {
@@ -326,7 +326,7 @@ export function AskChat({ initialQuery }: AskChatProps) {
                   type="button"
                   onClick={() => handleAsk(q)}
                   disabled={loading}
-                  className="text-xs bg-border-light text-text-secondary px-3 py-1.5 rounded-full hover:bg-primary/10 hover:text-primary transition cursor-pointer disabled:opacity-50"
+                  className="text-xs bg-border-light text-text-secondary px-3 py-1.5 r-full hover:bg-primary/10 hover:text-primary transition cursor-pointer disabled:opacity-50"
                 >
                   {q}
                 </button>
@@ -339,16 +339,16 @@ export function AskChat({ initialQuery }: AskChatProps) {
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] ${
               msg.role === 'user'
-                ? 'bg-primary text-white rounded-2xl rounded-br-md px-4 py-3'
-                : 'bg-bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3'
+                ? 'bg-primary text-text-inverse r-xl r-base px-4 py-3'
+                : 'bg-bg-card border border-border r-xl r-base px-4 py-3'
             }`}>
               {msg.role === 'assistant' && (
                 <div className="flex items-center gap-1.5 mb-2">
                   <span className="text-sm">🤖</span>
-                  <span className="text-xs font-medium text-primary">小邻</span>
+                  <span className="text-xs fw-medium text-primary">小邻</span>
                 </div>
               )}
-              <div className="text-sm leading-relaxed prose prose-sm max-w-none [&_h2]:text-base [&_h2]:font-bold [&_h2]:mt-3 [&_h2]:mb-2 [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mt-2 [&_h3]:mb-1 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-2 [&_li]:mb-0.5 [&_strong]:font-semibold [&_hr]:my-3 [&_hr]:border-border [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:my-3 [&_table]:rounded-lg [&_table]:overflow-hidden [&_table]:border [&_table]:border-border [&_thead]:bg-bg-page [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold [&_th]:text-text-secondary [&_th]:border-b [&_th]:border-border [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wider [&_td]:px-3 [&_td]:py-2 [&_td]:border-b [&_td]:border-border/50 [&_td]:align-top [&_tr:last-child_td]:border-b-0 [&_tr:hover]:bg-primary/5 [&_tbody_tr:nth-child(even)]:bg-bg-page/30">
+              <div className="text-sm leading-relaxed prose prose-sm max-w-none [&_h2]:text-base [&_h2]:fw-bold [&_h2]:mt-3 [&_h2]:mb-2 [&_h3]:text-sm [&_h3]:fw-semibold [&_h3]:mt-2 [&_h3]:mb-1 [&_p]:mb-2 [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:mb-2 [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:mb-2 [&_li]:mb-0.5 [&_strong]:fw-semibold [&_hr]:my-3 [&_hr]:border-border [&_table]:w-full [&_table]:text-xs [&_table]:border-collapse [&_table]:my-3 [&_table]:r-lg [&_table]:overflow-hidden [&_table]:border [&_table]:border-border [&_thead]:bg-bg-page [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:fw-semibold [&_th]:text-text-secondary [&_th]:border-b [&_th]:border-border [&_th]:text-[11px] [&_th]:uppercase [&_th]:tracking-wider [&_td]:px-3 [&_td]:py-2 [&_td]:border-b [&_td]:border-border/50 [&_td]:align-top [&_tr:last-child_td]:border-b-0 [&_tr:hover]:bg-primary/5 [&_tbody_tr:nth-child(even)]:bg-bg-page/30">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -409,9 +409,9 @@ export function AskChat({ initialQuery }: AskChatProps) {
                         href={`${localePrefix}${source.url}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-xs hover:bg-bg-page rounded px-2 py-1 -mx-2 transition-colors"
+                        className="flex items-center gap-2 text-xs hover:bg-bg-page r-base px-2 py-1 -mx-2 transition-colors"
                       >
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-medium flex-shrink-0 ${sourceTypeColors[source.type] || 'bg-gray-100 text-gray-700'}`}>
+                        <span className={`px-1.5 py-0.5 r-base text-[10px] fw-medium flex-shrink-0 ${sourceTypeColors[source.type] || 'bg-bg-page text-text-secondary'}`}>
                           {source.type}
                         </span>
                         <span className="text-text-primary hover:text-primary truncate">{source.title}</span>
@@ -427,13 +427,13 @@ export function AskChat({ initialQuery }: AskChatProps) {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-bg-card border border-border rounded-2xl rounded-bl-md px-4 py-3">
+            <div className="bg-bg-card border border-border r-xl r-base px-4 py-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm">🤖</span>
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-2 h-2 bg-primary/40 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-2 h-2 bg-primary/40 r-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
                 <span className="text-xs text-text-muted">小邻正在查找...</span>
               </div>
@@ -446,7 +446,7 @@ export function AskChat({ initialQuery }: AskChatProps) {
 
       {/* Input */}
       <form onSubmit={handleSubmit} className="sticky bottom-4">
-        <div className="flex gap-2 bg-bg-card border border-border rounded-xl p-2 shadow-lg">
+        <div className="flex gap-2 bg-bg-card border border-border r-xl p-2 elev-lg">
           <input
             ref={inputRef}
             type="text"
@@ -461,9 +461,9 @@ export function AskChat({ initialQuery }: AskChatProps) {
               type="button"
               onClick={voice.toggle}
               disabled={loading}
-              className={`h-10 w-10 flex items-center justify-center rounded-lg transition-colors flex-shrink-0 ${
+              className={`h-10 w-10 flex items-center justify-center r-lg transition-colors flex-shrink-0 ${
                 voice.isListening
-                  ? 'bg-red-500 text-white animate-pulse'
+                  ? 'bg-accent-red text-text-inverse animate-pulse'
                   : 'bg-bg-page text-text-secondary hover:bg-primary/10 hover:text-primary'
               } disabled:opacity-50`}
               title={voice.isListening ? '停止语音' : '语音输入'}
@@ -480,7 +480,7 @@ export function AskChat({ initialQuery }: AskChatProps) {
           <button
             type="submit"
             disabled={loading || !input.trim()}
-            className="h-10 px-5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark disabled:opacity-50 transition-colors flex-shrink-0"
+            className="h-10 px-5 bg-primary text-text-inverse text-sm fw-medium r-lg hover:bg-primary-dark disabled:opacity-50 transition-colors flex-shrink-0"
           >
             发送
           </button>

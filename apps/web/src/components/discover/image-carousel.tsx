@@ -61,7 +61,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
       {activeIndex > 0 && (
         <button
           onClick={() => scrollTo(activeIndex - 1)}
-          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 shadow-lg flex items-center justify-center hover:bg-white transition backdrop-blur-sm"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 r-full bg-white/80 shadow-lg flex items-center justify-center hover:bg-white transition backdrop-blur-sm"
         >
           <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -71,7 +71,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
       {activeIndex < images.length - 1 && (
         <button
           onClick={() => scrollTo(activeIndex + 1)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/80 shadow-lg flex items-center justify-center hover:bg-white transition backdrop-blur-sm"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 r-full bg-white/80 shadow-lg flex items-center justify-center hover:bg-white transition backdrop-blur-sm"
         >
           <svg className="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -85,7 +85,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
           <button
             key={i}
             onClick={() => scrollTo(i)}
-            className={`rounded-full transition-all ${
+            className={`r-full transition-all ${
               i === activeIndex
                 ? 'w-5 h-2 bg-white'
                 : 'w-2 h-2 bg-white/40 hover:bg-white/60'
@@ -95,7 +95,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
       </div>
 
       {/* Counter */}
-      <div className="absolute top-4 right-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+      <div className="absolute top-4 right-4 bg-black/50 text-white text-xs px-3 py-1 r-full backdrop-blur-sm">
         {activeIndex + 1} / {images.length}
       </div>
     </div>

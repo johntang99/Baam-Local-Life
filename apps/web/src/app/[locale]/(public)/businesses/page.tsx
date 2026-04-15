@@ -27,9 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const categoryColors: Record<string, string> = {
-  '餐饮美食': 'bg-primary-100 text-primary-700', '医疗健康': 'bg-blue-100 text-blue-700', '法律移民': 'bg-red-100 text-red-700',
-  '地产保险': 'bg-green-100 text-green-700', '教育培训': 'bg-purple-100 text-purple-700', '装修家居': 'bg-gray-100 text-gray-700',
-  '汽车服务': 'bg-gray-100 text-gray-700', '财税服务': 'bg-green-100 text-green-700', '美容保健': 'bg-purple-100 text-purple-700',
+  '餐饮美食': 'bg-primary-100 text-primary-700', '医疗健康': 'bg-accent-blue-light text-secondary-dark', '法律移民': 'bg-accent-red-light text-accent-red',
+  '地产保险': 'bg-accent-green-light text-accent-green', '教育培训': 'bg-accent-purple-light text-accent-purple', '装修家居': 'bg-bg-page text-text-secondary',
+  '汽车服务': 'bg-bg-page text-text-secondary', '财税服务': 'bg-accent-green-light text-accent-green', '美容保健': 'bg-accent-purple-light text-accent-purple',
 };
 
 const categoryEmojis: Record<string, string> = {
@@ -38,10 +38,10 @@ const categoryEmojis: Record<string, string> = {
 };
 
 const categoryGradients: Record<string, string> = {
-  '餐饮美食': 'from-yellow-200 to-yellow-300', '医疗健康': 'from-blue-200 to-blue-400',
-  '法律移民': 'from-red-200 to-red-400', '地产保险': 'from-green-200 to-green-300',
+  '餐饮美食': 'from-accent-yellow/20 to-accent-yellow/30', '医疗健康': 'from-secondary-light to-secondary',
+  '法律移民': 'from-accent-red-light to-accent-red', '地产保险': 'from-accent-green-light to-accent-green-light',
   '教育培训': 'from-pink-200 to-pink-300', '装修家居': 'from-cyan-200 to-cyan-300',
-  '汽车服务': 'from-slate-200 to-slate-300', '财税服务': 'from-green-200 to-green-300',
+  '汽车服务': 'from-slate-200 to-slate-300', '财税服务': 'from-accent-green-light to-accent-green-light',
   '美容保健': 'from-rose-200 to-rose-300',
 };
 
@@ -254,17 +254,17 @@ export default async function BusinessListPage({ searchParams }: Props) {
         <PageContainer className="py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">商家目录</h1>
+              <h1 className="text-2xl sm:text-3xl fw-bold">商家目录</h1>
               <p className="text-sm text-text-muted mt-1">
                 共 {count || 0} 家商家 · 本地华人商家信息
               </p>
             </div>
             {/* List / Map toggle */}
-            <div className="flex rounded-lg border border-border overflow-hidden">
+            <div className="flex r-lg border border-border overflow-hidden">
               <Link
                 href={`/businesses${activeCat ? `?cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors',
+                  'flex items-center gap-1.5 px-3 py-1.5 text-sm fw-medium transition-colors',
                   viewMode === 'list' ? 'bg-primary text-text-inverse' : 'bg-bg-card text-text-secondary hover:text-primary'
                 )}
               >
@@ -274,7 +274,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
               <Link
                 href={`/businesses?view=map${activeCat ? `&cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors border-l border-border',
+                  'flex items-center gap-1.5 px-3 py-1.5 text-sm fw-medium transition-colors border-l border-border',
                   viewMode === 'map' ? 'bg-primary text-text-inverse' : 'bg-bg-card text-text-secondary hover:text-primary'
                 )}
               >
@@ -294,14 +294,14 @@ export default async function BusinessListPage({ searchParams }: Props) {
             <div className="flex items-center gap-2 flex-shrink-0">
               <Link
                 href="/search"
-                className="relative flex items-center w-40 sm:w-56 pl-9 pr-3 py-1.5 text-sm rounded-full border border-border bg-bg-page text-text-muted hover:border-primary/50 transition-colors"
+                className="relative flex items-center w-40 sm:w-56 pl-9 pr-3 py-1.5 text-sm r-full border border-border bg-bg-page text-text-muted hover:border-primary/50 transition-colors"
               >
                 <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                 搜索商家...
               </Link>
               <Link
                 href={`/businesses?view=map&nearby=1${activeCat ? `&cat=${activeCat}` : ''}${activeSub ? `&sub=${activeSub}` : ''}`}
-                className={cn('flex-shrink-0 flex items-center gap-1 rounded-full', buttonVariants({ size: 'sm' }), 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary')}
+                className={cn('flex-shrink-0 flex items-center gap-1 r-full', buttonVariants({ size: 'sm' }), 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary')}
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 附近
@@ -312,7 +312,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
             <div className="flex gap-2 overflow-x-auto scrollbar-hide">
               <Link
                 href={`/businesses${viewMode === 'map' ? '?view=map' : ''}`}
-                className={cn('flex-shrink-0 rounded-full', buttonVariants({ size: 'sm' }), `${
+                className={cn('flex-shrink-0 r-full', buttonVariants({ size: 'sm' }), `${
                   !activeCat ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
                 }`)}
               >
@@ -322,7 +322,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
                 <Link
                   key={cat.id}
                   href={`/businesses?cat=${cat.slug}${viewParam}`}
-                  className={cn('flex-shrink-0 whitespace-nowrap rounded-full', buttonVariants({ size: 'sm' }), `${
+                  className={cn('flex-shrink-0 whitespace-nowrap r-full', buttonVariants({ size: 'sm' }), `${
                     activeCat === cat.slug ? 'bg-primary text-text-inverse' : 'bg-border-light text-text-secondary hover:bg-primary/10 hover:text-primary'
                   }`)}
                 >
@@ -341,7 +341,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
               <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-4 px-4">
                 <Link
                   href={`/businesses?cat=${activeCat}${viewParam}`}
-                  className={cn('flex-shrink-0 rounded-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
+                  className={cn('flex-shrink-0 r-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
                     !activeSub ? 'bg-primary/15 text-primary border border-primary/30' : 'text-text-secondary hover:text-primary hover:bg-primary/5'
                   }`)}
                 >
@@ -351,7 +351,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
                   <Link
                     key={sub.id}
                     href={`/businesses?cat=${activeCat}&sub=${sub.slug}${viewParam}`}
-                    className={cn('flex-shrink-0 whitespace-nowrap rounded-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
+                    className={cn('flex-shrink-0 whitespace-nowrap r-full', buttonVariants({ variant: 'secondary', size: 'sm' }), `${
                       activeSub === sub.slug ? 'bg-primary/15 text-primary border border-primary/30' : 'text-text-secondary hover:text-primary hover:bg-primary/5'
                     }`)}
                   >
@@ -416,24 +416,24 @@ export default async function BusinessListPage({ searchParams }: Props) {
       </PageContainer>
 
       {/* Business CTA Banner */}
-      <section className="bg-gradient-to-r from-primary to-orange-600 text-white">
+      <section className="bg-gradient-to-r from-primary to-primary-dark text-text-inverse">
         <PageContainer className="py-10 sm:py-12 text-center">
-          <h2 className="text-xl sm:text-2xl font-bold mb-2">
+          <h2 className="text-xl sm:text-2xl fw-bold mb-2">
             你是商家？立即入驻 Baam，获得更多曝光
           </h2>
-          <p className="text-orange-100 text-sm sm:text-base mb-6">
+          <p className="text-primary-100 text-sm sm:text-base mb-6">
             免费创建商家主页 · AI 自动优化 · 精准触达本地华人客户
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/businesses/claim"
-              className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto bg-white text-primary hover:bg-orange-50 shadow-lg')}
+              className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto bg-bg-card text-primary hover:bg-primary-50 elev-lg')}
             >
               免费入驻
             </Link>
             <Link
               href="/businesses/claim"
-              className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full sm:w-auto border-2 border-white/50 bg-transparent text-white hover:bg-white/10 hover:text-white')}
+              className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'w-full sm:w-auto border-2 border-border-light/50 bg-transparent text-text-inverse hover:bg-bg-card/10 hover:text-text-inverse')}
             >
               了解更多
             </Link>
@@ -465,9 +465,9 @@ function BusinessCard({ biz, featured = false }: { biz: AnyRow; featured?: boole
     <>
       {/* Name + verified */}
       <div className="flex items-center gap-2 mb-1">
-        <h3 className={`${featured ? 'font-bold text-base' : 'font-semibold text-sm'} truncate`}>{name}</h3>
+        <h3 className={`${featured ? 'fw-bold text-base' : 'fw-semibold text-sm'} truncate`}>{name}</h3>
         {biz.is_verified && (
-          <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-secondary flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
           </svg>
         )}
@@ -478,8 +478,8 @@ function BusinessCard({ biz, featured = false }: { biz: AnyRow; featured?: boole
         <Badge variant="outline" className="text-xs">{primaryCat}</Badge>
         {cats[1] && <Badge variant="outline" className="text-xs">{cats[1]}</Badge>}
         <div className="flex items-center gap-1">
-          <span className="text-yellow-500 text-xs">{renderStars(biz.avg_rating || 0)}</span>
-          <span className="text-xs text-text-secondary font-medium">{biz.avg_rating?.toFixed(1) || '—'}</span>
+          <span className="text-accent-yellow text-xs">{renderStars(biz.avg_rating || 0)}</span>
+          <span className="text-xs text-text-secondary fw-medium">{biz.avg_rating?.toFixed(1) || '—'}</span>
           <span className="text-xs text-text-muted">({biz.review_count || 0})</span>
         </div>
       </div>
@@ -513,11 +513,11 @@ function BusinessCard({ biz, featured = false }: { biz: AnyRow; featured?: boole
   if (featured) {
     return (
       <Link href={`/businesses/${biz.slug}`} className="block">
-        <Card className="relative overflow-hidden border-primary/40 bg-gradient-to-br from-primary/5 to-white hover:shadow-md transition-shadow">
-          <div className="absolute top-0 left-0 bg-primary text-text-inverse text-xs font-bold px-3 py-1 rounded-br-lg">推荐</div>
+        <Card className="relative overflow-hidden border-primary/40 bg-gradient-to-br from-primary/5 to-white hover:elev-md transition-shadow">
+          <div className="absolute top-0 left-0 bg-primary text-text-inverse text-xs fw-bold px-3 py-1 r-lg">推荐</div>
           <div className="p-5 sm:p-6">
             <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex-shrink-0 flex items-center justify-center text-2xl">
+              <div className="w-14 h-14 r-xl bg-gradient-to-br from-primary/20 to-primary/5 flex-shrink-0 flex items-center justify-center text-2xl">
                 {name[0] || '🏢'}
               </div>
               <div className="flex-1 min-w-0">{cardContent}</div>
@@ -533,7 +533,7 @@ function BusinessCard({ biz, featured = false }: { biz: AnyRow; featured?: boole
       <Card className="hover:border-primary/30 transition-colors">
         <div className="p-4">
           <div className="flex items-start gap-3">
-            <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-primary/15 to-primary/5 flex-shrink-0 flex items-center justify-center text-lg">
+            <div className="w-11 h-11 r-lg bg-gradient-to-br from-primary/15 to-primary/5 flex-shrink-0 flex items-center justify-center text-lg">
               {name[0] || '🏢'}
             </div>
             <div className="flex-1 min-w-0">{cardContent}</div>

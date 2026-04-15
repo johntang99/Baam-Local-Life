@@ -16,7 +16,7 @@ export function TrendingTopics({ topics }: TrendingTopicsProps) {
         <Link
           key={topic.id}
           href={`/discover?topic=${topic.slug}`}
-          className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full text-[13px] whitespace-nowrap transition-colors ${
+          className={`inline-flex items-center gap-1 px-3.5 py-1.5 r-full text-[13px] whitespace-nowrap transition-colors ${
             topic.is_featured
               ? 'bg-orange-50 text-orange-600 border border-orange-200'
               : 'bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-600'
@@ -43,7 +43,7 @@ export function TrendingSidebar({ topics }: TrendingSidebarProps) {
   if (!topics.length) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-[14px] p-5">
+    <div className="bg-white border border-gray-200 r-lg p-5">
       <h3 className="font-bold text-base mb-4 flex items-center gap-2">
         <svg className="w-5 h-5 text-primary" fill="currentColor" viewBox="0 0 20 20">
           <path d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" />
@@ -57,7 +57,7 @@ export function TrendingSidebar({ topics }: TrendingSidebarProps) {
             href={`/discover?topic=${topic.slug}`}
             className="flex items-center gap-3 group"
           >
-            <span className={`w-6 h-6 text-xs font-bold rounded-md flex items-center justify-center ${
+            <span className={`w-6 h-6 text-xs font-bold r-base flex items-center justify-center ${
               i < 3 ? 'bg-primary text-white' : 'bg-gray-200 text-gray-500'
             }`}>
               {i + 1}
@@ -89,7 +89,7 @@ export function WeeklyPicks({ posts }: WeeklyPicksProps) {
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-[14px] p-5">
+    <div className="bg-white border border-gray-200 r-lg p-5">
       <h3 className="font-bold text-base mb-4 flex items-center gap-2">
         <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -105,7 +105,7 @@ export function WeeklyPicks({ posts }: WeeklyPicksProps) {
               href={`/discover/${post.slug || post.id}`}
               className="flex gap-3 group"
             >
-              <div className="w-16 h-16 rounded-xl flex-shrink-0 overflow-hidden">
+              <div className="w-16 h-16 r-xl flex-shrink-0 overflow-hidden">
                 {coverImage ? (
                   <img src={coverImage} alt="" className="w-full h-full object-cover" />
                 ) : (

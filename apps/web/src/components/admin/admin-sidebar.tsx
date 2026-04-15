@@ -16,6 +16,17 @@ const siteNavItems = [
   { href: '/admin/leads', label: '线索管理', icon: '📥' },
 ];
 
+const dentalNavItems = [
+  { href: '/admin/dental', label: 'SmileIQ 总览', icon: '🦷', exact: true },
+  { href: '/admin/dental/conditions', label: '口腔问题', icon: '😣' },
+  { href: '/admin/dental/treatments', label: '治疗方案', icon: '🏥' },
+  { href: '/admin/dental/practices', label: '诊所管理', icon: '👨‍⚕️' },
+  { href: '/admin/dental/products', label: '产品管理', icon: '🛒' },
+  { href: '/admin/dental/articles', label: '知识文章', icon: '📚' },
+  { href: '/admin/dental/ai-sessions', label: 'AI 会话', icon: '🤖' },
+  { href: '/admin/dental/discover', label: '发现卡片', icon: '🎴' },
+];
+
 const systemNavItems = [
   { href: '/admin/sites', label: '站点管理', icon: '🌐' },
   { href: '/admin/users', label: '用户管理', icon: '👥' },
@@ -38,7 +49,7 @@ export function AdminSidebar() {
     <div className="w-60 bg-gray-800 text-gray-300 h-screen overflow-y-auto flex flex-col">
       <div className="p-5 border-b border-gray-700">
         <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+          <div className="w-8 h-8 bg-primary r-lg flex items-center justify-center text-white font-bold text-sm">B</div>
           <span className="text-lg font-bold text-white">Baam</span>
           <span className="text-xs bg-gray-700 text-gray-400 px-2 py-0.5 rounded ml-1">Admin</span>
         </Link>
@@ -49,6 +60,17 @@ export function AdminSidebar() {
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">站点内容</p>
         </div>
         {siteNavItems.map((item) => (
+          <Link key={item.href} href={item.href}
+            className={cn('flex items-center gap-3 px-5 py-2.5 text-sm transition-colors',
+              isActive(item.href, item.exact) ? 'bg-gray-700/50 text-primary border-r-2 border-primary' : 'text-gray-400 hover:bg-gray-700/30 hover:text-white')}>
+            <span className="text-base">{item.icon}</span><span>{item.label}</span>
+          </Link>
+        ))}
+
+        <div className="px-5 py-2 mt-4">
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">🦷 SmileIQ 牙科</p>
+        </div>
+        {dentalNavItems.map((item) => (
           <Link key={item.href} href={item.href}
             className={cn('flex items-center gap-3 px-5 py-2.5 text-sm transition-colors',
               isActive(item.href, item.exact) ? 'bg-gray-700/50 text-primary border-r-2 border-primary' : 'text-gray-400 hover:bg-gray-700/30 hover:text-white')}>
@@ -70,7 +92,7 @@ export function AdminSidebar() {
 
       <div className="p-4 border-t border-gray-700">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs text-white font-bold">A</div>
+          <div className="w-8 h-8 r-full bg-primary flex items-center justify-center text-xs text-white font-bold">A</div>
           <div className="flex-1 min-w-0">
             <p className="text-sm text-white truncate">Admin</p>
             <p className="text-xs text-gray-500">超级管理员</p>
@@ -84,7 +106,7 @@ export function AdminSidebar() {
   return (
     <>
       <aside className="hidden lg:block fixed top-0 left-0 z-50">{sidebar}</aside>
-      <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-gray-800 text-white rounded-lg flex items-center justify-center">
+      <button onClick={() => setMobileOpen(!mobileOpen)} className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-gray-800 text-white r-lg flex items-center justify-center">
         {mobileOpen ? '✕' : '☰'}
       </button>
       {mobileOpen && (

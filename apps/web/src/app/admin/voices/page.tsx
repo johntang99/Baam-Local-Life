@@ -62,12 +62,12 @@ export default async function AdminVoicesPage({ searchParams }: Props) {
     <div>
       <div className="p-6 space-y-4">
         {/* Tabs */}
-        <div className="flex items-center gap-1 bg-bg-page border border-border rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-bg-page border border-border r-lg p-1">
           {tabs.map((tab) => (
             <Link
               key={tab.key}
               href={tabUrl(tab.key)}
-              className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium r-base transition-colors ${
                 activeTab === tab.key
                   ? 'bg-bg-card text-text shadow-sm'
                   : 'text-text-muted hover:text-text'
@@ -75,7 +75,7 @@ export default async function AdminVoicesPage({ searchParams }: Props) {
             >
               {tab.label}
               {tab.key === 'applications' && (applicationCount ?? 0) > 0 && (
-                <span className="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                <span className="ml-1 bg-red-500 text-white text-xs r-full px-1.5 py-0.5">
                   {applicationCount}
                 </span>
               )}

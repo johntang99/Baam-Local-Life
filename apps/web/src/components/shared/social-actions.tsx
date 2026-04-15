@@ -130,7 +130,7 @@ export function CommentForm({ postId, isLoggedIn }: CommentFormProps) {
           name="content"
           placeholder="写下你的评论..."
           required
-          className="flex-1 h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="flex-1 h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
         <button type="submit" disabled={loading} className="btn btn-primary h-9 px-4 text-sm disabled:opacity-50">
           {loading ? '...' : '发送'}

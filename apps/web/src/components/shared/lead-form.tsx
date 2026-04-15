@@ -16,7 +16,7 @@ export function LeadForm({ businessId, sourceType = 'business_page', sourceArtic
 
   if (status === 'success') {
     return (
-      <div className={`p-4 bg-green-50 border border-green-200 rounded-lg text-center ${className}`}>
+      <div className={`p-4 bg-green-50 border border-green-200 r-lg text-center ${className}`}>
         <p className="text-sm text-green-700 font-medium">{message}</p>
       </div>
     );
@@ -49,7 +49,7 @@ export function LeadForm({ businessId, sourceType = 'business_page', sourceArtic
           type="text"
           name="name"
           placeholder="你的姓名"
-          className="w-full h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="w-full h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
       </div>
       <div>
@@ -57,7 +57,7 @@ export function LeadForm({ businessId, sourceType = 'business_page', sourceArtic
           type="tel"
           name="phone"
           placeholder="手机号码"
-          className="w-full h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="w-full h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
       </div>
       <div>
@@ -65,7 +65,7 @@ export function LeadForm({ businessId, sourceType = 'business_page', sourceArtic
           type="email"
           name="email"
           placeholder="邮箱（可选）"
-          className="w-full h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+          className="w-full h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
         />
       </div>
       <div>
@@ -73,7 +73,7 @@ export function LeadForm({ businessId, sourceType = 'business_page', sourceArtic
           name="message"
           placeholder="简单描述你的需求..."
           rows={3}
-          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
+          className="w-full px-3 py-2 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
         />
       </div>
       <button

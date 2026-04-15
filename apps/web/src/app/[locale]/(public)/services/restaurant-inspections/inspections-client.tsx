@@ -21,12 +21,12 @@ interface Restaurant {
 }
 
 const GRADE_STYLES: Record<string, { bg: string; label: string }> = {
-  'A': { bg: 'bg-green-500', label: '优秀' },
-  'B': { bg: 'bg-yellow-500', label: '良好' },
-  'C': { bg: 'bg-orange-500', label: '需改进' },
-  'Z': { bg: 'bg-red-500', label: '待评级' },
-  'P': { bg: 'bg-gray-400', label: '待评级' },
-  'N': { bg: 'bg-gray-300', label: '未评级' },
+  'A': { bg: 'bg-accent-green', label: '优秀' },
+  'B': { bg: 'bg-accent-yellow', label: '良好' },
+  'C': { bg: 'bg-primary', label: '需改进' },
+  'Z': { bg: 'bg-accent-red', label: '待评级' },
+  'P': { bg: 'bg-border', label: '待评级' },
+  'N': { bg: 'bg-border', label: '未评级' },
 };
 
 const BOROUGHS = ['', 'Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island'];
@@ -146,8 +146,8 @@ export function InspectionsClient() {
   return (
     <div>
       {/* Search Form */}
-      <div className="bg-green-50/50 border border-green-100 rounded-2xl p-5 sm:p-6 mb-6">
-        <h2 className="text-base font-bold text-gray-900 mb-4">{convert('搜索餐厅卫生评分')}</h2>
+      <div className="bg-accent-green-light/50 border border-green-100 r-xl p-5 sm:p-6 mb-6">
+        <h2 className="text-base fw-bold text-text-primary mb-4">{convert('搜索餐厅卫生评分')}</h2>
         <form onSubmit={handleSearch}>
           <div className="relative">
             <input
@@ -158,22 +158,22 @@ export function InspectionsClient() {
               onFocus={() => { if (history.length > 0 && !query) setShowHistory(true); }}
               onBlur={() => setTimeout(() => setShowHistory(false), 200)}
               placeholder={convert('搜索餐厅名称（中文或英文）')}
-              className="w-full h-11 px-4 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+              className="w-full h-11 px-4 border border-border r-xl text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
               required
             />
 
             {/* Search History Dropdown */}
             {showHistory && history.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-20 overflow-hidden">
-                <div className="px-3 py-2 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{convert('最近搜索')}</div>
+              <div className="absolute top-full left-0 right-0 mt-1 bg-bg-card border border-border r-xl elev-lg z-20 overflow-hidden">
+                <div className="px-3 py-2 text-[10px] fw-semibold text-text-muted uppercase tracking-wider">{convert('最近搜索')}</div>
                 {history.map((h, i) => (
                   <button
                     key={i}
                     type="button"
                     onMouseDown={() => handleHistoryClick(h)}
-                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-primary transition flex items-center gap-2"
+                    className="w-full text-left px-4 py-2.5 text-sm text-text-secondary hover:bg-primary-50 hover:text-primary transition flex items-center gap-2"
                   >
-                    <svg className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-3.5 h-3.5 text-text-muted flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     {h}
                   </button>
                 ))}
@@ -185,7 +185,7 @@ export function InspectionsClient() {
             <select
               value={boro}
               onChange={(e) => setBoro(e.target.value)}
-              className="h-10 px-3 border border-gray-300 rounded-xl text-sm bg-white focus:ring-2 focus:ring-primary outline-none sm:w-44"
+              className="h-10 px-3 border border-border r-xl text-sm bg-bg-card focus:ring-2 focus:ring-primary outline-none sm:w-44"
             >
               {BOROUGHS.map((b) => (
                 <option key={b} value={b}>{convert(BORO_LABELS[b])}</option>
@@ -194,7 +194,7 @@ export function InspectionsClient() {
             <button
               type="submit"
               disabled={loading || !query.trim()}
-              className="h-10 px-6 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 disabled:opacity-50 transition flex items-center justify-center gap-2"
+              className="h-10 px-6 bg-primary text-text-inverse fw-semibold r-xl hover:bg-primary/90 disabled:opacity-50 transition flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -214,7 +214,7 @@ export function InspectionsClient() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-xl p-4 mb-6 text-sm">
+        <div className="bg-accent-red-light border border-accent-red text-accent-red r-xl p-4 mb-6 text-sm">
           {convert(error)}
         </div>
       )}
@@ -223,15 +223,15 @@ export function InspectionsClient() {
       {results !== null && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-base font-bold text-gray-900">{convert('搜索结果')}</h2>
-            <span className="text-sm text-gray-400">{convert(`找到 ${results.length} 家餐厅`)}</span>
+            <h2 className="text-base fw-bold text-text-primary">{convert('搜索结果')}</h2>
+            <span className="text-sm text-text-muted">{convert(`找到 ${results.length} 家餐厅`)}</span>
           </div>
 
           {results.length === 0 ? (
-            <div className="bg-gray-50 rounded-2xl p-8 text-center">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🍽️</div>
-              <h3 className="text-base font-bold text-gray-700 mb-1">{convert('未找到餐厅')}</h3>
-              <p className="text-sm text-gray-500">{convert('请尝试其他关键词或检查拼写')}</p>
+            <div className="bg-bg-page r-xl p-8 text-center">
+              <div className="w-16 h-16 bg-bg-page r-full flex items-center justify-center mx-auto mb-4 text-2xl">🍽️</div>
+              <h3 className="text-base fw-bold text-text-secondary mb-1">{convert('未找到餐厅')}</h3>
+              <p className="text-sm text-text-muted">{convert('请尝试其他关键词或检查拼写')}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -242,33 +242,33 @@ export function InspectionsClient() {
                   <a
                     key={r.camis}
                     href={`/zh/services/restaurant-inspections/${r.camis}`}
-                    className="flex items-start gap-4 bg-white border border-gray-200 rounded-xl p-4 hover:border-primary/30 hover:shadow-md transition group"
+                    className="flex items-start gap-4 bg-bg-card border border-border r-xl p-4 hover:border-primary/30 hover:elev-md transition group"
                   >
                     {/* Grade Badge */}
-                    <div className={cn('w-14 h-14 rounded-xl flex items-center justify-center text-white text-xl font-bold flex-shrink-0', style.bg)}>
+                    <div className={cn('w-14 h-14 r-xl flex items-center justify-center text-text-inverse text-xl fw-bold flex-shrink-0', style.bg)}>
                       {r.grade || '?'}
                     </div>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-sm font-bold text-gray-900 group-hover:text-primary transition truncate">
+                        <h3 className="text-sm fw-bold text-text-primary group-hover:text-primary transition truncate">
                           {r.dba_zh ? `${r.dba_zh}` : r.dba}
                         </h3>
-                        <span className="text-xs text-gray-400 flex-shrink-0">{convert(`评分 ${r.score}`)}</span>
+                        <span className="text-xs text-text-muted flex-shrink-0">{convert(`评分 ${r.score}`)}</span>
                       </div>
                       {r.dba_zh && (
-                        <p className="text-xs text-gray-400 truncate mb-0.5">{r.dba}</p>
+                        <p className="text-xs text-text-muted truncate mb-0.5">{r.dba}</p>
                       )}
-                      <p className="text-xs text-gray-500 truncate mb-1">{address}</p>
-                      <div className="flex items-center gap-3 text-xs text-gray-400">
+                      <p className="text-xs text-text-muted truncate mb-1">{address}</p>
+                      <div className="flex items-center gap-3 text-xs text-text-muted">
                         {r.cuisine && <span>{r.cuisine}</span>}
                         {r.phone && <span>{formatPhone(r.phone)}</span>}
                         {r.inspection_date && <span>{formatDate(r.inspection_date)}</span>}
                       </div>
                     </div>
 
-                    <svg className="w-4 h-4 text-gray-300 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    <svg className="w-4 h-4 text-text-muted flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </a>
                 );
               })}

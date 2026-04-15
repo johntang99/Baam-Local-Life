@@ -81,7 +81,7 @@ export default function VoicesTable({ tab, profiles, applicationProfiles, featur
 
   if (tab === 'applications') {
     return (
-      <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-bg-card border border-border r-xl overflow-hidden">
         <div className="px-5 pt-5 pb-3">
           <h2 className="font-semibold">待审核申请 ({applicationProfiles.length})</h2>
         </div>
@@ -121,14 +121,14 @@ export default function VoicesTable({ tab, profiles, applicationProfiles, featur
                     <button
                       onClick={() => handleApprove(profile.id)}
                       disabled={isPending}
-                      className="h-7 px-3 text-xs font-medium rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                      className="h-7 px-3 text-xs font-medium r-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
                     >
                       批准
                     </button>
                     <button
                       onClick={() => handleReject(profile.id)}
                       disabled={isPending}
-                      className="h-7 px-3 text-xs font-medium rounded-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
+                      className="h-7 px-3 text-xs font-medium r-lg bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
                     >
                       拒绝
                     </button>
@@ -144,7 +144,7 @@ export default function VoicesTable({ tab, profiles, applicationProfiles, featur
 
   if (tab === 'featured') {
     return (
-      <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-bg-card border border-border r-xl overflow-hidden">
         <div className="px-5 pt-5 pb-3">
           <h2 className="font-semibold">Featured达人 ({featuredProfiles.length})</h2>
         </div>
@@ -158,7 +158,7 @@ export default function VoicesTable({ tab, profiles, applicationProfiles, featur
               {featuredProfiles.map((profile) => (
                 <div
                   key={profile.id}
-                  className="flex items-center gap-2 bg-bg-page border border-border rounded-lg px-3 py-2"
+                  className="flex items-center gap-2 bg-bg-page border border-border r-lg px-3 py-2"
                 >
                   <span className="text-sm font-medium">{profile.display_name || '未命名'}</span>
                   <span className={`${(profileTypeBadge[profile.profile_type] || profileTypeBadge.user).cls} text-xs`}>
@@ -191,7 +191,7 @@ export default function VoicesTable({ tab, profiles, applicationProfiles, featur
 
   // Default: creators list tab
   return (
-    <div className="bg-bg-card border border-border rounded-xl overflow-hidden">
+    <div className="bg-bg-card border border-border r-xl overflow-hidden">
       <div className="px-5 pt-5 pb-3">
         <h2 className="font-semibold">全部达人 ({profiles.length})</h2>
       </div>

@@ -103,19 +103,19 @@ export function RegionRow({ region, parent, belongsToSites, allRegions }: Region
       <td className="font-mono text-xs">{region.slug}</td>
       <td>{region.name_zh || '—'}</td>
       <td>{region.name_en}</td>
-      <td><span className={`text-xs px-2 py-0.5 rounded-full ${typeClasses[region.type] || 'bg-gray-100 text-gray-600'}`}>{region.type}</span></td>
+      <td><span className={`text-xs px-2 py-0.5 r-full ${typeClasses[region.type] || 'bg-gray-100 text-gray-600'}`}>{region.type}</span></td>
       <td className="text-sm text-gray-500">{parent?.name_zh || parent?.name_en || '—'}</td>
       <td>
         <div className="flex gap-1 flex-wrap">
           {belongsToSites.length > 0 ? belongsToSites.map((name, i) => (
-            <span key={i} className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full">{name}</span>
+            <span key={i} className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 r-full">{name}</span>
           )) : <span className="text-xs text-gray-400">未分配</span>}
         </div>
       </td>
       <td>
         <div className="flex items-center gap-2">
           <span
-            className={`text-xs px-2 py-0.5 rounded-full cursor-pointer ${region.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
+            className={`text-xs px-2 py-0.5 r-full cursor-pointer ${region.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
             onClick={handleToggleActive}
             title="点击切换"
           >

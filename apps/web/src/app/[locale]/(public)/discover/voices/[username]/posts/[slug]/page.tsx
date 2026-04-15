@@ -124,42 +124,42 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
     <main>
       <PageContainer className="max-w-4xl py-6">
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-400 mb-4">
+        <nav className="text-sm text-text-muted mb-4">
           <Link href="/discover" className="hover:text-primary">发现</Link>
           <span className="mx-2">›</span>
           <Link href={`/discover/voices/${username}`} className="hover:text-primary">
             {profile.display_name || username}
           </Link>
           <span className="mx-2">›</span>
-          <span className="text-gray-600">{post.title}</span>
+          <span className="text-text-secondary">{post.title}</span>
         </nav>
 
         {/* Author Card */}
         <div className="flex items-center gap-3 mb-6">
           <Link href={`/discover/voices/${username}`}>
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-xl flex-shrink-0">
+            <div className="w-12 h-12 r-full bg-primary/10 flex items-center justify-center text-xl flex-shrink-0">
               {profile.display_name?.[0] || '?'}
             </div>
           </Link>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <Link href={`/discover/voices/${username}`} className="font-semibold text-sm hover:text-primary">
+              <Link href={`/discover/voices/${username}`} className="fw-semibold text-sm hover:text-primary">
                 {profile.display_name || username}
               </Link>
               {profile.is_verified && (
-                <Badge className="text-xs bg-blue-100 text-blue-700">已认证</Badge>
+                <Badge className="text-xs bg-accent-blue-light text-secondary-dark">已认证</Badge>
               )}
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-text-muted">
               {formatTimeAgo(post.published_at)} · {post.view_count || 0} 浏览
             </p>
           </div>
-          <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs rounded-lg" />
+          <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs r-lg" />
         </div>
 
         {/* Image Carousel / Video Player */}
         {isVideo && post.video_url ? (
-          <div className="aspect-video bg-black rounded-xl overflow-hidden mb-6">
+          <div className="aspect-video bg-black r-xl overflow-hidden mb-6">
             <video
               src={post.video_url}
               poster={post.video_thumbnail_url || undefined}
@@ -170,7 +170,7 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
         ) : coverImages.length > 0 ? (
           <div className={`mb-6 ${coverImages.length === 1 ? '' : 'grid grid-cols-2 sm:grid-cols-3 gap-2'}`}>
             {coverImages.map((img, i) => (
-              <div key={i} className={`rounded-xl overflow-hidden ${coverImages.length === 1 ? 'max-h-[500px]' : 'aspect-square'}`}>
+              <div key={i} className={`r-xl overflow-hidden ${coverImages.length === 1 ? 'max-h-[500px]' : 'aspect-square'}`}>
                 <img src={img} alt={`${post.title} ${i + 1}`} className="w-full h-full object-cover" />
               </div>
             ))}
@@ -181,21 +181,21 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
         <header className="mb-6">
           <div className="flex items-center gap-2 mb-3">
             {post.post_type && (
-              <Badge className="text-xs bg-purple-100 text-purple-700">{post.post_type}</Badge>
+              <Badge className="text-xs bg-accent-purple-light text-accent-purple">{post.post_type}</Badge>
             )}
             {post.location_text && (
-              <span className="text-xs text-gray-400 flex items-center gap-1">
+              <span className="text-xs text-text-muted flex items-center gap-1">
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
                 {post.location_text}
               </span>
             )}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold leading-tight">{post.title}</h1>
+          <h1 className="text-2xl sm:text-3xl fw-bold leading-tight">{post.title}</h1>
         </header>
 
         {/* Post Body */}
         {(post.body || post.content) && (
-          <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-gray-800 [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-orange-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-gray-500">
+          <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:fw-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:fw-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-text-muted">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.body || post.content}</ReactMarkdown>
           </div>
         )}
@@ -207,7 +207,7 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
               <Link
                 key={tag}
                 href={`/discover?topic=${encodeURIComponent(tag)}`}
-                className="text-xs text-orange-600 bg-orange-50 px-2.5 py-1 rounded-full hover:bg-orange-100"
+                className="text-xs text-primary-dark bg-primary-50 px-2.5 py-1 r-full hover:bg-primary-100"
               >
                 #{tag}
               </Link>
@@ -216,34 +216,34 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-4 py-4 border-t border-b border-gray-200 mb-8">
+        <div className="flex items-center gap-4 py-4 border-t border-b border-border mb-8">
           <LikeButton postId={post.id} isLiked={false} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
-          <span className="text-sm text-gray-400 flex items-center gap-1">
+          <span className="text-sm text-text-muted flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
             {post.save_count || 0} 收藏
           </span>
-          <span className="text-sm text-gray-400">💬 {post.comment_count || 0} 评论</span>
+          <span className="text-sm text-text-muted">💬 {post.comment_count || 0} 评论</span>
         </div>
 
         {/* Linked Businesses */}
         {linkedBusinesses.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-lg font-bold mb-3">相关商家</h2>
+            <h2 className="text-lg fw-bold mb-3">相关商家</h2>
             <div className="space-y-3">
               {linkedBusinesses.map((link) => {
                 const biz = link.businesses as AnyRow;
                 if (!biz) return null;
                 return (
                   <Link key={link.id} href={`/businesses/${biz.slug}`} className="block">
-                    <Card className="p-4 flex items-center gap-3 hover:shadow-md transition-shadow">
-                    <div className="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center text-xl">
+                    <Card className="p-4 flex items-center gap-3 hover:elev-md transition-shadow">
+                    <div className="w-12 h-12 r-lg bg-primary-50 flex items-center justify-center text-xl">
                       {biz.display_name_zh?.[0] || biz.display_name?.[0] || '🏪'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm">{biz.display_name_zh || biz.display_name}</h3>
-                      {biz.short_desc_zh && <p className="text-xs text-gray-400 truncate">{biz.short_desc_zh}</p>}
+                      <h3 className="fw-medium text-sm">{biz.display_name_zh || biz.display_name}</h3>
+                      {biz.short_desc_zh && <p className="text-xs text-text-muted truncate">{biz.short_desc_zh}</p>}
                     </div>
-                    <svg className="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    <svg className="w-4 h-4 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                     </Card>
                   </Link>
                 );
@@ -254,23 +254,23 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
 
         {/* Comments */}
         <section className="mb-8">
-          <h2 className="text-lg font-bold mb-4">评论 ({comments.length})</h2>
+          <h2 className="text-lg fw-bold mb-4">评论 ({comments.length})</h2>
           {comments.length > 0 && (
             <div className="space-y-4 mb-4">
               {comments.map((comment) => (
                 <Card key={comment.id} className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-xs flex-shrink-0">
+                    <div className="w-7 h-7 r-full bg-primary/10 flex items-center justify-center text-xs flex-shrink-0">
                       {(comment.author_name || '?')[0]}
                     </div>
-                    <span className="text-sm font-medium">{comment.author_name || '匿名用户'}</span>
+                    <span className="text-sm fw-medium">{comment.author_name || '匿名用户'}</span>
                     {comment.created_at && (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-text-muted">
                         {formatTimeAgo(comment.created_at)}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-800 pl-9">{comment.content}</p>
+                  <p className="text-sm text-text-primary pl-9">{comment.content}</p>
                 </Card>
               ))}
             </div>
@@ -281,7 +281,7 @@ export default async function DiscoverPostDetailPage({ params }: Props) {
         {/* More from Author */}
         {morePosts.length > 0 && (
           <section>
-            <h2 className="text-lg font-bold mb-4">更多来自 {profile.display_name || username}</h2>
+            <h2 className="text-lg fw-bold mb-4">更多来自 {profile.display_name || username}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {morePosts.map((p, i) => (
                 <DiscoverCard key={p.id} post={p} author={profile} index={i} />

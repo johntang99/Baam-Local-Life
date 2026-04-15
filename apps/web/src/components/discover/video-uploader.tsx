@@ -159,7 +159,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-5 sm:p-6">
+    <div className="bg-white r-xl border border-gray-200 p-5 sm:p-6">
       <label className="text-sm font-semibold text-gray-900 mb-3 block">
         上传视频 <span className="text-gray-400 font-normal">(5秒-5分钟，最大200MB)</span>
       </label>
@@ -167,7 +167,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
       {/* Video Preview */}
       {videoUrl ? (
         <div className="mb-4">
-          <div className="relative rounded-xl overflow-hidden bg-black">
+          <div className="relative r-xl overflow-hidden bg-black">
             <video
               ref={videoRef}
               src={videoUrl}
@@ -178,7 +178,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
             <button
               type="button"
               onClick={removeVideo}
-              className="absolute top-3 right-3 w-8 h-8 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 transition"
+              className="absolute top-3 right-3 w-8 h-8 bg-black/60 text-white r-full flex items-center justify-center hover:bg-black/80 transition"
             >
               &times;
             </button>
@@ -196,7 +196,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => !uploading && fileInputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-10 text-center transition-colors ${
+          className={`border-2 border-dashed r-xl p-10 text-center transition-colors ${
             uploading ? 'border-gray-200 bg-gray-50 cursor-wait' :
             dragOver ? 'border-primary bg-orange-50 cursor-pointer' :
             'border-gray-300 hover:border-primary hover:bg-orange-50/50 cursor-pointer'
@@ -204,7 +204,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
         >
           {uploading ? (
             <>
-              <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+              <div className="w-10 h-10 border-3 border-primary border-t-transparent r-full animate-spin mx-auto mb-3" />
               <p className="text-sm text-gray-600">{progress}</p>
             </>
           ) : (

@@ -53,7 +53,7 @@ export function DiscoverCard({ post, author, index = 0 }: DiscoverCardProps) {
 
   return (
     <Link href={href} className="block break-inside-avoid mb-3 sm:mb-4">
-      <div className="bg-white rounded-[14px] overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
+      <div className="bg-white r-lg overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
         {/* Cover */}
         <div className="relative">
           {hasImage ? (
@@ -78,7 +78,7 @@ export function DiscoverCard({ post, author, index = 0 }: DiscoverCardProps) {
           {isVideo && (
             <>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-10 h-10 rounded-full bg-black/45 backdrop-blur-sm flex items-center justify-center">
+                <div className="w-10 h-10 r-full bg-black/45 backdrop-blur-sm flex items-center justify-center">
                   <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                   </svg>
@@ -121,7 +121,7 @@ export function DiscoverCard({ post, author, index = 0 }: DiscoverCardProps) {
 
           {/* Author + Likes */}
           <div className="flex items-center gap-2">
-            <div className={`w-5 h-5 rounded-full ${avatarColor} flex items-center justify-center text-[10px] font-bold flex-shrink-0`}>
+            <div className={`w-5 h-5 r-full ${avatarColor} flex items-center justify-center text-[10px] font-bold flex-shrink-0`}>
               {authorInitial}
             </div>
             <span className="text-xs text-gray-500 truncate flex-1">

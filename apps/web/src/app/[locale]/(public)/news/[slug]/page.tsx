@@ -46,11 +46,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const verticalConfig: Record<string, { label: string; className: string }> = {
-  news_alert: { label: '快报', className: 'bg-red-100 text-red-700' },
-  news_brief: { label: '简报', className: 'bg-blue-100 text-blue-700' },
-  news_explainer: { label: '政策解读', className: 'bg-purple-100 text-purple-700' },
+  news_alert: { label: '快报', className: 'bg-accent-red-light text-accent-red' },
+  news_brief: { label: '简报', className: 'bg-accent-blue-light text-secondary-dark' },
+  news_explainer: { label: '政策解读', className: 'bg-accent-purple-light text-accent-purple' },
   news_roundup: { label: '周度汇总', className: 'bg-primary-100 text-primary-700' },
-  news_community: { label: '社区新闻', className: 'bg-green-100 text-green-700' },
+  news_community: { label: '社区新闻', className: 'bg-accent-green-light text-accent-green' },
 };
 
 export default async function NewsDetailPage({ params }: Props) {
@@ -73,7 +73,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
   // TODO: Increment view count via API route or server action
 
-  const vertical = verticalConfig[article.content_vertical] || { label: '新闻', className: 'bg-gray-100 text-gray-700' };
+  const vertical = verticalConfig[article.content_vertical] || { label: '新闻', className: 'bg-bg-page text-text-secondary' };
   const title = article.title_zh || article.title_en;
   const body = article.body_zh || article.body_en;
   const summary = article.ai_summary_zh || article.summary_zh;
@@ -116,7 +116,7 @@ export default async function NewsDetailPage({ params }: Props) {
                   </Badge>
                 )}
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold leading-tight mb-3">{title}</h1>
+              <h1 className="text-2xl sm:text-3xl fw-bold leading-tight mb-3">{title}</h1>
               <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
                 {article.published_at && (
                   <time>{new Date(article.published_at).toLocaleDateString('zh-CN', {
@@ -127,7 +127,7 @@ export default async function NewsDetailPage({ params }: Props) {
                   <span>最后审核：{new Date(article.last_reviewed_at).toLocaleDateString('zh-CN')}</span>
                 )}
                 {article.region_id && (
-                  <span className="bg-border-light px-2 py-0.5 rounded">
+                  <span className="bg-border-light px-2 py-0.5 r-base">
                     纽约
                   </span>
                 )}
@@ -137,7 +137,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
             {/* Cover Image */}
             {article.cover_image_url && (
-              <div className="mb-6 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+              <div className="mb-6 r-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
                 <img
                   src={article.cover_image_url}
                   alt={title}
@@ -159,7 +159,7 @@ export default async function NewsDetailPage({ params }: Props) {
                 {Object.entries(keyFacts).map(([key, value]) => (
                   <Card key={key} className="bg-bg-page p-3 text-center">
                     <p className="text-xs text-text-muted mb-1">{key}</p>
-                    <p className="text-sm font-semibold">{value}</p>
+                    <p className="text-sm fw-semibold">{value}</p>
                   </Card>
                 ))}
               </div>
@@ -167,14 +167,14 @@ export default async function NewsDetailPage({ params }: Props) {
 
             {/* Article Body */}
             {body && (
-              <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-text-secondary">
+              <div className="prose prose-sm max-w-none mb-8 [&_h2]:text-lg [&_h2]:fw-bold [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-base [&_h3]:fw-semibold [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-text-primary [&_p]:leading-relaxed [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_li]:mb-1 [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary-200 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-text-secondary">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
               </div>
             )}
 
             {/* Source Attribution */}
             {article.source_url && (
-              <div className="flex items-center gap-2 p-4 bg-accent-green-light/30 border border-accent-green/20 rounded-lg mb-8">
+              <div className="flex items-center gap-2 p-4 bg-accent-green-light/30 border border-accent-green/20 r-lg mb-8">
                 <span className="text-accent-green text-lg">🛡️</span>
                 <div>
                   <p className="text-xs text-text-muted">
@@ -184,7 +184,7 @@ export default async function NewsDetailPage({ params }: Props) {
                     href={article.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-primary font-medium hover:underline"
+                    className="text-sm text-primary fw-medium hover:underline"
                   >
                     {article.source_name || article.source_url} ↗
                   </a>
@@ -203,12 +203,12 @@ export default async function NewsDetailPage({ params }: Props) {
             {/* Related Guides */}
             {relatedGuides && relatedGuides.length > 0 && (
               <section className="mt-8">
-                <h2 className="text-lg font-bold mb-4">📚 相关生活指南</h2>
+                <h2 className="text-lg fw-bold mb-4">📚 相关生活指南</h2>
                 <div className="grid sm:grid-cols-3 gap-4">
                   {relatedGuides.map((guide) => (
                     <Link key={guide.id} href={`/guides/${guide.slug}`} className="block">
-                      <Card className="p-4 h-full hover:shadow-md transition-shadow">
-                        <h3 className="font-medium text-sm line-clamp-2">{guide.title_zh}</h3>
+                      <Card className="p-4 h-full hover:elev-md transition-shadow">
+                        <h3 className="fw-medium text-sm line-clamp-2">{guide.title_zh}</h3>
                       </Card>
                     </Link>
                   ))}
@@ -221,13 +221,13 @@ export default async function NewsDetailPage({ params }: Props) {
           <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6 mt-8 lg:mt-0">
             {/* Newsletter */}
             <Card className="bg-bg-card p-5">
-              <h3 className="font-semibold text-sm mb-3">📬 订阅本地周报</h3>
+              <h3 className="fw-semibold text-sm mb-3">📬 订阅本地周报</h3>
               <p className="text-xs text-text-secondary mb-3">每周精选本地新闻、指南、活动</p>
               <div className="flex gap-2">
                 <input
                   type="email"
                   placeholder="输入邮箱"
-                  className="flex-1 h-9 px-3 border border-border rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  className="flex-1 h-9 px-3 border border-border r-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
                 />
                 <button className={buttonVariants({ size: 'sm' })}>订阅</button>
               </div>

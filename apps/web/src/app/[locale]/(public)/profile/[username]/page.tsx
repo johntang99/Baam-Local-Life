@@ -90,13 +90,13 @@ export default async function UserProfilePage({ params }: Props) {
         {/* Profile Header */}
         <Card className="p-6 sm:p-8 mb-6">
           <div className="flex items-start gap-6">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary/10 flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 r-full bg-primary/10 flex items-center justify-center text-3xl sm:text-4xl flex-shrink-0">
               {profile.display_name?.[0] || '?'}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-2xl font-bold">{profile.display_name}</h1>
-                {profile.is_verified && <Badge className="text-xs bg-blue-100 text-blue-700">已认证</Badge>}
+                <h1 className="text-2xl fw-bold">{profile.display_name}</h1>
+                {profile.is_verified && <Badge className="text-xs bg-accent-blue-light text-secondary-dark">已认证</Badge>}
               </div>
               <p className="text-sm text-text-muted mb-2">@{profile.username}</p>
               <p className="text-sm text-text-secondary mb-3">
@@ -125,15 +125,15 @@ export default async function UserProfilePage({ params }: Props) {
             {/* Voice Posts */}
             {posts && posts.length > 0 && (
               <Card className="p-5">
-                <h2 className="font-bold text-base mb-4">发布的内容</h2>
+                <h2 className="fw-bold text-base mb-4">发布的内容</h2>
                 <div className="space-y-3">
                   {(posts as AnyRow[]).map((post) => (
                     <Link
                       key={post.id}
                       href={`/voices/${username}/posts/${post.slug}`}
-                      className="block p-3 rounded-lg hover:bg-bg-page transition-colors"
+                      className="block p-3 r-lg hover:bg-bg-page transition-colors"
                     >
-                      <h3 className="font-medium text-sm line-clamp-1">{post.title || '无标题'}</h3>
+                      <h3 className="fw-medium text-sm line-clamp-1">{post.title || '无标题'}</h3>
                       <div className="flex gap-3 text-xs text-text-muted mt-1">
                         <span>❤️ {post.like_count || 0}</span>
                         <span>💬 {post.comment_count || 0}</span>
@@ -150,11 +150,11 @@ export default async function UserProfilePage({ params }: Props) {
             {/* Forum Threads */}
             {threads && threads.length > 0 && (
               <Card className="p-5">
-                <h2 className="font-bold text-base mb-4">论坛帖子</h2>
+                <h2 className="fw-bold text-base mb-4">论坛帖子</h2>
                 <div className="space-y-3">
                   {(threads as AnyRow[]).map((thread) => (
-                    <div key={thread.id} className="p-3 rounded-lg hover:bg-bg-page transition-colors">
-                      <h3 className="font-medium text-sm line-clamp-1">{thread.title}</h3>
+                    <div key={thread.id} className="p-3 r-lg hover:bg-bg-page transition-colors">
+                      <h3 className="fw-medium text-sm line-clamp-1">{thread.title}</h3>
                       <div className="flex gap-3 text-xs text-text-muted mt-1">
                         <span>💬 {thread.reply_count || 0} 回复</span>
                         <span>{new Date(thread.created_at).toLocaleDateString('zh-CN')}</span>
@@ -177,7 +177,7 @@ export default async function UserProfilePage({ params }: Props) {
           <aside className="space-y-6">
             {profile.interest_tags && Array.isArray(profile.interest_tags) && profile.interest_tags.length > 0 && (
               <Card className="p-5">
-                <h3 className="font-semibold text-sm mb-3">兴趣标签</h3>
+                <h3 className="fw-semibold text-sm mb-3">兴趣标签</h3>
                 <div className="flex flex-wrap gap-1.5">
                   {profile.interest_tags.map((tag: string) => (
                     <Badge key={tag} variant="muted" className="text-xs">{tag}</Badge>
