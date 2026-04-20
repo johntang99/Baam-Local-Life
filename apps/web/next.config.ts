@@ -6,6 +6,10 @@ const withNextIntl = createNextIntlPlugin('./src/lib/i18n/request.ts');
 
 const nextConfig: NextConfig = {
   outputFileTracingRoot: path.join(__dirname, '../../'),
+  experimental: {
+    // Discover video uploads can exceed the middleware default body limit (10MB).
+    middlewareClientMaxBodySize: '250mb',
+  },
   webpack: (config, { dev }) => {
     if (dev) {
       // Stability-first in dev: avoids intermittent corrupted vendor/client-manifest chunks.

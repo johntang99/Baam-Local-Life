@@ -546,7 +546,7 @@ async function handleNYSQuery(address: string, county: string, fetchHeaders: Rec
     let searchStreet = streetParts.join(' ');
     let searchSuff = '';
     if (streetParts.length >= 2) {
-      const lastWord = streetParts[streetParts.length - 1];
+      const lastWord = streetParts[streetParts.length - 1].toUpperCase();
       if (suffixes[lastWord]) {
         searchSuff = suffixes[lastWord];
         searchStreet = streetParts.slice(0, -1).join(' ');
