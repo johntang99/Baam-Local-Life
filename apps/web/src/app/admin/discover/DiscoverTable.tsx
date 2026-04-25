@@ -55,6 +55,7 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                 <th className="text-left px-4 py-3 font-medium text-gray-500">作者</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">状态</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">AI评分</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-500">媒体审核</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">时间</th>
                 <th className="text-right px-4 py-3 font-medium text-gray-500">操作</th>
               </tr>
@@ -63,6 +64,29 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
               {posts.map((post) => {
                 const isLoading = loading === post.id;
                 const coverImg = post.cover_images?.[0] || post.cover_image_url;
+                const mediaMeta = post.metadata?.moderation?.media;
+                const videoMeta = post.metadata?.moderation?.video;
+                const hasMedia = Boolean(coverImg || post.video_url);
+                const mediaChecked = mediaMeta?.checked === true;
+                const mediaProvider = typeof mediaMeta?.provider === 'string' ? mediaMeta.provider : null;
+                const mediaCheckedAt =
+                  typeof mediaMeta?.checked_at === 'string' && mediaMeta.checked_at
+                    ? new Date(mediaMeta.checked_at).toLocaleString('zh-CN')
+                    : null;
+                const modeMap: Record<string, string> = {
+                  images_only: '图片',
+                  video_thumbnail_only: '视频封面',
+                  images_and_video_thumbnail: '图片+视频封面',
+                  disabled: '未启用',
+                  none: '无检测目标',
+                };
+                const mediaMode = typeof mediaMeta?.mode === 'string' ? (modeMap[mediaMeta.mode] || mediaMeta.mode) : null;
+                const videoJobStatus = typeof videoMeta?.job_status === 'string' ? videoMeta.job_status : null;
+                const videoCheckedAt =
+                  typeof videoMeta?.checked_at === 'string' && videoMeta.checked_at
+                    ? new Date(videoMeta.checked_at).toLocaleString('zh-CN')
+                    : null;
+                const videoPass = videoMeta?.pass;
                 const statusColors: Record<string, string> = {
                   published: 'bg-green-100 text-green-700',
                   pending_review: 'bg-amber-100 text-amber-700',
@@ -98,6 +122,32 @@ export function DiscoverTable({ pendingPosts, allPosts }: Props) {
                         <span className={`text-xs font-mono ${post.ai_spam_score >= 0.6 ? 'text-red-600' : 'text-green-600'}`}>
                           {post.ai_spam_score.toFixed(2)}
                         </span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {mediaChecked ? (
+                        <div className="space-y-0.5">
+                          <div className="text-xs text-green-700 font-medium">已执行</div>
+                          <div className="text-[11px] text-gray-500">
+                            {mediaProvider || 'rekognition'}
+                            {mediaMode ? ` · ${mediaMode}` : ''}
+                          </div>
+                          {mediaCheckedAt && <div className="text-[11px] text-gray-400">{mediaCheckedAt}</div>}
+                          {videoJobStatus && (
+                            <div className="text-[11px] text-gray-500">
+                              视频任务: {videoJobStatus}
+                              {videoPass === true ? ' (通过)' : videoPass === false ? ' (命中)' : ''}
+                            </div>
+                          )}
+                          {videoCheckedAt && <div className="text-[11px] text-gray-400">视频完成: {videoCheckedAt}</div>}
+                        </div>
+                      ) : hasMedia ? (
+                        <div className="space-y-0.5">
+                          <div className="text-xs text-amber-700 font-medium">未记录</div>
+                          <div className="text-[11px] text-gray-500">请检查配置/历史数据</div>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">无媒体</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-gray-400 text-xs">

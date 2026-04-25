@@ -3,7 +3,7 @@
  * Adapted from English Helper with Chinese-specific logic
  */
 
-import type { BusinessResult, RelatedContent, HelperSource, ContentItem } from './types';
+import type { BusinessResult, RelatedContent, HelperSource, ContentItem, EventItem } from './types';
 import { REGION_MAP, REGION_ADDRESS_KEYWORDS } from './types';
 
 // Broad regions that should include multiple sub-regions
@@ -266,8 +266,11 @@ export async function fetchCategoryBusinesses(
       }
     }
 
-    if (combined.length > 0) {
+    if (combined.length >= 3) {
       validBiz = combined;
+    } else if (combined.length > 0) {
+      // Too few results in this location — show all results but mark as fallback
+      locationFallback = true;
     } else {
       locationFallback = true;
     }
@@ -326,6 +329,8 @@ const RELATED_KEYWORD_EXPANSION: Record<string, string[]> = {
   '工卡': ['移民', '签证', '身份', '办理'],
   '罚单': ['交通', '罚款', '驾照'],
   '离婚': ['法律', '家庭', '律师'],
+  '入籍': ['移民', '公民', '绿卡', '归化'],
+  '公民': ['移民', '入籍', '绿卡', '归化'],
   // Finance
   '报税': ['报税', '税务', '退税', 'W-2'],
   '会计': ['报税', '税务', '财务'],
@@ -348,6 +353,9 @@ const RELATED_KEYWORD_EXPANSION: Record<string, string[]> = {
   '空调': ['暖通', '维修', '安装'],
   '蟑螂': ['害虫', '灭虫', '清洁'],
   '开锁': ['锁匠', '修锁', '换锁'],
+  '修车': ['汽车', '修理', '保养', '换油'],
+  '保养': ['汽车', '修车', '换油', '维修'],
+  '眼镜': ['配镜', '视力', '眼科', '验光'],
   '保险': ['保险', '医保', '白卡'],
   // Education
   '幼儿园': ['托育', '幼儿', '学区', '教育'],
@@ -420,6 +428,123 @@ export async function fetchRelatedContent(
       snippet: clean(t.body),
     })).filter(t => t.title),
     discover: ((discoverRes.data || []) as AnyRow[]).map(d => ({ title: d.title || '', slug: d.slug || '', snippet: clean(d.excerpt) })).filter(d => d.title),
+  };
+}
+
+// ─── Fetch Community Content (Type 5) ───────────────────────
+
+export async function fetchCommunityContent(
+  supabase: AnyRow,
+  siteId: string,
+  keywords: string[],
+): Promise<{ forum: ContentItem[]; discover: ContentItem[] }> {
+  // Expand keywords for broader matching (same as related content)
+  const expanded = new Set(keywords.filter(kw => kw.length >= 2 && kw.length <= 20));
+  for (const kw of keywords) {
+    const extra = RELATED_KEYWORD_EXPANSION[kw];
+    if (extra) extra.forEach(e => expanded.add(e));
+  }
+  const searchKws = [...expanded];
+  if (searchKws.length === 0) return { forum: [], discover: [] };
+
+  const buildOr = (cols: string[]) => {
+    const conds: string[] = [];
+    for (const kw of searchKws) {
+      for (const col of cols) conds.push(`${col}.ilike.%${kw.replace(/,/g, ' ')}%`);
+    }
+    return conds.join(',');
+  };
+
+  const [forumRes, discoverRes] = await Promise.all([
+    supabase.from('forum_threads').select('slug, title, body, ai_summary_zh, reply_count, board_id, categories:board_id(slug)')
+      .eq('site_id', siteId).eq('status', 'published')
+      .or(buildOr(['title', 'body']))
+      .order('reply_count', { ascending: false })
+      .limit(8),
+    supabase.from('voice_posts').select('slug, title, excerpt, content, like_count, comment_count')
+      .eq('site_id', siteId).eq('status', 'published')
+      .or(buildOr(['title', 'content', 'excerpt']))
+      .order('like_count', { ascending: false })
+      .limit(6),
+  ]);
+
+  const clean = (s: string) => String(s || '').replace(/^#\s+/gm, '').replace(/\*\*/g, '').trim().slice(0, 150);
+
+  return {
+    forum: ((forumRes.data || []) as AnyRow[]).map(t => ({
+      title: String(t.title || ''),
+      slug: String(t.slug || ''),
+      boardSlug: typeof t.categories === 'object' && t.categories?.slug ? String(t.categories.slug) : 'general',
+      snippet: clean(t.ai_summary_zh || t.body),
+      replyCount: t.reply_count || 0,
+    })).filter(t => t.title),
+    discover: ((discoverRes.data || []) as AnyRow[]).map(d => ({
+      title: String(d.title || ''),
+      slug: String(d.slug || ''),
+      snippet: clean(d.excerpt || d.content),
+      likeCount: d.like_count || 0,
+    })).filter(d => d.title),
+  };
+}
+
+// ─── Fetch News & Events (Type 6) ───────────────────────────
+
+export async function fetchNewsAndEvents(
+  supabase: AnyRow,
+  siteId: string,
+  keywords: string[],
+): Promise<{ news: ContentItem[]; events: EventItem[] }> {
+  // Expand keywords for broader matching
+  const expanded = new Set(keywords.filter(kw => kw.length >= 2 && kw.length <= 20));
+  for (const kw of keywords) {
+    const extra = RELATED_KEYWORD_EXPANSION[kw];
+    if (extra) extra.forEach(e => expanded.add(e));
+  }
+  // For broad news queries, add common news topics
+  const searchKws = [...expanded];
+  if (searchKws.length === 0) searchKws.push('纽约', '法拉盛');
+
+  const buildOr = (cols: string[]) => {
+    const conds: string[] = [];
+    for (const kw of searchKws) {
+      for (const col of cols) conds.push(`${col}.ilike.%${kw.replace(/,/g, ' ')}%`);
+    }
+    return conds.join(',');
+  };
+
+  const now = new Date().toISOString();
+
+  const [newsRes, eventsRes] = await Promise.all([
+    supabase.from('articles').select('slug, title_zh, summary_zh, content_vertical, published_at')
+      .eq('site_id', siteId).eq('editorial_status', 'published')
+      .in('content_vertical', ['news_alert', 'news_brief', 'news_explainer', 'news_roundup', 'news_community'])
+      .or(buildOr(['title_zh', 'summary_zh', 'body_zh']))
+      .order('published_at', { ascending: false })
+      .limit(6),
+    supabase.from('events').select('slug, title_zh, summary_zh, venue_name, start_at, is_free, ticket_price')
+      .eq('site_id', siteId).eq('status', 'published')
+      .gte('start_at', now)
+      .or(buildOr(['title_zh', 'summary_zh']))
+      .order('start_at', { ascending: true })
+      .limit(8),
+  ]);
+
+  const clean = (s: string) => String(s || '').replace(/^#\s+/gm, '').replace(/\*\*/g, '').trim().slice(0, 150);
+
+  return {
+    news: ((newsRes.data || []) as AnyRow[]).map(n => ({
+      title: String(n.title_zh || ''),
+      slug: String(n.slug || ''),
+      snippet: clean(n.summary_zh),
+    })).filter(n => n.title),
+    events: ((eventsRes.data || []) as AnyRow[]).map(e => ({
+      title: String(e.title_zh || ''),
+      slug: String(e.slug || ''),
+      venueName: String(e.venue_name || ''),
+      startAt: String(e.start_at || ''),
+      isFree: !!e.is_free,
+      ticketPrice: e.ticket_price || null,
+    })).filter(e => e.title),
   };
 }
 

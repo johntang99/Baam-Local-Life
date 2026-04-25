@@ -78,6 +78,10 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
     regionNameMap[r.id] = r.name_zh || r.slug;
   });
   const guideCategories = (rawGuideCategories || []) as AnyRow[];
+  const categoryNameMap: Record<string, string> = {};
+  guideCategories.forEach((c: AnyRow) => {
+    categoryNameMap[c.id] = c.name_zh || c.name_en || c.slug;
+  });
 
   // Build query
   let query = supabase
@@ -250,7 +254,7 @@ export default async function AdminArticlesPage({ searchParams }: Props) {
             <p className="text-sm text-text-muted mt-1">切换站点或创建新文章</p>
           </div>
         ) : (
-          <ArticlesTable articles={articles} regionNameMap={regionNameMap} siteParams={baseParams.toString()} />
+          <ArticlesTable articles={articles} regionNameMap={regionNameMap} categoryNameMap={categoryNameMap} siteParams={baseParams.toString()} />
         )}
 
         {/* Pagination */}

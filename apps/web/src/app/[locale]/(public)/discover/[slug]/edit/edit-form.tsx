@@ -15,15 +15,17 @@ type AnyRow = Record<string, any>;
 interface EditPostFormProps {
   post: AnyRow;
   linkedBusinesses: AnyRow[];
+  categories?: AnyRow[];
 }
 
-export function EditPostForm({ post, linkedBusinesses }: EditPostFormProps) {
+export function EditPostForm({ post, linkedBusinesses, categories = [] }: EditPostFormProps) {
   const [title, setTitle] = useState(post.title || '');
   const [content, setContent] = useState(post.content || '');
   const [images, setImages] = useState<string[]>(post.cover_images || []);
   const [tags, setTags] = useState<string[]>(post.topic_tags || []);
   const [businesses, setBusinesses] = useState<AnyRow[]>(linkedBusinesses);
   const [location, setLocation] = useState(post.location_text || '');
+  const [categoryId, setCategoryId] = useState(post.category_id || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -47,6 +49,7 @@ export function EditPostForm({ post, linkedBusinesses }: EditPostFormProps) {
     if (post.video_thumbnail_url) formData.set('video_thumbnail_url', post.video_thumbnail_url);
     if (location.trim()) formData.set('location_text', location);
     if (businesses.length > 0) formData.set('business_ids', JSON.stringify(businesses.map(b => b.id)));
+    if (categoryId) formData.set('category_id', categoryId);
 
     const result = await updateDiscoverPost(formData);
 
@@ -63,6 +66,29 @@ export function EditPostForm({ post, linkedBusinesses }: EditPostFormProps) {
     <div className="space-y-6">
       {error && (
         <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm r-lg">{error}</div>
+      )}
+
+      {/* Category Selector */}
+      {categories.length > 0 && (
+        <div>
+          <label className="block text-sm fw-semibold text-text-primary mb-2">选择分类</label>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={String(cat.id)}
+                type="button"
+                onClick={() => setCategoryId(categoryId === String(cat.id) ? '' : String(cat.id))}
+                className={`px-4 py-2 text-sm r-full border transition-colors ${
+                  categoryId === String(cat.id)
+                    ? 'bg-primary text-text-inverse border-primary fw-semibold'
+                    : 'bg-bg-card text-text-secondary border-border hover:border-primary/40 hover:text-primary'
+                }`}
+              >
+                {String(cat.name_zh)}
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Images (if note type) */}

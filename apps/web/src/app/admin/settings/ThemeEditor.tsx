@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { saveThemeConfig } from './actions';
+import { saveThemeConfig, saveEditorialThemeConfig } from './actions';
 
 interface ThemeEditorProps {
   initialThemeJson: string;
   targetFile: string;
+  /** 'editorial' to save to editorialTheme, default saves to baamTheme */
+  saveAction?: 'editorial' | 'base';
 }
 
 type ThemeTab = 'presets' | 'form' | 'json';
@@ -26,31 +28,34 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function normalizeTheme(theme: ThemeObject): ThemeObject {
+function normalizeTheme(theme: ThemeObject, isEditorial = false): ThemeObject {
   const next = cloneTheme(theme);
-  if (!isRecord(next.typography)) next.typography = {};
-  const typography = next.typography as Record<string, unknown>;
-  const weights = isRecord(typography.weights) ? (typography.weights as Record<string, unknown>) : {};
-  typography.weights = {
-    regular: String(weights.regular ?? '400'),
-    medium: String(weights.medium ?? '500'),
-    semibold: String(weights.semibold ?? '600'),
-    bold: String(weights.bold ?? '700'),
-  };
-  if (!isRecord(next.shape)) next.shape = {};
-  const shape = next.shape as Record<string, unknown>;
-  shape.radiusCard = String(shape.radiusCard ?? shape.radiusXl ?? '16px');
-  shape.radiusButton = String(shape.radiusButton ?? shape.radiusLg ?? '12px');
-  shape.radiusChip = String(shape.radiusChip ?? shape.radiusFull ?? '9999px');
-  shape.radiusInput = String(shape.radiusInput ?? shape.radiusLg ?? '12px');
+  // Only add baamTheme-specific defaults for non-editorial themes
+  if (!isEditorial) {
+    if (!isRecord(next.typography)) next.typography = {};
+    const typography = next.typography as Record<string, unknown>;
+    const weights = isRecord(typography.weights) ? (typography.weights as Record<string, unknown>) : {};
+    typography.weights = {
+      regular: String(weights.regular ?? '400'),
+      medium: String(weights.medium ?? '500'),
+      semibold: String(weights.semibold ?? '600'),
+      bold: String(weights.bold ?? '700'),
+    };
+    if (!isRecord(next.shape)) next.shape = {};
+    const shape = next.shape as Record<string, unknown>;
+    shape.radiusCard = String(shape.radiusCard ?? shape.radiusXl ?? '16px');
+    shape.radiusButton = String(shape.radiusButton ?? shape.radiusLg ?? '12px');
+    shape.radiusChip = String(shape.radiusChip ?? shape.radiusFull ?? '9999px');
+    shape.radiusInput = String(shape.radiusInput ?? shape.radiusLg ?? '12px');
+  }
   return next;
 }
 
-function safeParseTheme(input: string): { value: ThemeObject; error: string } {
+function safeParseTheme(input: string, isEditorial = false): { value: ThemeObject; error: string } {
   try {
     const parsed = JSON.parse(input) as unknown;
     if (!isRecord(parsed)) return { value: {}, error: 'Theme JSON 必须是对象。' };
-    return { value: normalizeTheme(parsed), error: '' };
+    return { value: normalizeTheme(parsed, isEditorial), error: '' };
   } catch {
     return { value: {}, error: 'JSON 格式有误。' };
   }
@@ -84,8 +89,20 @@ function setPathValue(root: ThemeObject, path: string[], value: unknown): ThemeO
 
 function normalizeHex(value: string): string {
   const raw = String(value || '').trim();
-  const match = raw.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
-  if (!match) return '#000000';
+  // Try to extract hex from various formats
+  const hexMatch = raw.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!hexMatch) {
+    // Try to parse rgba/rgb into hex
+    const rgbaMatch = raw.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+    if (rgbaMatch) {
+      const r = Math.min(255, parseInt(rgbaMatch[1]));
+      const g = Math.min(255, parseInt(rgbaMatch[2]));
+      const b = Math.min(255, parseInt(rgbaMatch[3]));
+      return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+    }
+    return '#888888'; // neutral gray fallback instead of black
+  }
+  const match = hexMatch;
   if (match[1].length === 3) {
     const [r, g, b] = match[1].split('');
     return `#${r}${r}${g}${g}${b}${b}`.toLowerCase();
@@ -95,155 +112,172 @@ function normalizeHex(value: string): string {
 
 const PRESET_GROUP_ORDER = [
   'BAAM DEFAULT',
-  'LUXURY',
+  'CLEAN & MODERN',
   'WARM & LOCAL',
-  'BOLD & MODERN',
-  'CLASSIC & PROFESSIONAL',
-  'FRESH & CLEAN',
+  'LUXURY',
 ] as const;
 
 const THEME_PRESETS: ThemePreset[] = [
   {
-    id: 'baam-default',
+    id: 'editorial-default',
     group: 'BAAM DEFAULT',
-    name: 'Default',
-    description: '当前 BAAM 默认橙色主题',
-    swatches: ['#f97316', '#3b82f6', '#fff7ed'],
-    tags: ['radius: 8px', 'AI: enabled', 'comfortable'],
-    patch: [],
-  },
-  {
-    id: 'luxury-navy',
-    group: 'LUXURY',
-    name: 'Luxury Navy',
-    description: 'Deep navy tone with red accent and serif typography.',
-    swatches: ['#1e3a8a', '#dc2626', '#f8fafc'],
-    tags: ['radius: 8px', 'AI: enabled', 'serif display'],
+    name: '暖纸 Editorial',
+    description: '当前默认 — 暖黄纸底、红色强调、杂志风格',
+    swatches: ['#C73E1D', '#D4A017', '#FBF6EC'],
+    tags: ['warm paper', 'serif', 'magazine'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#1e3a8a' },
-      { path: ['colors', 'primary', 'dark'], value: '#1e40af' },
-      { path: ['colors', 'primary', 'light'], value: '#3b82f6' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#dc2626' },
-      { path: ['colors', 'secondary', 'dark'], value: '#b91c1c' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#f8fafc' },
-      { path: ['typography', 'fonts', 'display'], value: "Georgia, 'Times New Roman', serif" },
-      { path: ['typography', 'fonts', 'heading'], value: "Georgia, 'Times New Roman', serif" },
+      { path: ['colors', 'paper'], value: '#FBF6EC' },
+      { path: ['colors', 'paperWarm'], value: '#F5EDD8' },
+      { path: ['colors', 'surface'], value: '#FFFDF8' },
+      { path: ['colors', 'ink'], value: '#1F1B16' },
+      { path: ['colors', 'inkSoft'], value: '#4A4236' },
+      { path: ['colors', 'inkMuted'], value: '#8C8478' },
+      { path: ['colors', 'line'], value: 'rgba(31, 27, 22, 0.08)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(31, 27, 22, 0.16)' },
+      { path: ['colors', 'accent'], value: '#C73E1D' },
+      { path: ['colors', 'accentSoft'], value: '#E56342' },
+      { path: ['colors', 'amber'], value: '#D4A017' },
+      { path: ['colors', 'amberSoft'], value: '#E8B84A' },
+      { path: ['shape', 'radiusMd'], value: '14px' },
+      { path: ['shape', 'radiusLg'], value: '20px' },
+      { path: ['shape', 'radiusXl'], value: '28px' },
     ],
   },
   {
-    id: 'luxury-burgundy',
-    group: 'LUXURY',
-    name: 'Luxury Burgundy',
-    description: 'Rich burgundy palette with formal gold heading style.',
-    swatches: ['#7f1d1d', '#a16207', '#fdf4d8'],
-    tags: ['radius: 8px', 'AI: enabled', 'elevated'],
+    id: 'cool-slate',
+    group: 'CLEAN & MODERN',
+    name: 'Cool Slate',
+    description: '冷色调灰白底，蓝色强调，现代简洁风格',
+    swatches: ['#2563EB', '#0891B2', '#F8FAFC'],
+    tags: ['cool', 'modern', 'blue accent'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#7f1d1d' },
-      { path: ['colors', 'primary', 'dark'], value: '#450a0a' },
-      { path: ['colors', 'primary', 'light'], value: '#b91c1c' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#a16207' },
-      { path: ['colors', 'secondary', 'dark'], value: '#713f12' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#fdf4d8' },
-      { path: ['colors', 'backdrop', 'secondary'], value: '#fef9e8' },
-    ],
-  },
-  {
-    id: 'luxury-charcoal',
-    group: 'LUXURY',
-    name: 'Luxury Charcoal',
-    description: 'Minimal dark neutral theme with elevated blue accents.',
-    swatches: ['#111827', '#0ea5e9', '#f3f4f6'],
-    tags: ['radius: 8px', 'AI: enabled', 'serious'],
-    patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#111827' },
-      { path: ['colors', 'primary', 'dark'], value: '#030712' },
-      { path: ['colors', 'primary', 'light'], value: '#374151' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#0ea5e9' },
-      { path: ['colors', 'secondary', 'dark'], value: '#0284c7' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#f3f4f6' },
-    ],
-  },
-  {
-    id: 'warm-sage',
-    group: 'WARM & LOCAL',
-    name: 'Warm Sage',
-    description: 'Earthy green with rounded UI and calm readable typography.',
-    swatches: ['#3f6212', '#a16207', '#f7f4ea'],
-    tags: ['radius: 12px', 'AI: enabled', 'comfortable'],
-    patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#3f6212' },
-      { path: ['colors', 'primary', 'dark'], value: '#365314' },
-      { path: ['colors', 'primary', 'light'], value: '#65a30d' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#a16207' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#f7f4ea' },
-      { path: ['shape', 'radius'], value: '12px' },
+      { path: ['colors', 'paper'], value: '#F8FAFC' },
+      { path: ['colors', 'paperWarm'], value: '#EFF6FF' },
+      { path: ['colors', 'surface'], value: '#FFFFFF' },
+      { path: ['colors', 'ink'], value: '#0F172A' },
+      { path: ['colors', 'inkSoft'], value: '#334155' },
+      { path: ['colors', 'inkMuted'], value: '#94A3B8' },
+      { path: ['colors', 'line'], value: 'rgba(15, 23, 42, 0.06)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(15, 23, 42, 0.12)' },
+      { path: ['colors', 'accent'], value: '#2563EB' },
+      { path: ['colors', 'accentSoft'], value: '#3B82F6' },
+      { path: ['colors', 'amber'], value: '#0891B2' },
+      { path: ['colors', 'amberSoft'], value: '#06B6D4' },
+      { path: ['shape', 'radiusMd'], value: '10px' },
       { path: ['shape', 'radiusLg'], value: '16px' },
+      { path: ['shape', 'radiusXl'], value: '24px' },
     ],
   },
   {
-    id: 'warm-terracotta',
+    id: 'forest-green',
     group: 'WARM & LOCAL',
-    name: 'Warm Terracotta',
-    description: 'Warm tea-ceramic tone with inviting well-loved style.',
-    swatches: ['#b45309', '#7c3aed', '#fff7ed'],
-    tags: ['radius: 8px', 'AI: enabled', 'comfortable'],
+    name: 'Forest Green',
+    description: '森林绿自然风 — 浅米色底，绿色强调',
+    swatches: ['#166534', '#D4A017', '#FAFAF5'],
+    tags: ['earthy', 'green', 'natural'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#b45309' },
-      { path: ['colors', 'primary', 'dark'], value: '#92400e' },
-      { path: ['colors', 'primary', 'light'], value: '#ea580c' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#7c3aed' },
-      { path: ['colors', 'secondary', 'dark'], value: '#6d28d9' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#fff7ed' },
+      { path: ['colors', 'paper'], value: '#FAFAF5' },
+      { path: ['colors', 'paperWarm'], value: '#F0EDE0' },
+      { path: ['colors', 'surface'], value: '#FDFDFB' },
+      { path: ['colors', 'ink'], value: '#1A2E1A' },
+      { path: ['colors', 'inkSoft'], value: '#3D5A3D' },
+      { path: ['colors', 'inkMuted'], value: '#7A9A7A' },
+      { path: ['colors', 'line'], value: 'rgba(26, 46, 26, 0.08)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(26, 46, 26, 0.16)' },
+      { path: ['colors', 'accent'], value: '#166534' },
+      { path: ['colors', 'accentSoft'], value: '#22863A' },
+      { path: ['colors', 'amber'], value: '#B8860B' },
+      { path: ['colors', 'amberSoft'], value: '#DAA520' },
     ],
   },
   {
-    id: 'bold-midnight',
-    group: 'BOLD & MODERN',
-    name: 'Bold Midnight',
-    description: 'High-contrast dark palette with modern energetic tone.',
-    swatches: ['#0f766e', '#7c3aed', '#e2e8f0'],
-    tags: ['radius: 4px', 'AI: enabled', 'spacious'],
+    id: 'burgundy-luxury',
+    group: 'LUXURY',
+    name: 'Burgundy Luxury',
+    description: '酒红金色 — 高端奢华感，深色系强调',
+    swatches: ['#7F1D1D', '#B8860B', '#FDF8F0'],
+    tags: ['luxury', 'burgundy', 'gold'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#0f766e' },
-      { path: ['colors', 'primary', 'dark'], value: '#115e59' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#7c3aed' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#e2e8f0' },
-      { path: ['shape', 'radius'], value: '4px' },
-      { path: ['shape', 'radiusLg'], value: '8px' },
-      { path: ['layout', 'spacingDensity'], value: 'spacious' },
+      { path: ['colors', 'paper'], value: '#FDF8F0' },
+      { path: ['colors', 'paperWarm'], value: '#F5EDE0' },
+      { path: ['colors', 'surface'], value: '#FFFCF8' },
+      { path: ['colors', 'ink'], value: '#2D1B1B' },
+      { path: ['colors', 'inkSoft'], value: '#5A3A3A' },
+      { path: ['colors', 'inkMuted'], value: '#9A7A7A' },
+      { path: ['colors', 'line'], value: 'rgba(45, 27, 27, 0.08)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(45, 27, 27, 0.16)' },
+      { path: ['colors', 'accent'], value: '#7F1D1D' },
+      { path: ['colors', 'accentSoft'], value: '#991B1B' },
+      { path: ['colors', 'amber'], value: '#B8860B' },
+      { path: ['colors', 'amberSoft'], value: '#DAA520' },
     ],
   },
   {
-    id: 'classic-forest',
-    group: 'CLASSIC & PROFESSIONAL',
-    name: 'Classic Forest',
-    description: 'Professional evergreen palette with timeless typography.',
-    swatches: ['#166534', '#a16207', '#f5f5f4'],
-    tags: ['radius: 8px', 'AI: enabled', 'comfortable'],
+    id: 'navy-professional',
+    group: 'LUXURY',
+    name: 'Navy Professional',
+    description: '深蓝专业风 — 信任感强，适合商务',
+    swatches: ['#1E3A8A', '#C73E1D', '#F8FAFC'],
+    tags: ['navy', 'professional', 'trust'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#166534' },
-      { path: ['colors', 'primary', 'dark'], value: '#14532d' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#a16207' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#f5f5f4' },
-      { path: ['typography', 'fonts', 'display'], value: "Georgia, 'Times New Roman', serif" },
-      { path: ['typography', 'fonts', 'heading'], value: "Georgia, 'Times New Roman', serif" },
+      { path: ['colors', 'paper'], value: '#F8FAFC' },
+      { path: ['colors', 'paperWarm'], value: '#E8EEF8' },
+      { path: ['colors', 'surface'], value: '#FAFBFD' },
+      { path: ['colors', 'ink'], value: '#0F172A' },
+      { path: ['colors', 'inkSoft'], value: '#1E3A5F' },
+      { path: ['colors', 'inkMuted'], value: '#6B8AB0' },
+      { path: ['colors', 'line'], value: 'rgba(15, 23, 42, 0.08)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(15, 23, 42, 0.14)' },
+      { path: ['colors', 'accent'], value: '#1E3A8A' },
+      { path: ['colors', 'accentSoft'], value: '#2563EB' },
+      { path: ['colors', 'amber'], value: '#C73E1D' },
+      { path: ['colors', 'amberSoft'], value: '#E56342' },
+    ],
+  },
+  {
+    id: 'terracotta-warm',
+    group: 'WARM & LOCAL',
+    name: 'Terracotta Warm',
+    description: '陶土暖色调 — 温馨社区感，橙棕强调',
+    swatches: ['#B45309', '#7C3AED', '#FFF8F0'],
+    tags: ['warm', 'terracotta', 'community'],
+    patch: [
+      { path: ['colors', 'paper'], value: '#FFF8F0' },
+      { path: ['colors', 'paperWarm'], value: '#F5E8D8' },
+      { path: ['colors', 'surface'], value: '#FFFCF8' },
+      { path: ['colors', 'ink'], value: '#2D1F0E' },
+      { path: ['colors', 'inkSoft'], value: '#5A4230' },
+      { path: ['colors', 'inkMuted'], value: '#9A8670' },
+      { path: ['colors', 'line'], value: 'rgba(45, 31, 14, 0.08)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(45, 31, 14, 0.16)' },
+      { path: ['colors', 'accent'], value: '#B45309' },
+      { path: ['colors', 'accentSoft'], value: '#D97706' },
+      { path: ['colors', 'amber'], value: '#7C3AED' },
+      { path: ['colors', 'amberSoft'], value: '#8B5CF6' },
     ],
   },
   {
     id: 'fresh-ocean',
-    group: 'FRESH & CLEAN',
+    group: 'CLEAN & MODERN',
     name: 'Fresh Ocean',
-    description: 'Clean blue-forward style with approachable modern type.',
-    swatches: ['#0284c7', '#ea580c', '#f8fafc'],
-    tags: ['radius: 12px', 'AI: quick', 'comfortable'],
+    description: '海洋清新 — 浅蓝白底，活力橙点缀',
+    swatches: ['#0284C7', '#EA580C', '#F0F9FF'],
+    tags: ['fresh', 'ocean', 'clean'],
     patch: [
-      { path: ['colors', 'primary', 'DEFAULT'], value: '#0284c7' },
-      { path: ['colors', 'primary', 'dark'], value: '#0369a1' },
-      { path: ['colors', 'primary', 'light'], value: '#0ea5e9' },
-      { path: ['colors', 'secondary', 'DEFAULT'], value: '#ea580c' },
-      { path: ['colors', 'backdrop', 'primary'], value: '#f8fafc' },
-      { path: ['shape', 'radius'], value: '12px' },
-      { path: ['shape', 'radiusLg'], value: '16px' },
+      { path: ['colors', 'paper'], value: '#F0F9FF' },
+      { path: ['colors', 'paperWarm'], value: '#E0F2FE' },
+      { path: ['colors', 'surface'], value: '#F8FCFF' },
+      { path: ['colors', 'ink'], value: '#0C1E2E' },
+      { path: ['colors', 'inkSoft'], value: '#1E4060' },
+      { path: ['colors', 'inkMuted'], value: '#6B9AB8' },
+      { path: ['colors', 'line'], value: 'rgba(12, 30, 46, 0.06)' },
+      { path: ['colors', 'lineStrong'], value: 'rgba(12, 30, 46, 0.12)' },
+      { path: ['colors', 'accent'], value: '#0284C7' },
+      { path: ['colors', 'accentSoft'], value: '#0EA5E9' },
+      { path: ['colors', 'amber'], value: '#EA580C' },
+      { path: ['colors', 'amberSoft'], value: '#F97316' },
+      { path: ['shape', 'radiusMd'], value: '12px' },
+      { path: ['shape', 'radiusLg'], value: '18px' },
     ],
   },
 ];
@@ -260,8 +294,9 @@ function applyPreset(base: ThemeObject, presetId: string): ThemeObject {
   return patched;
 }
 
-export function ThemeEditor({ initialThemeJson, targetFile }: ThemeEditorProps) {
-  const parsedInitial = safeParseTheme(initialThemeJson);
+export function ThemeEditor({ initialThemeJson, targetFile, saveAction = 'base' }: ThemeEditorProps) {
+  const isEditorial = saveAction === 'editorial';
+  const parsedInitial = safeParseTheme(initialThemeJson, isEditorial);
   const [activeTab, setActiveTab] = useState<ThemeTab>('form');
   const [themeJson, setThemeJson] = useState(initialThemeJson);
   const [formData, setFormData] = useState<ThemeObject>(parsedInitial.value);
@@ -339,7 +374,8 @@ export function ThemeEditor({ initialThemeJson, targetFile }: ThemeEditorProps) 
     try {
       const fd = new FormData();
       fd.set('theme_json', themeJson);
-      const result = await saveThemeConfig(fd);
+      const saveFn = saveAction === 'editorial' ? saveEditorialThemeConfig : saveThemeConfig;
+      const result = await saveFn(fd);
       if (result?.error) {
         setError(result.error);
       } else {
@@ -351,6 +387,20 @@ export function ThemeEditor({ initialThemeJson, targetFile }: ThemeEditorProps) 
     } finally {
       setSaving(false);
     }
+  };
+
+  const renderTextField = (label: string, path: string[]) => {
+    const raw = String(getPathValue(formData, path) || '');
+    return (
+      <div>
+        <label className="block text-xs text-gray-500">{label}</label>
+        <input
+          value={raw}
+          onChange={(event) => updateFormValue(path, event.target.value)}
+          className="mt-1 w-full h-9 r-base border border-gray-200 px-3 text-sm"
+        />
+      </div>
+    );
   };
 
   const renderColorField = (label: string, path: string[]) => {
@@ -509,7 +559,91 @@ export function ThemeEditor({ initialThemeJson, targetFile }: ThemeEditorProps) 
           </div>
         )}
 
-        {activeTab === 'form' && (
+        {activeTab === 'form' && saveAction === 'editorial' && (
+          <div className="space-y-6">
+            <div className="text-xs font-semibold text-gray-500 uppercase">Editorial Theme</div>
+
+            {/* Colors */}
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Background / Surface</div>
+                {renderColorField('Paper (背景)', ['colors', 'paper'])}
+                {renderColorField('Paper Warm', ['colors', 'paperWarm'])}
+                {renderColorField('Surface', ['colors', 'surface'])}
+                {renderColorField('Surface Elev (卡片)', ['colors', 'surfaceElev'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Ink / Text</div>
+                {renderColorField('Ink (主文字)', ['colors', 'ink'])}
+                {renderColorField('Ink Soft (副文字)', ['colors', 'inkSoft'])}
+                {renderColorField('Ink Muted (弱文字)', ['colors', 'inkMuted'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Accent / Brand</div>
+                {renderColorField('Accent (强调色)', ['colors', 'accent'])}
+                {renderColorField('Accent Soft', ['colors', 'accentSoft'])}
+                {renderColorField('Amber (金色)', ['colors', 'amber'])}
+                {renderColorField('Amber Soft', ['colors', 'amberSoft'])}
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Line / Border</div>
+                {renderTextField('Line (细边框)', ['colors', 'line'])}
+                {renderTextField('Line Strong (粗边框)', ['colors', 'lineStrong'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Tag Colors — Green</div>
+                {renderColorField('Tag Green BG', ['colors', 'tagGreenBg'])}
+                {renderColorField('Tag Green Text', ['colors', 'tagGreenText'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Tag Colors — Purple</div>
+                {renderColorField('Tag Purple BG', ['colors', 'tagPurpleBg'])}
+                {renderColorField('Tag Purple Text', ['colors', 'tagPurpleText'])}
+              </div>
+            </div>
+
+            {/* Typography */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Typography — Fonts</div>
+                {renderTextField('Serif Font (标题)', ['typography', 'fontSerif'])}
+                {renderTextField('Serif Italic (英文)', ['typography', 'fontSerifItalic'])}
+                {renderTextField('Sans Font (正文)', ['typography', 'fontSans'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Typography — Sizes</div>
+                {renderTextField('Page Title', ['typography', 'sizePageTitle'])}
+                {renderTextField('Section Title', ['typography', 'sizeSectionTitle'])}
+                {renderTextField('Card Title', ['typography', 'sizeCardTitle'])}
+                {renderTextField('Body', ['typography', 'sizeBody'])}
+                {renderTextField('Small', ['typography', 'sizeSmall'])}
+                {renderTextField('XS', ['typography', 'sizeXs'])}
+              </div>
+            </div>
+
+            {/* Shape & Layout */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Shape — Radius & Shadow</div>
+                {renderTextField('Radius MD', ['shape', 'radiusMd'])}
+                {renderTextField('Radius LG (卡片)', ['shape', 'radiusLg'])}
+                {renderTextField('Radius XL', ['shape', 'radiusXl'])}
+                {renderTextField('Radius Pill (圆角)', ['shape', 'radiusPill'])}
+                {renderTextField('Shadow Card (悬浮)', ['shape', 'shadowCard'])}
+                {renderTextField('Shadow Elev (弹窗)', ['shape', 'shadowElev'])}
+              </div>
+              <div className="space-y-3">
+                <div className="text-xs font-semibold text-gray-500 uppercase">Layout</div>
+                {renderTextField('Container Max Width', ['layout', 'containerMax'])}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'form' && saveAction !== 'editorial' && (
           <div className="space-y-6">
             <div className="text-xs font-semibold text-gray-500 uppercase">Theme</div>
 

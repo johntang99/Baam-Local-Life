@@ -72,6 +72,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
   const [bodyZh, setBodyZh] = useState(article?.body_zh || '');
   const [bodyEn, setBodyEn] = useState(article?.body_en || '');
   const [editorialStatus, setEditorialStatus] = useState(article?.editorial_status || 'draft');
+  const [isFeatured, setIsFeatured] = useState(article?.is_featured || false);
   const [categoryId, setCategoryId] = useState(article?.category_id || '');
   const [regionId, setRegionId] = useState(article?.region_id || '');
   const [sourceType, setSourceType] = useState(article?.source_type || '');
@@ -101,6 +102,7 @@ export default function ArticleForm({ article, categories, regions, businesses =
     fd.set('body_zh', bodyZh);
     fd.set('body_en', bodyEn);
     fd.set('editorial_status', editorialStatus);
+    fd.set('is_featured', isFeatured ? 'true' : 'false');
     fd.set('category_id', categoryId);
     fd.set('region_id', regionId);
     fd.set('source_type', sourceType);
@@ -489,6 +491,21 @@ export default function ArticleForm({ article, categories, regions, businesses =
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}
             </select>
+
+            {/* Featured Toggle */}
+            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+              <div>
+                <label className="text-sm font-medium">首页精选</label>
+                <p className="text-xs text-text-muted mt-0.5">精选文章将优先显示在首页</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsFeatured(!isFeatured)}
+                className={`relative w-11 h-6 rounded-full transition-colors ${isFeatured ? 'bg-primary' : 'bg-gray-300'}`}
+              >
+                <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${isFeatured ? 'translate-x-5' : ''}`} />
+              </button>
+            </div>
           </div>
 
           {/* Category */}

@@ -20,11 +20,22 @@ export default async function DiscoverNewPostPage({ searchParams }: Props) {
   const site = await getCurrentSite();
   const sp = await searchParams;
 
+  const supabase = await createClient();
+
+  // Fetch content categories for the category selector
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rawCategories } = await (supabase as any)
+    .from('categories_discover')
+    .select('id, slug, name_zh, name_en, icon, sort_order')
+    .eq('is_active', true)
+    .eq('site_scope', 'zh')
+    .order('sort_order', { ascending: true });
+  const categories = (rawCategories || []) as Record<string, unknown>[];
+
   // If a business slug is provided, fetch it for pre-linking
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let prelinkedBusiness: Record<string, any> | null = null;
   if (sp.business) {
-    const supabase = await createClient();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data } = await (supabase as any)
       .from('businesses')
@@ -51,7 +62,7 @@ export default async function DiscoverNewPostPage({ searchParams }: Props) {
           <h1 className="text-lg fw-bold text-text-primary">发布笔记</h1>
         </div>
 
-        <VoicePostForm isLoggedIn={!!user} prelinkedBusiness={prelinkedBusiness} />
+        <VoicePostForm isLoggedIn={!!user} prelinkedBusiness={prelinkedBusiness} categories={categories} />
       </PageContainer>
     </main>
   );

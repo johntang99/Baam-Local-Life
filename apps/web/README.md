@@ -4,13 +4,18 @@ The Chinese-language community platform for NYC, primarily serving the Flushing/
 
 ## Quick Start
 
-```bash
-# From monorepo root
-npm run dev:chinese
 
-# Or from this directory
+Admin:
+login: admin@baamplatform.com
+password: Baam2026!
+
+
+kill -9 $(lsof -tiTCP:5001 -sTCP:LISTEN)
+rm -rf .next
 npm run dev
-```
+
+
+pids=$(lsof -ti:5001 || true); if [ -n "$pids" ]; then kill -9 $pids; fi; rm -rf .next; npm run dev
 
 
 lsof -ti:5001 | xargs kill -9
@@ -106,6 +111,8 @@ Copy `.env.local.example` to `.env.local` and fill in the values. Key variables:
 - `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` — Supabase connection
 - `SUPABASE_SERVICE_ROLE_KEY` — Server-side Supabase admin access
 - `ANTHROPIC_API_KEY` — Claude AI
+- `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` / `AWS_REGION` — Rekognition media moderation (optional)
+- `AWS_VIDEO_MODERATION_BUCKET` — S3 bucket for full video moderation jobs
 - `GOOGLE_PLACES_API_KEY` — Business data enrichment
 - `NEXT_PUBLIC_DEFAULT_SITE=ny-zh`
 - `NEXT_PUBLIC_SITE_PLATFORM=chinese`
@@ -113,6 +120,16 @@ Copy `.env.local.example` to `.env.local` and fill in the values. Key variables:
 - `HELPER_STRICT_EVIDENCE_MODE` — Helper evidence mode switch:
   - `0` / `false` (default): normal mode
   - `1` / `true`: strict evidence mode (no unsupported factual details)
+
+Discover media moderation can be switched on/off in Admin:
+- `/admin/settings?tab=moderation`
+- Toggle `启用 Discover 媒体审核（Rekognition）`
+- Optional: enable `审核整段视频（异步）` for full-video scanning
+
+For full-video scanning, IAM policy must include:
+- `rekognition:StartContentModeration`
+- `rekognition:GetContentModeration`
+- `s3:PutObject` on `AWS_VIDEO_MODERATION_BUCKET`
 
 ## Related
 

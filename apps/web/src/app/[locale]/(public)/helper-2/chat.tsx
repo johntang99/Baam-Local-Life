@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import dynamic from 'next/dynamic';
-import { askHelper2 } from './actions';
+import { askHelper2, submitHelper2Feedback } from './actions';
 import {
   readQuickReplyModeFromStorage,
   writeQuickReplyModeToStorage,
@@ -31,6 +31,11 @@ interface Message {
   mapBusinesses?: any[];
   quickReplies?: string[];
   query?: string;
+  // Feedback & metadata
+  feedbackRating?: 1 | -1;
+  answerType?: string;
+  keywords?: string[];
+  provider?: string;
 }
 
 const sourceTypeMeta: Record<string, { icon: string; badgeClass: string }> = {
@@ -274,7 +279,7 @@ function useVoiceInput(onResult: (text: string) => void) {
 const markdownComponents: Components = {
   table: ({ children }) => (
     <div className="my-5 w-full overflow-x-auto r-xl border border-border">
-      <table className="w-full border-collapse text-[13px] leading-6 [&_th]:bg-primary/5 [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-left [&_th]:text-xs [&_th]:fw-bold [&_th]:text-text-primary [&_th]:border-b [&_th]:border-border [&_td]:px-3 [&_td]:py-2.5 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border-b [&_td]:border-border/50 [&_td]:break-words [&_td_p]:my-0 [&_tr:last-child_td]:border-b-0 [&_tr:last-child_td]:fw-semibold [&_tr:last-child_td]:bg-primary/5">
+      <table className="w-full border-collapse text-[13px] leading-6 [&_th]:bg-primary/5 [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-left [&_th]:text-xs [&_th]:fw-bold [&_th]:text-text-primary [&_th]:border-b [&_th]:border-border [&_th]:whitespace-nowrap [&_td]:px-3 [&_td]:py-2.5 [&_td]:text-[13px] [&_td]:leading-6 [&_td]:align-top [&_td]:border-b [&_td]:border-border/50 [&_td]:break-words [&_td_p]:my-0 [&_tr:last-child_td]:border-b-0 [&_tr:last-child_td]:fw-semibold [&_tr:last-child_td]:bg-primary/5 [&_td:first-child]:whitespace-nowrap [&_td:first-child]:fw-semibold">
         {children}
       </table>
     </div>
@@ -379,6 +384,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   const [loadingStep, setLoadingStep] = useState(0);
   const [autoAsked, setAutoAsked] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleVoiceResult = useCallback((text: string) => {
     setInput(text);
@@ -386,16 +392,15 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   }, []);
   const voice = useVoiceInput(handleVoiceResult);
 
+  // Auto-scroll within the messages container (not the page)
   useEffect(() => {
     if (messages.length > 0) {
-      endRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }
     }
   }, [messages, loading]);
-
-  // Scroll to top on initial page load
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   useEffect(() => {
     setQuickReplyMode(readQuickReplyModeFromStorage());
@@ -426,7 +431,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
     }
     const timer = setInterval(() => {
       setLoadingStep((prev) => (prev + 1) % LOADING_MESSAGES.length);
-    }, 1700);
+    }, 1200);
     return () => clearInterval(timer);
   }, [loading, renderingAnswer]);
 
@@ -438,17 +443,23 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   }, [initialQuery, autoAsked]);
 
   const progressivelyRenderAnswer = useCallback(
-    async (messageId: string, fullContent: string, meta: Pick<Message, 'sources' | 'usedWebFallback' | 'mapBusinesses' | 'quickReplies' | 'query'>) => {
+    async (messageId: string, fullContent: string, meta: Pick<Message, 'sources' | 'usedWebFallback' | 'mapBusinesses' | 'quickReplies' | 'query' | 'answerType' | 'keywords' | 'provider'>) => {
       setRenderingAnswer(true);
       const total = fullContent.length;
-      const targetMs = Math.min(12000, Math.max(4200, total * 12));
-      const tickMs = 24;
+      const isTemplate = meta.provider === 'template' || meta.provider === 'safety-filter';
+
+      // Template answers: fast reveal (~1-2s). AI answers: moderate typing (~2-4s).
+      // Old: min 4200ms — way too slow. New: template 800-1500ms, AI 1500-3000ms.
+      const targetMs = isTemplate
+        ? Math.min(1500, Math.max(800, total * 3))
+        : Math.min(3000, Math.max(1500, total * 5));
+      const tickMs = 16;
       const estimatedTicks = Math.max(1, Math.floor(targetMs / tickMs));
-      const step = Math.max(2, Math.ceil(total / estimatedTicks));
+      const step = Math.max(4, Math.ceil(total / estimatedTicks));
       let index = 0;
       while (index < total) {
         const currentChar = fullContent[index] || '';
-        const extraPause = /[，。！？；：\n]/.test(currentChar) ? 26 : 0;
+        const extraPause = isTemplate ? 0 : (/[，。！？\n]/.test(currentChar) ? 12 : 0);
         await new Promise((resolve) => setTimeout(resolve, tickMs + extraPause));
         index = Math.min(index + step, total);
         const chunk = fullContent.slice(0, index);
@@ -468,6 +479,9 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 mapBusinesses: meta.mapBusinesses,
                 quickReplies: meta.quickReplies,
                 query: meta.query,
+                answerType: meta.answerType,
+                keywords: meta.keywords,
+                provider: meta.provider,
               }
             : message,
         ),
@@ -496,6 +510,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
     setLoading(true);
 
     const result = await askHelper2(query, nextHistory);
+
     if (result.error || !result.data) {
       setMessages((prev) => [
         ...prev,
@@ -519,6 +534,8 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
         role: 'assistant',
         content: '',
         fullContent: data.answer,
+        // Show map + business cards immediately while text animates
+        mapBusinesses: data.mapBusinesses,
       },
     ]);
     setLoading(false);
@@ -528,6 +545,9 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
       mapBusinesses: data.mapBusinesses,
       quickReplies: data.quickReplies,
       query,
+      answerType: data.intent,
+      keywords: data.keywords,
+      provider: data.provider,
     });
   }
 
@@ -543,14 +563,37 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   }
 
   return (
-    <div>
-      {/* New Chat button */}
+    <div className="flex flex-col h-full">
+      {/* Scrollable messages area */}
+      <div ref={scrollContainerRef} className="flex-1 min-h-0 overflow-y-auto px-4">
+      {/* Hero — shown when no messages */}
+      {messages.length === 0 && !loading && !renderingAnswer && (
+        <div className="text-center" style={{ paddingTop: 16, paddingBottom: 6 }}>
+          <img
+            src="/images/helper-logo-1.png"
+            alt="小帮手"
+            className="mx-auto"
+            style={{
+              width: 140, height: 140,
+              borderRadius: 'var(--ed-radius-xl)',
+              objectFit: 'cover',
+              boxShadow: '0 6px 24px rgba(199,62,29,0.1)',
+            }}
+          />
+          <p style={{ fontSize: 13, color: 'var(--ed-ink-muted)', marginTop: 10 }}>
+            你的本地生活 AI 助手 — 找商家 · 查信息 · 问办事 · 覆盖 12,000+ 商家
+          </p>
+        </div>
+      )}
+
+      {/* New Chat button — prominent, clear purpose */}
       {messages.length > 0 && !loading && !renderingAnswer && (
-        <div className="max-w-3xl mx-auto flex justify-end mb-3">
+        <div className="max-w-3xl mx-auto flex justify-end mb-3 pt-3">
           <button type="button" onClick={handleNewChat}
-            className="flex items-center gap-1.5 text-xs fw-medium text-text-muted hover:text-primary px-3 py-1.5 r-lg border border-border hover:border-primary/30 transition-colors">
-            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-            新对话
+            className="flex items-center gap-1.5 text-sm fw-semibold text-primary hover:text-text-inverse bg-primary/10 hover:bg-primary px-4 py-2 r-xl border border-primary/30 hover:border-primary transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            换个问题问问
           </button>
         </div>
       )}
@@ -611,7 +654,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
               )}
 
               {/* Map + Business list for business results */}
-              {message.mapBusinesses && message.mapBusinesses.length > 0 && !message.fullContent && (() => {
+              {message.mapBusinesses && message.mapBusinesses.length > 0 && (() => {
                 const mapBiz = message.mapBusinesses!.map((b: Record<string, unknown>) => ({
                   id: b.id as string, slug: b.slug as string,
                   name: (b.display_name as string) || '',
@@ -782,9 +825,23 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
               {/* Feedback buttons */}
               {message.role === 'assistant' && !message.fullContent && (
                 <div className="mt-3 pt-2 border-t border-border/50 flex items-center gap-2">
-                  <span className="text-xs text-text-muted">这个回答有帮助吗？</span>
-                  <button type="button" className="text-lg hover:scale-125 transition-transform" title="有帮助">👍</button>
-                  <button type="button" className="text-lg hover:scale-125 transition-transform" title="没帮助">👎</button>
+                  {message.feedbackRating ? (
+                    <span className="text-xs text-text-muted">{message.feedbackRating === 1 ? '谢谢你的反馈！' : '感谢反馈，我们会改进'}</span>
+                  ) : (
+                    <>
+                      <span className="text-xs text-text-muted">这个回答有帮助吗？</span>
+                      <button type="button" className="text-lg hover:scale-125 transition-transform" title="有帮助"
+                        onClick={() => {
+                          setMessages(prev => prev.map(m => m.id === message.id ? { ...m, feedbackRating: 1 as const } : m));
+                          void submitHelper2Feedback(message.query || '', 1, { answerType: message.answerType, keywords: message.keywords, provider: message.provider });
+                        }}>👍</button>
+                      <button type="button" className="text-lg hover:scale-125 transition-transform" title="没帮助"
+                        onClick={() => {
+                          setMessages(prev => prev.map(m => m.id === message.id ? { ...m, feedbackRating: -1 as const } : m));
+                          void submitHelper2Feedback(message.query || '', -1, { answerType: message.answerType, keywords: message.keywords, provider: message.provider });
+                        }}>👎</button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -813,32 +870,57 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
         <div ref={endRef} />
         </div>{/* end max-w-3xl messages wrapper */}
       </div>
+      </div>{/* end scrollable container */}
 
-      <form onSubmit={(e) => { e.preventDefault(); void handleAsk(input); }} className="sticky bottom-8 max-w-3xl mx-auto">
-        <div className="bg-bg-card border-2 border-primary/20 r-xl elev-lg overflow-visible">
+      <form onSubmit={(e) => { e.preventDefault(); void handleAsk(input); }} className="flex-shrink-0 max-w-3xl mx-auto px-4 pb-4 pt-2 w-full">
+        {/* Glow effect behind the box */}
+        <div className="absolute inset-0 -z-10 blur-2xl opacity-30" style={{ background: 'radial-gradient(ellipse at center, var(--ed-accent) 0%, transparent 70%)', transform: 'translateY(8px)' }} />
+        <div style={{
+          background: 'var(--ed-surface-elev)',
+          border: '2px solid var(--ed-accent)',
+          borderRadius: 'var(--ed-radius-xl)',
+          boxShadow: '0 8px 40px rgba(199,62,29,0.12), 0 2px 12px rgba(0,0,0,0.06)',
+          overflow: 'visible',
+          position: 'relative',
+        }}>
+          {/* Accent bar at top */}
+          <div style={{ position: 'absolute', top: -1, left: 24, right: 24, height: 3, background: 'linear-gradient(90deg, transparent, var(--ed-amber), var(--ed-accent), var(--ed-amber), transparent)', borderRadius: '0 0 4px 4px', opacity: 0.6 }} />
+
           {/* Row 1: Text input */}
-          <div className="px-5 pt-4 pb-2">
+          <div className="flex items-center gap-3 px-5 pt-4 pb-2">
+            <div style={{ width: 32, height: 32, borderRadius: 'var(--ed-radius-md)', background: 'var(--ed-paper-warm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, flexShrink: 0 }}>
+              💬
+            </div>
             <input ref={inputRef} type="text" value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={loading || renderingAnswer}
               placeholder={voice.isListening ? '正在听你说...' : '和小帮手聊聊本地生活、推荐、办事...'}
-              className="w-full text-[15px] outline-none bg-transparent text-text-primary placeholder:text-text-muted/60"
+              style={{ flex: 1, fontSize: 15, outline: 'none', background: 'transparent', color: 'var(--ed-ink)', border: 'none' }}
             />
           </div>
           {/* Row 2: Controls */}
           <div className="flex items-center justify-between px-3 pb-3 pt-0.5">
             <div className="flex items-center gap-1.5">
-              {/* "+" location button */}
+              {/* Location button */}
               <div className="relative" ref={locationMenuRef}>
                 <button type="button" onClick={() => setLocationMenuOpen(!locationMenuOpen)}
-                  className={`h-8 w-8 flex items-center justify-center r-full border-2 transition-all ${
-                    locationContext ? 'border-primary text-text-inverse bg-primary hover:bg-primary/90' : 'border-primary/40 text-primary hover:border-primary hover:bg-primary/10'
-                  }`} title="设置位置">
+                  className="transition-all"
+                  style={{
+                    width: 34, height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderRadius: 'var(--ed-radius-md)',
+                    border: locationContext ? '2px solid var(--ed-accent)' : '1.5px solid var(--ed-line-strong)',
+                    background: locationContext ? 'var(--ed-accent)' : 'transparent',
+                    color: locationContext ? 'var(--ed-paper)' : 'var(--ed-ink-muted)',
+                  }} title="设置位置">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                 </button>
                 {locationMenuOpen && (
-                  <div className="absolute bottom-10 left-0 bg-bg-card border border-border r-xl elev-lg p-2 w-[280px] z-50">
-                    <p className="text-[10px] text-text-muted px-2 pt-0.5 pb-2 fw-medium uppercase tracking-wide">设置位置</p>
+                  <div className="absolute bottom-10 left-0 z-50" style={{
+                    background: 'var(--ed-surface-elev)', border: '1px solid var(--ed-line)',
+                    borderRadius: 'var(--ed-radius-lg)', boxShadow: 'var(--ed-shadow-elev)',
+                    padding: 8, width: 280,
+                  }}>
+                    <p style={{ fontSize: 10, color: 'var(--ed-ink-muted)', padding: '2px 8px 8px', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>设置位置</p>
                     <div className="grid grid-cols-2 gap-1">
                       {[
                         { label: '法拉盛', value: '法拉盛' }, { label: '日落公园', value: '日落公园' },
@@ -848,34 +930,50 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                       ].map(t => (
                         <button key={t.value} type="button"
                           onClick={() => { setLocationContext(t.value); setLocationMenuOpen(false); }}
-                          className={`text-left text-sm px-3 py-2 r-lg transition-colors ${
-                            locationContext === t.value ? 'bg-primary/10 text-primary fw-medium' : 'text-text-primary hover:bg-bg-page'
-                          }`}>📍 {t.label}</button>
+                          className="transition-colors"
+                          style={{
+                            textAlign: 'left', fontSize: 13, padding: '8px 12px',
+                            borderRadius: 'var(--ed-radius-md)',
+                            background: locationContext === t.value ? 'rgba(199,62,29,0.08)' : 'transparent',
+                            color: locationContext === t.value ? 'var(--ed-accent)' : 'var(--ed-ink)',
+                            fontWeight: locationContext === t.value ? 600 : 400,
+                          }}>📍 {t.label}</button>
                       ))}
                     </div>
                     {locationContext && (
                       <>
-                        <div className="border-t border-border mt-1.5 mb-1" />
+                        <div style={{ borderTop: '1px solid var(--ed-line)', margin: '6px 0 4px' }} />
                         <button type="button" onClick={() => { setLocationContext(''); setLocationMenuOpen(false); }}
-                          className="w-full text-left text-sm px-3 py-2 r-lg text-accent-red hover:bg-accent-red-light">✕ 清除位置</button>
+                          style={{ width: '100%', textAlign: 'left', fontSize: 13, padding: '8px 12px', borderRadius: 'var(--ed-radius-md)', color: 'var(--ed-accent)' }}>
+                          ✕ 清除位置
+                        </button>
                       </>
                     )}
                   </div>
                 )}
               </div>
               {locationContext && (
-                <span className="inline-flex items-center gap-1 text-xs fw-medium text-primary bg-primary/5 border border-primary/15 r-full px-2 py-0.5">
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 4,
+                  fontSize: 12, fontWeight: 500, color: 'var(--ed-accent)',
+                  background: 'rgba(199,62,29,0.06)', border: '1px solid rgba(199,62,29,0.15)',
+                  borderRadius: 'var(--ed-radius-pill)', padding: '3px 10px',
+                }}>
                   📍 {locationContext}
-                  <button type="button" onClick={() => setLocationContext('')} className="hover:text-accent-red text-[10px]">✕</button>
+                  <button type="button" onClick={() => setLocationContext('')} style={{ fontSize: 10, color: 'var(--ed-accent)' }}>✕</button>
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               {voice.isSupported && (
                 <button type="button" onClick={voice.toggle} disabled={loading || renderingAnswer}
-                  className={`h-9 w-9 flex items-center justify-center r-full transition-all ${
-                    voice.isListening ? 'bg-accent-red text-text-inverse animate-pulse elev-md' : 'text-primary/70 hover:text-primary hover:bg-primary/10'
-                  } disabled:opacity-50`} title={voice.isListening ? '停止' : '语音输入'}>
+                  className="transition-all disabled:opacity-50"
+                  style={{
+                    width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderRadius: 'var(--ed-radius-md)',
+                    background: voice.isListening ? 'var(--ed-accent)' : 'var(--ed-paper-warm)',
+                    color: voice.isListening ? 'var(--ed-paper)' : 'var(--ed-ink-muted)',
+                  }} title={voice.isListening ? '停止' : '语音输入'}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
                     {voice.isListening
                       ? <path d="M6 6h12v12H6z" />
@@ -885,11 +983,16 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
                 </button>
               )}
               <button type="submit" disabled={loading || renderingAnswer || !input.trim()}
-                className={`h-9 w-9 flex items-center justify-center r-full transition-all ${
-                  input.trim() ? 'bg-primary text-text-inverse elev-md hover:bg-primary/90' : 'bg-primary/10 text-primary/40'
-                } disabled:opacity-40`} title="发送">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                className="transition-all disabled:opacity-40"
+                style={{
+                  width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  borderRadius: 'var(--ed-radius-md)',
+                  background: input.trim() ? 'var(--ed-ink)' : 'var(--ed-paper-warm)',
+                  color: input.trim() ? 'var(--ed-paper)' : 'var(--ed-ink-muted)',
+                  boxShadow: input.trim() ? '0 2px 8px rgba(0,0,0,0.15)' : 'none',
+                }} title="发送">
+                <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
               </button>
             </div>

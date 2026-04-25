@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { bulkPublish, bulkArchive, deleteArticle, generateAISummary } from './actions';
+import { bulkPublish, bulkArchive, deleteArticle, generateAISummary, toggleFeatured } from './actions';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -28,10 +28,11 @@ const statusBadge: Record<string, { cls: string; label: string }> = {
 interface ArticlesTableProps {
   articles: AnyRow[];
   regionNameMap: Record<string, string>;
+  categoryNameMap?: Record<string, string>;
   siteParams?: string;
 }
 
-export default function ArticlesTable({ articles, regionNameMap, siteParams = '' }: ArticlesTableProps) {
+export default function ArticlesTable({ articles, regionNameMap, categoryNameMap = {}, siteParams = '' }: ArticlesTableProps) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -136,6 +137,8 @@ export default function ArticlesTable({ articles, regionNameMap, siteParams = ''
             <tr>
               <th className="w-10"></th>
               <th>标题</th>
+              <th>精选</th>
+              <th>分类</th>
               <th>类型</th>
               <th>状态</th>
               <th>地区</th>
@@ -160,6 +163,21 @@ export default function ArticlesTable({ articles, regionNameMap, siteParams = ''
                   </td>
                   <td className="max-w-xs">
                     <p className="font-medium truncate">{a.title_zh || a.title_en || '无标题'}</p>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => startTransition(() => toggleFeatured(a.id, !!a.is_featured).then(() => router.refresh()))}
+                      className={`text-xs px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                        a.is_featured
+                          ? 'bg-amber-100 text-amber-700 hover:bg-amber-200 font-medium'
+                          : 'bg-gray-100 text-gray-400 hover:bg-amber-50 hover:text-amber-600'
+                      }`}
+                    >
+                      {a.is_featured ? '⭐ Yes' : 'No'}
+                    </button>
+                  </td>
+                  <td className="text-sm text-text-muted">
+                    {a.category_id ? (categoryNameMap[a.category_id] || '—') : '—'}
                   </td>
                   <td>
                     <span className={`${vb.cls} text-xs`}>{vb.label}</span>

@@ -50,11 +50,21 @@ export default async function EditPostPage({ params }: Props) {
     .map(r => r.businesses)
     .filter(Boolean);
 
+  // Fetch content categories
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rawCategories } = await (supabase as any)
+    .from('categories_discover')
+    .select('id, slug, name_zh, name_en, icon, sort_order')
+    .eq('is_active', true)
+    .eq('site_scope', 'zh')
+    .order('sort_order', { ascending: true });
+  const categories = (rawCategories || []) as AnyRow[];
+
   return (
     <main className="bg-bg-page min-h-screen">
       <PageContainer className="py-8 max-w-2xl">
         <h1 className="text-xl font-bold mb-6">编辑帖子</h1>
-        <EditPostForm post={post} linkedBusinesses={linkedBusinesses} />
+        <EditPostForm post={post} linkedBusinesses={linkedBusinesses} categories={categories} />
       </PageContainer>
     </main>
   );

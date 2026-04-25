@@ -15,20 +15,9 @@ export default async function Helper2Page({ searchParams }: Props) {
   const initialQuery = sp.q?.trim() || '';
 
   return (
-    <main>
-      {/* Header — full width, same as English */}
-      <div className="text-center pt-8 pb-4 px-4">
-        <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary r-xl flex items-center justify-center text-2xl mx-auto mb-3">
-          🧭
-        </div>
-        <h1 className="text-2xl sm:text-3xl fw-bold mb-1">小帮手</h1>
-        <p className="text-text-secondary text-sm">
-          你的本地生活 AI 助手 — 找商家、查信息、问办事，什么都能聊
-        </p>
-      </div>
-
-      {/* Chat — full width container, chat component handles its own widths */}
-      <div className="px-4 pb-8">
+    <main className="flex flex-col" style={{ height: 'calc(100dvh - 60px)' }}>
+      {/* Chat — fills remaining height */}
+      <div className="flex-1 min-h-0">
         <Helper2Chat initialQuery={initialQuery} />
       </div>
     </main>

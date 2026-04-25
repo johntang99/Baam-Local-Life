@@ -27,12 +27,14 @@ interface CreatePostFormProps {
   isLoggedIn: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prelinkedBusiness?: Record<string, any> | null;
+  categories?: Record<string, unknown>[];
 }
 
-export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormProps) {
+export function VoicePostForm({ isLoggedIn, prelinkedBusiness, categories = [] }: CreatePostFormProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [postType, setPostType] = useState('note');
+  const [categoryId, setCategoryId] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState<string[]>([]);
@@ -81,6 +83,7 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
     if (videoDuration) formData.set('video_duration', String(videoDuration));
     if (businesses.length > 0) formData.set('business_ids', JSON.stringify(businesses.map(b => b.id)));
     if (showLocation && location.trim()) formData.set('location_text', location);
+    if (categoryId) formData.set('category_id', categoryId);
 
     const result = await createDiscoverPost(formData);
 
@@ -142,6 +145,29 @@ export function VoicePostForm({ isLoggedIn, prelinkedBusiness }: CreatePostFormP
           </button>
         ))}
       </div>
+
+      {/* Category Selector */}
+      {categories.length > 0 && (
+        <div>
+          <label className="block text-sm fw-semibold text-text-primary mb-2">选择分类</label>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={String(cat.id)}
+                type="button"
+                onClick={() => setCategoryId(categoryId === String(cat.id) ? '' : String(cat.id))}
+                className={`px-4 py-2 text-sm r-full border transition-colors ${
+                  categoryId === String(cat.id)
+                    ? 'bg-primary text-text-inverse border-primary fw-semibold'
+                    : 'bg-bg-card text-text-secondary border-border hover:border-primary/40 hover:text-primary'
+                }`}
+              >
+                {String(cat.name_zh)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Image Upload (for notes) */}
       {postType !== 'video' && (

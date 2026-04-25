@@ -5,9 +5,68 @@ import { getCurrentUser } from '@/lib/auth';
 import { getCurrentSite } from '@/lib/sites';
 import { revalidatePath } from 'next/cache';
 import { moderateDiscoverPost } from '@/lib/ai/moderate-post';
+import { getSiteSetting } from '@/lib/site-settings';
+import {
+  moderateDiscoverMediaAssets,
+  normalizeDiscoverMediaModerationConfig,
+  type MediaModerationResult,
+} from '@/lib/ai/moderate-media';
+import { startDiscoverVideoModerationJob } from '@/lib/ai/moderate-video';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyClient = ReturnType<typeof createAdminClient> extends infer T ? T : any;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+  return null;
+}
+
+function buildModerationMetadata(input: {
+  previousMetadata?: unknown;
+  text: { pass: boolean; score: number; reason: string | null };
+  media: MediaModerationResult;
+  fullVideoScanEnabled?: boolean;
+}): Record<string, unknown> {
+  const base = asRecord(input.previousMetadata) || {};
+  return {
+    ...base,
+    moderation: {
+      text: {
+        pass: input.text.pass,
+        score: input.text.score,
+        reason: input.text.reason,
+      },
+      media: {
+        pass: input.media.pass,
+        score: input.media.score,
+        reason: input.media.reason,
+        checked: input.media.checked,
+        provider: input.media.provider,
+        checked_at: input.media.checkedAt,
+        checked_targets: input.media.checkedTargets,
+        mode: input.media.mode,
+        full_video_scan: input.fullVideoScanEnabled === true,
+      },
+    },
+  };
+}
+
+function withVideoModerationMeta(
+  metadata: Record<string, unknown>,
+  videoMeta: Record<string, unknown>,
+): Record<string, unknown> {
+  const base = asRecord(metadata) || {};
+  const moderation = asRecord(base.moderation) || {};
+  return {
+    ...base,
+    moderation: {
+      ...moderation,
+      video: videoMeta,
+    },
+  };
+}
 
 // ─── Newsletter Subscription ──────────────────────────────────────────
 
@@ -87,11 +146,9 @@ export async function createForumThread(formData: FormData) {
     .insert({
       slug,
       title,
-      title_zh: title,
       body,
       board_id: boardId,
       author_id: user.id,
-      author_name: user.displayName,
       region_id: user.regionId,
       site_id: site.id,
       language: 'zh',
@@ -135,7 +192,6 @@ export async function createForumReply(formData: FormData) {
     .insert({
       thread_id: threadId,
       author_id: user.id,
-      author_name: user.displayName,
       body,
       site_id: site.id,
       status: 'published',
@@ -234,6 +290,7 @@ export async function createDiscoverPost(formData: FormData) {
   const videoDuration = videoDurationRaw ? parseInt(videoDurationRaw, 10) : null;
   const locationText = (formData.get('location_text') as string)?.trim() || null;
   const businessIdsRaw = (formData.get('business_ids') as string)?.trim();
+  const categoryId = (formData.get('category_id') as string)?.trim() || null;
 
   if (!content && !title) {
     return { error: '请输入标题或内容' };
@@ -260,9 +317,53 @@ export async function createDiscoverPost(formData: FormData) {
   const supabase = createAdminClient();
   const site = await getCurrentSite();
 
-  // AI moderation check
-  const moderation = await moderateDiscoverPost(title || '', content || '');
-  const postStatus = moderation.pass ? 'published' : 'pending_review';
+  // AI moderation check (text + media)
+  const textModeration = await moderateDiscoverPost(title || '', content || '');
+  const rawModerationSetting = await getSiteSetting(site.id, 'moderation').catch(() => null);
+  const mediaModerationConfig = normalizeDiscoverMediaModerationConfig(rawModerationSetting);
+  const mediaModeration = await moderateDiscoverMediaAssets({
+    imageUrls: coverImages,
+    videoThumbnailUrl,
+    config: mediaModerationConfig,
+  });
+  const needsFullVideoScan = Boolean(
+    postType === 'video' &&
+    videoUrl &&
+    mediaModerationConfig.enabled &&
+    mediaModerationConfig.moderateFullVideo,
+  );
+  const videoNeedsManualReview = Boolean(
+    mediaModerationConfig.enabled &&
+    mediaModerationConfig.moderateVideoThumbnail &&
+    videoUrl &&
+    !videoThumbnailUrl,
+  );
+
+  const moderationReasons: string[] = [];
+  if (!textModeration.pass) moderationReasons.push(textModeration.reason || '文本疑似不合规');
+  if (!mediaModeration.pass) moderationReasons.push(mediaModeration.reason || '媒体疑似不合规');
+  if (videoNeedsManualReview) moderationReasons.push('视频缺少可审核封面，需人工审核');
+  if (needsFullVideoScan && moderationReasons.length === 0) moderationReasons.push('视频内容审核中');
+
+  const postStatus = moderationReasons.length > 0 ? 'pending_review' : 'published';
+  const moderationReason = moderationReasons.length > 0 ? moderationReasons.join('；') : null;
+  const moderationScore = Math.max(textModeration.score || 0, mediaModeration.score || 0);
+  const mediaForMeta: MediaModerationResult = {
+    ...mediaModeration,
+    pass: mediaModeration.pass && !videoNeedsManualReview,
+    reason: videoNeedsManualReview
+      ? [mediaModeration.reason, '视频缺少可审核封面，需人工审核'].filter(Boolean).join('；')
+      : mediaModeration.reason,
+  };
+  const moderationMetadata = buildModerationMetadata({
+    text: {
+      pass: textModeration.pass,
+      score: textModeration.score,
+      reason: textModeration.reason,
+    },
+    media: mediaForMeta,
+    fullVideoScanEnabled: needsFullVideoScan,
+  });
 
   // Insert post
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -277,8 +378,8 @@ export async function createDiscoverPost(formData: FormData) {
       visibility: 'public',
       status: postStatus,
       published_at: new Date().toISOString(),
-      ai_spam_score: moderation.score,
-      moderation_reason: moderation.reason,
+      ai_spam_score: moderationScore,
+      moderation_reason: moderationReason,
       region_id: user.regionId,
       site_id: site.id,
       language: 'zh',
@@ -290,12 +391,72 @@ export async function createDiscoverPost(formData: FormData) {
       video_duration_seconds: videoDuration,
       location_text: locationText,
       aspect_ratio: postType === 'video' ? '16:9' : '4:3',
+      category_id: categoryId,
+      metadata: moderationMetadata,
     })
     .select('id, slug')
     .single();
 
   if (error) {
     return { error: '发布失败：' + error.message };
+  }
+
+  if (needsFullVideoScan && post?.id && videoUrl) {
+    const start = await startDiscoverVideoModerationJob({
+      postId: post.id,
+      siteId: site.id,
+      videoUrl,
+      config: {
+        enabled: mediaModerationConfig.enabled,
+        moderateFullVideo: mediaModerationConfig.moderateFullVideo,
+        minConfidence: mediaModerationConfig.minConfidence,
+        blockConfidence: mediaModerationConfig.blockConfidence,
+      },
+    });
+
+    let nextReason = moderationReason;
+    const videoMeta: Record<string, unknown> = start.started
+      ? {
+          provider: start.provider,
+          job_id: start.jobId,
+          job_status: 'IN_PROGRESS',
+          started_at: start.startedAt,
+          checked_at: null,
+          checked_targets: 0,
+          pass: null,
+          score: 0,
+          reason: null,
+          bucket: start.bucket,
+          object_key: start.objectKey,
+        }
+      : {
+          provider: start.provider,
+          job_id: null,
+          job_status: 'FAILED_TO_START',
+          started_at: null,
+          checked_at: null,
+          checked_targets: 0,
+          pass: false,
+          score: 1,
+          reason: start.reason || '视频审核未启动，需人工审核',
+          bucket: start.bucket,
+          object_key: start.objectKey,
+        };
+
+    if (!start.started) {
+      nextReason = [nextReason, start.reason || '视频审核未启动，需人工审核'].filter(Boolean).join('；');
+    }
+
+    const metadataWithVideo = withVideoModerationMeta(moderationMetadata, videoMeta);
+    await (supabase as any)
+      .from('voice_posts')
+      .update({
+        metadata: metadataWithVideo,
+        moderation_reason: nextReason,
+        status: 'pending_review',
+      })
+      .eq('id', post.id)
+      .eq('site_id', site.id);
   }
 
   // Link businesses
@@ -412,7 +573,7 @@ export async function updateDiscoverPost(formData: FormData) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: post } = await (supabase as any)
     .from('voice_posts')
-    .select('id, author_id, slug')
+    .select('id, author_id, slug, status, post_type, metadata')
     .eq('id', postId)
     .eq('site_id', site.id)
     .single();
@@ -429,6 +590,7 @@ export async function updateDiscoverPost(formData: FormData) {
   const videoThumbnailUrl = (formData.get('video_thumbnail_url') as string)?.trim() || null;
   const locationText = (formData.get('location_text') as string)?.trim() || null;
   const businessIdsRaw = (formData.get('business_ids') as string)?.trim();
+  const updateCategoryId = (formData.get('category_id') as string)?.trim() || null;
 
   if (!content && !title) {
     return { error: '请输入标题或内容' };
@@ -446,6 +608,56 @@ export async function updateDiscoverPost(formData: FormData) {
     ? JSON.parse(businessIdsRaw) as string[]
     : [];
 
+  const textModeration = await moderateDiscoverPost(title || '', content || '');
+  const rawModerationSetting = await getSiteSetting(site.id, 'moderation').catch(() => null);
+  const mediaModerationConfig = normalizeDiscoverMediaModerationConfig(rawModerationSetting);
+  const mediaModeration = await moderateDiscoverMediaAssets({
+    imageUrls: coverImages,
+    videoThumbnailUrl,
+    config: mediaModerationConfig,
+  });
+  const needsFullVideoScan = Boolean(
+    post.post_type === 'video' &&
+    videoUrl &&
+    mediaModerationConfig.enabled &&
+    mediaModerationConfig.moderateFullVideo,
+  );
+  const videoNeedsManualReview = Boolean(
+    mediaModerationConfig.enabled &&
+    mediaModerationConfig.moderateVideoThumbnail &&
+    videoUrl &&
+    !videoThumbnailUrl,
+  );
+  const moderationReasons: string[] = [];
+  if (!textModeration.pass) moderationReasons.push(textModeration.reason || '文本疑似不合规');
+  if (!mediaModeration.pass) moderationReasons.push(mediaModeration.reason || '媒体疑似不合规');
+  if (videoNeedsManualReview) moderationReasons.push('视频缺少可审核封面，需人工审核');
+  if (needsFullVideoScan && moderationReasons.length === 0) moderationReasons.push('视频内容审核中');
+  const moderationReason = moderationReasons.length > 0 ? moderationReasons.join('；') : null;
+  const moderationScore = Math.max(textModeration.score || 0, mediaModeration.score || 0);
+  const mediaForMeta: MediaModerationResult = {
+    ...mediaModeration,
+    pass: mediaModeration.pass && !videoNeedsManualReview,
+    reason: videoNeedsManualReview
+      ? [mediaModeration.reason, '视频缺少可审核封面，需人工审核'].filter(Boolean).join('；')
+      : mediaModeration.reason,
+  };
+  const moderationMetadata = buildModerationMetadata({
+    previousMetadata: post.metadata,
+    text: {
+      pass: textModeration.pass,
+      score: textModeration.score,
+      reason: textModeration.reason,
+    },
+    media: mediaForMeta,
+    fullVideoScanEnabled: needsFullVideoScan,
+  });
+  const nextStatus = moderationReasons.length > 0
+    ? 'pending_review'
+    : post.status === 'published'
+      ? 'published'
+      : 'pending_review';
+
   // Update post
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any)
@@ -459,11 +671,70 @@ export async function updateDiscoverPost(formData: FormData) {
       video_url: videoUrl,
       video_thumbnail_url: videoThumbnailUrl,
       location_text: locationText,
+      category_id: updateCategoryId,
+      ai_spam_score: moderationScore,
+      moderation_reason: moderationReason,
+      status: nextStatus,
+      metadata: moderationMetadata,
       updated_at: new Date().toISOString(),
     })
     .eq('id', postId);
 
   if (error) return { error: '更新失败：' + error.message };
+
+  if (needsFullVideoScan && videoUrl) {
+    const start = await startDiscoverVideoModerationJob({
+      postId,
+      siteId: site.id,
+      videoUrl,
+      config: {
+        enabled: mediaModerationConfig.enabled,
+        moderateFullVideo: mediaModerationConfig.moderateFullVideo,
+        minConfidence: mediaModerationConfig.minConfidence,
+        blockConfidence: mediaModerationConfig.blockConfidence,
+      },
+    });
+    let nextReason = moderationReason;
+    const videoMeta: Record<string, unknown> = start.started
+      ? {
+          provider: start.provider,
+          job_id: start.jobId,
+          job_status: 'IN_PROGRESS',
+          started_at: start.startedAt,
+          checked_at: null,
+          checked_targets: 0,
+          pass: null,
+          score: 0,
+          reason: null,
+          bucket: start.bucket,
+          object_key: start.objectKey,
+        }
+      : {
+          provider: start.provider,
+          job_id: null,
+          job_status: 'FAILED_TO_START',
+          started_at: null,
+          checked_at: null,
+          checked_targets: 0,
+          pass: false,
+          score: 1,
+          reason: start.reason || '视频审核未启动，需人工审核',
+          bucket: start.bucket,
+          object_key: start.objectKey,
+        };
+    if (!start.started) {
+      nextReason = [nextReason, start.reason || '视频审核未启动，需人工审核'].filter(Boolean).join('；');
+    }
+    await (supabase as any)
+      .from('voice_posts')
+      .update({
+        metadata: withVideoModerationMeta(moderationMetadata, videoMeta),
+        moderation_reason: nextReason,
+        status: 'pending_review',
+      })
+      .eq('id', postId)
+      .eq('site_id', site.id);
+  }
 
   // Update linked businesses
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

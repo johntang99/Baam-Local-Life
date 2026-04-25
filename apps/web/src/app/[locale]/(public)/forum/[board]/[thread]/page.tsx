@@ -53,7 +53,7 @@ export default async function ForumThreadPage({ params }: Props) {
   // Fetch thread
   const { data: rawThread, error: threadError } = await supabase
     .from('forum_threads')
-    .select('*')
+    .select('*, profiles:author_id(display_name)')
     .eq('slug', thread)
     .eq('site_id', site.id)
     .single();
@@ -82,7 +82,7 @@ export default async function ForumThreadPage({ params }: Props) {
   // Fetch replies
   const { data: rawReplies } = await supabase
     .from('forum_replies')
-    .select('*')
+    .select('*, profiles:author_id(display_name)')
     .eq('thread_id', threadData.id)
     .eq('site_id', site.id)
     .order('created_at', { ascending: true });
@@ -147,7 +147,7 @@ export default async function ForumThreadPage({ params }: Props) {
                   👤
                 </div>
                 <div>
-                  <p className="text-sm fw-medium">{threadData.author_name || '匿名用户'}</p>
+                  <p className="text-sm fw-medium">{threadData.profiles?.display_name || '匿名用户'}</p>
                   <div className="flex items-center gap-3 text-xs text-text-muted">
                     {threadData.created_at && (
                       <time>{new Date(threadData.created_at).toLocaleDateString('zh-CN', {
@@ -198,7 +198,7 @@ export default async function ForumThreadPage({ params }: Props) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-sm fw-medium">{reply.author_name || '匿名用户'}</span>
+                            <span className="text-sm fw-medium">{reply.profiles?.display_name || '匿名用户'}</span>
                             <span className="text-xs text-text-muted">#{index + 1}</span>
                             {reply.created_at && (
                               <span className="text-xs text-text-muted">

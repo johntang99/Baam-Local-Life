@@ -5,7 +5,7 @@ import { useState } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
 
-type SettingKey = 'header' | 'navigation' | 'footer' | 'seo';
+type SettingKey = 'header' | 'navigation' | 'footer' | 'seo' | 'moderation';
 
 interface Props {
   siteId: string;
@@ -18,6 +18,7 @@ const LABELS: Record<SettingKey, { title: string; description: string }> = {
   navigation: { title: '导航管理', description: '管理顶部导航菜单项：添加、删除、排序、显示/隐藏' },
   footer: { title: 'Footer 页脚', description: '配置网站底部：品牌描述、链接分组、社交媒体、版权信息' },
   seo: { title: 'SEO 搜索优化', description: '配置全局 SEO：默认标题、描述、关键词、Open Graph 图片' },
+  moderation: { title: '内容审核', description: '配置 Discover 发帖审核策略（文本 + 媒体）' },
 };
 
 export function SiteSettingsEditor({ siteId, settingKey, initialValue }: Props) {
@@ -94,6 +95,7 @@ export function SiteSettingsEditor({ siteId, settingKey, initialValue }: Props) 
             {settingKey === 'navigation' && parsed && <NavigationForm data={parsed} onChange={(d) => setValue(JSON.stringify(d, null, 2))} />}
             {settingKey === 'footer' && parsed && <FooterForm data={parsed} onChange={(d) => setValue(JSON.stringify(d, null, 2))} />}
             {settingKey === 'seo' && parsed && <SeoForm data={parsed} onChange={(d) => setValue(JSON.stringify(d, null, 2))} />}
+            {settingKey === 'moderation' && parsed && <ModerationForm data={parsed} onChange={(d) => setValue(JSON.stringify(d, null, 2))} />}
           </div>
         )}
 
@@ -109,6 +111,119 @@ export function SiteSettingsEditor({ siteId, settingKey, initialValue }: Props) 
         </div>
       </div>
     </section>
+  );
+}
+
+// ─── Moderation Form ────────────────────────────────────────────
+
+function ModerationForm({ data, onChange }: { data: AnyRow; onChange: (d: AnyRow) => void }) {
+  const merged = {
+    enabled: false,
+    provider: 'rekognition',
+    moderate_images: true,
+    moderate_video_thumbnail: true,
+    moderate_full_video: false,
+    min_confidence: 70,
+    block_confidence: 85,
+    max_images_per_post: 4,
+    ...data,
+  };
+
+  const update = (key: string, val: unknown) => onChange({ ...merged, [key]: val });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+        <input
+          id="moderation-enabled"
+          type="checkbox"
+          checked={Boolean(merged.enabled)}
+          onChange={(e) => update('enabled', e.target.checked)}
+        />
+        <label htmlFor="moderation-enabled" className="text-sm font-medium text-gray-800">
+          启用 Discover 媒体审核（Rekognition）
+        </label>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Provider</label>
+          <input
+            value={String(merged.provider || 'rekognition')}
+            onChange={(e) => update('provider', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          />
+          <p className="text-xs text-gray-500 mt-1">当前仅支持 rekognition</p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">每帖最多审核图片数</label>
+          <input
+            type="number"
+            min={1}
+            max={10}
+            value={Number(merged.max_images_per_post ?? 4)}
+            onChange={(e) => update('max_images_per_post', Number(e.target.value || 4))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">检测最小置信度（0-100）</label>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            value={Number(merged.min_confidence ?? 70)}
+            onChange={(e) => update('min_confidence', Number(e.target.value || 70))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">自动拦截置信度（0-100）</label>
+          <input
+            type="number"
+            min={0}
+            max={100}
+            value={Number(merged.block_confidence ?? 85)}
+            onChange={(e) => update('block_confidence', Number(e.target.value || 85))}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-6">
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={Boolean(merged.moderate_images)}
+            onChange={(e) => update('moderate_images', e.target.checked)}
+          />
+          审核图片
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={Boolean(merged.moderate_video_thumbnail)}
+            onChange={(e) => update('moderate_video_thumbnail', e.target.checked)}
+          />
+          审核视频封面（缩略图）
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={Boolean(merged.moderate_full_video)}
+            onChange={(e) => update('moderate_full_video', e.target.checked)}
+          />
+          审核整段视频（异步）
+        </label>
+      </div>
+
+      <div className="text-xs text-gray-500">
+        提示：保存后立即生效。整段视频审核需配置 AWS_VIDEO_MODERATION_BUCKET（S3）。
+      </div>
+    </div>
   );
 }
 

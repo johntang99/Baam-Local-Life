@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const validKeys: SettingKey[] = ['header', 'navigation', 'footer', 'seo'];
+    const validKeys: SettingKey[] = ['header', 'navigation', 'footer', 'seo', 'moderation'];
     if (!validKeys.includes(settingKey)) {
       return NextResponse.json({ error: 'Invalid setting key' }, { status: 400 });
     }

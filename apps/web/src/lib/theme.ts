@@ -195,6 +195,199 @@ export const baamTheme: BaamTheme = {
 };
 
 // ============================================================
+// EDITORIAL THEME — Paper/warm tones, serif typography, magazine aesthetic
+// Used by the v2 homepage at /(editorial)/homepage-v2
+// ============================================================
+export interface EditorialTheme {
+  colors: {
+    paper: string;
+    paperWarm: string;
+    surface: string;
+    surfaceElev: string;
+    ink: string;
+    inkSoft: string;
+    inkMuted: string;
+    line: string;
+    lineStrong: string;
+    accent: string;
+    accentSoft: string;
+    amber: string;
+    amberSoft: string;
+    /** Semantic tag/badge colors — green (free, checklist, guide) */
+    tagGreenBg: string;
+    tagGreenText: string;
+    /** Semantic tag/badge colors — purple (comparison, scenario) */
+    tagPurpleBg: string;
+    tagPurpleText: string;
+  };
+  typography: {
+    fontSerif: string;
+    fontSerifItalic: string;
+    fontSans: string;
+    /** Key semantic font sizes (px) for headings, body, small, xs */
+    sizePageTitle: string;
+    sizeSectionTitle: string;
+    sizeCardTitle: string;
+    sizeBody: string;
+    sizeSmall: string;
+    sizeXs: string;
+    weights?: {
+      regular: string;
+      medium: string;
+      semibold: string;
+      bold: string;
+    };
+  };
+  shape: {
+    radiusMd: string;
+    radiusLg: string;
+    radiusXl: string;
+    /** Pill / chip radius — typically 9999px */
+    radiusPill: string;
+    /** Card shadow on hover */
+    shadowCard: string;
+    /** Elevated shadow (modals, sticky bars) */
+    shadowElev: string;
+    radiusCard?: string;
+    radiusButton?: string;
+    radiusChip?: string;
+    radiusInput?: string;
+  };
+  layout: {
+    containerMax: string;
+  };
+}
+
+export const editorialTheme: EditorialTheme = {
+  colors: {
+    paper: "#FBF6EC",
+    paperWarm: "#F5EDD8",
+    surface: "#FFFDF8",
+    surfaceElev: "#FFFFFF",
+    ink: "#1F1B16",
+    inkSoft: "#4A4236",
+    inkMuted: "#8C8478",
+    line: "rgba(31, 27, 22, 0.08)",
+    lineStrong: "rgba(31, 27, 22, 0.16)",
+    accent: "#C73E1D",
+    accentSoft: "#E56342",
+    amber: "#D4A017",
+    amberSoft: "#E8B84A",
+    tagGreenBg: "#E5F0E5",
+    tagGreenText: "#2B5E2B",
+    tagPurpleBg: "#E8E0F0",
+    tagPurpleText: "#5D4A8B"
+  },
+  typography: {
+    fontSerif: "'Noto Serif SC', 'Noto Sans SC', serif",
+    fontSerifItalic: "'Fraunces', 'Georgia', serif",
+    fontSans: "'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif",
+    sizePageTitle: "clamp(24px, 3vw, 36px)",
+    sizeSectionTitle: "18px",
+    sizeCardTitle: "14.5px",
+    sizeBody: "15.5px",
+    sizeSmall: "13px",
+    sizeXs: "11.5px",
+    weights: {
+      regular: "400",
+      medium: "500",
+      semibold: "600",
+      bold: "700"
+    }
+  },
+  shape: {
+    radiusMd: "14px",
+    radiusLg: "10px",
+    radiusXl: "28px",
+    radiusPill: "9999px",
+    shadowCard: "0 8px 30px rgba(0,0,0,0.08)",
+    shadowElev: "0 4px 16px rgba(0,0,0,0.12)",
+    radiusCard: "28px",
+    radiusButton: "20px",
+    radiusChip: "9999px",
+    radiusInput: "20px"
+  },
+  layout: {
+    containerMax: "1240px"
+  }
+};
+
+/**
+ * Generate CSS variables for the editorial theme.
+ * These are injected in the editorial layout and scoped via the .theme-editorial class.
+ */
+export function generateEditorialThemeCSS(theme: EditorialTheme): string {
+  return `
+    .theme-editorial {
+      /* Paper / Background */
+      --ed-paper: ${theme.colors.paper};
+      --ed-paper-warm: ${theme.colors.paperWarm};
+      --ed-surface: ${theme.colors.surface};
+      --ed-surface-elev: ${theme.colors.surfaceElev};
+
+      /* Ink / Text */
+      --ed-ink: ${theme.colors.ink};
+      --ed-ink-soft: ${theme.colors.inkSoft};
+      --ed-ink-muted: ${theme.colors.inkMuted};
+
+      /* Lines / Borders */
+      --ed-line: ${theme.colors.line};
+      --ed-line-strong: ${theme.colors.lineStrong};
+
+      /* Accent */
+      --ed-accent: ${theme.colors.accent};
+      --ed-accent-soft: ${theme.colors.accentSoft};
+      --ed-amber: ${theme.colors.amber};
+      --ed-amber-soft: ${theme.colors.amberSoft};
+
+      /* Tag / Badge Colors */
+      --ed-tag-green-bg: ${theme.colors.tagGreenBg};
+      --ed-tag-green-text: ${theme.colors.tagGreenText};
+      --ed-tag-purple-bg: ${theme.colors.tagPurpleBg};
+      --ed-tag-purple-text: ${theme.colors.tagPurpleText};
+
+      /* Typography */
+      --ed-font-serif: ${theme.typography.fontSerif};
+      --ed-font-serif-italic: ${theme.typography.fontSerifItalic};
+      --ed-font-sans: ${theme.typography.fontSans};
+      --ed-size-page-title: ${theme.typography.sizePageTitle};
+      --ed-size-section-title: ${theme.typography.sizeSectionTitle};
+      --ed-size-card-title: ${theme.typography.sizeCardTitle};
+      --ed-size-body: ${theme.typography.sizeBody};
+      --ed-size-small: ${theme.typography.sizeSmall};
+      --ed-size-xs: ${theme.typography.sizeXs};
+
+      /* Shape */
+      --ed-radius-md: ${theme.shape.radiusMd};
+      --ed-radius-lg: ${theme.shape.radiusLg};
+      --ed-radius-xl: ${theme.shape.radiusXl};
+      --ed-radius-pill: ${theme.shape.radiusPill};
+      --ed-shadow-card: ${theme.shape.shadowCard};
+      --ed-shadow-elev: ${theme.shape.shadowElev};
+
+      /* Layout */
+      --ed-container-max: ${theme.layout.containerMax};
+
+      /* Override base theme vars so Tailwind utilities work inside editorial */
+      --bg-page: ${theme.colors.paper};
+      --bg-card: ${theme.colors.surfaceElev};
+      --text-primary: ${theme.colors.ink};
+      --text-secondary: ${theme.colors.inkSoft};
+      --text-muted: ${theme.colors.inkMuted};
+      --border: ${theme.colors.lineStrong};
+      --border-light: ${theme.colors.line};
+      --primary: ${theme.colors.accent};
+      --primary-dark: ${theme.colors.accent};
+    }
+
+    /* Card hover shadow (used by EditorialCard [data-hover]) */
+    .theme-editorial [data-hover]:hover {
+      box-shadow: ${theme.shape.shadowCard};
+    }
+  `;
+}
+
+// ============================================================
 // Generate CSS variables string from theme
 // ============================================================
 export function generateThemeCSS(theme: BaamTheme): string {

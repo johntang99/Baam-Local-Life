@@ -117,6 +117,76 @@ const NYS_COUNTIES = [
 const NYC_BOROUGHS = ['manhattan', 'bronx', 'brooklyn', 'queens', 'staten island'];
 
 // Normalize NYC street address: FIFTH → 5, THIRD → 3, etc.
+// ─── Street Suffix Normalization ──────────────────────────────────────
+// Maps every common way users write street types to the USPS standard abbreviation.
+// Handles mixed case, periods, typos, and plural forms.
+const STREET_SUFFIX_MAP: Record<string, string> = {
+  // Street
+  'STREET': 'ST', 'STR': 'ST', 'STRT': 'ST', 'ST': 'ST', 'ST.': 'ST',
+  // Avenue
+  'AVENUE': 'AVE', 'AVE': 'AVE', 'AV': 'AVE', 'AVE.': 'AVE', 'AVEN': 'AVE', 'AVENU': 'AVE', 'AVN': 'AVE',
+  // Boulevard
+  'BOULEVARD': 'BLVD', 'BLVD': 'BLVD', 'BLVD.': 'BLVD', 'BOUL': 'BLVD', 'BOULV': 'BLVD',
+  // Road
+  'ROAD': 'RD', 'RD': 'RD', 'RD.': 'RD',
+  // Drive
+  'DRIVE': 'DR', 'DR': 'DR', 'DR.': 'DR', 'DRIV': 'DR', 'DRV': 'DR',
+  // Lane
+  'LANE': 'LA', 'LA': 'LA', 'LN': 'LA', 'LN.': 'LA', 'LANES': 'LA',
+  // Place
+  'PLACE': 'PL', 'PL': 'PL', 'PL.': 'PL',
+  // Court
+  'COURT': 'CT', 'CT': 'CT', 'CT.': 'CT', 'CRT': 'CT',
+  // Terrace
+  'TERRACE': 'TER', 'TER': 'TER', 'TERR': 'TER', 'TER.': 'TER',
+  // Circle
+  'CIRCLE': 'CIR', 'CIR': 'CIR', 'CIRC': 'CIR', 'CIRCL': 'CIR', 'CRCL': 'CIR', 'CRCLE': 'CIR',
+  // Way
+  'WAY': 'WAY', 'WY': 'WAY',
+  // Parkway
+  'PARKWAY': 'PKWY', 'PKWY': 'PKWY', 'PKY': 'PKWY', 'PKWAY': 'PKWY', 'PARKWY': 'PKWY',
+  // Highway
+  'HIGHWAY': 'HWY', 'HWY': 'HWY', 'HIGHWY': 'HWY', 'HIWAY': 'HWY', 'HIWY': 'HWY', 'HWAY': 'HWY',
+  // Turnpike
+  'TURNPIKE': 'TPKE', 'TPKE': 'TPKE', 'TRNPK': 'TPKE', 'TURNPK': 'TPKE',
+  // Expressway
+  'EXPRESSWAY': 'EXPY', 'EXPY': 'EXPY', 'EXPW': 'EXPY', 'EXPRESS': 'EXPY',
+  // Trail
+  'TRAIL': 'TRL', 'TRL': 'TRL', 'TRAILS': 'TRL',
+  // Alley
+  'ALLEY': 'ALY', 'ALY': 'ALY', 'ALLY': 'ALY',
+  // Square
+  'SQUARE': 'SQ', 'SQ': 'SQ', 'SQR': 'SQ', 'SQRE': 'SQ',
+  // Path / Walk / Row
+  'PATH': 'PATH', 'WALK': 'WALK', 'ROW': 'ROW',
+  // Crossing
+  'CROSSING': 'XING', 'XING': 'XING', 'CRSSNG': 'XING',
+  // Extension
+  'EXTENSION': 'EXT', 'EXT': 'EXT', 'EXTN': 'EXT',
+  // Plaza
+  'PLAZA': 'PLZ', 'PLZ': 'PLZ',
+  // Loop
+  'LOOP': 'LOOP',
+  // Pike
+  'PIKE': 'PIKE',
+};
+
+/**
+ * Detect and separate a street suffix from the last word of a street name.
+ * Returns { name, suffix } where suffix is the USPS abbreviation or '' if not found.
+ * Works with any casing: "St", "st", "ST", "Street", "street", "STREET", "St." etc.
+ */
+function splitStreetSuffix(street: string): { name: string; suffix: string } {
+  const parts = street.trim().split(/\s+/);
+  if (parts.length < 2) return { name: street.trim(), suffix: '' };
+  const lastWord = parts[parts.length - 1].replace(/\.$/, '').toUpperCase();
+  const mapped = STREET_SUFFIX_MAP[lastWord];
+  if (mapped) {
+    return { name: parts.slice(0, -1).join(' '), suffix: mapped };
+  }
+  return { name: street.trim(), suffix: '' };
+}
+
 function normalizeAddress(addr: string): string {
   const ordinals: Record<string, string> = {
     'FIRST': '1', 'SECOND': '2', 'THIRD': '3', 'FOURTH': '4', 'FIFTH': '5',
@@ -534,25 +604,7 @@ async function handleNYSQuery(address: string, county: string, fetchHeaders: Rec
     let raw: any[] = [];
 
     // Split street into name + suffix for NYS dataset matching
-    const streetParts = streetName.split(/\s+/);
-    const suffixes: Record<string, string> = {
-      'STREET': 'St', 'ST': 'St', 'AVENUE': 'Ave', 'AVE': 'Ave',
-      'BOULEVARD': 'Blvd', 'BLVD': 'Blvd', 'ROAD': 'Rd', 'RD': 'Rd',
-      'DRIVE': 'Dr', 'DR': 'Dr', 'LANE': 'La', 'LA': 'La', 'LN': 'La',
-      'PLACE': 'Pl', 'PL': 'Pl', 'COURT': 'Ct', 'CT': 'Ct',
-      'TERRACE': 'Ter', 'TER': 'Ter', 'CIRCLE': 'Cir', 'WAY': 'Way',
-    };
-
-    let searchStreet = streetParts.join(' ');
-    let searchSuff = '';
-    if (streetParts.length >= 2) {
-      const lastWord = streetParts[streetParts.length - 1].toUpperCase();
-      if (suffixes[lastWord]) {
-        searchSuff = suffixes[lastWord];
-        searchStreet = streetParts.slice(0, -1).join(' ');
-      }
-    }
-
+    const { name: searchStreet, suffix: searchSuff } = splitStreetSuffix(streetName);
     const streetUpper = searchStreet.toUpperCase();
 
     // Try exact street match (with and without municipality)

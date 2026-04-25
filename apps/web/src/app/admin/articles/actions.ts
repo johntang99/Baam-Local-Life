@@ -33,6 +33,7 @@ export async function createArticle(formData: FormData) {
       body_zh: formData.get('body_zh') as string,
       body_en: formData.get('body_en') as string,
       editorial_status: (formData.get('editorial_status') as string) || 'draft',
+      is_featured: formData.get('is_featured') === 'true',
       category_id: formData.get('category_id') as string || null,
       region_id: formData.get('region_id') as string || null,
       source_type: formData.get('source_type') as string || null,
@@ -82,7 +83,6 @@ async function syncBusinessLinks(supabase: ReturnType<typeof db>, articleId: str
 
 export async function updateArticle(articleId: string, formData: FormData) {
   const supabase = db();
-  const ctx = await getAdminSiteContext();
 
   const { error } = await supabase
     .from('articles')
@@ -93,6 +93,7 @@ export async function updateArticle(articleId: string, formData: FormData) {
       body_zh: formData.get('body_zh') as string,
       body_en: formData.get('body_en') as string,
       editorial_status: formData.get('editorial_status') as string,
+      is_featured: formData.get('is_featured') === 'true',
       category_id: formData.get('category_id') as string || null,
       region_id: formData.get('region_id') as string || null,
       source_type: formData.get('source_type') as string || null,
@@ -103,8 +104,7 @@ export async function updateArticle(articleId: string, formData: FormData) {
       cover_image_url: formData.get('cover_image_url') as string || null,
       audience_types: JSON.parse((formData.get('audience_types') as string) || '[]'),
     })
-    .eq('id', articleId)
-    .eq('site_id', ctx.siteId);
+    .eq('id', articleId);
 
   revalidatePath('/admin/articles');
 
@@ -214,17 +214,31 @@ export async function bulkArchive(articleIds: string[]) {
   return { error: null };
 }
 
+export async function toggleFeatured(articleId: string, currentValue: boolean) {
+  const supabase = db();
+
+  const { error } = await supabase
+    .from('articles')
+    .update({ is_featured: !currentValue })
+    .eq('id', articleId);
+
+  revalidatePath('/admin/articles');
+
+  if (error) {
+    return { error: error.message };
+  }
+  return { error: null, is_featured: !currentValue };
+}
+
 export async function generateAISummary(articleId: string) {
   const supabase = db();
-  const ctx = await getAdminSiteContext();
 
-  // Fetch article content
+  // Fetch article content (no site_id filter — admin can edit any article by ID)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: article, error: fetchError } = await (supabase as any)
     .from('articles')
-    .select('title_zh, title_en, body_zh, body_en')
+    .select('title_zh, title_en, body_zh, body_en, site_id')
     .eq('id', articleId)
-    .eq('site_id', ctx.siteId)
     .single();
 
   if (fetchError || !article) {
@@ -269,8 +283,7 @@ export async function generateAISummary(articleId: string) {
     const { error } = await (supabase as any)
       .from('articles')
       .update(updateData)
-      .eq('id', articleId)
-      .eq('site_id', ctx.siteId);
+      .eq('id', articleId);
 
     revalidatePath('/admin/articles');
 
@@ -302,14 +315,12 @@ export async function generateAISummary(articleId: string) {
 
 export async function generateAIFAQ(articleId: string) {
   const supabase = db();
-  const ctx = await getAdminSiteContext();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: article, error: fetchError } = await (supabase as any)
     .from('articles')
     .select('title_zh, title_en, body_zh, body_en')
     .eq('id', articleId)
-    .eq('site_id', ctx.siteId)
     .single();
 
   if (fetchError || !article) {
@@ -333,8 +344,7 @@ export async function generateAIFAQ(articleId: string) {
     const { error } = await (supabase as any)
       .from('articles')
       .update({ ai_faq: faqResult.data })
-      .eq('id', articleId)
-      .eq('site_id', ctx.siteId);
+      .eq('id', articleId);
 
     revalidatePath('/admin/articles');
 

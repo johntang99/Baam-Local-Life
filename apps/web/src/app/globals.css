@@ -167,6 +167,21 @@
   --color-emerald-500: var(--accent-green, #22C55E);
   --color-emerald-600: var(--accent-green, #22C55E);
 
+  /* Editorial Theme Colors (used inside .theme-editorial) */
+  --color-ed-paper: var(--ed-paper, #FBF6EC);
+  --color-ed-paper-warm: var(--ed-paper-warm, #F5EDD8);
+  --color-ed-surface: var(--ed-surface, #FFFDF8);
+  --color-ed-surface-elev: var(--ed-surface-elev, #FFFFFF);
+  --color-ed-ink: var(--ed-ink, #1F1B16);
+  --color-ed-ink-soft: var(--ed-ink-soft, #4A4236);
+  --color-ed-ink-muted: var(--ed-ink-muted, #8C8478);
+  --color-ed-line: var(--ed-line, rgba(31, 27, 22, 0.08));
+  --color-ed-line-strong: var(--ed-line-strong, rgba(31, 27, 22, 0.16));
+  --color-ed-accent: var(--ed-accent, #C73E1D);
+  --color-ed-accent-soft: var(--ed-accent-soft, #E56342);
+  --color-ed-amber: var(--ed-amber, #D4A017);
+  --color-ed-amber-soft: var(--ed-amber-soft, #E8B84A);
+
   /* Typography Sizes */
   --font-size-display: var(--text-display, 2.25rem);
   --font-size-heading: var(--text-heading, 1.5rem);

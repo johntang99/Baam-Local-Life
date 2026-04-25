@@ -92,7 +92,7 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
   const from = (currentPage - 1) * PAGE_SIZE;
   let dataQuery = supabase
     .from('forum_threads')
-    .select('*')
+    .select('*, profiles:author_id(display_name)')
     .eq('board_id', boardData.id)
     .eq('status', 'published')
     .eq('site_id', site.id)
@@ -143,8 +143,8 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
               )}
             </div>
 
-            {/* Sort Buttons — now functional */}
-            <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
+            {/* Sort Buttons + New Post */}
+            <div className="flex items-center gap-1 mb-6 overflow-x-auto pb-2">
               {sortOptions.map((opt) => (
                 <Link
                   key={opt.key}
@@ -158,6 +158,13 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
                   {opt.label}
                 </Link>
               ))}
+              <Link
+                href="/forum/new"
+                className={cn(buttonVariants({ size: 'sm' }), 'r-full ml-auto bg-primary text-text-inverse hover:bg-primary-dark flex-shrink-0 flex items-center gap-1')}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                发布新帖
+              </Link>
             </div>
 
             {/* Thread List */}
@@ -190,7 +197,7 @@ export default async function ForumBoardPage({ params, searchParams }: Props) {
                               </h3>
                             </div>
                             <div className="flex items-center gap-3 text-xs text-text-muted">
-                              <span>{thread.author_name || '匿名用户'}</span>
+                              <span>{thread.profiles?.display_name || '匿名用户'}</span>
                               <span>{timeAgo}</span>
                               <span className="flex items-center gap-1">💬 {thread.reply_count || 0}</span>
                               <span className="flex items-center gap-1">👀 {thread.view_count || 0}</span>

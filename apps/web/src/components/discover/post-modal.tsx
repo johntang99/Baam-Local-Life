@@ -90,12 +90,15 @@ export function PostModal({ slug, preview, isLoggedIn: serverIsLoggedIn, current
     return () => { cancelled = true; };
   }, [slug]);
 
-  // Push URL state
+  // Push URL state — use native history API to avoid triggering Next.js router
   useEffect(() => {
     const originalUrl = window.location.pathname + window.location.search;
     let closedViaPopstate = false;
 
-    window.history.pushState({ modal: true }, '', `/zh/discover/${encodeURIComponent(slug)}`);
+    // Use replaceState first, then pushState with a hash to prevent Next.js
+    // from treating this as a route change and navigating away from the modal
+    const modalUrl = `${window.location.pathname}${window.location.search}#post=${encodeURIComponent(slug)}`;
+    window.history.pushState({ modal: true, slug }, '', modalUrl);
 
     const handlePop = () => {
       closedViaPopstate = true;

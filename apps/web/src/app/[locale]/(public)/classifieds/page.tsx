@@ -1,167 +1,86 @@
 import { createClient } from '@/lib/supabase/server';
-import { Link } from '@/lib/i18n/routing';
-import { Pagination } from '@/components/shared/pagination';
-import { PageContainer } from '@/components/layout/page-shell';
-import { Badge } from '@/components/ui/badge';
-import { buttonVariants } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
-import type { Metadata } from 'next';
 import { getCurrentSite } from '@/lib/sites';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyRow = Record<string, any>;
-
-const PAGE_SIZE = 20;
+import { Link } from '@/lib/i18n/routing';
+import { EditorialPageHeader } from '@/components/editorial/page-header';
+import { EditorialContainer } from '@/components/editorial/container';
+import { EditorialCard } from '@/components/editorial/card';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: '分类信息 · Baam',
-  description: '纽约华人社区分类信息 — 租房、求职、二手、服务',
+  description: '纽约华人社区分类信息：房屋出租、诚聘招工、二手商品、寻求帮助',
 };
 
-const categoryTabs = [
-  { key: '', label: '全部' },
-  { key: 'housing_rent', label: '租房' },
-  { key: 'housing_buy', label: '房产' },
-  { key: 'jobs', label: '招聘求职' },
-  { key: 'secondhand', label: '二手转让' },
-  { key: 'services', label: '生活服务' },
-  { key: 'events', label: '活动' },
-  { key: 'general', label: '其他' },
+const categories = [
+  { key: 'housing', dbFilter: ['housing_rent', 'housing_buy'], emoji: '🏠', title: '房屋出租', desc: '法拉盛、Elmhurst、Bayside 等地区房源' },
+  { key: 'jobs', dbFilter: ['jobs'], emoji: '💼', title: '诚聘招工', desc: '餐饮、零售、办公、技术等岗位' },
+  { key: 'secondhand', dbFilter: ['secondhand'], emoji: '📦', title: '二手商品', desc: '电子产品、家具、母婴、服饰等' },
+  { key: 'help', dbFilter: ['services', 'general'], emoji: '🙋', title: '寻求帮助', desc: '搬家、翻译、维修、家教等服务' },
 ];
 
-const categoryLabels: Record<string, string> = {
-  housing_rent: '租房', housing_buy: '房产', jobs: '招聘求职',
-  secondhand: '二手转让', services: '生活服务', events: '活动', general: '其他',
-};
-
-interface Props {
-  searchParams: Promise<{ page?: string; cat?: string }>;
-}
-
-export default async function ClassifiedsListPage({ searchParams }: Props) {
-  const sp = await searchParams;
-  const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
-  const activeCat = sp.cat || '';
-
+export default async function ClassifiedsHubPage() {
   const supabase = await createClient();
   const site = await getCurrentSite();
 
-  // Count
-  let countQuery = (supabase as any)
-    .from('classifieds')
-    .select('id', { count: 'exact', head: true })
-    .eq('status', 'active')
-    .eq('site_id', site.id);
-  if (activeCat) countQuery = countQuery.eq('category', activeCat);
-
-  const { count } = await countQuery;
-  const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
-
-  // Fetch
-  const from = (currentPage - 1) * PAGE_SIZE;
-  let dataQuery = (supabase as any)
-    .from('classifieds')
-    .select('*')
-    .eq('status', 'active')
-    .eq('site_id', site.id);
-  if (activeCat) dataQuery = dataQuery.eq('category', activeCat);
-
-  const { data: rawItems } = await dataQuery
-    .order('is_featured', { ascending: false })
-    .order('created_at', { ascending: false })
-    .range(from, from + PAGE_SIZE - 1);
-
-  const items = (rawItems || []) as AnyRow[];
-
-  const preservedParams: Record<string, string> = {};
-  if (activeCat) preservedParams.cat = activeCat;
+  const counts: Record<string, number> = {};
+  await Promise.all(
+    categories.map(async (cat) => {
+      const { count } = await supabase
+        .from('classifieds')
+        .select('*', { count: 'exact', head: true })
+        .eq('site_id', site.id)
+        .in('category', cat.dbFilter)
+        .eq('status', 'active');
+      counts[cat.key] = count || 0;
+    })
+  );
 
   return (
     <main>
-      <PageContainer className="py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl fw-bold">分类信息</h1>
-          <Link href="/classifieds/new" className={cn(buttonVariants({ size: 'sm' }), 'h-9 px-4 text-sm')}>发布信息</Link>
-        </div>
+      <EditorialPageHeader
+        breadcrumbs={[
+          { label: '首页', href: '/' },
+          { label: '分类信息' },
+        ]}
+        title="分类信息"
+        titleEm="Classifieds"
+        subtitle="纽约华人社区生活信息：房屋、招工、二手、求助"
+        right={
+          <Link href="/classifieds/new" style={{
+            padding: '8px 20px', borderRadius: 'var(--ed-radius-md)',
+            fontSize: 13.5, fontWeight: 500,
+            background: 'var(--ed-ink)', color: 'var(--ed-paper)',
+          }}>
+            + 免费发布
+          </Link>
+        }
+      />
 
-        {/* Category Tabs */}
-        <div className="flex gap-1 mb-6 overflow-x-auto pb-2">
-          {categoryTabs.map((tab) => (
-            <Link
-              key={tab.key}
-              href={tab.key ? `/classifieds?cat=${tab.key}` : '/classifieds'}
-              className={cn(buttonVariants({ size: 'sm' }), 'r-full whitespace-nowrap', `${
-                activeCat === tab.key
-                  ? 'bg-primary text-text-inverse'
-                  : 'bg-border-light text-text-secondary hover:bg-border-light'
-              }`)}
-            >
-              {tab.label}
+      <EditorialContainer className="py-8 pb-16">
+        <p style={{ fontSize: 13, color: 'var(--ed-ink-muted)', marginBottom: 24 }}>选择分类浏览信息</p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {categories.map((cat) => (
+            <Link key={cat.key} href={`/classifieds/${cat.key}`} className="block group">
+              <EditorialCard className="p-6">
+                <div className="flex items-start gap-4">
+                  <span style={{ fontSize: 36 }}>{cat.emoji}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h2 style={{ fontFamily: 'var(--ed-font-serif)', fontSize: 18, fontWeight: 700 }}>{cat.title}</h2>
+                      <span style={{ fontSize: 12, color: 'var(--ed-ink-muted)', background: 'var(--ed-surface)', padding: '2px 10px', borderRadius: 'var(--ed-radius-pill)' }}>
+                        {counts[cat.key]} 条
+                      </span>
+                    </div>
+                    <p style={{ fontSize: 13.5, color: 'var(--ed-ink-soft)' }}>{cat.desc}</p>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--ed-ink-muted)', flexShrink: 0, marginTop: 4 }}><path d="M9 5l7 7-7 7" /></svg>
+                </div>
+              </EditorialCard>
             </Link>
           ))}
         </div>
-
-        {/* List */}
-        {items.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-4xl mb-4">📋</p>
-            <p className="text-text-secondary">暂无分类信息</p>
-            <p className="text-text-muted text-sm mt-1">发布第一条信息吧</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {items.map((item) => {
-              const timeAgo = formatTimeAgo(item.created_at);
-              const catLabel = categoryLabels[item.category] || '其他';
-              return (
-                <Link key={item.id} href={`/classifieds/${item.slug}`} className="block">
-                  <Card className="p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        {item.is_featured && <Badge className="text-xs bg-accent-red-light text-accent-red">置顶</Badge>}
-                        <Badge variant="muted" className="text-xs">{catLabel}</Badge>
-                        <span className="text-xs text-text-muted">{timeAgo}</span>
-                      </div>
-                      <h3 className="fw-semibold text-sm line-clamp-1 mb-1">{item.title}</h3>
-                      {item.body && (
-                        <p className="text-xs text-text-secondary line-clamp-2">{item.body}</p>
-                      )}
-                    </div>
-                    {item.price_text && (
-                      <span className="text-sm fw-bold text-primary flex-shrink-0">{item.price_text}</span>
-                    )}
-                  </div>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        )}
-
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          basePath="/classifieds"
-          searchParams={preservedParams}
-        />
-      </PageContainer>
+      </EditorialContainer>
     </main>
   );
-}
-
-function formatTimeAgo(dateStr: string | null): string {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMins < 60) return `${diffMins}分钟前`;
-  if (diffHours < 24) return `${diffHours}小时前`;
-  if (diffDays < 7) return `${diffDays}天前`;
-  return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
 }

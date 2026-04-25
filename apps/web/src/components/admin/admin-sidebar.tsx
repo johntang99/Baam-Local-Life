@@ -13,6 +13,8 @@ const siteNavItems = [
   { href: '/admin/voices', label: '达人管理', icon: '🎙️' },
   { href: '/admin/discover', label: '发现管理', icon: '🔍' },
   { href: '/admin/events', label: '活动管理', icon: '📅' },
+  { href: '/admin/deals', label: '优惠管理', icon: '🏷️' },
+  { href: '/admin/classifieds', label: '分类信息', icon: '📋' },
   { href: '/admin/leads', label: '线索管理', icon: '📥' },
 ];
 

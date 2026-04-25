@@ -185,10 +185,11 @@ export async function deleteCategoryBasic(categoryId: string, formData: FormData
 }
 
 // ============================================================
-// THEME EDITOR (theme.ts -> baamTheme)
+// THEME EDITOR (theme.ts -> baamTheme / editorialTheme)
 // ============================================================
 
 const THEME_DECLARATION = 'export const baamTheme: BaamTheme =';
+const EDITORIAL_THEME_DECLARATION = 'export const editorialTheme: EditorialTheme =';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -255,12 +256,12 @@ function renderTsValue(value: unknown, indentLevel = 0): string {
   return JSON.stringify(value);
 }
 
-function findThemeObjectRange(source: string): { declarationStart: number; objectStart: number; objectEnd: number; statementEnd: number } {
-  const declarationStart = source.indexOf(THEME_DECLARATION);
-  if (declarationStart < 0) throw new Error('Could not find baamTheme declaration in theme.ts');
+function findThemeObjectRange(source: string, declaration: string = THEME_DECLARATION): { declarationStart: number; objectStart: number; objectEnd: number; statementEnd: number } {
+  const declarationStart = source.indexOf(declaration);
+  if (declarationStart < 0) throw new Error(`Could not find declaration "${declaration}" in theme.ts`);
 
   const objectStart = source.indexOf('{', declarationStart);
-  if (objectStart < 0) throw new Error('Could not find opening brace for baamTheme');
+  if (objectStart < 0) throw new Error(`Could not find opening brace for ${declaration}`);
 
   let depth = 0;
   let inSingle = false;
@@ -341,10 +342,10 @@ function findThemeObjectRange(source: string): { declarationStart: number; objec
     }
   }
 
-  if (objectEnd < 0) throw new Error('Could not locate closing brace for baamTheme object');
+  if (objectEnd < 0) throw new Error(`Could not locate closing brace for ${declaration}`);
 
   const statementEnd = source.indexOf(';', objectEnd);
-  if (statementEnd < 0) throw new Error('Could not locate statement terminator for baamTheme');
+  if (statementEnd < 0) throw new Error(`Could not locate statement terminator for ${declaration}`);
 
   return { declarationStart, objectStart, objectEnd, statementEnd };
 }
@@ -397,4 +398,68 @@ export async function saveThemeConfig(formData: FormData) {
   revalidatePath('/en');
 
   return { success: true, message: 'Theme saved to src/lib/theme.ts' };
+}
+
+// ============================================================
+// EDITORIAL THEME EDITOR (theme.ts -> editorialTheme)
+// ============================================================
+
+function validateEditorialThemeShape(theme: unknown): { ok: boolean; error?: string } {
+  if (!isRecord(theme)) return { ok: false, error: 'Theme must be a JSON object.' };
+  const requiredTopLevel = ['colors', 'typography', 'shape', 'layout'];
+  for (const key of requiredTopLevel) {
+    if (!isRecord(theme[key])) {
+      return { ok: false, error: `Missing required object: ${key}` };
+    }
+  }
+  return { ok: true };
+}
+
+export async function saveEditorialThemeConfig(formData: FormData) {
+  await requireAdmin();
+
+  const themeJsonText = String(formData.get('theme_json') || '').trim();
+  if (!themeJsonText) return { error: 'Theme JSON is required.' };
+
+  let parsedTheme: unknown;
+  try {
+    parsedTheme = JSON.parse(themeJsonText);
+  } catch {
+    return { error: 'Invalid JSON. Please fix JSON syntax and try again.' };
+  }
+
+  const shapeCheck = validateEditorialThemeShape(parsedTheme);
+  if (!shapeCheck.ok) return { error: shapeCheck.error || 'Invalid theme schema.' };
+
+  const candidatePaths = [
+    path.join(process.cwd(), 'src/lib/theme.ts'),
+    path.join(process.cwd(), 'apps/web/src/lib/theme.ts'),
+  ];
+  let filePath = '';
+  for (const p of candidatePaths) {
+    try {
+      await access(p);
+      filePath = p;
+      break;
+    } catch {
+      // try next path
+    }
+  }
+  if (!filePath) {
+    return { error: 'Cannot locate theme.ts file.' };
+  }
+
+  const source = await readFile(filePath, 'utf-8');
+  const range = findThemeObjectRange(source, EDITORIAL_THEME_DECLARATION);
+  const renderedTheme = renderTsValue(parsedTheme, 0);
+  const replacement = `${EDITORIAL_THEME_DECLARATION} ${renderedTheme};`;
+  const nextSource = `${source.slice(0, range.declarationStart)}${replacement}${source.slice(range.statementEnd + 1)}`;
+
+  await writeFile(filePath, nextSource, 'utf-8');
+
+  revalidatePath('/admin/settings');
+  revalidatePath('/zh');
+  revalidatePath('/en');
+
+  return { success: true, message: 'Editorial theme saved to src/lib/theme.ts' };
 }

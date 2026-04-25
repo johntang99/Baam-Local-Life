@@ -12,28 +12,54 @@ interface VideoUploaderProps {
 export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: VideoUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState('');
+  const [uploadPercent, setUploadPercent] = useState<number | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const uploadFile = async (file: File): Promise<string | null> => {
+  const uploadFile = async (
+    file: File,
+    onProgress?: (payload: { percent: number; phase: 'uploading' | 'processing' | 'done' }) => void,
+  ): Promise<{ url: string | null; error?: string }> => {
     const formData = new FormData();
     formData.set('file', file);
     formData.set('folder', 'discover/videos');
 
-    try {
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (!res.ok) {
-        const err = await res.json();
-        setProgress(err.error || '上传失败');
-        return null;
-      }
-      const data = await res.json();
-      return data.url || null;
-    } catch {
-      setProgress('上传失败，请重试');
-      return null;
-    }
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/upload');
+      xhr.responseType = 'json';
+
+      xhr.upload.onprogress = (event) => {
+        if (!event.lengthComputable) return;
+        // Phase 1: browser -> API route transfer (0% ~ 85%)
+        const percent = Math.min(85, Math.round((event.loaded / event.total) * 85));
+        onProgress?.({ percent, phase: 'uploading' });
+      };
+
+      xhr.upload.onload = () => {
+        // Phase 2: API route -> Supabase write in progress
+        onProgress?.({ percent: 90, phase: 'processing' });
+      };
+
+      xhr.onload = () => {
+        const response =
+          xhr.response && typeof xhr.response === 'object'
+            ? (xhr.response as { url?: string; error?: string; message?: string })
+            : null;
+        if (xhr.status >= 200 && xhr.status < 300) {
+          onProgress?.({ percent: 100, phase: 'done' });
+          resolve({ url: response?.url || null });
+          return;
+        }
+        resolve({ url: null, error: response?.error || response?.message || '上传失败' });
+      };
+
+      xhr.onerror = () => resolve({ url: null, error: '网络错误，上传失败' });
+      xhr.onabort = () => resolve({ url: null, error: '上传已取消' });
+
+      xhr.send(formData);
+    });
   };
 
   // Extract duration and generate thumbnail from video element
@@ -86,10 +112,12 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
 
     if (file.size > 200 * 1024 * 1024) {
       setProgress('视频文件不能超过 200MB');
+      setUploadPercent(null);
       return;
     }
 
     setUploading(true);
+    setUploadPercent(null);
     setProgress('正在提取视频信息...');
 
     // Extract metadata first
@@ -98,24 +126,35 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
     if (metadata.duration < 5) {
       setProgress('视频时长不能少于 5 秒');
       setUploading(false);
+      setUploadPercent(null);
       return;
     }
 
     if (metadata.duration > 300) {
       setProgress('视频时长不能超过 5 分钟');
       setUploading(false);
+      setUploadPercent(null);
       return;
     }
 
     // Upload video
     setProgress('正在上传视频...');
-    const url = await uploadFile(file);
+    setUploadPercent(0);
+    const { url, error } = await uploadFile(file, ({ percent, phase }) => {
+      setUploadPercent(percent);
+      if (phase === 'processing') {
+        setProgress('文件已传输，正在写入云端...');
+      } else if (phase === 'uploading') {
+        setProgress('正在上传视频...');
+      }
+    });
 
     if (url) {
       // Upload thumbnail if we got one
       let thumbUrl: string | null = null;
       if (metadata.thumbnail) {
         setProgress('正在生成封面...');
+        setUploadPercent(null);
         try {
           const blob = await fetch(metadata.thumbnail).then(r => r.blob());
           const thumbFile = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
@@ -136,6 +175,10 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
         duration: metadata.duration,
       });
       setProgress('');
+      setUploadPercent(null);
+    } else {
+      setProgress(error || '上传失败，请重试');
+      setUploadPercent(null);
     }
 
     setUploading(false);
@@ -204,8 +247,23 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
         >
           {uploading ? (
             <>
-              <div className="w-10 h-10 border-3 border-primary border-t-transparent r-full animate-spin mx-auto mb-3" />
-              <p className="text-sm text-gray-600">{progress}</p>
+              {uploadPercent !== null ? (
+                <div className="max-w-md mx-auto">
+                  <p className="text-sm text-gray-600 mb-3">{progress || '正在上传视频...'}</p>
+                  <div className="h-2 w-full bg-gray-200 r-full overflow-hidden">
+                    <div
+                      className="h-full bg-primary transition-all duration-200"
+                      style={{ width: `${uploadPercent}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">{uploadPercent}%</p>
+                </div>
+              ) : (
+                <>
+                  <div className="w-10 h-10 border-3 border-primary border-t-transparent r-full animate-spin mx-auto mb-3" />
+                  <p className="text-sm text-gray-600">{progress}</p>
+                </>
+              )}
             </>
           ) : (
             <>

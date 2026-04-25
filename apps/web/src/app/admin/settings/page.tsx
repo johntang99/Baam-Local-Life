@@ -4,7 +4,7 @@ import { ContentCategoryTable } from './ContentCategoryTable';
 import { ThemeEditor } from './ThemeEditor';
 import { SiteSettingsEditor } from './SiteSettingsEditor';
 import Link from 'next/link';
-import { baamTheme } from '@/lib/theme';
+import { editorialTheme } from '@/lib/theme';
 import { getAllSiteSettings } from '@/lib/site-settings';
 import { getAdminSiteContext } from '@/lib/admin-context';
 
@@ -20,6 +20,7 @@ const TABS = [
   { key: 'navigation', label: '导航管理' },
   { key: 'footer', label: 'Footer 页脚' },
   { key: 'seo', label: 'SEO 搜索优化' },
+  { key: 'moderation', label: '内容审核' },
   { key: 'regions', label: '地区管理' },
   { key: 'business', label: '商家分类' },
   { key: 'guides', label: 'Guide 分类' },
@@ -77,7 +78,7 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
   const forumEnCategories = toSiteScopeRows(forumRows, 'en');
   const discoverZhCategories = toSiteScopeRows(discoverRows, 'zh');
   const discoverEnCategories = toSiteScopeRows(discoverRows, 'en');
-  const initialThemeJson = JSON.stringify(baamTheme, null, 2);
+  const initialEditorialThemeJson = JSON.stringify(editorialTheme, null, 2);
 
   return (
     <div>
@@ -109,10 +110,11 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
 
       <div className="p-6 space-y-8">
         {/* Site Settings Tabs: Header, Navigation, Footer, SEO */}
-        {(activeTab === 'header' || activeTab === 'navigation' || activeTab === 'footer' || activeTab === 'seo') && (
+        {(activeTab === 'header' || activeTab === 'navigation' || activeTab === 'footer' || activeTab === 'seo' || activeTab === 'moderation') && (
           <SiteSettingsEditor
+            key={activeTab}
             siteId={ctx.siteId}
-            settingKey={activeTab as 'header' | 'navigation' | 'footer' | 'seo'}
+            settingKey={activeTab as 'header' | 'navigation' | 'footer' | 'seo' | 'moderation'}
             initialValue={siteSettings[activeTab as keyof typeof siteSettings]}
           />
         )}
@@ -246,8 +248,9 @@ export default async function AdminSettingsPage({ searchParams }: Props) {
 
         {activeTab === 'theme' && (
           <ThemeEditor
-            initialThemeJson={initialThemeJson}
+            initialThemeJson={initialEditorialThemeJson}
             targetFile="apps/web/src/lib/theme.ts"
+            saveAction="editorial"
           />
         )}
 

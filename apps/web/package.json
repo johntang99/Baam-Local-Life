@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@aws-sdk/client-rekognition": "^3.1032.0",
+    "@aws-sdk/client-s3": "^3.1032.0",
     "@baam/helper-core-2": "file:./helper-core-2",
     "@supabase/ssr": "^0.6.0",
     "@supabase/supabase-js": "^2.49.0",

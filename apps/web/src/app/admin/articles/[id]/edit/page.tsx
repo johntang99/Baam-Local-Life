@@ -23,12 +23,11 @@ export default async function EditArticlePage({ params, searchParams }: Props) {
   if (sp.region) siteParamsObj.set('region', String(sp.region));
   if (sp.locale) siteParamsObj.set('locale', String(sp.locale));
 
-  // Fetch the article
+  // Fetch the article (no site_id filter — admin edits by ID)
   const { data: article } = await supabase
     .from('articles')
     .select('*')
     .eq('id', id)
-    .eq('site_id', ctx.siteId)
     .single();
 
   if (!article) {

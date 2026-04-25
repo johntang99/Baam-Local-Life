@@ -1,15 +1,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { Link } from '@/lib/i18n/routing';
-import { PageContainer } from '@/components/layout/page-shell';
+import { EditorialContainer } from '@/components/editorial/container';
+import { EditorialCard } from '@/components/editorial/card';
 import { DiscoverCard } from '@/components/discover/discover-card';
 import { MasonryGrid } from '@/components/discover/masonry-grid';
-import { DiscoverTabs } from '@/components/discover/discover-tabs';
 import { DiscoverFeedClient } from '@/components/discover/discover-feed-client';
-import { TrendingTopics, TrendingSidebar, WeeklyPicks } from '@/components/discover/trending-topics';
 import { Pagination } from '@/components/shared/pagination';
-import { buttonVariants } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { getCurrentSite } from '@/lib/sites';
 import { getCurrentUser } from '@/lib/auth';
@@ -17,52 +13,36 @@ import { getCurrentUser } from '@/lib/auth';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
 
-const PAGE_SIZE = 20;
-
-const creatorGradients = [
-  'from-pink-200 to-rose-300',
-  'from-secondary-light to-secondary-light',
-  'from-amber-200 to-primary-light',
-  'from-emerald-200 to-teal-300',
-  'from-violet-200 to-accent-purple-light',
-];
-
-const creatorTextColors = [
-  'text-rose-600',
-  'text-secondary-dark',
-  'text-primary-dark',
-  'text-teal-600',
-  'text-accent-purple',
-];
+const PAGE_SIZE = 24;
 
 export const metadata: Metadata = {
-  title: '发现 · Baam',
+  title: '逛逛晒晒 · Baam',
   description: '发现纽约华人生活中值得关注的人、内容、地点、服务与趋势',
 };
 
 interface Props {
-  searchParams: Promise<{ tab?: string; page?: string; topic?: string }>;
+  searchParams: Promise<{ tab?: string; page?: string; category?: string }>;
 }
 
 export default async function DiscoverPage({ searchParams }: Props) {
   const sp = await searchParams;
-  const activeTab = sp.tab || 'recommend';
+  const activeTab = sp.tab || 'all';
   const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
-  const topicFilter = sp.topic || null;
+  const categoryFilter = sp.category || null;
 
   const supabase = await createClient();
   const site = await getCurrentSite();
   const currentUser = await getCurrentUser().catch(() => null);
 
-  // Fetch trending topics
+  // Fetch content categories
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: rawTopics } = await (supabase as any)
-    .from('discover_topics')
-    .select('*')
-    .eq('is_trending', true)
+  const { data: rawCategories } = await (supabase as any)
+    .from('categories_discover')
+    .select('id, slug, name_zh, name_en, icon, sort_order')
+    .eq('is_active', true)
+    .eq('site_scope', 'zh')
     .order('sort_order', { ascending: true });
-
-  const topics = (rawTopics || []) as AnyRow[];
+  const categories = (rawCategories || []) as AnyRow[];
 
   // Build posts query
   let postsQuery = supabase
@@ -72,211 +52,251 @@ export default async function DiscoverPage({ searchParams }: Props) {
     .eq('visibility', 'public')
     .eq('site_id', site.id);
 
-  // Tab filters
+  // Tab filter
   if (activeTab === 'notes') {
     postsQuery = postsQuery.in('post_type', ['note', 'short_post', 'blog', 'recommendation', 'guide_post']);
   } else if (activeTab === 'videos') {
     postsQuery = postsQuery.eq('post_type', 'video');
   }
 
-  // Topic filter
-  if (topicFilter) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: topicData } = await (supabase as any)
-      .from('discover_topics')
-      .select('id')
-      .eq('slug', topicFilter)
-      .single();
-
-    const topic = topicData as AnyRow | null;
-    if (topic) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data: postIds } = await (supabase as any)
-        .from('discover_post_topics')
-        .select('post_id')
-        .eq('topic_id', topic.id);
-
-      const ids = ((postIds || []) as AnyRow[]).map((r) => r.post_id);
-      if (ids.length > 0) {
-        postsQuery = postsQuery.in('id', ids);
-      } else {
-        postsQuery = postsQuery.eq('id', '00000000-0000-0000-0000-000000000000');
-      }
-    }
+  // Category filter
+  const activeCategory = categoryFilter ? categories.find((c: AnyRow) => c.slug === categoryFilter) : null;
+  if (activeCategory) {
+    postsQuery = postsQuery.eq('category_id', activeCategory.id);
   }
 
-  // Sort
   postsQuery = postsQuery.order('published_at', { ascending: false });
-
-  // Pagination
   const from = (currentPage - 1) * PAGE_SIZE;
   const { data: rawPosts, count } = await postsQuery.range(from, from + PAGE_SIZE - 1);
   const posts = (rawPosts || []) as AnyRow[];
   const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
-  // Fetch featured creators for sidebar
+  // ─── Sidebar Data ───
+
+  // 热门话题 — trending topics
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: rawTopics } = await (supabase as any)
+    .from('discover_topics')
+    .select('id, slug, name_zh, icon_emoji, post_count')
+    .eq('is_trending', true)
+    .order('post_count', { ascending: false })
+    .limit(8);
+  const topics = (rawTopics || []) as AnyRow[];
+
+  // 推荐创作者 — featured creators
   const { data: rawCreators } = await supabase
     .from('profiles')
     .select('id, username, display_name, headline, avatar_url, is_verified, follower_count, profile_type')
     .eq('is_featured', true)
     .neq('profile_type', 'user')
     .order('follower_count', { ascending: false })
-    .limit(3);
-
+    .limit(5);
   const creators = (rawCreators || []) as AnyRow[];
 
-  // Fetch weekly picks (top liked posts)
-  const { data: rawPicks } = await supabase
+  // 本周热晒 — most viewed posts this week
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data: rawHotPosts } = await supabase
     .from('voice_posts')
-    .select('id, slug, title, cover_images, cover_image_url, like_count, save_count')
-    .eq('status', 'published')
-    .eq('visibility', 'public')
-    .eq('site_id', site.id)
-    .order('like_count', { ascending: false })
-    .limit(3);
+    .select('id, slug, title, cover_images, cover_image_url, like_count, view_count, save_count')
+    .eq('status', 'published').eq('visibility', 'public').eq('site_id', site.id)
+    .gte('published_at', oneWeekAgo)
+    .order('view_count', { ascending: false })
+    .limit(10);
+  const hotPosts = (rawHotPosts || []) as AnyRow[];
 
-  const weeklyPicks = (rawPicks || []) as AnyRow[];
-
-  // Active topic for header display
-  const activeTopic = topicFilter ? topics.find((t) => t.slug === topicFilter) : null;
-
-  // Preserved params for pagination
   const preservedParams: Record<string, string> = {};
-  if (activeTab !== 'recommend') preservedParams.tab = activeTab;
-  if (topicFilter) preservedParams.topic = topicFilter;
+  if (activeTab !== 'all') preservedParams.tab = activeTab;
+  if (categoryFilter) preservedParams.category = categoryFilter;
 
-  const gridPosts = posts;
+  const creatorGradients = ['from-pink-200 to-rose-300', 'from-amber-200 to-primary-light', 'from-emerald-200 to-teal-300', 'from-violet-200 to-purple-300', 'from-sky-200 to-blue-300'];
 
   return (
-    <main className="bg-bg-page min-h-screen">
-      {/* ===== Sticky Search + Trending Bar ===== */}
-      <div className="bg-bg-card border-b border-border-light shadow-sm sticky top-14 z-40">
-        <PageContainer className="pt-8 pb-4">
-          <div className="relative max-w-xl mb-3">
-            <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <Link href="/ask" className="flex items-center w-full h-11 pl-11 pr-4 bg-bg-page border border-border r-full text-sm text-text-muted hover:bg-bg-card hover:border-border transition">
-              搜索笔记、视频、话题...
-            </Link>
-          </div>
-          <TrendingTopics topics={topics} />
-        </PageContainer>
-      </div>
-
-      {/* ===== Tabs ===== */}
-      <div className="bg-bg-card border-b border-border-light">
-        <PageContainer>
-          <div className="py-2">
-            <DiscoverTabs />
-          </div>
-        </PageContainer>
-      </div>
-
-      <PageContainer className="pt-8 pb-6">
-        {/* Active Topic Banner */}
-        {activeTopic && (
-          <Card className="mb-6 p-4 bg-primary-50 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">{activeTopic.icon_emoji}</span>
-              <div>
-                <h2 className="fw-semibold text-sm">{activeTopic.name_zh}</h2>
-                <p className="text-xs text-text-muted">{activeTopic.post_count || 0} 篇内容</p>
-              </div>
+    <main>
+      {/* ─── Header + Category Tabs ─── */}
+      <div style={{ background: 'var(--ed-paper)', borderBottom: '1px solid var(--ed-line)' }}>
+        <div style={{ maxWidth: 'var(--ed-container-max)', margin: '0 auto', padding: '24px 16px 0' }}>
+          {/* Title Row */}
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: '0.08em', color: 'var(--ed-ink-muted)', textTransform: 'uppercase', marginBottom: 4 }}>
+                N° 01 / Community
+              </p>
+              <h1 style={{ fontFamily: 'var(--ed-font-serif)', fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 700, color: 'var(--ed-ink)', lineHeight: 1.2 }}>
+                逛逛晒晒 <span style={{ fontFamily: 'var(--ed-font-serif-italic)', fontStyle: 'italic', fontWeight: 400, color: 'var(--ed-ink-soft)', fontSize: '0.8em' }}>discover daily</span>
+              </h1>
             </div>
-            <Link href="/discover" className="text-xs text-text-muted hover:text-primary">
-              清除筛选 ×
+            <Link
+              href="/discover/new-post"
+              className="flex items-center gap-2 text-sm fw-semibold transition-all hover:-translate-y-px"
+              style={{ padding: '8px 18px', borderRadius: 'var(--ed-radius-pill)', background: 'var(--ed-accent)', color: 'var(--ed-paper)' }}
+            >
+              <span style={{ width: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.25)', borderRadius: '50%', fontSize: 13, lineHeight: 1 }}>+</span>
+              发个晒晒
             </Link>
-          </Card>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-0 -mb-px" style={{ scrollbarWidth: 'none' }}>
+            <Link
+              href="/discover"
+              className="flex-shrink-0 transition-colors"
+              style={{
+                padding: '10px 16px', fontSize: 14,
+                fontWeight: !categoryFilter ? 700 : 500,
+                color: !categoryFilter ? 'var(--ed-accent)' : 'var(--ed-ink-soft)',
+                borderBottom: !categoryFilter ? '2px solid var(--ed-accent)' : '2px solid transparent',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              推荐
+            </Link>
+            {categories.map((cat: AnyRow) => (
+              <Link
+                key={cat.slug}
+                href={`/discover?category=${cat.slug}`}
+                className="flex-shrink-0 transition-colors"
+                style={{
+                  padding: '10px 16px', fontSize: 14,
+                  fontWeight: categoryFilter === cat.slug ? 700 : 500,
+                  color: categoryFilter === cat.slug ? 'var(--ed-accent)' : 'var(--ed-ink-soft)',
+                  borderBottom: categoryFilter === cat.slug ? '2px solid var(--ed-accent)' : '2px solid transparent',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {cat.name_zh}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Main Content: 4-col feed + sidebar ─── */}
+      <div style={{ maxWidth: 'var(--ed-container-max)', margin: '0 auto', padding: '24px 16px 48px' }}>
+        {/* Active Category Banner */}
+        {activeCategory && (
+          <div className="flex items-center justify-between mb-5" style={{
+            padding: '12px 18px', background: 'var(--ed-surface)', border: '1px solid var(--ed-line)', borderRadius: 'var(--ed-radius-md)',
+          }}>
+            <div className="flex items-center gap-2">
+              <span style={{ fontSize: 18 }}>{activeCategory.icon}</span>
+              <h2 style={{ fontSize: 15, fontWeight: 600 }}>{activeCategory.name_zh}</h2>
+              <span style={{ fontSize: 12, color: 'var(--ed-ink-muted)' }}>{activeCategory.name_en}</span>
+            </div>
+            <Link href="/discover" style={{ fontSize: 12, color: 'var(--ed-ink-muted)' }}>清除筛选 ×</Link>
+          </div>
         )}
 
-        <div className="lg:flex lg:gap-8">
-          {/* ===== Main Feed ===== */}
+        <div className="lg:flex lg:gap-6">
+          {/* ─── Left: 4-column masonry feed ─── */}
           <div className="flex-1 min-w-0">
             <DiscoverFeedClient isLoggedIn={!!currentUser} currentUserId={currentUser?.id}>
               {posts.length === 0 ? (
-                <div className="py-16 text-center">
-                  <p className="text-4xl mb-4">📝</p>
-                  <p className="text-text-muted">暂无内容</p>
-                  <p className="text-sm text-text-muted mt-1">成为第一个发布内容的人吧！</p>
-                  <Link href="/discover/new-post" className="inline-block mt-4 px-5 py-2 bg-primary text-text-inverse text-sm fw-medium r-lg hover:bg-primary-dark transition-colors">
+                <div style={{ textAlign: 'center', padding: '64px 0' }}>
+                  <p style={{ fontSize: 48, marginBottom: 16 }}>📝</p>
+                  <p style={{ color: 'var(--ed-ink-soft)', fontSize: 15 }}>暂无内容</p>
+                  <Link href="/discover/new-post" style={{ display: 'inline-block', marginTop: 16, padding: '8px 20px', borderRadius: 'var(--ed-radius-md)', fontSize: 14, fontWeight: 500, background: 'var(--ed-ink)', color: 'var(--ed-paper)' }}>
                     发布笔记
                   </Link>
                 </div>
               ) : (
                 <>
-                  {/* Masonry Grid — 3 columns, natural image heights */}
-                  <MasonryGrid>
-                    {gridPosts.map((post, i) => (
-                      <DiscoverCard
-                        key={post.id}
-                        post={post}
-                        author={post.profiles}
-                        index={i}
-                        currentUserId={currentUser?.id}
-                      />
+                  <MasonryGrid columns={4}>
+                    {posts.map((post, i) => (
+                      <DiscoverCard key={post.id} post={post} author={post.profiles} index={i} currentUserId={currentUser?.id} />
                     ))}
                   </MasonryGrid>
-
-                  {/* Load More / Pagination */}
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    basePath="/discover"
-                    searchParams={preservedParams}
-                  />
+                  <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/discover" searchParams={preservedParams} />
                 </>
               )}
             </DiscoverFeedClient>
           </div>
 
-          {/* ===== Sidebar (Desktop) ===== */}
-          <aside className="hidden lg:block w-80 flex-shrink-0 space-y-6">
-            {/* Trending Topics */}
-            <TrendingSidebar topics={topics} />
-
-            {/* Recommended Creators */}
-            {creators.length > 0 && (
-              <Card className="p-5 r-lg">
-                <h3 className="fw-bold text-base mb-4 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  推荐创作者
+          {/* ─── Right: Sidebar (5th column) ─── */}
+          <aside className="hidden lg:block flex-shrink-0 space-y-5" style={{ width: 240 }}>
+            {/* 热门话题 */}
+            {topics.length > 0 && (
+              <EditorialCard className="p-4">
+                <h3 className="flex items-center gap-2 mb-3" style={{ fontFamily: 'var(--ed-font-serif)', fontSize: 14, fontWeight: 600 }}>
+                  🔥 热门话题
                 </h3>
-                <div className="space-y-4">
-                  {creators.map((c, i) => (
-                    <Link key={c.id} href={`/discover/voices/${c.username}`} className="flex items-center gap-3 group">
-                      <div className={`w-10 h-10 r-full bg-gradient-to-br ${creatorGradients[i % creatorGradients.length]} flex items-center justify-center text-sm fw-bold ${creatorTextColors[i % creatorTextColors.length]} flex-shrink-0`}>
-                        {c.display_name?.[0] || '?'}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm fw-semibold text-text-primary group-hover:text-primary transition">{c.display_name}</p>
-                        <p className="text-xs text-text-muted">{c.headline || `${formatFollowers(c.follower_count || 0)}粉丝`}</p>
-                      </div>
-                      <button className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'r-full flex-shrink-0')}>
-                        关注
-                      </button>
+                <div className="space-y-2">
+                  {topics.map((t: AnyRow, i: number) => (
+                    <Link key={t.id} href={`/discover?topic=${t.slug}`} className="flex items-center gap-2.5 group">
+                      <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center text-xs fw-bold" style={{
+                        borderRadius: '50%',
+                        background: i < 3 ? 'var(--ed-accent)' : 'var(--ed-line)',
+                        color: i < 3 ? 'var(--ed-paper)' : 'var(--ed-ink-soft)',
+                      }}>{i + 1}</span>
+                      <span className="text-[13px] group-hover:text-[var(--ed-accent)] transition-colors truncate">#{t.name_zh}</span>
                     </Link>
                   ))}
                 </div>
-                <Link href="/discover/voices" className="block text-center text-sm text-primary fw-medium mt-4 hover:underline">
-                  查看更多创作者 &rarr;
-                </Link>
-              </Card>
+              </EditorialCard>
             )}
 
-            {/* Weekly Picks */}
-            <WeeklyPicks posts={weeklyPicks} />
+            {/* 推荐创作者 */}
+            {creators.length > 0 && (
+              <EditorialCard className="p-4">
+                <h3 className="flex items-center gap-2 mb-3" style={{ fontFamily: 'var(--ed-font-serif)', fontSize: 14, fontWeight: 600 }}>
+                  👤 推荐创作者
+                </h3>
+                <div className="space-y-3">
+                  {creators.map((c: AnyRow, i: number) => (
+                    <Link key={c.id} href={`/discover/voices/${c.username}`} className="flex items-center gap-2.5 group">
+                      <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${creatorGradients[i % creatorGradients.length]} flex items-center justify-center text-xs font-bold flex-shrink-0`}>
+                        {c.display_name?.[0] || '?'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] fw-semibold truncate group-hover:text-[var(--ed-accent)] transition-colors">{c.display_name}</p>
+                        <p className="text-[11px] truncate" style={{ color: 'var(--ed-ink-muted)' }}>{c.headline || formatFollowers(c.follower_count || 0) + '粉丝'}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </EditorialCard>
+            )}
+
+            {/* 本周热晒 — top 10 most viewed this week */}
+            {hotPosts.length > 0 && (
+              <EditorialCard className="p-4">
+                <h3 className="flex items-center gap-2 mb-3" style={{ fontFamily: 'var(--ed-font-serif)', fontSize: 14, fontWeight: 600 }}>
+                  ✨ 本周热晒
+                </h3>
+                <div className="space-y-2.5">
+                  {hotPosts.map((p: AnyRow, i: number) => {
+                    const img = p.cover_image_url || p.cover_images?.[0] || null;
+                    return (
+                      <Link key={p.id} href={`/discover/${p.slug}`} className="flex items-start gap-2.5 group">
+                        <span className="flex-shrink-0 text-[11px] fw-bold mt-0.5" style={{
+                          width: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          borderRadius: '50%',
+                          background: i < 3 ? 'var(--ed-accent)' : 'transparent',
+                          color: i < 3 ? 'var(--ed-paper)' : 'var(--ed-ink-muted)',
+                        }}>{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] leading-snug line-clamp-2 group-hover:text-[var(--ed-accent)] transition-colors">{p.title || '无标题'}</p>
+                          <p className="text-[11px] mt-0.5" style={{ color: 'var(--ed-ink-muted)' }}>
+                            {(p.view_count || 0).toLocaleString()} 浏览 · {p.like_count || 0} 赞
+                          </p>
+                        </div>
+                        {img && (
+                          <img src={img} alt="" className="flex-shrink-0 w-10 h-10 object-cover" style={{ borderRadius: 'var(--ed-radius-md)' }} />
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </EditorialCard>
+            )}
           </aside>
         </div>
-      </PageContainer>
+      </div>
 
-      {/* ===== FAB: Create Post ===== */}
+      {/* FAB: Create Post (mobile) */}
       <Link
         href="/discover/new-post"
-        className={cn(buttonVariants({ size: 'icon' }), 'fixed bottom-6 right-6 w-14 h-14 r-full elev-lg hover:elev-lg flex items-center justify-center transition-all hover:scale-105 z-40 text-text-inverse')}
-        style={{ background: 'linear-gradient(135deg, var(--primary), var(--primary-dark))' }}
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center z-40 hover:scale-105 transition-all lg:hidden"
+        style={{ background: 'var(--ed-ink)', color: 'var(--ed-paper)', boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
         title="发布笔记"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,12 +305,6 @@ export default async function DiscoverPage({ searchParams }: Props) {
       </Link>
     </main>
   );
-}
-
-function formatCount(n: number): string {
-  if (n >= 10000) return (n / 10000).toFixed(1) + '万';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-  return String(n);
 }
 
 function formatFollowers(n: number): string {
