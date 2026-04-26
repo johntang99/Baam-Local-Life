@@ -3,6 +3,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getCurrentUser } from '@/lib/auth';
 import { getCurrentSite } from '@/lib/sites';
+import { generateSeoSlug } from '@/lib/slug-generator';
 import { revalidatePath } from 'next/cache';
 import { moderateDiscoverPost } from '@/lib/ai/moderate-post';
 import { getSiteSetting } from '@/lib/site-settings';
@@ -296,11 +297,9 @@ export async function createDiscoverPost(formData: FormData) {
     return { error: '请输入标题或内容' };
   }
 
-  const slug = (title || content?.slice(0, 30) || '')
-    .toLowerCase()
-    .replace(/[^\w\u4e00-\u9fff]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 80) + '-' + Date.now().toString(36);
+  const supabase = createAdminClient();
+  const site = await getCurrentSite();
+  const slug = await generateSeoSlug(title || content?.slice(0, 30) || 'post', null, supabase, 'voice_posts');
 
   const tags = tagsRaw
     ? tagsRaw.split(/[,，]/).map(t => t.trim()).filter(Boolean).slice(0, 5)
@@ -313,9 +312,6 @@ export async function createDiscoverPost(formData: FormData) {
   const businessIds = businessIdsRaw
     ? JSON.parse(businessIdsRaw) as string[]
     : [];
-
-  const supabase = createAdminClient();
-  const site = await getCurrentSite();
 
   // AI moderation check (text + media)
   const textModeration = await moderateDiscoverPost(title || '', content || '');

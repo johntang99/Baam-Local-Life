@@ -6,6 +6,7 @@ import { Link } from '@/lib/i18n/routing';
 import { PageContainer } from '@/components/layout/page-shell';
 import { Card } from '@/components/ui/card';
 import { CommentForm } from '@/components/shared/social-actions';
+import { ReportButton } from '@/components/shared/report-button';
 import type { Metadata } from 'next';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -219,6 +220,13 @@ export default async function ClassifiedDetailPage({ params }: Props) {
                   <p className="text-xs text-text-muted">
                     有效期至：{new Date(item.expires_at).toLocaleDateString('zh-CN')}
                   </p>
+                </div>
+              )}
+
+              {/* Report */}
+              {currentUser?.id !== item.author_id && (
+                <div className="mt-4 pt-4 border-t border-border-light">
+                  <ReportButton contentType="classified" contentId={item.id} variant="full" />
                 </div>
               )}
             </Card>

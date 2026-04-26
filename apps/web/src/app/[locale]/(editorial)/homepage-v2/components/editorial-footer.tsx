@@ -79,7 +79,10 @@ export function EditorialFooter() {
               {[
                 { href: '/about', label: '关于我们' },
                 { href: '/contact', label: '联系方式' },
+                { href: '/terms', label: '服务条款' },
                 { href: '/privacy', label: '隐私政策' },
+                { href: '/community-guidelines', label: '社区规范' },
+                { href: '/dmca', label: 'DMCA' },
               ].map((l) => (
                 <li key={l.label}>
                   <Link href={l.href} className="transition-colors hover:text-ed-accent" style={{ fontSize: 13, color: 'var(--ed-ink-muted)' }}>

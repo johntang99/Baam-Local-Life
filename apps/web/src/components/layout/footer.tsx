@@ -86,8 +86,10 @@ export function Footer({ dbConfig }: FooterProps) {
                 <ul className="space-y-2 text-sm">
                   <li><a href="#" className="hover:text-white transition">{convert(t('aboutBaam'))}</a></li>
                   <li><a href="#" className="hover:text-white transition">{convert(t('contactUs'))}</a></li>
-                  <li><a href="#" className="hover:text-white transition">{convert(t('termsOfService'))}</a></li>
-                  <li><a href="#" className="hover:text-white transition">{convert(t('privacyPolicy'))}</a></li>
+                  <li><Link href="/terms" className="hover:text-white transition">{convert(t('termsOfService'))}</Link></li>
+                  <li><Link href="/privacy" className="hover:text-white transition">{convert(t('privacyPolicy'))}</Link></li>
+                  <li><Link href="/community-guidelines" className="hover:text-white transition">{convert('社区规范')}</Link></li>
+                  <li><Link href="/dmca" className="hover:text-white transition">DMCA</Link></li>
                 </ul>
               </div>
             </>

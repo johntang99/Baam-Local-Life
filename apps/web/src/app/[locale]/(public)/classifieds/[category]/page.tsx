@@ -106,8 +106,8 @@ export default async function ClassifiedCategoryPage({ params }: Props) {
                 <Link
                   key={item.id}
                   href={`/classifieds/${category}/${item.slug}`}
-                  className="flex items-start gap-4 transition-colors hover:bg-[var(--ed-surface)]"
-                  style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid var(--ed-line)' : 'none' }}
+                  className="flex items-start gap-4 transition-colors hover:!bg-[var(--ed-surface)]"
+                  style={{ padding: '16px 20px', borderTop: i > 0 ? '1px solid var(--ed-line)' : 'none', background: i % 2 === 0 ? '#ffffff' : 'transparent' }}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

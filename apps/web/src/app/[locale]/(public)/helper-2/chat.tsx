@@ -382,7 +382,7 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   const [quickReplyMode, setQuickReplyMode] = useState<Helper2QuickReplyMode>('fill');
   const [expandedListId, setExpandedListId] = useState<string | null>(null);
   const [loadingStep, setLoadingStep] = useState(0);
-  const [autoAsked, setAutoAsked] = useState(false);
+  const autoAskedRef = useRef(false);
   const endRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -436,11 +436,13 @@ export function Helper2Chat({ initialQuery }: Helper2ChatProps) {
   }, [loading, renderingAnswer]);
 
   useEffect(() => {
-    if (initialQuery && !autoAsked) {
-      setAutoAsked(true);
+    if (initialQuery && !autoAskedRef.current) {
+      autoAskedRef.current = true;
+      setInput('');
       void handleAsk(initialQuery);
     }
-  }, [initialQuery, autoAsked]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery]);
 
   const progressivelyRenderAnswer = useCallback(
     async (messageId: string, fullContent: string, meta: Pick<Message, 'sources' | 'usedWebFallback' | 'mapBusinesses' | 'quickReplies' | 'query' | 'answerType' | 'keywords' | 'provider'>) => {

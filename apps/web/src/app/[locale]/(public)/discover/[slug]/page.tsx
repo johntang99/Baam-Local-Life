@@ -8,6 +8,7 @@ import { ImageCarousel } from '@/components/discover/image-carousel';
 import { RelatedDiscoverPosts } from '@/components/discover/related-posts';
 import { DiscoverCard } from '@/components/discover/discover-card';
 import { PostActions } from '@/components/discover/post-actions';
+import { ReportButton } from '@/components/shared/report-button';
 import { LayoutToggle } from '@/components/discover/layout-toggle';
 import { TrendingTopics } from '@/components/discover/trending-topics';
 import { PageContainer } from '@/components/layout/page-shell';
@@ -252,9 +253,14 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
             </div>
             {currentUser?.id === post.author_id ? (
               <PostActions postId={post.id} postSlug={post.slug} />
-            ) : profile.id ? (
-              <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs r-lg" />
-            ) : null}
+            ) : (
+              <div className="flex items-center gap-2">
+                {profile.id && (
+                  <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs r-lg" />
+                )}
+                <ReportButton contentType="post" contentId={post.id} variant="full" />
+              </div>
+            )}
           </div>
 
           {/* Image Carousel / Video Player */}
@@ -479,9 +485,14 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
               </Link>
               {currentUser?.id === post.author_id ? (
                 <PostActions postId={post.id} postSlug={post.slug} />
-              ) : profile.id ? (
-                <button className="px-5 py-2 text-sm fw-semibold text-text-inverse bg-accent-red r-full hover:bg-accent-red transition flex-shrink-0">+ 关注</button>
-              ) : null}
+              ) : (
+                <div className="flex items-center gap-2">
+                  {profile.id && (
+                    <button className="px-5 py-2 text-sm fw-semibold text-text-inverse bg-accent-red r-full hover:bg-accent-red transition flex-shrink-0">+ 关注</button>
+                  )}
+                  <ReportButton contentType="post" contentId={post.id} variant="full" />
+                </div>
+              )}
             </div>
 
             {/* Title */}

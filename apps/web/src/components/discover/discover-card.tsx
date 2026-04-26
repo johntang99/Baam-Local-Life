@@ -2,6 +2,7 @@
 
 import { Link } from '@/lib/i18n/routing';
 import { useDiscoverFeed } from './discover-feed-client';
+import { ReportButton } from '@/components/shared/report-button';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
@@ -76,7 +77,7 @@ export function DiscoverCard({ post, author, index = 0, currentUserId }: Discove
   };
 
   return (
-    <div className="block break-inside-avoid">
+    <div className="block break-inside-avoid group/card">
       <div className="bg-white r-lg overflow-hidden border border-gray-100 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
         {/* Cover */}
         <Link href={href} onClick={handleCardClick} className="block relative">
@@ -134,9 +135,9 @@ export function DiscoverCard({ post, author, index = 0, currentUserId }: Discove
           )}
         </Link>
 
-        {/* Owner edit badge — outside the Link to avoid nested <a> */}
-        {isOwner && (
-          <div className="px-3 pt-2 flex justify-end">
+        {/* Owner edit / Report — outside the Link to avoid nested <a> */}
+        <div className="px-3 pt-2 flex justify-end gap-1">
+          {isOwner && (
             <a
               href={`/zh/discover/${post.slug}/edit`}
               className="inline-flex items-center gap-1 px-2 py-1 text-[11px] text-gray-500 hover:text-primary hover:bg-primary/5 r-md transition-colors"
@@ -146,8 +147,13 @@ export function DiscoverCard({ post, author, index = 0, currentUserId }: Discove
               </svg>
               编辑
             </a>
-          </div>
-        )}
+          )}
+          {!isOwner && (
+            <div className="opacity-0 group-hover/card:opacity-100 transition-opacity">
+              <ReportButton contentType="post" contentId={post.id} variant="icon" />
+            </div>
+          )}
+        </div>
 
         {/* Content */}
         <Link href={href} onClick={handleCardClick} className="block p-3">

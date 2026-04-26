@@ -88,7 +88,7 @@ export function DealsSection({ deals }: DealsSectionProps) {
             style={{ borderRadius: 20, overflow: 'hidden', background: 'var(--ed-surface-elev)' }}
           >
             {/* Hero image */}
-            <div className="relative" style={{ aspectRatio: '4/3', overflow: 'hidden' }}>
+            <div className="relative" style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
               <img src={heroImg} alt={hero.title_zh} className="absolute inset-0 w-full h-full object-cover" />
               <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.5) 100%)' }} />
               <div className="absolute flex items-center gap-2" style={{ top: 20, left: 20, zIndex: 2 }}>

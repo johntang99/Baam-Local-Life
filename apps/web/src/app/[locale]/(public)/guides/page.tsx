@@ -119,7 +119,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
     { key: '', label: '全部', href: '/guides' },
     ...visibleCategories.map(cat => ({
       key: cat.slug,
-      label: `${cat.icon || ''} ${cat.name_zh || cat.name_en}`.trim(),
+      label: cat.name_zh || cat.name_en,
       href: `/guides?cat=${cat.slug}`,
     })),
   ];
@@ -183,7 +183,7 @@ export default async function GuidesListPage({ params, searchParams }: Props) {
                     {/* Featured large card */}
                     <Link href={`/guides/${featuredGuide.slug}`} className="lg:col-span-3 block group">
                       <EditorialCard className="h-full overflow-hidden flex flex-col">
-                        <div className="relative overflow-hidden" style={{ height: 'clamp(200px, 30vw, 320px)' }}>
+                        <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
                           {featuredGuide.cover_image_url ? (
                             <img
                               src={featuredGuide.cover_image_url}
@@ -419,7 +419,7 @@ function GuideCard({ guide, index, categories }: { guide: AnyRow; index: number;
   return (
     <Link href={`/guides/${guide.slug}`} className="group block">
       <EditorialCard className="h-full flex flex-col overflow-hidden">
-        <div className="relative overflow-hidden" style={{ height: 160 }}>
+        <div className="relative overflow-hidden" style={{ aspectRatio: '16/9' }}>
           {guide.cover_image_url ? (
             <img
               src={guide.cover_image_url}

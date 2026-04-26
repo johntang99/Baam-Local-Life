@@ -100,7 +100,8 @@ export default async function NewsListPage({ searchParams }: Props) {
     .select('id', { count: 'exact', head: true })
     .eq('site_id', site.id)
     .in('content_vertical', activeTab.verticals)
-    .eq('editorial_status', 'published');
+    .eq('editorial_status', 'published')
+    .not('title_zh', 'is', null);
   const { count } = await countQuery;
   const totalPages = Math.ceil((count || 0) / PAGE_SIZE);
 
@@ -111,6 +112,7 @@ export default async function NewsListPage({ searchParams }: Props) {
     .eq('site_id', site.id)
     .in('content_vertical', activeTab.verticals)
     .eq('editorial_status', 'published')
+    .not('title_zh', 'is', null)
     .order('published_at', { ascending: false })
     .range(from, from + PAGE_SIZE - 1);
 

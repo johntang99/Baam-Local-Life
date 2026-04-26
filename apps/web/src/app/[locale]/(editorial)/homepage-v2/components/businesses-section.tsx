@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Link } from '@/lib/i18n/routing';
 import { SectionHeader } from './section-header';
 
@@ -5,7 +8,7 @@ import { SectionHeader } from './section-header';
 type AnyRow = Record<string, any>;
 
 interface BusinessesSectionProps {
-  businesses: AnyRow[];
+  bizByCategory: Record<string, AnyRow[]>;
   categories: AnyRow[];
   coverPhotos: Record<string, string>;
 }
@@ -17,8 +20,29 @@ const imgGradients = [
   'linear-gradient(135deg, #D9A89A 0%, #7D3F2E 100%)',
 ];
 
-export function BusinessesSection({ businesses, categories, coverPhotos }: BusinessesSectionProps) {
-  if (businesses.length === 0) return null;
+export function BusinessesSection({ bizByCategory, categories, coverPhotos }: BusinessesSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  // Auto-rotate only through categories that have featured businesses
+  const populatedIndices = categories.map((cat, i) => ({ i, count: (bizByCategory[cat.slug] || []).length })).filter((x) => x.count > 0).map((x) => x.i);
+
+  useEffect(() => {
+    if (paused || populatedIndices.length === 0) return;
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => {
+        const curPos = populatedIndices.indexOf(prev);
+        const nextPos = (curPos + 1) % populatedIndices.length;
+        return populatedIndices[nextPos];
+      });
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [paused, populatedIndices.join(',')]);
+
+  if (categories.length === 0) return null;
+
+  const currentCat = categories[activeIndex];
+  const currentBiz = bizByCategory[currentCat?.slug] || [];
 
   return (
     <section style={{ padding: '88px 0' }}>
@@ -36,28 +60,48 @@ export function BusinessesSection({ businesses, categories, coverPhotos }: Busin
           }
         />
 
-        {/* Category tabs */}
-        <div className="flex gap-1.5 flex-wrap" style={{ marginBottom: 28 }}>
+        {/* Category tabs — auto-rotate, pause on hover, click navigates */}
+        <div
+          className="flex gap-1 overflow-x-auto"
+          style={{ marginBottom: 28, scrollbarWidth: 'none' }}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           {categories.map((cat, i) => (
             <Link
               key={cat.slug}
               href={`/businesses?category=${cat.slug}`}
-              className="transition-all"
+              className="transition-all flex-shrink-0 whitespace-nowrap"
               style={{
-                padding: '8px 16px', borderRadius: 'var(--ed-radius-pill)', fontSize: 13.5,
-                background: i === 0 ? 'var(--ed-ink)' : 'transparent',
-                color: i === 0 ? 'var(--ed-paper)' : 'var(--ed-ink-soft)',
-                border: i === 0 ? '1px solid var(--ed-ink)' : '1px solid var(--ed-line)',
+                padding: '6px 12px', borderRadius: 'var(--ed-radius-pill)', fontSize: 13,
+                background: i === activeIndex ? 'var(--ed-ink)' : 'transparent',
+                color: i === activeIndex ? 'var(--ed-paper)' : 'var(--ed-ink-soft)',
+                border: i === activeIndex ? '1px solid var(--ed-ink)' : '1px solid var(--ed-line)',
               }}
+              onMouseEnter={() => setActiveIndex(i)}
             >
               {cat.icon} {cat.name_zh}
             </Link>
           ))}
         </div>
 
-        {/* Business grid — 4 columns */}
+        {/* Business grid — 4 columns, filtered by active category */}
+        {currentBiz.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '48px 0' }}>
+            <p style={{ fontSize: 36, marginBottom: 12, opacity: 0.4 }}>{currentCat?.icon || '🏢'}</p>
+            <p style={{ fontSize: 14, color: 'var(--ed-ink-muted)', marginBottom: 16 }}>
+              该分类暂无推荐商家
+            </p>
+            <Link
+              href={`/businesses?category=${currentCat?.slug || ''}`}
+              style={{ fontSize: 13, color: 'var(--ed-accent)', fontWeight: 500 }}
+            >
+              浏览全部{currentCat?.name_zh || ''}商家 →
+            </Link>
+          </div>
+        ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {businesses.slice(0, 8).map((biz, i) => {
+          {currentBiz.slice(0, 8).map((biz, i) => {
             const name = biz.display_name_zh || biz.display_name || '商家';
             const firstChar = name[0] || '🏢';
             const cover = coverPhotos[biz.id];
@@ -85,7 +129,6 @@ export function BusinessesSection({ businesses, categories, coverPhotos }: Busin
                       <span style={{ fontSize: 32, fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>{firstChar}</span>
                     </div>
                   )}
-                  {/* Rating badge */}
                   {biz.avg_rating && (
                     <div
                       className="absolute flex items-center gap-1"
@@ -124,6 +167,7 @@ export function BusinessesSection({ businesses, categories, coverPhotos }: Busin
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );
