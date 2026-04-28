@@ -328,12 +328,8 @@ export async function createDiscoverPost(formData: FormData) {
     mediaModerationConfig.enabled &&
     mediaModerationConfig.moderateFullVideo,
   );
-  const videoNeedsManualReview = Boolean(
-    mediaModerationConfig.enabled &&
-    mediaModerationConfig.moderateVideoThumbnail &&
-    videoUrl &&
-    !videoThumbnailUrl,
-  );
+  // Don't block publish just because thumbnail is missing — text moderation is sufficient
+  const videoNeedsManualReview = false;
 
   const moderationReasons: string[] = [];
   if (!textModeration.pass) moderationReasons.push(textModeration.reason || '文本疑似不合规');
@@ -618,12 +614,8 @@ export async function updateDiscoverPost(formData: FormData) {
     mediaModerationConfig.enabled &&
     mediaModerationConfig.moderateFullVideo,
   );
-  const videoNeedsManualReview = Boolean(
-    mediaModerationConfig.enabled &&
-    mediaModerationConfig.moderateVideoThumbnail &&
-    videoUrl &&
-    !videoThumbnailUrl,
-  );
+  // Don't block publish just because thumbnail is missing — text moderation is sufficient
+  const videoNeedsManualReview = false;
   const moderationReasons: string[] = [];
   if (!textModeration.pass) moderationReasons.push(textModeration.reason || '文本疑似不合规');
   if (!mediaModeration.pass) moderationReasons.push(mediaModeration.reason || '媒体疑似不合规');
