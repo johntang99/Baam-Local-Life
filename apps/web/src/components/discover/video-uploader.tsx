@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { createClient } from '@/lib/supabase/client';
 
 interface VideoUploaderProps {
   videoUrl: string | null;
@@ -28,43 +27,59 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
     folder: string,
     onProgress?: (payload: { percent: number; phase: 'uploading' | 'processing' | 'done' }) => void,
   ): Promise<{ url: string | null; error?: string }> => {
-    // Upload directly to Supabase Storage (bypasses Vercel 4.5MB body limit)
-    const supabase = createClient();
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').toLowerCase();
-    const filePath = `${folder}/${Date.now()}-${safeName}`;
+    try {
+      // Step 1: Get a signed upload URL from our API (small request, no body limit issue)
+      addDebug(`Requesting signed URL for ${folder}/${file.name}...`);
+      onProgress?.({ percent: 5, phase: 'uploading' });
 
-    addDebug(`Uploading to Supabase Storage: ${filePath}`);
-    onProgress?.({ percent: 10, phase: 'uploading' });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data, error } = await (supabase as any).storage
-      .from('media')
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false,
+      const signedRes = await fetch('/api/upload/signed-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, folder, contentType: file.type }),
       });
 
-    if (error) {
-      addDebug(`Supabase upload error: ${error.message}`);
-      return { url: null, error: error.message };
+      if (!signedRes.ok) {
+        const err = await signedRes.json().catch(() => ({ error: 'Failed to get upload URL' }));
+        addDebug(`Signed URL error: ${err.error}`);
+        return { url: null, error: err.error || '获取上传地址失败' };
+      }
+
+      const { signedUrl, publicUrl } = await signedRes.json();
+      addDebug(`Got signed URL, uploading directly to Supabase...`);
+
+      // Step 2: Upload file directly to Supabase Storage using signed URL (bypasses Vercel limit)
+      return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', signedUrl);
+        xhr.setRequestHeader('Content-Type', file.type);
+
+        xhr.upload.onprogress = (event) => {
+          if (!event.lengthComputable) return;
+          const percent = Math.min(90, Math.round((event.loaded / event.total) * 90));
+          onProgress?.({ percent, phase: 'uploading' });
+        };
+
+        xhr.onload = () => {
+          addDebug(`Direct upload: status=${xhr.status}`);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            onProgress?.({ percent: 100, phase: 'done' });
+            addDebug(`Public URL: ${publicUrl?.slice(0, 80)}...`);
+            resolve({ url: publicUrl });
+          } else {
+            addDebug(`Upload failed: ${xhr.status} ${xhr.responseText?.slice(0, 100)}`);
+            resolve({ url: null, error: `上传失败 (${xhr.status})` });
+          }
+        };
+
+        xhr.onerror = () => { addDebug('XHR onerror'); resolve({ url: null, error: '网络错误，上传失败' }); };
+        xhr.onabort = () => { addDebug('XHR onabort'); resolve({ url: null, error: '上传已取消' }); };
+
+        xhr.send(file);
+      });
+    } catch (err) {
+      addDebug(`Upload exception: ${err}`);
+      return { url: null, error: '上传出错，请重试' };
     }
-
-    onProgress?.({ percent: 90, phase: 'processing' });
-    addDebug(`Upload success: ${data.path}`);
-
-    // Get public URL
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: urlData } = (supabase as any).storage.from('media').getPublicUrl(data.path);
-    const publicUrl = urlData?.publicUrl;
-
-    if (!publicUrl) {
-      addDebug('Failed to get public URL');
-      return { url: null, error: '获取文件地址失败' };
-    }
-
-    onProgress?.({ percent: 100, phase: 'done' });
-    addDebug(`Public URL: ${publicUrl.slice(0, 80)}...`);
-    return { url: publicUrl };
   };
 
   // Extract duration and generate thumbnail from video element
