@@ -337,7 +337,8 @@ export async function createDiscoverPost(formData: FormData) {
   // if (!mediaModeration.pass) moderationReasons.push(mediaModeration.reason || '媒体疑似不合规');
   // if (needsFullVideoScan && moderationReasons.length === 0) moderationReasons.push('视频内容审核中');
 
-  const postStatus = moderationReasons.length > 0 ? 'pending_review' : 'published';
+  // Force all posts to publish immediately — moderation runs async
+  const postStatus: string = 'published';
   const moderationReason = moderationReasons.length > 0 ? moderationReasons.join('；') : null;
   const moderationScore = Math.max(textModeration.score || 0, mediaModeration.score || 0);
   const mediaForMeta: MediaModerationResult = {
@@ -445,7 +446,8 @@ export async function createDiscoverPost(formData: FormData) {
       .update({
         metadata: metadataWithVideo,
         moderation_reason: nextReason,
-        status: 'pending_review',
+        // Don't override status — keep published, video scan runs async
+        // status: 'pending_review',
       })
       .eq('id', post.id)
       .eq('site_id', site.id);
@@ -640,11 +642,8 @@ export async function updateDiscoverPost(formData: FormData) {
     media: mediaForMeta,
     fullVideoScanEnabled: needsFullVideoScan,
   });
-  const nextStatus = moderationReasons.length > 0
-    ? 'pending_review'
-    : post.status === 'published'
-      ? 'published'
-      : 'pending_review';
+  // Force publish — moderation runs async
+  const nextStatus = 'published';
 
   // Update post
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
