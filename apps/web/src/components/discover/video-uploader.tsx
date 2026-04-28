@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 interface VideoUploaderProps {
   videoUrl: string | null;
@@ -24,51 +25,46 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
 
   const uploadFile = async (
     file: File,
+    folder: string,
     onProgress?: (payload: { percent: number; phase: 'uploading' | 'processing' | 'done' }) => void,
   ): Promise<{ url: string | null; error?: string }> => {
-    const formData = new FormData();
-    formData.set('file', file);
-    formData.set('folder', 'discover/videos');
+    // Upload directly to Supabase Storage (bypasses Vercel 4.5MB body limit)
+    const supabase = createClient();
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').toLowerCase();
+    const filePath = `${folder}/${Date.now()}-${safeName}`;
 
-    return new Promise((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/upload');
-      xhr.responseType = 'json';
+    addDebug(`Uploading to Supabase Storage: ${filePath}`);
+    onProgress?.({ percent: 10, phase: 'uploading' });
 
-      xhr.upload.onprogress = (event) => {
-        if (!event.lengthComputable) return;
-        // Phase 1: browser -> API route transfer (0% ~ 85%)
-        const percent = Math.min(85, Math.round((event.loaded / event.total) * 85));
-        onProgress?.({ percent, phase: 'uploading' });
-      };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabase as any).storage
+      .from('media')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
-      xhr.upload.onload = () => {
-        // Phase 2: API route -> Supabase write in progress
-        onProgress?.({ percent: 90, phase: 'processing' });
-      };
+    if (error) {
+      addDebug(`Supabase upload error: ${error.message}`);
+      return { url: null, error: error.message };
+    }
 
-      xhr.onload = () => {
-        addDebug(`XHR onload: status=${xhr.status}, responseType=${typeof xhr.response}`);
-        const response =
-          xhr.response && typeof xhr.response === 'object'
-            ? (xhr.response as { url?: string; error?: string; message?: string })
-            : null;
-        if (response) addDebug(`Response: ${JSON.stringify(response).slice(0, 200)}`);
-        if (xhr.status >= 200 && xhr.status < 300) {
-          onProgress?.({ percent: 100, phase: 'done' });
-          resolve({ url: response?.url || null });
-          return;
-        }
-        addDebug(`Upload failed: status=${xhr.status}`);
-        resolve({ url: null, error: response?.error || response?.message || '上传失败' });
-      };
+    onProgress?.({ percent: 90, phase: 'processing' });
+    addDebug(`Upload success: ${data.path}`);
 
-      xhr.onerror = () => { addDebug('XHR onerror fired'); resolve({ url: null, error: '网络错误，上传失败' }); };
-      xhr.onabort = () => { addDebug('XHR onabort fired'); resolve({ url: null, error: '上传已取消' }); };
-      xhr.ontimeout = () => { addDebug('XHR timeout'); resolve({ url: null, error: '上传超时' }); };
+    // Get public URL
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: urlData } = (supabase as any).storage.from('media').getPublicUrl(data.path);
+    const publicUrl = urlData?.publicUrl;
 
-      xhr.send(formData);
-    });
+    if (!publicUrl) {
+      addDebug('Failed to get public URL');
+      return { url: null, error: '获取文件地址失败' };
+    }
+
+    onProgress?.({ percent: 100, phase: 'done' });
+    addDebug(`Public URL: ${publicUrl.slice(0, 80)}...`);
+    return { url: publicUrl };
   };
 
   // Extract duration and generate thumbnail from video element
@@ -189,7 +185,7 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
     setProgress('正在上传视频...');
     setUploadPercent(0);
     addDebug('Starting upload via XHR...');
-    const { url, error } = await uploadFile(file, ({ percent, phase }) => {
+    const { url, error } = await uploadFile(file, 'discover/videos', ({ percent, phase }) => {
       setUploadPercent(percent);
       if (phase === 'processing') {
         setProgress('文件已传输，正在写入云端...');
@@ -206,17 +202,13 @@ export function VideoUploader({ videoUrl, thumbnailUrl, duration, onChange }: Vi
       if (metadata.thumbnail) {
         setProgress('正在生成封面...');
         setUploadPercent(null);
+        addDebug('Uploading thumbnail...');
         try {
           const blob = await fetch(metadata.thumbnail).then(r => r.blob());
-          const thumbFile = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
-          const thumbForm = new FormData();
-          thumbForm.set('file', thumbFile);
-          thumbForm.set('folder', 'discover/thumbnails');
-          const thumbRes = await fetch('/api/upload', { method: 'POST', body: thumbForm });
-          if (thumbRes.ok) {
-            const thumbData = await thumbRes.json();
-            thumbUrl = thumbData.url;
-          }
+          const thumbFile = new File([blob], `${Date.now()}-thumbnail.jpg`, { type: 'image/jpeg' });
+          const thumbResult = await uploadFile(thumbFile, 'discover/thumbnails');
+          thumbUrl = thumbResult.url;
+          addDebug(`Thumbnail: ${thumbUrl ? 'success' : 'failed'}`);
         } catch { /* thumbnail upload failed, continue without */ }
       }
 
