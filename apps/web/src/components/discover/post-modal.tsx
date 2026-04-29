@@ -10,6 +10,153 @@ import { createClient } from '@/lib/supabase/client';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
 
+function formatTime(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function ModalVideoPlayer({ videoUrl, poster }: { videoUrl: string; poster?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(true);
+  const [muted, setMuted] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [showControls, setShowControls] = useState(false);
+  const hideTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.play().catch(() => {});
+
+    const onTime = () => {
+      setCurrentTime(vid.currentTime);
+      setDuration(vid.duration || 0);
+      setProgress(vid.duration ? (vid.currentTime / vid.duration) * 100 : 0);
+    };
+    const onPlay = () => setPlaying(true);
+    const onPause = () => setPlaying(false);
+
+    vid.addEventListener('timeupdate', onTime);
+    vid.addEventListener('play', onPlay);
+    vid.addEventListener('pause', onPause);
+    return () => {
+      vid.removeEventListener('timeupdate', onTime);
+      vid.removeEventListener('play', onPlay);
+      vid.removeEventListener('pause', onPause);
+    };
+  }, []);
+
+  const togglePlay = () => {
+    const vid = videoRef.current;
+    if (!vid) return;
+    if (vid.paused) vid.play().catch(() => {});
+    else vid.pause();
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const vid = videoRef.current;
+    if (!vid) return;
+    vid.muted = !vid.muted;
+    setMuted(vid.muted);
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    const vid = videoRef.current;
+    if (!vid || !vid.duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    vid.currentTime = pct * vid.duration;
+  };
+
+  const handleMouseMove = () => {
+    setShowControls(true);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setShowControls(false), 3000);
+  };
+
+  return (
+    <div
+      className="relative w-full h-full cursor-pointer"
+      onClick={togglePlay}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setShowControls(true)}
+      onMouseLeave={() => { if (hideTimer.current) clearTimeout(hideTimer.current); setShowControls(false); }}
+    >
+      <video
+        ref={videoRef}
+        src={videoUrl}
+        poster={poster}
+        autoPlay
+        playsInline
+        loop
+        className="w-full h-full object-contain"
+      />
+
+      {/* Pause icon overlay (shows briefly when paused) */}
+      {!playing && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-16 h-16 rounded-full bg-black/50 flex items-center justify-center">
+            <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Sound toggle — top right */}
+      <button
+        className="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center text-white transition z-10"
+        onClick={toggleMute}
+        title={muted ? '开启声音' : '静音'}
+      >
+        {muted ? (
+          <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+        ) : (
+          <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+        )}
+      </button>
+
+      {/* Bottom controls bar — shows on hover */}
+      <div
+        className="absolute bottom-0 left-0 right-0 transition-opacity duration-300"
+        style={{ opacity: showControls || !playing ? 1 : 0 }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div style={{ background: 'linear-gradient(transparent, rgba(0,0,0,0.6))', padding: '24px 12px 10px' }}>
+          {/* Progress bar */}
+          <div
+            className="w-full h-1 bg-white/30 rounded-full cursor-pointer mb-2 group"
+            onClick={handleSeek}
+          >
+            <div className="h-full bg-white rounded-full relative" style={{ width: `${progress}%` }}>
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          </div>
+
+          {/* Time + play/pause */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button onClick={togglePlay} className="text-white hover:text-white/80 transition">
+                {playing ? (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" /></svg>
+                )}
+              </button>
+              <span className="text-white text-xs tabular-nums">{formatTime(currentTime)} / {formatTime(duration)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 interface PostModalData {
   post: AnyRow;
   profile: AnyRow | null;
@@ -175,12 +322,7 @@ export function PostModal({ slug, preview, isLoggedIn: serverIsLoggedIn, current
         {/* ═══ LEFT: Media Area (55%) ═══ */}
         <div className="w-[55%] bg-black flex items-center justify-center relative flex-shrink-0">
           {isVideo && post?.video_url ? (
-            <video
-              src={post.video_url}
-              poster={post.video_thumbnail_url || undefined}
-              controls
-              className="w-full h-full object-contain"
-            />
+            <ModalVideoPlayer videoUrl={post.video_url} poster={post.video_thumbnail_url || undefined} />
           ) : coverImages.length > 0 ? (
             <ImageCarousel images={coverImages} title={post?.title || preview?.title || ''} />
           ) : (

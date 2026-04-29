@@ -80,8 +80,40 @@ export function DiscoverCard({ post, author, index = 0, currentUserId }: Discove
     <div className="block break-inside-avoid group/card">
       <div className="relative bg-white r-lg overflow-hidden border border-gray-100 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]">
         {/* Cover */}
-        <Link href={href} onClick={handleCardClick} className="block relative">
-          {hasImage ? (
+        <Link href={href} onClick={handleCardClick} className="block relative"
+          onMouseEnter={(e) => {
+            if (isVideo && post.video_url) {
+              const vid = e.currentTarget.querySelector('video');
+              if (vid) vid.play().catch(() => {});
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (isVideo && post.video_url) {
+              const vid = e.currentTarget.querySelector('video');
+              if (vid) { vid.pause(); vid.currentTime = 0; }
+            }
+          }}
+        >
+          {isVideo && post.video_url ? (
+            <>
+              <video
+                src={post.video_url}
+                poster={coverImage || undefined}
+                muted
+                loop
+                playsInline
+                preload="none"
+                className="w-full block"
+                style={{ maxHeight: 360, objectFit: 'cover' }}
+              />
+              {post.video_duration_seconds && (
+                <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[11px] px-1.5 py-0.5 rounded flex items-center gap-1">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
+                  {formatDuration(post.video_duration_seconds)}
+                </div>
+              )}
+            </>
+          ) : hasImage ? (
             <img
               src={coverImage}
               alt={post.title || ''}
@@ -103,25 +135,6 @@ export function DiscoverCard({ post, author, index = 0, currentUserId }: Discove
                 </p>
               )}
             </div>
-          )}
-
-          {/* Video overlay */}
-          {isVideo && (
-            <>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-10 h-10 r-full bg-black/45 backdrop-blur-sm flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                  </svg>
-                </div>
-              </div>
-              {post.video_duration_seconds && (
-                <div className="absolute bottom-2 right-2 bg-black/70 text-white text-[11px] px-1.5 py-0.5 rounded flex items-center gap-1">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
-                  {formatDuration(post.video_duration_seconds)}
-                </div>
-              )}
-            </>
           )}
 
           {/* Multi-image badge */}
