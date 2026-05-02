@@ -260,7 +260,7 @@ export interface EditorialTheme {
 
 export const editorialTheme: EditorialTheme = {
   colors: {
-    paper: "#FBF6EC",
+    paper: "#fdfbf6",
     paperWarm: "#F5EDD8",
     surface: "#FFFDF8",
     surfaceElev: "#FFFFFF",

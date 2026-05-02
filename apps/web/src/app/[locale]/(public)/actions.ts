@@ -717,7 +717,8 @@ export async function updateDiscoverPost(formData: FormData) {
       .update({
         metadata: withVideoModerationMeta(moderationMetadata, videoMeta),
         moderation_reason: nextReason,
-        status: 'pending_review',
+        // Don't override status — keep published, video scan runs async
+        // status: 'pending_review',
       })
       .eq('id', postId)
       .eq('site_id', site.id);
