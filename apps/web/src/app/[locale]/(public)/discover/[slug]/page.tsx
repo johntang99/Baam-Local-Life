@@ -490,7 +490,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
               ) : (
                 <div className="flex items-center gap-2">
                   {profile.id && (
-                    <button className="px-5 py-2 text-sm fw-semibold text-text-inverse bg-accent-red r-full hover:bg-accent-red transition flex-shrink-0">+ 关注</button>
+                    <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-9 px-5 text-sm r-full" />
                   )}
                   <ReportButton contentType="post" contentId={post.id} variant="full" />
                 </div>

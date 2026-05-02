@@ -10,6 +10,40 @@ import { createClient } from '@/lib/supabase/client';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
 
+function FollowButtonInline({ profileId, isLoggedIn }: { profileId: string; isLoggedIn: boolean }) {
+  const [following, setFollowing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isLoggedIn) return;
+    setLoading(true);
+    const { toggleFollow } = await import('@/app/[locale]/(public)/actions');
+    const formData = new FormData();
+    formData.set('profile_id', profileId);
+    const result = await toggleFollow(formData);
+    if (result.success) {
+      setFollowing(result.following ?? !following);
+    }
+    setLoading(false);
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={loading || !isLoggedIn}
+      className="px-5 py-2 text-sm font-semibold rounded-full transition flex-shrink-0 disabled:opacity-50"
+      style={{
+        background: following ? '#f3f4f6' : undefined,
+        color: following ? '#6b7280' : '#fff',
+        backgroundColor: following ? undefined : 'var(--primary, #C73E1D)',
+      }}
+    >
+      {loading ? '...' : following ? '已关注' : '+ 关注'}
+    </button>
+  );
+}
+
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
@@ -367,9 +401,7 @@ export function PostModal({ slug, preview, isLoggedIn: serverIsLoggedIn, current
                   </span>
                 </div>
                 {currentUserId !== post?.author_id && profile?.id && (
-                  <button className="px-5 py-2 text-sm font-semibold text-white bg-primary rounded-full hover:bg-primary/90 transition flex-shrink-0">
-                    + 关注
-                  </button>
+                  <FollowButtonInline profileId={profile.id} isLoggedIn={!!currentUserId} />
                 )}
                 <button
                   onClick={onClose}
