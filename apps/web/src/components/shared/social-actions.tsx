@@ -16,6 +16,7 @@ interface FollowButtonProps {
 export function FollowButton({ profileId, isFollowing: initial, isLoggedIn, className = '' }: FollowButtonProps) {
   const [following, setFollowing] = useState(initial);
   const [loading, setLoading] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
   const handleClick = async () => {
     if (!isLoggedIn) return;
@@ -29,17 +30,24 @@ export function FollowButton({ profileId, isFollowing: initial, isLoggedIn, clas
     setLoading(false);
   };
 
+  // XHS/IG pattern: following + hover → show "取消关注" in red
+  const showUnfollow = following && hovering && !loading;
+
   return (
     <button
       onClick={handleClick}
       disabled={loading || !isLoggedIn}
-      className={`text-sm font-medium transition-colors disabled:opacity-50 ${
-        following
-          ? 'bg-border-light text-text-secondary hover:bg-red-50 hover:text-red-500'
-          : 'bg-primary text-white hover:bg-primary-dark'
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      className={`text-sm font-medium transition-all disabled:opacity-50 ${
+        showUnfollow
+          ? 'bg-red-50 text-red-500 border border-red-200'
+          : following
+            ? 'bg-gray-100 text-gray-500 border border-gray-200'
+            : 'bg-primary text-white hover:bg-primary-dark border border-transparent'
       } ${className}`}
     >
-      {loading ? '...' : following ? '已关注' : '+ 关注'}
+      {loading ? '...' : showUnfollow ? '取消关注' : following ? '已关注' : '+ 关注'}
     </button>
   );
 }

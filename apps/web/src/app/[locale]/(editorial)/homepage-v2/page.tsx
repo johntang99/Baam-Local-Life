@@ -62,10 +62,10 @@ export default async function HomepageV2() {
     // Business subcategories (for mapping sub → parent)
     supabase.from('categories').select('id, slug, parent_id').eq('type', 'business').not('parent_id', 'is', null).eq('is_active', true),
     // Classifieds: 4 queries, one per category
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['housing_rent', 'housing_buy']).eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'jobs').eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'secondhand').eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['services', 'general']).eq('status', 'active').order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['housing_rent', 'housing_buy']).eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'jobs').eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'secondhand').eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['services', 'general']).eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
   ]);
 
   const heroArticle = ((rHero || []) as AnyRow[])[0] || null;

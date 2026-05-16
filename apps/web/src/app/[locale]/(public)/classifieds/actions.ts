@@ -23,14 +23,62 @@ export async function createPublicClassified(formData: FormData) {
     + '-' + Date.now().toString(36);
 
   const metadata: Record<string, unknown> = {};
+  const titleText = title.trim();
+  const bodyInput = (formData.get('body') as string)?.trim() || '';
+  let bodyText: string | null = bodyInput || null;
+  let priceText = String(formData.get('price_text') || '').trim() || null;
+  const extractEmailFromText = (text: string) => {
+    const m = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+    return m?.[0]?.trim() || '';
+  };
+  const contactNameInput = String(formData.get('contact_name') || '').trim();
+  const contactPhoneInput = String(formData.get('contact_phone') || '').trim();
+  const providedContactEmail = String(formData.get('contact_email') || '').trim();
+  const inferredContactEmail = extractEmailFromText(`${titleText}\n${bodyInput}`);
+  const effectiveContactEmail = providedContactEmail || inferredContactEmail;
+  const formatStructuredContact = (name: string, phone: string, email: string) => {
+    const normalizedName = name.toLowerCase() === 'guest sam' ? '' : name;
+    const normalizedEmail = email.toLowerCase() === 'guest-sam1@gmail.com' ? '' : email;
+    return [normalizedName, phone, normalizedEmail].filter(Boolean).join(' / ') || '未提供';
+  };
   if (category === 'housing_rent') {
     if (formData.get('bedrooms')) metadata.bedrooms = parseInt(formData.get('bedrooms') as string);
     if (formData.get('neighborhood')) metadata.neighborhood = formData.get('neighborhood') as string;
+    if (formData.get('rent_amount')) metadata.rent_amount = parseFloat(formData.get('rent_amount') as string);
+    if (formData.get('move_in_date')) metadata.move_in_date = formData.get('move_in_date') as string;
   } else if (category === 'jobs') {
     if (formData.get('salary_range')) metadata.salary_range = formData.get('salary_range') as string;
     if (formData.get('job_type')) metadata.job_type = formData.get('job_type') as string;
+    if (formData.get('company')) metadata.company = formData.get('company') as string;
+    if (formData.get('job_location')) metadata.job_location = formData.get('job_location') as string;
+    if (formData.get('work_hours')) metadata.work_hours = formData.get('work_hours') as string;
+    if (formData.get('job_requirements')) metadata.job_requirements = formData.get('job_requirements') as string;
+
+    // Keep meaning unchanged while normalizing jobs format into a simple, unified template.
+    const company = String(formData.get('company') || '').trim();
+    const jobLocation = String(formData.get('job_location') || '').trim();
+    const salaryRange = String(formData.get('salary_range') || '').trim() || String(formData.get('price_text') || '').trim();
+    const jobTypeRaw = String(formData.get('job_type') || '').trim();
+    const jobType = jobTypeRaw === 'full_time' ? '全职' : jobTypeRaw === 'part_time' ? '兼职' : jobTypeRaw === 'remote' ? '远程' : jobTypeRaw;
+    const workHours = String(formData.get('work_hours') || '').trim();
+    const requirements = String(formData.get('job_requirements') || '').trim();
+    const normalizedJobBody = [
+      `【职位】${titleText}`,
+      `【公司】${company || '未提供'}`,
+      `【地点】${jobLocation || '未提供'}`,
+      `【时间】${[jobType, workHours].filter(Boolean).join(' / ') || '未提供'}`,
+      `【薪资】${salaryRange || '未提供'}`,
+      `【要求】${requirements || '未提供'}`,
+      `【联系方式】${formatStructuredContact(contactNameInput, contactPhoneInput, effectiveContactEmail)}`,
+    ].join('\n');
+
+    bodyText = bodyInput ? `${normalizedJobBody}\n\n【补充说明】\n${bodyInput}` : normalizedJobBody;
+    if (salaryRange && !priceText) priceText = salaryRange;
   } else if (category === 'secondhand') {
     if (formData.get('condition')) metadata.condition = formData.get('condition') as string;
+    if (formData.get('brand')) metadata.brand = formData.get('brand') as string;
+    if (formData.get('original_price')) metadata.original_price = parseFloat(formData.get('original_price') as string);
+    if (formData.get('meetup_location')) metadata.meetup_location = formData.get('meetup_location') as string;
   }
 
   const { data, error } = await supabase
@@ -38,13 +86,14 @@ export async function createPublicClassified(formData: FormData) {
     .insert({
       slug,
       site_id: site.id,
-      title: title.trim(),
-      body: (formData.get('body') as string)?.trim() || null,
+      title: titleText,
+      body: bodyText,
       category,
-      price_text: formData.get('price_text') as string || null,
-      contact_name: formData.get('contact_name') as string || null,
-      contact_phone: formData.get('contact_phone') as string || null,
-      contact_wechat: formData.get('contact_wechat') as string || null,
+      price_text: priceText,
+      contact_name: contactNameInput || null,
+      contact_phone: contactPhoneInput || null,
+      contact_email: effectiveContactEmail || null,
+      contact_wechat: null,
       author_id: user.id,
       status: 'active',
       metadata,

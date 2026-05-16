@@ -28,14 +28,105 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: `${data.title} · 分类信息 · Baam` };
 }
 
-function timeAgo(dateStr: string | null): string {
+function formatDate(dateStr: string | null): string {
   if (!dateStr) return '';
-  const ms = Date.now() - new Date(dateStr).getTime();
-  const hrs = Math.floor(ms / 3600000);
-  if (hrs < 1) return '刚刚';
-  if (hrs < 24) return `${hrs}小时前`;
-  const days = Math.floor(ms / 86400000);
-  return days < 7 ? `${days}天前` : new Date(dateStr).toLocaleDateString('zh-CN');
+  return new Date(dateStr).toLocaleDateString('zh-CN');
+}
+
+function parseStructuredSections(text: string): { sections: Record<string, string>; remainder: string } {
+  if (!text) return { sections: {}, remainder: '' };
+  const lines = text.split('\n').map((line) => line.trim()).filter(Boolean);
+  const sections: Record<string, string> = {};
+  const remainderLines: string[] = [];
+  let currentKey = '';
+
+  for (const line of lines) {
+    const m = line.match(/^【([^】]+)】\s*(.*)$/);
+    if (m) {
+      currentKey = m[1].trim();
+      const initial = m[2]?.trim() || '';
+      if (!sections[currentKey]) sections[currentKey] = '';
+      if (initial) sections[currentKey] = initial;
+      continue;
+    }
+    if (currentKey) {
+      sections[currentKey] = sections[currentKey] ? `${sections[currentKey]}\n${line}` : line;
+    } else {
+      remainderLines.push(line);
+    }
+  }
+
+  return {
+    sections,
+    remainder: remainderLines.join('\n').trim(),
+  };
+}
+
+function toDisplayText(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  return String(value).trim();
+}
+
+const DEFAULT_IMPORT_CONTACT_NAME = 'Guest Sam';
+const DEFAULT_IMPORT_CONTACT_EMAIL = 'guest-sam1@gmail.com';
+
+function normalizeContactName(name: string): string {
+  const value = name.trim();
+  if (!value) return '';
+  return value.toLowerCase() === DEFAULT_IMPORT_CONTACT_NAME.toLowerCase() ? '' : value;
+}
+
+function normalizeContactEmail(email: string): string {
+  const value = email.trim();
+  if (!value) return '';
+  return value.toLowerCase() === DEFAULT_IMPORT_CONTACT_EMAIL.toLowerCase() ? '' : value;
+}
+
+function buildContactLine(name: string, phone: string, email: string): string {
+  const parts = [normalizeContactName(name), phone.trim(), normalizeContactEmail(email)].filter(Boolean);
+  return parts.join(' / ') || '未提供';
+}
+
+function extractFirstEmail(text: string): string {
+  if (!text) return '';
+  const m = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return m?.[0]?.trim() || '';
+}
+
+function sanitizeStructuredBodyContactLine(body: string, contactLine: string): string {
+  if (!body) return '';
+  const parsed = parseStructuredSections(body);
+  const keys = Object.keys(parsed.sections);
+  if (!keys.length || !parsed.sections['联系方式']) return body;
+
+  const lines: string[] = [];
+  for (const key of keys) {
+    const value = key === '联系方式' ? contactLine : parsed.sections[key];
+    lines.push(`【${key}】${value}`);
+  }
+  if (parsed.remainder) lines.push(parsed.remainder);
+  return lines.join('\n');
+}
+
+function replaceProtectedEmailPlaceholder(text: string, email: string): string {
+  if (!text) return '';
+  if (!email) return text;
+  return text.replace(/\[email(?:\s|&nbsp;|&#160;|\u00a0)*protected\]/gi, email);
+}
+
+function getReliablePriceText(priceText: string | null | undefined): string | null {
+  if (!priceText) return null;
+  const value = String(priceText).trim();
+  if (!value) return null;
+
+  // Hide phone-like or plain long numbers often extracted by mistake.
+  if (/^\d{5,}$/.test(value.replace(/[,\s]/g, ''))) return null;
+  if (/1?\d{3}[-.\s]?\d{3}[-.\s]?\d{4}/.test(value)) return null;
+
+  const hasClearPriceMarker = /[$¥￥]|元|美元|美金|面议|免费|\/月|月租|每月|\/天|每天|\/周|每周/i.test(value);
+  if (!hasClearPriceMarker) return null;
+
+  return value;
 }
 
 export default async function ClassifiedDetailPage({ params }: Props) {
@@ -70,8 +161,63 @@ export default async function ClassifiedDetailPage({ params }: Props) {
   const meta = item.metadata || {};
   const catName = categoryNames[category] || '分类信息';
   const isHelp = category === 'help';
+  const isHousing = category === 'housing';
+  const isJobs = category === 'jobs';
+  const isSecondhand = category === 'secondhand';
   const coverPhoto = meta.cover_photo as string || '';
   const photos = (meta.photos as string[] || []);
+  const reliablePriceText = getReliablePriceText(item.price_text);
+  const parsedBody = parseStructuredSections(item.body || '');
+  const section = parsedBody.sections;
+  const fallbackEmailFromContent = extractFirstEmail(toDisplayText(item.body));
+  const contactEmail = normalizeContactEmail(toDisplayText(item.contact_email)) || normalizeContactEmail(fallbackEmailFromContent);
+  const contactLine = buildContactLine(
+    toDisplayText(item.contact_name),
+    toDisplayText(item.contact_phone),
+    contactEmail,
+  );
+  const detailBody = replaceProtectedEmailPlaceholder(
+    sanitizeStructuredBodyContactLine(toDisplayText(item.body), contactLine),
+    contactEmail,
+  );
+  const contactName = normalizeContactName(toDisplayText(item.contact_name));
+
+  const jobSalary = toDisplayText(meta.salary_range) || toDisplayText(section['薪资']) || reliablePriceText || '';
+  const jobCompany = toDisplayText(meta.company) || toDisplayText(section['公司']) || '';
+  const jobLocation = toDisplayText(meta.job_location) || toDisplayText(section['地点']) || toDisplayText(meta.neighborhood) || '';
+  const jobSchedule = [
+    toDisplayText(meta.job_type) === 'full_time'
+      ? '全职'
+      : toDisplayText(meta.job_type) === 'part_time'
+        ? '兼职'
+        : toDisplayText(meta.job_type) === 'remote'
+          ? '远程'
+          : toDisplayText(meta.job_type),
+    toDisplayText(meta.work_hours),
+  ].filter(Boolean).join(' / ') || toDisplayText(section['时间']);
+  const jobRequirements = toDisplayText(meta.job_requirements) || toDisplayText(section['要求']);
+
+  const housingRooms = [
+    meta.bedrooms ? `${meta.bedrooms}室` : '',
+    meta.bathrooms ? `${meta.bathrooms}卫` : '',
+  ].filter(Boolean).join(' ') || '';
+  const housingRent = reliablePriceText || (meta.rent_amount ? `$${meta.rent_amount}/月` : '');
+  const housingNeighborhood = toDisplayText(meta.neighborhood);
+  const housingMoveInDate = toDisplayText(meta.move_in_date);
+
+  const secondhandConditionRaw = toDisplayText(meta.condition);
+  const secondhandCondition =
+    secondhandConditionRaw === 'new'
+      ? '全新'
+      : secondhandConditionRaw === 'like_new'
+        ? '9成新'
+        : secondhandConditionRaw === 'good'
+          ? '8成新'
+          : secondhandConditionRaw;
+  const secondhandBrand = toDisplayText(meta.brand);
+  const secondhandMeetup = toDisplayText(meta.meetup_location);
+  const secondhandOriginalPrice = meta.original_price ? `$${meta.original_price}` : '';
+  const supplementText = replaceProtectedEmailPlaceholder(toDisplayText(section['补充说明']), contactEmail);
 
   return (
     <main className="bg-bg-page min-h-screen">
@@ -113,7 +259,7 @@ export default async function ClassifiedDetailPage({ params }: Props) {
             <div className="flex items-center gap-3 text-sm text-text-muted mb-6 pb-6 border-b border-border-light flex-wrap">
               <span>by {authorName}</span>
               <span>·</span>
-              <span>{timeAgo(item.created_at)}</span>
+              <span>{formatDate(item.created_at)}</span>
               <span>·</span>
               <span>👀 {item.view_count || 0} 浏览</span>
               <span>·</span>
@@ -131,28 +277,67 @@ export default async function ClassifiedDetailPage({ params }: Props) {
             </div>
 
             {/* Price */}
-            {item.price_text && (
+            {reliablePriceText && !isJobs && (
               <div className="mb-6 p-4 bg-accent-red-light r-lg">
-                <span className="text-2xl fw-bold text-accent-red">{item.price_text}</span>
+                <span className="text-2xl fw-bold text-accent-red">{reliablePriceText}</span>
               </div>
             )}
 
-            {/* Category-specific metadata */}
-            {(meta.bedrooms || meta.salary_range || meta.condition) && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {meta.bedrooms && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">🛏️ {meta.bedrooms}室{meta.bathrooms ? `${meta.bathrooms}卫` : ''}</span>}
-                {meta.neighborhood && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">📍 {meta.neighborhood}</span>}
-                {meta.salary_range && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">💰 {meta.salary_range}</span>}
-                {meta.job_type && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">{meta.job_type === 'full_time' ? '全职' : meta.job_type === 'part_time' ? '兼职' : meta.job_type === 'remote' ? '远程' : meta.job_type}</span>}
-                {meta.company && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">🏢 {meta.company}</span>}
-                {meta.condition && <span className="px-3 py-1 bg-bg-card border border-border-light r-full text-xs">{meta.condition === 'new' ? '全新' : meta.condition === 'like_new' ? '9成新' : meta.condition === 'good' ? '8成新' : meta.condition}</span>}
-              </div>
+            {/* Category-specific structured info */}
+            {isJobs && (
+              <Card className="mb-6 p-4">
+                <h3 className="text-sm fw-bold mb-3">岗位信息</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div><span className="text-text-muted">职位</span><p className="fw-medium">{item.title}</p></div>
+                  <div><span className="text-text-muted">薪资</span><p className="fw-medium">{jobSalary || '未提供'}</p></div>
+                  <div><span className="text-text-muted">公司</span><p className="fw-medium">{jobCompany || '未提供'}</p></div>
+                  <div><span className="text-text-muted">地点</span><p className="fw-medium">{jobLocation || '未提供'}</p></div>
+                  <div className="sm:col-span-2"><span className="text-text-muted">时间</span><p className="fw-medium">{jobSchedule || '未提供'}</p></div>
+                </div>
+                {jobRequirements && (
+                  <div className="mt-4 pt-4 border-t border-border-light">
+                    <p className="text-text-muted text-sm mb-1">要求</p>
+                    <p className="text-sm whitespace-pre-wrap">{jobRequirements}</p>
+                  </div>
+                )}
+                {supplementText && (
+                  <div className="mt-4 pt-4 border-t border-border-light">
+                    <p className="text-text-muted text-sm mb-1">补充说明</p>
+                    <p className="text-sm whitespace-pre-wrap">{supplementText}</p>
+                  </div>
+                )}
+              </Card>
+            )}
+
+            {isHousing && (
+              <Card className="mb-6 p-4">
+                <h3 className="text-sm fw-bold mb-3">房源信息</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div><span className="text-text-muted">户型</span><p className="fw-medium">{housingRooms || '未提供'}</p></div>
+                  <div><span className="text-text-muted">租金</span><p className="fw-medium">{housingRent || '未提供'}</p></div>
+                  <div><span className="text-text-muted">地区</span><p className="fw-medium">{housingNeighborhood || '未提供'}</p></div>
+                  <div><span className="text-text-muted">入住时间</span><p className="fw-medium">{housingMoveInDate || '未提供'}</p></div>
+                </div>
+              </Card>
+            )}
+
+            {isSecondhand && (
+              <Card className="mb-6 p-4">
+                <h3 className="text-sm fw-bold mb-3">商品信息</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div><span className="text-text-muted">成色</span><p className="fw-medium">{secondhandCondition || '未提供'}</p></div>
+                  <div><span className="text-text-muted">售价</span><p className="fw-medium">{reliablePriceText || '未提供'}</p></div>
+                  <div><span className="text-text-muted">品牌</span><p className="fw-medium">{secondhandBrand || '未提供'}</p></div>
+                  <div><span className="text-text-muted">原价</span><p className="fw-medium">{secondhandOriginalPrice || '未提供'}</p></div>
+                  <div className="col-span-2"><span className="text-text-muted">交易地点</span><p className="fw-medium">{secondhandMeetup || '未提供'}</p></div>
+                </div>
+              </Card>
             )}
 
             {/* Body */}
-            {item.body && (
+            {detailBody && !isJobs && (
               <div className="mb-8 text-[15px] text-text-primary leading-[1.8] whitespace-pre-wrap break-words">
-                {item.body}
+                {detailBody}
               </div>
             )}
 
@@ -170,7 +355,7 @@ export default async function ClassifiedDetailPage({ params }: Props) {
                             {replyAuthor[0]}
                           </div>
                           <span className="text-sm fw-medium">{replyAuthor}</span>
-                          <span className="text-xs text-text-muted">{timeAgo(reply.created_at)}</span>
+                          <span className="text-xs text-text-muted">{formatDate(reply.created_at)}</span>
                         </div>
                         <p className="text-sm text-text-primary pl-9 whitespace-pre-wrap">{reply.body}</p>
                       </Card>
@@ -199,19 +384,19 @@ export default async function ClassifiedDetailPage({ params }: Props) {
           <aside className="lg:w-72 flex-shrink-0 mt-8 lg:mt-0">
             <Card className="p-5 sticky top-20">
               <h3 className="fw-bold text-base mb-3">联系方式</h3>
-              {item.contact_name && <p className="text-sm mb-2">👤 {item.contact_name}</p>}
+              {contactName && <p className="text-sm mb-2">👤 {contactName}</p>}
               {item.contact_phone && (
                 <a href={`tel:${item.contact_phone}`} className="flex items-center gap-2 text-sm text-primary hover:underline mb-2">
                   📞 {item.contact_phone}
                 </a>
               )}
               {item.contact_wechat && <p className="text-sm mb-2">💬 微信：{item.contact_wechat}</p>}
-              {item.contact_email && (
-                <a href={`mailto:${item.contact_email}`} className="flex items-center gap-2 text-sm text-primary hover:underline mb-2">
-                  ✉️ {item.contact_email}
+              {contactEmail && (
+                <a href={`mailto:${contactEmail}`} className="flex items-center gap-2 text-sm text-primary hover:underline mb-2">
+                  ✉️ {contactEmail}
                 </a>
               )}
-              {!item.contact_phone && !item.contact_wechat && !item.contact_email && (
+              {!item.contact_phone && !item.contact_wechat && !contactEmail && (
                 <p className="text-sm text-text-muted">请通过回复联系发布者</p>
               )}
 

@@ -9,6 +9,11 @@ Admin:
 login: admin@baamplatform.com
 password: Baam2026!
 
+use name: Guest Sam
+email: guest-sam1@gmail.com
+password: guestsam1
+
+
 
 kill -9 $(lsof -tiTCP:5001 -sTCP:LISTEN)
 rm -rf .next

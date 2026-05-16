@@ -11,8 +11,24 @@ import { createClient } from '@/lib/supabase/client';
 type AnyRow = Record<string, any>;
 
 function FollowButtonInline({ profileId, isLoggedIn }: { profileId: string; isLoggedIn: boolean }) {
-  const [following, setFollowing] = useState(false);
+  const [following, setFollowing] = useState<boolean | null>(null); // null = loading initial state
   const [loading, setLoading] = useState(false);
+  const [hovering, setHovering] = useState(false);
+
+  // Check follow status on mount via API to avoid RLS issues
+  useEffect(() => {
+    if (!isLoggedIn || !profileId) { setFollowing(false); return; }
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) { setFollowing(false); return; }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (supabase as any).from('follows').select('id')
+        .eq('follower_user_id', user.id)
+        .eq('followed_profile_id', profileId)
+        .maybeSingle()
+        .then(({ data }: { data: unknown }) => setFollowing(!!data));
+    });
+  }, [profileId, isLoggedIn]);
 
   const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,18 +44,24 @@ function FollowButtonInline({ profileId, isLoggedIn }: { profileId: string; isLo
     setLoading(false);
   };
 
+  if (following === null) return null; // Still checking
+
+  const showUnfollow = following && hovering && !loading;
+
   return (
     <button
       onClick={handleClick}
       disabled={loading || !isLoggedIn}
-      className="px-5 py-2 text-sm font-semibold rounded-full transition flex-shrink-0 disabled:opacity-50"
+      onMouseEnter={() => setHovering(true)}
+      onMouseLeave={() => setHovering(false)}
+      className="px-5 py-2 text-sm font-semibold rounded-full transition-all flex-shrink-0 disabled:opacity-50"
       style={{
-        background: following ? '#f3f4f6' : undefined,
-        color: following ? '#6b7280' : '#fff',
-        backgroundColor: following ? undefined : 'var(--primary, #C73E1D)',
+        background: showUnfollow ? '#fef2f2' : following ? '#f3f4f6' : 'var(--primary, #C73E1D)',
+        color: showUnfollow ? '#ef4444' : following ? '#6b7280' : '#fff',
+        border: showUnfollow ? '1px solid #fecaca' : following ? '1px solid #e5e7eb' : '1px solid transparent',
       }}
     >
-      {loading ? '...' : following ? '已关注' : '+ 关注'}
+      {loading ? '...' : showUnfollow ? '取消关注' : following ? '已关注' : '+ 关注'}
     </button>
   );
 }

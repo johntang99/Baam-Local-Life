@@ -25,15 +25,9 @@ const tagColors: Record<string, { bg: string; color: string }> = {
   help: { bg: 'var(--ed-tag-purple-bg)', color: 'var(--ed-tag-purple-text)' },
 };
 
-function timeAgo(dateStr: string | null): string {
+function formatDate(dateStr: string | null): string {
   if (!dateStr) return '';
-  const ms = Date.now() - new Date(dateStr).getTime();
-  const hrs = Math.floor(ms / 3600000);
-  if (hrs < 1) return '刚刚';
-  if (hrs < 24) return `${hrs}小时前`;
-  const days = Math.floor(ms / 86400000);
-  if (days < 7) return `${days}天前`;
-  return new Date(dateStr).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+  return new Date(dateStr).toLocaleDateString('zh-CN');
 }
 
 function getSubTag(item: AnyRow, catKey: string): string {
@@ -177,7 +171,7 @@ export function ClassifiedsSection({ housing, jobs, secondhand, help }: Classifi
                               {neighborhood && <span>{neighborhood}</span>}
                               {neighborhood && <span>·</span>}
                               <span style={{ fontFamily: 'var(--ed-font-serif-italic)', fontStyle: 'italic' }}>
-                                {timeAgo(item.created_at)}
+                                {formatDate(item.created_at)}
                               </span>
                               {/* AI button for help category */}
                               {cat.key === 'help' && (

@@ -106,6 +106,22 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
   const profile = (profileData || {}) as AnyRow;
   const username = profile.username || '';
 
+  // Check if current user follows the post author and has liked the post
+  // Use admin client to bypass RLS restrictions on follows/likes tables
+  let isFollowingAuthor = false;
+  let hasLikedPost = false;
+  if (currentUser && post) {
+    const { createAdminClient } = await import('@/lib/supabase/admin');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const adminSupa = createAdminClient() as any;
+    const [followCheck, likeCheck] = await Promise.all([
+      adminSupa.from('follows').select('id').eq('follower_user_id', currentUser.id).eq('followed_profile_id', post.author_id).maybeSingle(),
+      adminSupa.from('voice_post_likes').select('id').eq('user_id', currentUser.id).eq('post_id', post.id).maybeSingle(),
+    ]);
+    isFollowingAuthor = !!followCheck.data;
+    hasLikedPost = !!likeCheck.data;
+  }
+
   // Fetch comments with author profiles
   const { data: rawComments } = await supabase
     .from('voice_post_comments')
@@ -257,7 +273,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
             ) : (
               <div className="flex items-center gap-2">
                 {profile.id && (
-                  <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs r-lg" />
+                  <FollowButton profileId={profile.id} isFollowing={isFollowingAuthor} isLoggedIn={!!currentUser} className="h-8 px-4 text-xs r-lg" />
                 )}
                 <ReportButton contentType="post" contentId={post.id} variant="full" />
               </div>
@@ -322,7 +338,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
 
           {/* Action Buttons */}
           <div className="flex items-center gap-4 py-4 border-t border-b border-border mb-8">
-            <LikeButton postId={post.id} isLiked={false} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
+            <LikeButton postId={post.id} isLiked={hasLikedPost} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
             <span className="text-sm text-text-muted flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
               {post.save_count || 0} 收藏
@@ -490,7 +506,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
               ) : (
                 <div className="flex items-center gap-2">
                   {profile.id && (
-                    <FollowButton profileId={profile.id} isFollowing={false} isLoggedIn={!!currentUser} className="h-9 px-5 text-sm r-full" />
+                    <FollowButton profileId={profile.id} isFollowing={isFollowingAuthor} isLoggedIn={!!currentUser} className="h-9 px-5 text-sm r-full" />
                   )}
                   <ReportButton contentType="post" contentId={post.id} variant="full" />
                 </div>
@@ -523,7 +539,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
 
             {/* Action Bar */}
             <div className="flex items-center justify-around py-2 mb-6 border-b border-border-light">
-              <LikeButton postId={post.id} isLiked={false} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
+              <LikeButton postId={post.id} isLiked={hasLikedPost} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
               <button className="flex flex-col items-center gap-1 px-4 py-2 r-xl hover:bg-bg-page transition">
                 <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
                 <span className="text-xs text-text-muted">{post.save_count || 0}</span>
@@ -699,7 +715,7 @@ export default async function DiscoverPostDetailPage({ params, searchParams }: P
         <div className="flex-1 flex items-center">
           <input type="text" placeholder="说点什么..." className="w-full h-9 pl-4 pr-3 bg-bg-page r-full text-sm text-text-secondary outline-none" readOnly />
         </div>
-        <LikeButton postId={post.id} isLiked={false} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
+        <LikeButton postId={post.id} isLiked={hasLikedPost} likeCount={post.like_count || 0} isLoggedIn={!!currentUser} />
         <button className="text-text-muted">
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
         </button>

@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getAdminSiteContext } from '@/lib/admin-context';
 import ClassifiedsTable from './ClassifiedsTable';
+import Dadi360ImportPanel from './Dadi360ImportPanel';
+import NyChinaRenImportPanel from './NyChinaRenImportPanel';
 import Link from 'next/link';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,6 +32,23 @@ export default async function ClassifiedsListPage({ searchParams }: Props) {
 
   const { data } = await query.limit(100);
   const classifieds = (data || []) as AnyRow[];
+
+  const countByCategory = async (category: string) => {
+    let countQuery = supabase
+      .from('classifieds')
+      .select('*', { count: 'exact', head: true })
+      .eq('site_id', ctx.siteId)
+      .eq('category', category);
+    if (statusFilter !== 'all') countQuery = countQuery.eq('status', statusFilter);
+    const { count } = await countQuery;
+    return count || 0;
+  };
+
+  const [rentCount, jobsCount, secondhandCount] = await Promise.all([
+    countByCategory('housing_rent'),
+    countByCategory('jobs'),
+    countByCategory('secondhand'),
+  ]);
 
   const baseParams = new URLSearchParams();
   if (params.region) baseParams.set('region', String(params.region));
@@ -63,6 +82,26 @@ export default async function ClassifiedsListPage({ searchParams }: Props) {
         >
           + 新建信息
         </Link>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        <div className="rounded-lg border border-border bg-bg-card px-3 py-2">
+          <p className="text-xs text-text-muted">租房数量</p>
+          <p className="text-lg font-semibold">{rentCount}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-bg-card px-3 py-2">
+          <p className="text-xs text-text-muted">招聘数量</p>
+          <p className="text-lg font-semibold">{jobsCount}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-bg-card px-3 py-2">
+          <p className="text-xs text-text-muted">二手数量</p>
+          <p className="text-lg font-semibold">{secondhandCount}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <Dadi360ImportPanel />
+        <NyChinaRenImportPanel />
       </div>
 
       {/* Category filter */}

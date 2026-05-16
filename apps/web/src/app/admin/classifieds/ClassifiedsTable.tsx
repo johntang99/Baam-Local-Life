@@ -37,15 +37,16 @@ export default function ClassifiedsTable({ classifieds, siteParams = '' }: Props
     startTransition(async () => { await deleteClassified(id); router.refresh(); });
   };
 
-  function timeAgo(dateStr: string | null): string {
+  function formatDate(dateStr: string | null): string {
     if (!dateStr) return '—';
-    const ms = Date.now() - new Date(dateStr).getTime();
-    const hrs = Math.floor(ms / 3600000);
-    if (hrs < 1) return '刚刚';
-    if (hrs < 24) return `${hrs}小时前`;
-    const days = Math.floor(ms / 86400000);
-    if (days < 7) return `${days}天前`;
-    return new Date(dateStr).toLocaleDateString('zh-CN');
+    return new Date(dateStr).toLocaleString('zh-CN', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    });
   }
 
   return (
@@ -88,7 +89,7 @@ export default function ClassifiedsTable({ classifieds, siteParams = '' }: Props
                 </td>
                 <td><span className={`${sb.cls} text-xs`}>{sb.label}</span></td>
                 <td className="text-sm text-text-muted">{c.reply_count || 0}</td>
-                <td className="text-xs text-text-muted">{timeAgo(c.created_at)}</td>
+                <td className="text-xs text-text-muted">{formatDate(c.created_at)}</td>
                 <td>
                   <div className="flex items-center gap-2">
                     <Link href={`/admin/classifieds/${c.id}/edit${siteParams ? `?${siteParams}` : ''}`} className="text-xs text-primary hover:underline">编辑</Link>

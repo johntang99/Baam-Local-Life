@@ -71,11 +71,24 @@ export default async function MePage() {
   // Fetch following
   const { data: rawFollowing } = await supabase
     .from('follows')
-    .select('id, created_at, followed_profile_id, profiles!follows_followed_profile_id_fkey(id, username, display_name, headline, post_count)')
+    .select('id, created_at, followed_profile_id, profiles!follows_followed_profile_id_fkey(id, username, display_name, headline)')
     .eq('follower_user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(50);
   const following = (rawFollowing || []) as AnyRow[];
+
+  // Count actual posts for each followed user
+  for (const f of following) {
+    if (f.profiles?.id) {
+      const { count } = await supabase
+        .from('voice_posts')
+        .select('id', { count: 'exact', head: true })
+        .eq('author_id', f.profiles.id)
+        .eq('site_id', site.id)
+        .eq('status', 'published');
+      f.profiles.post_count = count || 0;
+    }
+  }
 
   // Compute stats
   const totalViews = posts.reduce((s: number, p: AnyRow) => s + (p.view_count || 0), 0)

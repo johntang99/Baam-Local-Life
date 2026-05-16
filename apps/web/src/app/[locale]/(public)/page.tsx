@@ -16,6 +16,9 @@ import type { Metadata } from 'next';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRow = Record<string, any>;
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: 'Baam 纽约 · 你的华人本地生活',
   description: '纽约华人本地生活门户 — 美食、医疗、法律、教育、社区，AI 驱动的一站式服务',
@@ -50,10 +53,10 @@ export default async function HomePage() {
     supabase.from('businesses').select('*, business_categories!inner(category_id, is_primary, categories!inner(slug, name_zh))').eq('site_id', site.id).eq('is_active', true).eq('status', 'active').eq('is_featured', true).eq('business_categories.is_primary', true).order('total_score', { ascending: false, nullsFirst: false }).limit(80),
     supabase.from('categories').select('id, slug, name_zh, icon').eq('type', 'business').is('parent_id', null).eq('is_active', true).eq('site_scope', 'zh').order('sort_order', { ascending: true }),
     supabase.from('categories').select('id, slug, parent_id').eq('type', 'business').not('parent_id', 'is', null).eq('is_active', true),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['housing_rent', 'housing_buy']).eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'jobs').eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'secondhand').eq('status', 'active').order('created_at', { ascending: false }).limit(4),
-    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['services', 'general']).eq('status', 'active').order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['housing_rent', 'housing_buy']).eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'jobs').eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).eq('category', 'secondhand').eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
+    supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['services', 'general']).eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
     supabase.from('categories_discover').select('id, slug, name_zh, name_en, icon, sort_order').eq('is_active', true).eq('site_scope', 'zh').order('sort_order', { ascending: true }),
   ]);
 
