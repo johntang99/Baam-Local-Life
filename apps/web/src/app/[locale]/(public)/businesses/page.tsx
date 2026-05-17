@@ -195,42 +195,48 @@ async function renderDirectoryHome(
     .select('id', { count: 'exact', head: true })
     .eq('is_active', true).eq('site_id', site.id).eq('status', 'active');
 
-  // Build subcategory → parent slug map
-  const parentById = new Map(parentCategories.map(c => [c.id, c.slug]));
-  const subToParent = new Map<string, string>();
+  // Fetch top featured businesses per parent category (parent + children),
+  // instead of global top-80, to avoid sparse sections.
+  const childCategoryIdsByParentId = new Map<string, string[]>();
   for (const cat of allCategories) {
-    if (cat.parent_id) {
-      const p = parentById.get(cat.parent_id);
-      if (p) subToParent.set(cat.slug, p);
-    } else {
-      subToParent.set(cat.slug, cat.slug);
-    }
+    if (!cat.parent_id) continue;
+    const list = childCategoryIdsByParentId.get(cat.parent_id) || [];
+    list.push(cat.id);
+    childCategoryIdsByParentId.set(cat.parent_id, list);
   }
 
-  // Fetch featured businesses with category join
-  const { data: rBiz } = await supabase
-    .from('businesses')
-    .select('*, business_categories!inner(category_id, is_primary, categories!inner(slug, name_zh))')
-    .eq('site_id', site.id).eq('is_active', true).eq('status', 'active')
-    .eq('is_featured', true).eq('business_categories.is_primary', true)
-    .order('total_score', { ascending: false, nullsFirst: false })
-    .limit(80);
-  const allBiz = (rBiz || []) as AnyRow[];
+  const bizByCategoryEntries = await Promise.all(
+    parentCategories.map(async (parentCat) => {
+      const filterCategoryIds = [parentCat.id, ...(childCategoryIdsByParentId.get(parentCat.id) || [])];
+      const { data } = await supabase
+        .from('businesses')
+        .select('*, business_categories!inner(category_id, is_primary, categories!inner(slug, name_zh))')
+        .eq('site_id', site.id)
+        .eq('is_active', true)
+        .eq('status', 'active')
+        .eq('is_featured', true)
+        .eq('business_categories.is_primary', true)
+        .in('business_categories.category_id', filterCategoryIds)
+        .order('total_score', { ascending: false, nullsFirst: false })
+        .limit(20);
+      return [parentCat.slug, (data || []) as AnyRow[]] as const;
+    }),
+  );
+  const bizByCategory: Record<string, AnyRow[]> = Object.fromEntries(bizByCategoryEntries);
 
-  // Group by parent category
-  const bizByCategory: Record<string, AnyRow[]> = {};
-  for (const biz of allBiz) {
-    const subCatSlug = biz.business_categories?.[0]?.categories?.slug;
-    if (!subCatSlug) continue;
-    const parentSlug = subToParent.get(subCatSlug) || subCatSlug;
-    if (!bizByCategory[parentSlug]) bizByCategory[parentSlug] = [];
-    if (bizByCategory[parentSlug].length < 5) bizByCategory[parentSlug].push(biz);
-  }
+  const layouts = ['left', 'right', 'even'] as const;
 
   // Fetch cover photos
   const adminSupa = createAdminClient();
   const coverMap: Record<string, string> = {};
-  const uniqueBiz = allBiz.filter((b, i, arr) => arr.findIndex(x => x.id === b.id) === i);
+  const displayedBiz: AnyRow[] = [];
+  parentCategories.forEach((cat, idx) => {
+    const catBiz = bizByCategory[cat.slug] || [];
+    const layout = layouts[idx % 3];
+    const take = layout === 'even' ? 4 : 5;
+    displayedBiz.push(...catBiz.slice(0, take));
+  });
+  const uniqueBiz = displayedBiz.filter((b, i, arr) => arr.findIndex(x => x.id === b.id) === i);
   await Promise.all(uniqueBiz.map(async (biz) => {
     const folder = `businesses/${biz.slug}`;
     const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'desc' } });
@@ -240,8 +246,6 @@ async function renderDirectoryHome(
       coverMap[biz.id] = urlData.publicUrl;
     }
   }));
-
-  const layouts = ['left', 'right', 'even'] as const;
 
   return (
     <main>
