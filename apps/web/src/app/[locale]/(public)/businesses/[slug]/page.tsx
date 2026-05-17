@@ -92,7 +92,7 @@ export default async function BusinessDetailPage({ params }: Props) {
 
   const adminClient = createAdminClient();
   const storageFolder = `businesses/${slug}`;
-  const { data: storageFiles } = await adminClient.storage.from('media').list(storageFolder, { limit: 20, sortBy: { column: 'name', order: 'asc' } });
+  const { data: storageFiles } = await adminClient.storage.from('media').list(storageFolder, { limit: 20, sortBy: { column: 'name', order: 'desc' } });
   const photos = (storageFiles || []).filter((f) => f.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name)).map((f) => {
     const { data: urlData } = adminClient.storage.from('media').getPublicUrl(`${storageFolder}/${f.name}`);
     return { name: f.name, url: urlData.publicUrl };

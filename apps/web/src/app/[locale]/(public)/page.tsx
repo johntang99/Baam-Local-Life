@@ -35,7 +35,6 @@ export default async function HomePage() {
     { data: rDiscoverPosts },
     { data: rEvents },
     { data: rDeals },
-    { data: rBiz },
     { data: rBizCategories },
     { data: rBizSubcategories },
     { data: rClfHousing },
@@ -50,7 +49,6 @@ export default async function HomePage() {
     supabase.from('voice_posts').select('*, profiles!voice_posts_author_id_fkey(display_name, username)').eq('site_id', site.id).eq('status', 'published').eq('visibility', 'public').order('published_at', { ascending: false }).limit(7),
     supabase.from('events').select('*').eq('site_id', site.id).eq('status', 'published').order('start_at', { ascending: true }).limit(4),
     supabase.from('deals').select('*, businesses(display_name_zh, display_name, slug)').eq('site_id', site.id).eq('status', 'approved').eq('is_featured', true).order('sort_order', { ascending: true }).limit(4),
-    supabase.from('businesses').select('*, business_categories!inner(category_id, is_primary, categories!inner(slug, name_zh))').eq('site_id', site.id).eq('is_active', true).eq('status', 'active').eq('is_featured', true).eq('business_categories.is_primary', true).order('total_score', { ascending: false, nullsFirst: false }).limit(80),
     supabase.from('categories').select('id, slug, name_zh, icon').eq('type', 'business').is('parent_id', null).eq('is_active', true).eq('site_scope', 'zh').order('sort_order', { ascending: true }),
     supabase.from('categories').select('id, slug, parent_id').eq('type', 'business').not('parent_id', 'is', null).eq('is_active', true),
     supabase.from('classifieds').select('*, profiles:author_id(display_name)').eq('site_id', site.id).in('category', ['housing_rent', 'housing_buy']).eq('status', 'active').eq('is_featured', true).order('created_at', { ascending: false }).limit(4),
@@ -66,7 +64,6 @@ export default async function HomePage() {
   const discoverPosts = (rDiscoverPosts || []) as AnyRow[];
   const events = (rEvents || []) as AnyRow[];
   const deals = (rDeals || []) as AnyRow[];
-  const allBiz = (rBiz || []) as AnyRow[];
   const bizCategories = (rBizCategories || []) as AnyRow[];
   const bizSubcategories = (rBizSubcategories || []) as AnyRow[];
   const clfHousing = (rClfHousing || []) as AnyRow[];
@@ -75,25 +72,31 @@ export default async function HomePage() {
   const clfHelp = (rClfHelp || []) as AnyRow[];
   const discoverCategories = (rDiscoverCategories || []) as AnyRow[];
 
-  // Build subcategory ID → parent slug map
-  const parentById = new Map(bizCategories.map((c) => [c.id, c.slug]));
-  const subToParentSlug = new Map<string, string>();
+  // Fetch top-20 featured businesses for each parent category (by primary category), then UI displays first 8.
+  const childCategoryIdsByParentId = new Map<string, string[]>();
   for (const sub of bizSubcategories) {
-    const parentSlug = parentById.get(sub.parent_id);
-    if (parentSlug) subToParentSlug.set(sub.slug, parentSlug);
+    const list = childCategoryIdsByParentId.get(sub.parent_id) || [];
+    list.push(sub.id);
+    childCategoryIdsByParentId.set(sub.parent_id, list);
   }
-  // Parent categories also map to themselves
-  for (const cat of bizCategories) subToParentSlug.set(cat.slug, cat.slug);
-
-  // Group businesses by parent category slug
-  const bizByCategory: Record<string, AnyRow[]> = {};
-  for (const biz of allBiz) {
-    const subCatSlug = biz.business_categories?.[0]?.categories?.slug;
-    if (!subCatSlug) continue;
-    const parentSlug = subToParentSlug.get(subCatSlug) || subCatSlug;
-    if (!bizByCategory[parentSlug]) bizByCategory[parentSlug] = [];
-    if (bizByCategory[parentSlug].length < 8) bizByCategory[parentSlug].push(biz);
-  }
+  const bizByCategoryEntries = await Promise.all(
+    bizCategories.map(async (parentCat) => {
+      const categoryIds = [parentCat.id, ...(childCategoryIdsByParentId.get(parentCat.id) || [])];
+      const { data } = await supabase
+        .from('businesses')
+        .select('*, business_categories!inner(category_id, is_primary, categories!inner(slug, name_zh))')
+        .eq('site_id', site.id)
+        .eq('is_active', true)
+        .eq('status', 'active')
+        .eq('is_featured', true)
+        .eq('business_categories.is_primary', true)
+        .in('business_categories.category_id', categoryIds)
+        .order('total_score', { ascending: false, nullsFirst: false })
+        .limit(20);
+      return [parentCat.slug, (data || []) as AnyRow[]] as const;
+    }),
+  );
+  const bizByCategory: Record<string, AnyRow[]> = Object.fromEntries(bizByCategoryEntries);
 
   const displayedBizIds = new Set<string>();
   const displayedBizList: AnyRow[] = [];
@@ -111,7 +114,7 @@ export default async function HomePage() {
   await Promise.all(
     displayedBizList.map(async (biz) => {
       const folder = `businesses/${biz.slug}`;
-      const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'asc' } });
+      const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'desc' } });
       const first = (files || []).find((f) => f.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name));
       if (first) {
         const { data: urlData } = adminSupa.storage.from('media').getPublicUrl(`${folder}/${first.name}`);

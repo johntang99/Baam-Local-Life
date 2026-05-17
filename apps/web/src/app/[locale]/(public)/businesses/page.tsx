@@ -148,7 +148,7 @@ export default async function BusinessListPage({ searchParams }: Props) {
           const coverMap: Record<string, string> = {};
           await Promise.all(featured.map(async (biz) => {
             const folder = `businesses/${biz.slug}`;
-            const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'asc' } });
+            const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'desc' } });
             const first = (files || []).find((f) => f.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name));
             if (first) {
               const { data: urlData } = adminSupa.storage.from('media').getPublicUrl(`${folder}/${first.name}`);
@@ -233,7 +233,7 @@ async function renderDirectoryHome(
   const uniqueBiz = allBiz.filter((b, i, arr) => arr.findIndex(x => x.id === b.id) === i);
   await Promise.all(uniqueBiz.map(async (biz) => {
     const folder = `businesses/${biz.slug}`;
-    const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'asc' } });
+    const { data: files } = await adminSupa.storage.from('media').list(folder, { limit: 1, sortBy: { column: 'name', order: 'desc' } });
     const first = (files || []).find((f) => f.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name));
     if (first) {
       const { data: urlData } = adminSupa.storage.from('media').getPublicUrl(`${folder}/${first.name}`);

@@ -23,6 +23,7 @@ const imgGradients = [
 export function BusinessesSection({ bizByCategory, categories, coverPhotos }: BusinessesSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [failedCovers, setFailedCovers] = useState<Record<string, boolean>>({});
 
   // Auto-rotate only through categories that have featured businesses
   const populatedIndices = categories.map((cat, i) => ({ i, count: (bizByCategory[cat.slug] || []).length })).filter((x) => x.count > 0).map((x) => x.i);
@@ -105,6 +106,7 @@ export function BusinessesSection({ bizByCategory, categories, coverPhotos }: Bu
             const name = biz.display_name_zh || biz.display_name || '商家';
             const firstChar = name[0] || '🏢';
             const cover = coverPhotos[biz.id];
+            const hasValidCover = Boolean(cover) && !failedCovers[biz.id];
             const street = (biz.address_full || '').replace(/,?\s*(NY|New York)\s*\d{0,5},?\s*(USA|美国)?$/i, '').trim().replace(/,\s*$/, '');
             const addr = [street, biz.city].filter(Boolean).join(', ');
 
@@ -122,8 +124,15 @@ export function BusinessesSection({ bizByCategory, categories, coverPhotos }: Bu
               >
                 {/* Image */}
                 <div className="relative" style={{ aspectRatio: '16/9', overflow: 'hidden' }}>
-                  {cover ? (
-                    <img src={cover} alt={name} className="absolute inset-0 w-full h-full object-cover" />
+                  {hasValidCover ? (
+                    <img
+                      src={cover}
+                      alt={name}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      onError={() => {
+                        setFailedCovers((prev) => ({ ...prev, [biz.id]: true }));
+                      }}
+                    />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center" style={{ background: imgGradients[i % imgGradients.length] }}>
                       <span style={{ fontSize: 32, fontWeight: 600, color: 'rgba(255,255,255,0.3)' }}>{firstChar}</span>

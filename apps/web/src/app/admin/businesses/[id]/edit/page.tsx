@@ -79,7 +79,7 @@ export default async function EditBusinessPage({ params, searchParams }: Props) 
 
   // Fetch existing images from Supabase Storage (admin uploads to storage, not business_media table)
   const storageFolder = `businesses/${business.slug}`;
-  const { data: storageFiles } = await supabase.storage.from('media').list(storageFolder, { limit: 20, sortBy: { column: 'name', order: 'asc' } });
+  const { data: storageFiles } = await supabase.storage.from('media').list(storageFolder, { limit: 20, sortBy: { column: 'name', order: 'desc' } });
   const existingImages = (storageFiles || [])
     .filter((f: AnyRow) => f.name && /\.(jpg|jpeg|png|webp|gif)$/i.test(f.name))
     .map((f: AnyRow) => {
